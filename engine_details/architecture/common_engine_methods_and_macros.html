@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Các phương thức và macro thông dụng của engine" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/architecture/common_engine_methods_and_macros.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Codebase C++ của Godot sử dụng hàng chục phương thức và macro tùy chỉnh xuất hiện trong hầu hết mọi file. Trang này hướng đến những người mới đóng góp, nhưng cũng có thể hữu ích cho những ai viết m..." />
+<meta name="description" content="Codebase C++ của Godot sử dụng hàng chục phương thức và macro tùy chỉnh xuất hiện trong hầu hết mọi file. Trang này hướng đến những người mới đóng góp, nhưng cũng có thể hữu ích cho những ai viết m..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Các phương thức và macro thông dụng của engine &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Các kiểu cốt lõi" href="core_types.html" />
+    <link rel="prev" title="Tổng quan kiến trúc của Godot" href="godot_architecture_diagram.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/architecture/common_engine_methods_and_macros" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kiến trúc engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="godot_architecture_diagram.html">Tổng quan kiến trúc của Godot</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Các phương thức và macro thông dụng của engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#print-text">In văn bản</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#format-a-string">Định dạng chuỗi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-an-integer-or-float-to-a-string">Chuyển số nguyên hoặc số thực thành chuỗi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#internationalize-a-string">Quốc tế hóa một chuỗi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clamp-a-value">Giới hạn (clamp) một giá trị</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#microbenchmarking">Microbenchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-project-editor-settings">Lấy cài đặt dự án/trình chỉnh sửa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-macros">Macro báo lỗi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core_types.html">Các kiểu cốt lõi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variant_class.html">Lớp Variant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_class.html">Lớp Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inheritance_class_tree.html">Cây kế thừa lớp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_rendering_architecture.html">Kiến trúc kết xuất nội bộ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_coordinate_systems.html">Hệ tọa độ 2D và phép biến đổi 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html">Unit test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kiến trúc engine</a></li>
+      <li class="breadcrumb-item active">Các phương thức và macro thông dụng của engine</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="common-engine-methods-and-macros">
+<span id="doc-common-engine-methods-and-macros"></span><h1>Các phương thức và macro thông dụng của engine<a class="headerlink" href="#common-engine-methods-and-macros" title="Link to this heading"></a></h1>
+<p>Codebase C++ của Godot sử dụng hàng chục phương thức và macro tùy chỉnh xuất hiện trong hầu hết mọi file. Trang này hướng đến những người mới đóng góp, nhưng cũng có thể hữu ích cho những ai viết module C++ tùy chỉnh.</p>
+<section id="print-text">
+<h2>In văn bản<a class="headerlink" href="#print-text" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prints a message to standard output.</span>
+<span class="n">print_line</span><span class="p">(</span><span class="s">&quot;Message&quot;</span><span class="p">);</span>
+
+<span class="c1">// Non-String arguments are automatically converted to String for printing.</span>
+<span class="c1">// If passing several arguments, they will be concatenated together with a</span>
+<span class="c1">// space between each argument.</span>
+<span class="n">print_line</span><span class="p">(</span><span class="s">&quot;There are&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nodes&quot;</span><span class="p">);</span>
+
+<span class="c1">// Prints a message to standard output, but only when the engine</span>
+<span class="c1">// is started with the `--verbose` command line argument.</span>
+<span class="n">print_verbose</span><span class="p">(</span><span class="s">&quot;Message&quot;</span><span class="p">);</span>
+
+<span class="c1">// Prints a rich-formatted message using BBCode to standard output.</span>
+<span class="c1">// This supports a subset of BBCode tags supported by RichTextLabel</span>
+<span class="c1">// and will also appear formatted in the editor Output panel.</span>
+<span class="c1">// On Windows, this requires Windows 10 or later to work in the terminal.</span>
+<span class="n">print_line_rich</span><span class="p">(</span><span class="s">&quot;[b]Bold[/b], [color=red]Red text[/color]&quot;</span><span class="p">)</span>
+
+<span class="c1">// Prints a formatted error or warning message with a trace.</span>
+<span class="n">ERR_PRINT</span><span class="p">(</span><span class="s">&quot;Message&quot;</span><span class="p">);</span>
+<span class="n">WARN_PRINT</span><span class="p">(</span><span class="s">&quot;Message&quot;</span><span class="p">);</span>
+
+<span class="c1">// Prints an error or warning message only once per session.</span>
+<span class="c1">// This can be used to avoid spamming the console output.</span>
+<span class="n">ERR_PRINT_ONCE</span><span class="p">(</span><span class="s">&quot;Message&quot;</span><span class="p">);</span>
+<span class="n">WARN_PRINT_ONCE</span><span class="p">(</span><span class="s">&quot;Message&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Nếu bạn cần thêm placeholder vào thông điệp, hãy dùng chuỗi định dạng như mô tả bên dưới.</p>
+</section>
+<section id="format-a-string">
+<h2>Định dạng chuỗi<a class="headerlink" href="#format-a-string" title="Link to this heading"></a></h2>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">vformat()</span></code> trả về một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_string.html" title="Class reference (English)"><span class="xref std std-ref">class_String</span></a> đã được định dạng. Nó hoạt động tương tự <code class="docutils literal notranslate"><span class="pre">sprintf()</span></code> của C:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">vformat</span><span class="p">(</span><span class="s">&quot;My name is %s.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Godette&quot;</span><span class="p">);</span>
+<span class="n">vformat</span><span class="p">(</span><span class="s">&quot;%d bugs on the wall!&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1234</span><span class="p">);</span>
+<span class="n">vformat</span><span class="p">(</span><span class="s">&quot;Pi is approximately %f.&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">3.1416</span><span class="p">);</span>
+
+<span class="c1">// Converts the resulting String into a `const char *`.</span>
+<span class="c1">// You may need to do this if passing the result as an argument</span>
+<span class="c1">// to a method that expects a `const char *` instead of a String.</span>
+<span class="n">vformat</span><span class="p">(</span><span class="s">&quot;My name is %s.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Godette&quot;</span><span class="p">).</span><span class="n">utf8</span><span class="p">().</span><span class="n">get_data</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Trong hầu hết trường hợp, hãy cố gắng dùng <code class="docutils literal notranslate"><span class="pre">vformat()</span></code> thay vì nối chuỗi vì nó giúp code dễ đọc hơn.</p>
+</section>
+<section id="convert-an-integer-or-float-to-a-string">
+<h2>Chuyển số nguyên hoặc số thực thành chuỗi<a class="headerlink" href="#convert-an-integer-or-float-to-a-string" title="Link to this heading"></a></h2>
+<p>Việc này không cần thiết khi in số bằng <code class="docutils literal notranslate"><span class="pre">print_line()</span></code>, nhưng bạn vẫn có thể cần chuyển đổi thủ công cho một số trường hợp sử dụng khác.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Stores the string &quot;42&quot; using integer-to-string conversion.</span>
+<span class="n">String</span><span class="w"> </span><span class="n">int_to_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">itos</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+
+<span class="c1">// Stores the string &quot;123.45&quot; using real-to-string conversion.</span>
+<span class="n">String</span><span class="w"> </span><span class="n">real_to_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rtos</span><span class="p">(</span><span class="mf">123.45</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="internationalize-a-string">
+<h2>Quốc tế hóa một chuỗi<a class="headerlink" href="#internationalize-a-string" title="Link to this heading"></a></h2>
+<p>Có hai loại quốc tế hóa trong codebase của Godot:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TTR()</span></code>: <strong>Bản dịch của trình chỉnh sửa (&quot;tools&quot;)</strong> chỉ được xử lý trong trình chỉnh sửa. Nếu người dùng dùng cùng văn bản đó trong một dự án của họ, nó sẽ không được dịch kể cả khi họ cung cấp bản dịch cho nó. Khi đóng góp cho engine, đây thường là macro bạn nên dùng cho các chuỗi cần bản địa hóa.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RTR()</span></code>: <strong>Bản dịch runtime</strong> sẽ được tự động bản địa hóa trong các dự án nếu chúng cung cấp bản dịch cho chuỗi đó. Không nên dùng loại bản dịch này trong code chỉ dành cho trình chỉnh sửa.</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Returns the translated string that matches the user&#39;s locale settings.</span>
+<span class="c1">// Translations are located in `editor/translations`.</span>
+<span class="c1">// The localization template is generated automatically; don&#39;t modify it.</span>
+<span class="n">TTR</span><span class="p">(</span><span class="s">&quot;Exit the editor?&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Để chèn placeholder vào chuỗi cần bản địa hóa, hãy bọc macro bản địa hóa trong một lời gọi <code class="docutils literal notranslate"><span class="pre">vformat()</span></code> như sau:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">String</span><span class="w"> </span><span class="n">file_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;example.txt&quot;</span><span class="p">;</span>
+<span class="n">vformat</span><span class="p">(</span><span class="n">TTR</span><span class="p">(</span><span class="s">&quot;Couldn&#39;t open </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s"> for reading.&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">file_path</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi dùng <code class="docutils literal notranslate"><span class="pre">vformat()</span></code> cùng với một macro dịch, luôn bọc macro dịch bên trong <code class="docutils literal notranslate"><span class="pre">vformat()</span></code>, không phải ngược lại. Nếu không, chuỗi sẽ không bao giờ khớp với bản dịch vì placeholder đã bị thay thế trước khi được truyền đến TranslationServer.</p>
+</div>
+</section>
+<section id="clamp-a-value">
+<h2>Giới hạn (clamp) một giá trị<a class="headerlink" href="#clamp-a-value" title="Link to this heading"></a></h2>
+<p>Godot cung cấp các macro để giới hạn một giá trị bằng cận dưới (<code class="docutils literal notranslate"><span class="pre">MAX</span></code>), cận trên (<code class="docutils literal notranslate"><span class="pre">MIN</span></code>) hoặc cả hai (<code class="docutils literal notranslate"><span class="pre">CLAMP</span></code>):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+
+<span class="n">MAX</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">);</span><span class="w"> </span><span class="c1">// 6</span>
+<span class="n">MIN</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">);</span><span class="w"> </span><span class="c1">// 2</span>
+<span class="n">CLAMP</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">);</span><span class="w"> </span><span class="c1">// 10</span>
+</pre></div>
+</div>
+<p>Cách này hoạt động với mọi kiểu có thể so sánh với các giá trị khác (như <code class="docutils literal notranslate"><span class="pre">int</span></code> và <code class="docutils literal notranslate"><span class="pre">float</span></code>).</p>
+</section>
+<section id="microbenchmarking">
+<h2>Microbenchmark<a class="headerlink" href="#microbenchmarking" title="Link to this heading"></a></h2>
+<p>Nếu bạn muốn đo hiệu năng một đoạn code nhưng không biết cách dùng profiler, hãy dùng đoạn code này:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">get_ticks_usec</span><span class="p">();</span>
+
+<span class="c1">// Your code here...</span>
+
+<span class="kt">uint64_t</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">get_ticks_usec</span><span class="p">();</span>
+<span class="n">print_line</span><span class="p">(</span><span class="n">vformat</span><span class="p">(</span><span class="s">&quot;Snippet took %d microseconds&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">begin</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Đoạn code này sẽ in ra thời gian trôi qua giữa khai báo <code class="docutils literal notranslate"><span class="pre">begin</span></code> và khai báo <code class="docutils literal notranslate"><span class="pre">end</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể phải <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;core/os/time.h&quot;</span></code> nếu nó chưa có sẵn.</p>
+<p>Khi mở pull request, hãy nhớ xóa đoạn code này cũng như dòng include nếu trước đó nó không có.</p>
+</div>
+</section>
+<section id="get-project-editor-settings">
+<h2>Lấy cài đặt dự án/trình chỉnh sửa<a class="headerlink" href="#get-project-editor-settings" title="Link to this heading"></a></h2>
+<p>Có bốn macro dành cho việc này:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Returns the specified project setting&#39;s value,</span>
+<span class="c1">// defaulting to `false` if it doesn&#39;t exist.</span>
+<span class="n">GLOBAL_DEF</span><span class="p">(</span><span class="s">&quot;section/subsection/value&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+
+<span class="c1">// Returns the specified editor setting&#39;s value,</span>
+<span class="c1">// defaulting to &quot;Untitled&quot; if it doesn&#39;t exist.</span>
+<span class="n">EDITOR_DEF</span><span class="p">(</span><span class="s">&quot;section/subsection/value&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Untitled&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Nếu giá trị mặc định đã được chỉ định ở nơi khác, đừng chỉ định lại để tránh lặp lại:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Returns the value of the project setting.</span>
+<span class="n">GLOBAL_GET</span><span class="p">(</span><span class="s">&quot;section/subsection/value&quot;</span><span class="p">);</span>
+<span class="c1">// Returns the value of the editor setting.</span>
+<span class="n">EDITOR_GET</span><span class="p">(</span><span class="s">&quot;section/subsection/value&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Bạn nên chỉ dùng <code class="docutils literal notranslate"><span class="pre">GLOBAL_DEF</span></code>/<code class="docutils literal notranslate"><span class="pre">EDITOR_DEF</span></code> một lần cho mỗi cài đặt và dùng <code class="docutils literal notranslate"><span class="pre">GLOBAL_GET</span></code>/<code class="docutils literal notranslate"><span class="pre">EDITOR_GET</span></code> ở tất cả những nơi khác tham chiếu đến nó.</p>
+</section>
+<section id="error-macros">
+<span id="doc-common-engine-methods-and-macros-error-macros"></span><h2>Macro báo lỗi<a class="headerlink" href="#error-macros" title="Link to this heading"></a></h2>
+<p>Godot có nhiều macro báo lỗi giúp việc báo cáo lỗi thuận tiện hơn.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Điều kiện trong các macro báo lỗi hoạt động <strong>ngược lại</strong> với hàm <code class="docutils literal notranslate"><span class="pre">assert()</span></code> có sẵn của GDScript. Lỗi xảy ra nếu điều kiện bên trong được đánh giá là <code class="docutils literal notranslate"><span class="pre">true</span></code>, không phải <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chỉ các biến thể có thông điệp tùy chỉnh được ghi lại ở đây, vì chúng luôn nên được dùng trong các đóng góp mới. Hãy đảm bảo thông điệp tùy chỉnh chứa đủ thông tin để mọi người chẩn đoán vấn đề, kể cả khi họ không biết C++. Trong trường hợp một phương thức nhận đối số không hợp lệ, bạn có thể in ra giá trị không hợp lệ đó để dễ gỡ lỗi hơn.</p>
+<p>Với kiểm tra lỗi nội bộ không cần hiển thị thông điệp dễ đọc, hãy bỏ <code class="docutils literal notranslate"><span class="pre">_MSG</span></code> ở cuối tên macro và không truyền đối số thông điệp.</p>
+<p>Ngoài ra, hãy luôn cố gắng trả về dữ liệu có thể xử lý được để engine tiếp tục chạy ổn định.</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Conditionally prints an error message and returns from the function.</span>
+<span class="c1">// Use this in methods which don&#39;t return a value.</span>
+<span class="n">ERR_FAIL_COND_MSG</span><span class="p">(</span><span class="o">!</span><span class="n">mesh</span><span class="p">.</span><span class="n">is_valid</span><span class="p">(),</span><span class="w"> </span><span class="n">vformat</span><span class="p">(</span><span class="s">&quot;Couldn&#39;t load mesh at: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">));</span>
+
+<span class="c1">// Conditionally prints an error message and returns `0` from the function.</span>
+<span class="c1">// Use this in methods which must return a value.</span>
+<span class="n">ERR_FAIL_COND_V_MSG</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">rect</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Couldn&#39;t calculate the rectangle&#39;s area.&quot;</span><span class="p">);</span>
+
+<span class="c1">// Prints an error message if `index` is &lt; 0 or &gt;= `SomeEnum::QUALITY_MAX`,</span>
+<span class="c1">// then returns from the function.</span>
+<span class="n">ERR_FAIL_INDEX_MSG</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="n">SomeEnum</span><span class="o">::</span><span class="n">QUALITY_MAX</span><span class="p">,</span>
+<span class="w">        </span><span class="n">vformat</span><span class="p">(</span><span class="s">&quot;Invalid quality: %d. See SomeEnum for allowed values.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">));</span>
+
+<span class="c1">// Prints an error message if `index` is &lt; 0 &gt;= `some_array.size()`,</span>
+<span class="c1">// then returns `-1` from the function.</span>
+<span class="n">ERR_FAIL_INDEX_V_MSG</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="n">some_array</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<span class="w">        </span><span class="n">vformat</span><span class="p">(</span><span class="s">&quot;Item %d is out of bounds.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">));</span>
+
+<span class="c1">// Unconditionally prints an error message and returns from the function.</span>
+<span class="c1">// Only use this if you need to perform complex error checking.</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">complex_error_checking_routine</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ERR_FAIL_MSG</span><span class="p">(</span><span class="s">&quot;Couldn&#39;t reload the filesystem cache.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Unconditionally prints an error message and returns `false` from the function.</span>
+<span class="c1">// Only use this if you need to perform complex error checking.</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">complex_error_checking_routine</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ERR_FAIL_V_MSG</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Couldn&#39;t parse the input arguments.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Crashes the engine. This should generally never be used</span>
+<span class="c1">// except for testing crash handling code. Godot&#39;s philosophy</span>
+<span class="c1">// is to never crash, both in the editor and in exported projects.</span>
+<span class="n">CRASH_NOW_MSG</span><span class="p">(</span><span class="s">&quot;Can&#39;t predict the future! Aborting.&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/error/error_macros.h">core/error/error_macros.h</a> trong codebase của Godot để biết thêm thông tin về từng macro báo lỗi.</p>
+<p>Một số hàm trả về mã lỗi (thể hiện qua kiểu trả về <code class="docutils literal notranslate"><span class="pre">Error</span></code>). Giá trị này có thể được trả về trực tiếp từ một macro báo lỗi. Xem danh sách các mã lỗi có sẵn trong <a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/error/error_list.h">core/error/error_list.h</a>.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="godot_architecture_diagram.html" class="btn btn-neutral float-left" title="Tổng quan kiến trúc của Godot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="core_types.html" class="btn btn-neutral float-right" title="Các kiểu cốt lõi" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Chuyển scene thủ công" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/change_scenes_manually.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Đôi khi sẽ hữu ích nếu bạn có nhiều quyền kiểm soát hơn đối với cách hoán đổi các scene. Các node con của một Viewport sẽ được kết xuất vào hình ảnh mà nó tạo ra. Điều này đúng ngay cả với các node..." />
+<meta name="description" content="Đôi khi sẽ hữu ích nếu bạn có nhiều quyền kiểm soát hơn đối với cách hoán đổi các scene. Các node con của một Viewport sẽ được kết xuất vào hình ảnh mà nó tạo ra. Điều này đúng ngay cả với các node..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Chuyển scene thủ công &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo instance với signal" href="instancing_with_signals.html" />
+    <link rel="prev" title="Tính giá trị biểu thức" href="evaluating_expressions.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/change_scenes_manually" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gdscript/index.html">GDScript</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/index.html">C++ (godot-cpp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-features">Tính năng cốt lõi</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="how_to_read_the_godot_api.html">Cách đọc API của Godot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug/index.html">Gỡ lỗi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="idle_and_physics_processing.html">Xử lý idle và xử lý vật lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Nhóm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nodes_and_scene_instances.html">Node và instance của scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overridable_functions.html">Các hàm có thể override</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cross_language_scripting.html">Lập trình script đa ngôn ngữ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creating_script_templates.html">Tạo script template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evaluating_expressions.html">Tính giá trị biểu thức</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Chuyển scene thủ công</a></li>
+<li class="toctree-l3"><a class="reference internal" href="instancing_with_signals.html">Tạo instance với signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pausing_games.html">Tạm dừng game và process mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="filesystem.html">Hệ thống tệp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resources.html">Tài nguyên</a></li>
+<li class="toctree-l3"><a class="reference internal" href="singletons_autoload.html">Singleton (Autoload)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scene_tree.html">Sử dụng SceneTree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scene_unique_nodes.html">Node duy nhất trong scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html">Ghi log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Lập trình script</a></li>
+      <li class="breadcrumb-item active">Chuyển scene thủ công</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="change-scenes-manually">
+<span id="doc-change-scenes-manually"></span><h1>Chuyển scene thủ công<a class="headerlink" href="#change-scenes-manually" title="Link to this heading"></a></h1>
+<p>Đôi khi sẽ hữu ích nếu bạn có nhiều quyền kiểm soát hơn đối với cách hoán đổi các scene. Các node con của một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a> sẽ được kết xuất vào hình ảnh mà nó tạo ra. Điều này đúng ngay cả với các node nằm ngoài scene &quot;hiện tại&quot;. Autoload thuộc nhóm này, và cả các scene mà bạn tạo instance rồi thêm vào cây lúc runtime:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">simultaneous_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;res://levels/level2.tscn&quot;</span><span class="p">)</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_add_a_scene_manually</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># This is like autoloading the scene, only</span>
+<span class="w">    </span><span class="c1"># it happens after already loading the main scene.</span>
+<span class="w">    </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">simultaneous_scene</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">simultaneousScene</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="nf">MyClass</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">simultaneousScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceLoader</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">PackedScene</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://levels/level2.tscn&quot;</span><span class="p">).</span><span class="n">Instantiate</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_AddASceneManually</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// This is like autoloading the scene, only</span>
+<span class="w">    </span><span class="c1">// it happens after already loading the main scene.</span>
+<span class="w">    </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">simultaneousScene</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để hoàn tất chu trình và hoán đổi scene mới với scene cũ, bạn cần đưa ra lựa chọn. Có nhiều chiến lược để gỡ một scene khỏi tầm nhìn của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a>. Các đánh đổi bao gồm cân bằng giữa tốc độ thao tác và mức tiêu thụ bộ nhớ, cũng như cân bằng giữa khả năng truy cập dữ liệu và tính toàn vẹn dữ liệu.</p>
+<ol class="arabic">
+<li><p><strong>Xóa scene hiện có.</strong> <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html#class-scenetree-method-change-scene-to-file" title="Class reference (English)"><span class="xref std std-ref">SceneTree.change_scene_to_file()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html#class-scenetree-method-change-scene-to-packed" title="Class reference (English)"><span class="xref std std-ref">SceneTree.change_scene_to_packed()</span></a> sẽ xóa scene hiện tại ngay lập tức. Bạn cũng có thể xóa scene chính. Giả sử node gốc tên là &quot;Main&quot;, bạn có thể gọi <code class="docutils literal notranslate"><span class="pre">get_node(&quot;/root/Main&quot;).free()</span></code> để xóa toàn bộ scene.</p>
+<blockquote>
+<div><ul>
+<li><p>Giải phóng bộ nhớ.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ưu điểm: RAM không còn phải gánh phần dữ liệu thừa.</p></li>
+<li><p>Nhược điểm: Quay lại scene đó giờ sẽ tốn kém hơn vì phải nạp lại vào bộ nhớ (tốn thời gian VÀ bộ nhớ). Không thành vấn đề nếu không cần quay lại sớm.</p></li>
+<li><p>Nhược điểm: Không còn truy cập được dữ liệu của scene đó. Không thành vấn đề nếu không cần dùng dữ liệu đó sớm.</p></li>
+<li><p>Ghi chú: Có thể hữu ích nếu bạn giữ lại dữ liệu của một scene sắp bị xóa bằng cách gắn lại một hoặc nhiều node của nó vào một scene khác, hoặc thậm chí gắn trực tiếp vào <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Việc xử lý dừng lại.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ưu điểm: Không có node nghĩa là không có xử lý, xử lý vật lý hay xử lý đầu vào. CPU được rảnh để xử lý nội dung của scene mới.</p></li>
+<li><p>Nhược điểm: Việc xử lý và xử lý đầu vào của các node đó không còn hoạt động. Không thành vấn đề nếu không cần dùng dữ liệu được cập nhật.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Ẩn scene hiện có.</strong> Bằng cách thay đổi khả năng hiển thị hoặc phát hiện va chạm của các node, bạn có thể ẩn toàn bộ cây con node khỏi góc nhìn của người chơi. Dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-hide" title="Class reference (English)"><span class="xref std std-ref">CanvasItem.hide()</span></a> để ẩn một scene và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-show" title="Class reference (English)"><span class="xref std std-ref">CanvasItem.show()</span></a> để hiện lại.</p>
+<blockquote>
+<div><ul>
+<li><p>Bộ nhớ vẫn còn.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ưu điểm: Bạn vẫn có thể truy cập dữ liệu khi cần.</p></li>
+<li><p>Ưu điểm: Không cần di chuyển thêm node nào để lưu dữ liệu.</p></li>
+<li><p>Nhược điểm: Nhiều dữ liệu hơn được giữ trong bộ nhớ, điều này sẽ trở thành vấn đề trên các nền tảng nhạy cảm về bộ nhớ như web hoặc di động.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Việc xử lý vẫn tiếp tục.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ưu điểm: Dữ liệu vẫn tiếp tục nhận cập nhật xử lý, nên scene sẽ giữ cho mọi dữ liệu bên trong phụ thuộc vào delta time hoặc dữ liệu frame luôn được cập nhật.</p></li>
+<li><p>Ưu điểm: Các node vẫn là thành viên của các group (vì group thuộc về <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>).</p></li>
+<li><p>Nhược điểm: Sự chú ý của CPU giờ bị chia cho cả hai scene. Tải quá nhiều có thể dẫn đến tốc độ khung hình thấp. Bạn nên kiểm tra hiệu năng trong quá trình làm để đảm bảo nền tảng mục tiêu có thể chịu được tải từ cách tiếp cận này.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Gỡ scene hiện có khỏi cây.</strong> Gán một biến cho node gốc của scene hiện có. Sau đó dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-remove-child" title="Class reference (English)"><span class="xref std std-ref">Node.remove_child(Node)</span></a> để tách toàn bộ scene khỏi cây. Để gắn lại sau này, dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-add-child" title="Class reference (English)"><span class="xref std std-ref">Node.add_child(Node)</span></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bộ nhớ vẫn còn (ưu/nhược điểm tương tự như khi ẩn khỏi tầm nhìn).</p></li>
+<li><p>Việc xử lý dừng lại (ưu/nhược điểm tương tự như khi xóa hoàn toàn).</p></li>
+<li><p>Ưu điểm: Biến thể &quot;ẩn&quot; này giúp việc hiện/ẩn dễ dàng hơn nhiều. Thay vì có thể phải theo dõi nhiều thay đổi trên scene, bạn chỉ cần gọi các phương thức add/remove_child. Cách này tương tự việc vô hiệu hóa game object trong các engine khác.</p></li>
+<li><p>Nhược điểm: Khác với việc chỉ ẩn khỏi tầm nhìn, dữ liệu trong scene sẽ trở nên lỗi thời nếu nó phụ thuộc vào delta time, đầu vào, group, hoặc dữ liệu khác có được từ việc truy cập <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>Cũng có những trường hợp bạn muốn có nhiều scene cùng lúc, chẳng hạn như thêm singleton của riêng bạn lúc runtime, hoặc giữ lại dữ liệu của một scene giữa các lần chuyển scene (thêm scene vào node gốc).</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Một trường hợp khác có thể là hiển thị nhiều scene cùng lúc bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewportcontainer.html" title="Class reference (English)"><span class="xref std std-ref">SubViewportContainers</span></a>. Cách này tối ưu để kết xuất các nội dung khác nhau ở các phần khác nhau của màn hình (ví dụ: bản đồ thu nhỏ, chơi nhiều người chia đôi màn hình).</p>
+<p>Mỗi lựa chọn đều có những trường hợp phù hợp nhất, vì vậy bạn cần xem xét tác động của từng cách tiếp cận và xác định hướng đi phù hợp nhất với tình huống riêng của mình.</p>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="evaluating_expressions.html" class="btn btn-neutral float-left" title="Tính giá trị biểu thức" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="instancing_with_signals.html" class="btn btn-neutral float-right" title="Tạo instance với signal" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

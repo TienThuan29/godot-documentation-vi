@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Theo dõi bàn tay (hand tracking) trong OpenXR" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/xr/openxr_hand_tracking.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Khi bàn về hand tracking, bạn cần biết rằng có những ý kiến khác nhau về việc nên vạch ranh giới ở đâu. Hệ quả thực tế là có sự khác biệt trong cách triển khai giữa các OpenXR runtime. ..." />
+<meta name="description" content="Giới thiệu: Khi bàn về hand tracking, bạn cần biết rằng có những ý kiến khác nhau về việc nên vạch ranh giới ở đâu. Hệ quả thực tế là có sự khác biệt trong cách triển khai giữa các OpenXR runtime. ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Theo dõi bàn tay (hand tracking) trong OpenXR &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Theo dõi cơ thể (body tracking) trong OpenXR" href="openxr_body_tracking.html" />
+    <link rel="prev" title="Composition layer trong OpenXR" href="openxr_composition_layers.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/xr/openxr_hand_tracking" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XR</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xr_terminology.html">Thuật ngữ XR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Bắt đầu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#xr-interfaces">Các XR interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#openxr">OpenXR</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="a_better_xr_start_script.html">Một script khởi động XR tốt hơn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploying_to_android.html">Triển khai lên Android</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_settings.html">Cài đặt OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xr_action_map.html">XR action map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_composition_layers.html">Composition layer trong OpenXR</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Theo dõi bàn tay (hand tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_body_tracking.html">Theo dõi cơ thể (body tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_render_models.html">Render model trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_spatial_entities.html">Spatial entities trong OpenXR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#webxr">WebXR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#others">Khác</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#godot-xr-tools">Godot XR Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Chủ đề nâng cao</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">XR</a></li>
+      <li class="breadcrumb-item active">Theo dõi bàn tay (hand tracking) trong OpenXR</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="openxr-hand-tracking">
+<span id="doc-openxr-hand-tracking"></span><h1>Theo dõi bàn tay (hand tracking) trong OpenXR<a class="headerlink" href="#openxr-hand-tracking" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trang này tập trung cụ thể vào bộ tính năng được cung cấp qua OpenXR. Một phần chức năng trình bày ở đây cũng áp dụng cho WebXR và có thể được cung cấp bởi các giao diện XR khác.</p>
+</div>
+<p>Khi bàn về hand tracking, bạn cần biết rằng có những ý kiến khác nhau về việc nên vạch ranh giới ở đâu. Hệ quả thực tế là có sự khác biệt trong cách triển khai giữa các OpenXR runtime. Bạn có thể gặp tình huống phần cứng đã chọn không hỗ trợ một mảnh ghép nào đó, hoặc làm khác đủ nhiều so với các nền tảng khác đến mức bạn phải làm thêm việc.</p>
+<p>Dù vậy, những cải tiến gần đây trong đặc tả OpenXR đang thu hẹp các khoảng cách này, và khi các nền tảng triển khai những cải tiến đó, chúng ta đang tiến gần hơn tới tương lai có được tính di động hoàn toàn giữa các nền tảng, hoặc ít nhất là một cách rõ ràng để phát hiện khả năng của một nền tảng.</p>
+<p>Nhìn lại thời kỳ đầu của VR, các nền tảng lớn tập trung vào input dựa trên tay cầm được theo dõi. Ở đây, chúng ta theo dõi một thiết bị vật lý có thêm các nút để nhập liệu. Từ dữ liệu theo dõi, chúng ta có thể suy ra vị trí bàn tay của người chơi nhưng không biết thêm thông tin nào khác; theo truyền thống, việc triển khai cơ chế hiển thị bàn tay người chơi và tạo hoạt ảnh cho các ngón tay dựa trên input bổ sung từ tay cầm, dù là do nút được nhấn hay thông qua cảm biến tiệm cận, được để cho game tự làm. Các ngón tay cũng thường được đặt theo ngữ cảnh: người dùng đang cầm gì và đang thực hiện hành động gì.</p>
+<p>Gần đây hơn, theo dõi bàn tay bằng quang học đã trở thành giải pháp phổ biến, trong đó camera theo dõi bàn tay người dùng và cung cấp đầy đủ dữ liệu theo dõi cho vị trí bàn tay và ngón tay. Nhiều nhà cung cấp coi việc này hoàn toàn tách biệt với theo dõi tay cầm và đưa ra các API độc lập để truy cập dữ liệu vị trí và hướng của bàn tay, ngón tay. Khi xử lý input, nhà phát triển game phải tự triển khai cơ chế nhận diện cử chỉ.</p>
+<p>Sự phân tách này cũng tồn tại trong OpenXR, nơi theo dõi tay cầm chủ yếu được xử lý bởi hệ thống action map, còn theo dõi bàn tay quang học chủ yếu được xử lý bởi extension hand tracking API.</p>
+<p>Tuy nhiên, thế giới không trắng đen rạch ròi như vậy, và chúng ta đang thấy nhiều tình huống vượt qua ranh giới này:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Các thiết bị thuộc cả hai loại, chẳng hạn như găng tay được theo dõi và những tay cầm như Index controller có khả năng theo dõi ngón tay.</p></li>
+<li><p>Các XR runtime triển khai hand tracking suy luận từ dữ liệu tay cầm như một cách giải quyết việc đặt ngón tay đúng cho nhiều loại tay cầm.</p></li>
+<li><p>Các ứng dụng XR muốn chuyển đổi liền mạch giữa theo dõi tay cầm và theo dõi bàn tay, mang lại cùng trải nghiệm người dùng bất kể cách tiếp cận nào được dùng.</p></li>
+</ul>
+</div></blockquote>
+<p>OpenXR đáp ứng nhu cầu này bằng cách giới thiệu thêm các extension cho phép truy vấn khả năng của XR runtime/phần cứng hoặc bổ sung chức năng xuyên qua ranh giới này. Vấn đề hiện vẫn còn là mức độ áp dụng các extension này chưa đồng đều, nên một số nền tảng không báo cáo đầy đủ khả năng của mình. Vì vậy, bạn có thể cần kiểm tra các tính năng có sẵn trên phần cứng cụ thể và điều chỉnh cách tiếp cận cho phù hợp.</p>
+</section>
+<section id="demo-project">
+<h2>Dự án demo<a class="headerlink" href="#demo-project" title="Link to this heading"></a></h2>
+<p>Thông tin trên trang này đã được dùng để tạo một dự án demo mà bạn có thể tìm thấy <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/xr/openxr_hand_tracking_demo">tại đây</a>.</p>
+</section>
+<section id="the-hand-tracking-api">
+<h2>Hand Tracking API<a class="headerlink" href="#the-hand-tracking-api" title="Link to this heading"></a></h2>
+<p>Như đã đề cập trong phần giới thiệu, hand tracking API chủ yếu được dùng với theo dõi bàn tay quang học và trên nhiều nền tảng chỉ hoạt động khi người dùng không cầm tay cầm. Một số nền tảng hỗ trợ hand tracking suy luận từ tay cầm, nghĩa là bạn vẫn nhận được dữ liệu hand tracking ngay cả khi người dùng đang cầm tay cầm. Điều này bao gồm SteamVR, Meta Quest (hiện chỉ trên bản native nhưng nhiều khả năng sẽ sớm hỗ trợ Meta Link), và hy vọng sớm có thêm các nền tảng khác.</p>
+<p>Bản triển khai hand tracking trong Godot đã được chuẩn hóa xoay quanh Godot Humanoid Skeleton và hoạt động trên cả OpenXR lẫn WebXR. Do đó, hướng dẫn bên dưới sẽ dùng được trong cả hai môi trường.</p>
+<p>Để dùng hand tracking API với OpenXR, trước tiên bạn cần bật nó. Việc này có thể thực hiện trong cài đặt dự án:</p>
+<img alt="../../_images/xr_enable_handtracking.webp" src="../../_images/xr_enable_handtracking.webp" />
+<p>Với một số thiết bị XR độc lập (standalone), bạn cũng cần cấu hình extension hand tracking trong cài đặt export, ví dụ cho Meta Quest:</p>
+<img alt="../../_images/openxr_enable_hand_tracking_meta.webp" src="../../_images/openxr_enable_hand_tracking_meta.webp" />
+<p>Giờ bạn cần thêm 3 thành phần vào scene cho mỗi bàn tay:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Một node được theo dõi để định vị bàn tay.</p></li>
+<li><p>Một mesh bàn tay được skin đúng cách cùng skeleton.</p></li>
+<li><p>Một skeleton modifier áp dụng dữ liệu theo dõi ngón tay lên skeleton.</p></li>
+</ul>
+</div></blockquote>
+<img alt="../../_images/openxr_hand_tracking_nodes.webp" src="../../_images/openxr_hand_tracking_nodes.webp" />
+<section id="hand-tracking-node">
+<h3>Node hand tracking<a class="headerlink" href="#hand-tracking-node" title="Link to this heading"></a></h3>
+<p>Hệ thống hand tracking dùng các hand tracker riêng biệt để theo dõi vị trí bàn tay của người chơi trong không gian theo dõi.</p>
+<p>Thông tin này được tách riêng cho các trường hợp sử dụng sau:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Việc theo dõi diễn ra trong không gian cục bộ của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a>. Node này phải là con của node <cite>XROrigin3D</cite> để được đặt đúng vị trí.</p></li>
+<li><p>Node này có thể được dùng làm mục tiêu IK khi dùng mesh thân trên có tay thay vì các mesh bàn tay riêng biệt.</p></li>
+<li><p>Vị trí thực tế của bàn tay có thể chỉ gắn lỏng lẻo với dữ liệu theo dõi trong các tình huống như UI tạo avatar, gương giả hoặc các trường hợp tương tự, khiến mesh bàn tay và dữ liệu theo dõi ngón tay được đặt ở nơi khác.</p></li>
+</ul>
+</div></blockquote>
+<p>Chúng ta sẽ chỉ tập trung vào trường hợp sử dụng đầu tiên.</p>
+<p>Để làm việc này, bạn cần thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrnode3d.html" title="Class reference (English)"><span class="xref std std-ref">XRNode3D</span></a> vào node <code class="docutils literal notranslate"><span class="pre">XROrigin3D</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Trên node này, <code class="docutils literal notranslate"><span class="pre">tracker</span></code> cần được đặt thành <code class="docutils literal notranslate"><span class="pre">/user/hand_tracker/left</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">/user/hand_tracker/right</span></code> tương ứng cho tay trái hoặc tay phải.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pose</span></code> nên được giữ là <code class="docutils literal notranslate"><span class="pre">default</span></code>, không lựa chọn nào khác hoạt động ở đây.</p></li>
+<li><p>Ô đánh dấu <code class="docutils literal notranslate"><span class="pre">Show</span> <span class="pre">When</span> <span class="pre">Tracked</span></code> sẽ tự động ẩn node này nếu không có dữ liệu theo dõi, hoặc hiển thị node nếu có dữ liệu theo dõi.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="rigged-hand-mesh">
+<h3>Mesh bàn tay đã rig<a class="headerlink" href="#rigged-hand-mesh" title="Link to this heading"></a></h3>
+<p>Để hiển thị bàn tay, chúng ta cần một mesh bàn tay được rig và skin đúng cách. Để làm việc này, Godot dùng cấu trúc xương bàn tay như được định nghĩa cho <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">Godot Humanoid</span></a>, nhưng có thể hỗ trợ thêm một xương đầu ngón (tip bone) cho mỗi ngón tay.</p>
+<p><a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/xr/openxr_hand_tracking_demo">Demo hand tracking OpenXR</a> có chứa các tệp glTF mẫu của bàn tay đã được rig đúng cách.</p>
+<p>Chúng ta sẽ dùng các tệp đó ở đây và thêm chúng làm con của node <code class="docutils literal notranslate"><span class="pre">XRNode3D</span></code>. Chúng ta cũng cần bật editable children để truy cập node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeleton3d.html" title="Class reference (English)"><span class="xref std std-ref">Skeleton3D</span></a>.</p>
+</section>
+<section id="the-hand-skeleton-modifier">
+<h3>Skeleton modifier cho bàn tay<a class="headerlink" href="#the-hand-skeleton-modifier" title="Link to this heading"></a></h3>
+<p>Cuối cùng, chúng ta cần thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrhandmodifier3d.html" title="Class reference (English)"><span class="xref std std-ref">XRHandModifier3D</span></a> làm con của node <code class="docutils literal notranslate"><span class="pre">Skeleton3D</span></code>. Node này sẽ lấy dữ liệu theo dõi ngón tay từ OpenXR và áp dụng nó lên mô hình bàn tay.</p>
+<p>Bạn cần đặt thuộc tính <code class="docutils literal notranslate"><span class="pre">Hand</span> <span class="pre">Tracker</span></code> thành <code class="docutils literal notranslate"><span class="pre">/user/hand_tracker/left</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">/user/hand_tracker/right</span></code> tùy theo việc chúng ta áp dụng dữ liệu theo dõi của tay trái hay tay phải.</p>
+<p>Bạn cũng có thể đặt chế độ <code class="docutils literal notranslate"><span class="pre">Bone</span> <span class="pre">Update</span></code> trên node này.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Full</span></code> áp dụng đầy đủ dữ liệu hand tracking. Điều này có nghĩa là vị trí skeleton có thể phản ánh kích thước bàn tay thật của người dùng. Việc này có thể gây hiệu ứng co rúm nếu mesh không được gán trọng số (weight) đúng cách để tính đến điều này. Hãy chắc chắn bạn kiểm thử game với người chơi có đủ mọi kích cỡ khi dùng theo dõi bàn tay quang học!</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Rotation</span> <span class="pre">Only</span></code> chỉ áp dụng phép xoay lên các xương bàn tay và giữ nguyên độ dài xương. Ở chế độ này, kích thước mesh bàn tay không thay đổi.</p></li>
+</ul>
+</div></blockquote>
+<p>Sau khi thêm những thứ này, khi chạy dự án, chúng ta sẽ thấy bàn tay hiển thị đúng nếu hand tracking được hỗ trợ.</p>
+</section>
+</section>
+<section id="the-hand-tracking-data-source">
+<h2>Nguồn dữ liệu hand tracking<a class="headerlink" href="#the-hand-tracking-data-source" title="Link to this heading"></a></h2>
+<p>Đây là một extension của OpenXR cung cấp thông tin về nguồn của dữ liệu hand tracking. Hiện chỉ một vài runtime triển khai nó, nhưng nếu có sẵn, Godot sẽ kích hoạt nó.</p>
+<p>Nếu extension này không được hỗ trợ và do đó trả về unknown, bạn có thể đưa ra các giả định sau:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Nếu bạn dùng SteamVR (bao gồm Steam link), chỉ hand tracking dựa trên tay cầm được hỗ trợ.</p></li>
+<li><p>Với mọi runtime khác, nếu hand tracking được hỗ trợ thì chỉ hand tracking quang học được hỗ trợ (Lưu ý: Meta Link hiện thuộc nhóm này).</p></li>
+<li><p>Trong mọi trường hợp khác, hoàn toàn không hỗ trợ theo dõi bàn tay.</p></li>
+</ul>
+</div></blockquote>
+<p>Bạn có thể truy cập thông tin này thông qua code:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">hand_tracker</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">XRHandTracker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">XRServer</span><span class="o">.</span><span class="nf">get_tracker</span><span class="p">(</span><span class="s1">&#39;/user/hand_tracker/left&#39;</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">hand_tracker</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">hand_tracker</span><span class="o">.</span><span class="vi">has_tracking_data</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">hand_tracker</span><span class="o">.</span><span class="vi">hand_tracking_source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">XRHandTracker</span><span class="o">.</span><span class="vi">HAND_TRACKING_SOURCE_UNKNOWN</span><span class="p">:</span>
+<span class="w">            </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Hand tracking source unknown&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">hand_tracker</span><span class="o">.</span><span class="vi">hand_tracking_source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">XRHandTracker</span><span class="o">.</span><span class="vi">HAND_TRACKING_SOURCE_UNOBSTRUCTED</span><span class="p">:</span>
+<span class="w">            </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Hand tracking source is optical hand tracking&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">hand_tracker</span><span class="o">.</span><span class="vi">hand_tracking_source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">XRHandTracker</span><span class="o">.</span><span class="vi">HAND_TRACKING_SOURCE_CONTROLLER</span><span class="p">:</span>
+<span class="w">            </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Hand tracking data is inferred from controller data&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">            </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Unknown hand tracking source &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hand_tracker</span><span class="o">.</span><span class="vi">hand_tracking_source</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Hand is currently not being tracked&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;No hand tracker registered&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ví dụ này ghi log trạng thái của bàn tay trái.</p>
+<p>Nếu trong ví dụ này <code class="docutils literal notranslate"><span class="pre">get_tracker</span></code> không trả về hand tracker nào, điều đó có nghĩa là XR runtime hoàn toàn không hỗ trợ API theo dõi bàn tay.</p>
+<p>Nếu có tracker nhưng <cite>has_tracking_data</cite> là false, thì bàn tay của người dùng hiện không được theo dõi. Điều này có thể do một trong các nguyên nhân sau:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bàn tay của người chơi không nằm trong tầm nhìn của bất kỳ camera theo dõi nào trên headset</p></li>
+<li><p>Người chơi đang dùng controller trong khi headset chỉ hỗ trợ theo dõi bàn tay bằng quang học</p></li>
+<li><p>Controller đang tắt trong khi chỉ hỗ trợ theo dõi bàn tay qua controller.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="handling-user-input">
+<h2>Xử lý đầu vào của người dùng<a class="headerlink" href="#handling-user-input" title="Link to this heading"></a></h2>
+<p>Nếu dùng controller, việc phản hồi các hành động của người dùng được xử lý thông qua <a class="reference internal" href="xr_action_map.html#doc-xr-action-map"><span class="std std-ref">XR action map</span></a>. Trong action map, bạn có thể ánh xạ nhiều loại đầu vào khác nhau như cò (trigger) hoặc joystick trên controller vào một action. Action này sau đó có thể điều khiển logic trong game của bạn.</p>
+<p>Ban đầu, khi dùng theo dõi bàn tay, chúng ta không có những đầu vào như vậy; đầu vào được điều khiển bằng các cử chỉ của người dùng, chẳng hạn nắm tay để cầm hoặc chụm ngón cái và ngón trỏ lại để chọn một thứ gì đó. Việc hiện thực điều này hoàn toàn do nhà phát triển game đảm nhận.</p>
+<p>Nhận thấy nhu cầu ngày càng tăng đối với các ứng dụng có thể chuyển đổi liền mạch giữa controller và theo dõi bàn tay, cũng như nhu cầu về một dạng khả năng đầu vào cơ bản, một số extension đã được bổ sung vào đặc tả, cung cấp khả năng nhận dạng cử chỉ cơ bản và có thể dùng cùng action map.</p>
+<section id="the-hand-interaction-profile">
+<h3>Hand interaction profile<a class="headerlink" href="#the-hand-interaction-profile" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://github.khronos.org/OpenXR-Inventory/extension_support.html#XR_EXT_hand_interaction">Hand interaction profile extension</a> là một core extension mới, hỗ trợ các cử chỉ chụm (pinch), nắm (grasp), chọc (poke) và các pose liên quan. Hiện extension này vẫn còn ít được hỗ trợ nhưng sẽ sớm có mặt trên nhiều runtime hơn trong tương lai gần.</p>
+<img alt="../../_images/openxr_hand_interaction_profile.webp" src="../../_images/openxr_hand_interaction_profile.webp" />
+<p>Cử chỉ chụm được kích hoạt khi bạn chụm ngón cái và ngón trỏ lại với nhau. Cử chỉ này thường được dùng làm cử chỉ chọn cho hệ thống menu, tương tự như dùng controller chỉ vào một đối tượng rồi bấm cò để chọn, và vì thế thường được ánh xạ như vậy.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pinch</span> <span class="pre">pose</span></code> là một pose nằm ở giữa đầu ngón cái và đầu ngón trỏ, được định hướng sao cho có thể dùng ray cast để xác định mục tiêu.</p></li>
+<li><p>Đầu vào float <code class="docutils literal notranslate"><span class="pre">pinch</span></code> là một giá trị trong khoảng từ 0.0 (đầu ngón cái và ngón trỏ tách rời) đến 1.0 (đầu ngón cái và ngón trỏ chạm nhau).</p></li>
+<li><p>Đầu vào <code class="docutils literal notranslate"><span class="pre">pinch</span> <span class="pre">ready</span></code> có giá trị true khi các đầu ngón tay (gần như) chạm nhau.</p></li>
+</ul>
+</div></blockquote>
+<p>Cử chỉ nắm được kích hoạt khi bạn nắm tay lại và thường được dùng để nhặt đồ vật, tương tự như sử dụng đầu vào squeeze trên controller.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Đầu vào float <code class="docutils literal notranslate"><span class="pre">grasp</span></code> là một giá trị trong khoảng từ 0.0 (bàn tay mở) đến 1.0 (nắm tay).</p></li>
+<li><p>Đầu vào <code class="docutils literal notranslate"><span class="pre">grasp</span> <span class="pre">ready</span></code> có giá trị true khi người dùng đã nắm tay lại.</p></li>
+</ul>
+</div></blockquote>
+<p>Cử chỉ chọc được kích hoạt khi bạn duỗi ngón trỏ ra. Cử chỉ này hơi ngoại lệ vì pose ở đầu ngón trỏ thường được dùng để chọc vào một đối tượng có thể tương tác. <code class="docutils literal notranslate"><span class="pre">poke</span> <span class="pre">pose</span></code> là một pose nằm ở đầu ngón trỏ.</p>
+<p>Cuối cùng, đầu vào <code class="docutils literal notranslate"><span class="pre">aim</span> <span class="pre">activate</span> <span class="pre">(ready)</span></code> được định nghĩa là đầu vào có giá trị 1.0/true khi ngón trỏ duỗi ra và chỉ vào một mục tiêu có thể kích hoạt. Các runtime diễn giải điều này như thế nào thì vẫn chưa rõ ràng.</p>
+<p>Với thiết lập này, các tracker <code class="docutils literal notranslate"><span class="pre">left_hand</span></code> và <code class="docutils literal notranslate"><span class="pre">right_hand</span></code> thông thường được sử dụng, nhờ đó bạn có thể chuyển đổi liền mạch giữa đầu vào từ controller và từ theo dõi bàn tay.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn cần bật hand interaction profile extension trong cài đặt dự án OpenXR.</p>
+</div>
+</section>
+<section id="microsoft-hand-interaction-profile">
+<h3>Microsoft hand interaction profile<a class="headerlink" href="#microsoft-hand-interaction-profile" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://github.khronos.org/OpenXR-Inventory/extension_support.html#XR_MSFT_hand_interaction">Microsoft hand interaction profile extension</a> do Microsoft giới thiệu và mô phỏng gần giống simple controller profile. Meta cũng đã bổ sung hỗ trợ cho extension này nhưng chỉ trên OpenXR client gốc của họ; hiện nó chưa khả dụng qua Meta Link.</p>
+<img alt="../../_images/openxr_msft_hand_interaction_profile.webp" src="../../_images/openxr_msft_hand_interaction_profile.webp" />
+<p>Hỗ trợ chụm được cung cấp thông qua đầu vào <code class="docutils literal notranslate"><span class="pre">select</span></code>, có giá trị 0.0 khi đầu ngón cái và ngón trỏ tách rời và 1.0 khi chúng chạm nhau.</p>
+<p>Lưu ý rằng trong profile này, <code class="docutils literal notranslate"><span class="pre">aim</span> <span class="pre">pose</span></code> được định nghĩa lại thành một pose nằm giữa ngón cái và ngón trỏ, được định hướng sao cho có thể dùng ray cast để xác định mục tiêu.</p>
+<p>Hỗ trợ nắm được cung cấp thông qua đầu vào <code class="docutils literal notranslate"><span class="pre">squeeze</span></code>, có giá trị 0.0 khi bàn tay mở và 1.0 khi nắm tay lại.</p>
+<p>Với thiết lập này, các tracker <code class="docutils literal notranslate"><span class="pre">left_hand</span></code> và <code class="docutils literal notranslate"><span class="pre">right_hand</span></code> thông thường được sử dụng, nhờ đó bạn có thể chuyển đổi liền mạch giữa đầu vào từ controller và từ theo dõi bàn tay.</p>
+</section>
+<section id="htc-hand-interaction-profile">
+<h3>HTC hand interaction profile<a class="headerlink" href="#htc-hand-interaction-profile" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://github.khronos.org/OpenXR-Inventory/extension_support.html#XR_HTC_hand_interaction">HTC hand interaction profile extension</a> do HTC giới thiệu và được định nghĩa tương tự extension của Microsoft. Nó chỉ được HTC hỗ trợ trên các headset Focus 3 và Elite XR.</p>
+<img alt="../../_images/openxr_htc_hand_interaction_profile.webp" src="../../_images/openxr_htc_hand_interaction_profile.webp" />
+<p>Xem Microsoft hand interaction profile để biết các cử chỉ được hỗ trợ.</p>
+<p>Điểm khác biệt chính là extension này giới thiệu hai tracker mới, <code class="docutils literal notranslate"><span class="pre">/user/hand_htc/left</span></code> và <code class="docutils literal notranslate"><span class="pre">/user/hand_htc/right</span></code>. Điều đó có nghĩa là bạn cần hiện thực thêm logic để chuyển đổi giữa các tracker mặc định và các tracker riêng của HTC khi người dùng đặt controller xuống hoặc cầm controller lên.</p>
+</section>
+<section id="simple-controller-profile">
+<h3>Simple controller profile<a class="headerlink" href="#simple-controller-profile" title="Link to this heading"></a></h3>
+<p>Simple controller profile là một core profile tiêu chuẩn, được định nghĩa làm profile dự phòng khi sử dụng một controller chưa có profile nào.</p>
+<p>Có một số OpenXR runtime sẽ mô phỏng controller thông qua simple controller profile khi dùng theo dõi bàn tay.</p>
+<p>Đáng tiếc là không có cách nào đáng tin cậy để xác định đang dùng một controller không xác định hay đang có theo dõi bàn tay mô phỏng controller thông qua profile này.</p>
+<img alt="../../_images/openxr_simple_controller_hand.webp" src="../../_images/openxr_simple_controller_hand.webp" />
+<p>Các XR runtime được tự do định nghĩa cách simple controller profile hoạt động, nên cũng không có gì chắc chắn về việc profile này được ánh xạ sang cử chỉ như thế nào.</p>
+<p>Cách ánh xạ phổ biến nhất có vẻ là <code class="docutils literal notranslate"><span class="pre">select</span> <span class="pre">click</span></code> có giá trị true khi đầu ngón cái và ngón trỏ chạm nhau trong lúc lòng bàn tay hướng ra xa người dùng. <code class="docutils literal notranslate"><span class="pre">menu</span> <span class="pre">click</span></code> sẽ có giá trị true khi đầu ngón cái và ngón trỏ chạm nhau trong lúc lòng bàn tay hướng về phía người dùng.</p>
+<p>Với thiết lập này, các tracker <code class="docutils literal notranslate"><span class="pre">left_hand</span></code> và <code class="docutils literal notranslate"><span class="pre">right_hand</span></code> thông thường được sử dụng, nhờ đó bạn có thể chuyển đổi liền mạch giữa đầu vào từ controller và từ theo dõi bàn tay.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vì một số interaction profile này chồng lấn nhau, điều quan trọng cần biết là bạn có thể thêm từng profile vào action map và XR runtime sẽ chọn profile phù hợp nhất.</p>
+<p>Chẳng hạn, Meta Quest hỗ trợ cả Microsoft hand interaction profile lẫn simple controller profile. Nếu cả hai đều được khai báo, Microsoft hand interaction profile sẽ được ưu tiên và được sử dụng.</p>
+<p>Dự kiến khi Meta hỗ trợ core hand interaction profile extension, profile đó sẽ được ưu tiên hơn cả Microsoft profile lẫn simple controller profile.</p>
+</div>
+</section>
+<section id="gesture-based-input">
+<h3>Đầu vào dựa trên cử chỉ<a class="headerlink" href="#gesture-based-input" title="Link to this heading"></a></h3>
+<p>Nếu nền tảng không hỗ trợ interaction profile nào khi dùng theo dõi bàn tay, hoặc nếu bạn đang xây dựng ứng dụng cần hỗ trợ cử chỉ phức tạp hơn, bạn sẽ cần tự xây dựng hệ thống nhận dạng cử chỉ của riêng mình.</p>
+<p>Bạn có thể lấy toàn bộ dữ liệu theo dõi bàn tay thông qua resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrhandtracker.html" title="Class reference (English)"><span class="xref std std-ref">XRHandTracker</span></a> cho từng bàn tay. Bạn có thể lấy hand tracker bằng cách gọi <code class="docutils literal notranslate"><span class="pre">XRServer.get_tracker</span></code> và dùng <code class="docutils literal notranslate"><span class="pre">/user/hand_tracker/left</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">/user/hand_tracker/left</span></code> làm tracker. Resource này cung cấp quyền truy cập toàn bộ thông tin khớp (joint) của bàn tay tương ứng.</p>
+<p>Việc trình bày chi tiết một thuật toán nhận dạng cử chỉ đầy đủ nằm ngoài phạm vi của tài liệu này, tuy nhiên có một số dự án cộng đồng bạn có thể tham khảo:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Godot-Dojo/Godot-XR-AH">Thư viện Auto hands của Julian Todd</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Malcolmnixon/GodotXRHandPoseDetector">Hand Pose Detector của Malcolm Nixon</a></p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="openxr_composition_layers.html" class="btn btn-neutral float-left" title="Composition layer trong OpenXR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="openxr_body_tracking.html" class="btn btn-neutral float-right" title="Theo dõi cơ thể (body tracking) trong OpenXR" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

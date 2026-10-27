@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Profiler" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/debug/the_profiler.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Bạn chạy game từ Godot và chơi thử. Game vui, các tính năng đã gần hoàn thiện, và bạn cảm thấy sắp đến ngày phát hành. Nhưng rồi, bạn mở cây kỹ năng và game gần như đứng hình vì có gì đó bị vướng t..." />
+<meta name="description" content="Bạn chạy game từ Godot và chơi thử. Game vui, các tính năng đã gần hoàn thiện, và bạn cảm thấy sắp đến ngày phát hành. Nhưng rồi, bạn mở cây kỹ năng và game gần như đứng hình vì có gì đó bị vướng t..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Profiler &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Sử dụng ObjectDB profiler" href="objectdb_profiler.html" />
+    <link rel="prev" title="Bảng Debugger" href="debugger_panel.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/debug/the_profiler" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../gdscript/index.html">GDScript</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/index.html">C++ (godot-cpp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#core-features">Tính năng cốt lõi</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../how_to_read_the_godot_api.html">Cách đọc API của Godot</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Gỡ lỗi</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview_of_debugging_tools.html">Tổng quan về các công cụ gỡ lỗi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="output_panel.html">Bảng Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="debugger_panel.html">Bảng Debugger</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Profiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="objectdb_profiler.html">Sử dụng ObjectDB profiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="custom_performance_monitors.html">Monitor hiệu năng tùy chỉnh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../idle_and_physics_processing.html">Xử lý idle và xử lý vật lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../groups.html">Nhóm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../nodes_and_scene_instances.html">Node và instance của scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../overridable_functions.html">Các hàm có thể override</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cross_language_scripting.html">Lập trình script đa ngôn ngữ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../creating_script_templates.html">Tạo script template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evaluating_expressions.html">Tính giá trị biểu thức</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../change_scenes_manually.html">Chuyển scene thủ công</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../instancing_with_signals.html">Tạo instance với signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pausing_games.html">Tạm dừng game và process mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../filesystem.html">Hệ thống tệp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../resources.html">Tài nguyên</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../singletons_autoload.html">Singleton (Autoload)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../scene_tree.html">Sử dụng SceneTree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../scene_unique_nodes.html">Node duy nhất trong scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logging.html">Ghi log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Lập trình script</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Gỡ lỗi</a></li>
+      <li class="breadcrumb-item active">Profiler</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="the-profiler">
+<span id="doc-the-profiler"></span><h1>Profiler<a class="headerlink" href="#the-profiler" title="Link to this heading"></a></h1>
+<p>Bạn chạy game từ Godot và chơi thử. Game vui, các tính năng đã gần hoàn thiện, và bạn cảm thấy sắp đến ngày phát hành.</p>
+<p>Nhưng rồi, bạn mở cây kỹ năng và game gần như đứng hình vì có gì đó bị vướng trong code. Nhìn cây kỹ năng cuộn qua giật cục như trình chiếu slide là điều không thể chấp nhận. Có vấn đề gì vậy? Là do việc định vị các phần tử của cây kỹ năng, do UI, hay do kết xuất?</p>
+<p>Bạn có thể thử tối ưu mọi thứ rồi chạy game lặp đi lặp lại, nhưng bạn có thể làm việc này thông minh hơn và thu hẹp các khả năng. Đó là lúc profiler của Godot xuất hiện.</p>
+<section id="an-overview-of-the-profiler">
+<h2>Tổng quan về profiler<a class="headerlink" href="#an-overview-of-the-profiler" title="Link to this heading"></a></h2>
+<p>Bạn có thể mở profiler bằng cách mở bảng <strong>Debugger</strong> và nhấp vào tab <strong>Profiler</strong>.</p>
+<img alt="../../../_images/profiler.png" src="../../../_images/profiler.png" />
+<p>Profiler của Godot không tự động chạy vì profiling tốn nhiều hiệu năng. Nó phải liên tục đo mọi thứ diễn ra trong game và báo cáo lại cho debugger, nên mặc định nó bị tắt.</p>
+<p>Để bắt đầu profiling, hãy chạy game rồi quay lại trình chỉnh sửa. Nhấp vào nút <strong>Start</strong> ở góc trên bên trái tab <strong>Profiler</strong>. Bạn cũng có thể đánh dấu <strong>Autostart</strong> để profiler tự động bắt đầu khi dự án được chạy lần sau. Lưu ý rằng trạng thái của ô <strong>Autostart</strong> không được giữ lại giữa các phiên làm việc của trình chỉnh sửa.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Profiler hiện chưa hỗ trợ script C#. Script C# có thể được profiling bằng JetBrains Rider và JetBrains dotTrace với plugin hỗ trợ Godot.</p>
+</div>
+<p>Bạn có thể xóa dữ liệu bất cứ lúc nào bằng cách nhấp nút <strong>Clear</strong>. Dùng menu thả xuống <strong>Measure</strong> để thay đổi loại dữ liệu cần đo. Bảng số đo và biểu đồ sẽ cập nhật tương ứng.</p>
+</section>
+<section id="the-measured-data">
+<h2>Dữ liệu được đo<a class="headerlink" href="#the-measured-data" title="Link to this heading"></a></h2>
+<p>Giao diện của profiler được chia làm hai. Bên trái là danh sách các hàm và bên phải là biểu đồ hiệu năng.</p>
+<p>Các số đo chính là frame time, physics frame, idle time và physics time.</p>
+<ul class="simple">
+<li><p><strong>Frame time</strong> là thời gian Godot cần để thực thi toàn bộ logic cho một hình ảnh hoàn chỉnh, từ vật lý đến kết xuất.</p></li>
+<li><p><strong>Physics frame</strong> là thời gian Godot phân bổ giữa các lần cập nhật vật lý. Trong trường hợp lý tưởng, frame time là bất cứ giá trị nào bạn chọn: mặc định là 16,66 mili giây, tương ứng 60FPS. Đây là mốc tham chiếu bạn có thể dùng cho mọi thứ khác xung quanh.</p></li>
+<li><p><strong>Idle time</strong> là thời gian Godot dùng để cập nhật logic ngoài vật lý, chẳng hạn code nằm trong <cite>_process</cite> hoặc timer và camera được đặt cập nhật ở chế độ <strong>Idle</strong>.</p></li>
+<li><p><strong>Physics time</strong> là thời gian Godot dùng để cập nhật các tác vụ vật lý, như <cite>_physics_process</cite> và các node có sẵn được đặt cập nhật ở chế độ <strong>Physics</strong>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><strong>Frame Time</strong> bao gồm thời gian kết xuất. Giả sử bạn thấy game bị giật lag bất thường, nhưng vật lý và script đều chạy nhanh. Độ trễ có thể là do particle hoặc hiệu ứng hình ảnh xuất hiện!</p>
+</div>
+<p>Theo mặc định, Godot đánh dấu Frame Time và Physics Time. Điều này cho bạn cái nhìn tổng quan về thời gian mỗi frame mất so với FPS vật lý mong muốn đã phân bổ. Bạn có thể bật/tắt các hàm bằng cách nhấp vào các ô đánh dấu bên trái. Khi đi xuống danh sách sẽ xuất hiện các hạng mục khác, như Physics 2D, Physics và Audio, trước khi đến Script functions, nơi code của bạn xuất hiện.</p>
+<p>Nếu nhấp vào biểu đồ, bạn sẽ thay đổi frame có thông tin hiển thị bên trái. Ở góc trên bên phải còn có bộ đếm frame, nơi bạn có thể điều chỉnh thủ công frame đang xem một cách chi tiết hơn.</p>
+</section>
+<section id="scope-of-measurement-and-measurement-windows">
+<h2>Phạm vi đo và cửa sổ đo<a class="headerlink" href="#scope-of-measurement-and-measurement-windows" title="Link to this heading"></a></h2>
+<p>Bạn có thể thay đổi số đo đang xem bằng menu thả xuống <strong>Measure</strong>. Theo mặc định, nó bắt đầu với Frame Time và liệt kê thời gian cần để đi qua frame tính bằng mili giây. Thời gian trung bình là thời gian trung bình mà một hàm bất kỳ mất khi được gọi nhiều lần. Ví dụ, một hàm mất 0,05 mili giây để chạy năm lần sẽ cho bạn giá trị trung bình là 0,01 mili giây.</p>
+<p>Nếu số mili giây chính xác không quan trọng và bạn muốn xem tỷ lệ thời gian so với phần còn lại của frame, hãy dùng số đo phần trăm. Frame % tính tương đối theo Frame Time, còn Physics % tính tương đối theo Physics Time.</p>
+<p>Tùy chọn cuối cùng là phạm vi thời gian. <strong>Inclusive</strong> đo thời gian một hàm chạy <strong>kèm theo</strong> mọi lời gọi hàm lồng bên trong. Ví dụ:</p>
+<img alt="../../../_images/split_curve.png" src="../../../_images/split_curve.png" />
+<p><cite>get_neighbors</cite>, <cite>find_nearest_neighbor</cite> và <cite>move_subject</cite> đều tốn nhiều thời gian. Bạn có thể bị đánh lừa rằng cả ba hàm này đều chậm.</p>
+<p>Nhưng khi chuyển sang <strong>Self</strong>, Godot chỉ đo thời gian dành cho phần thân hàm mà không tính các lời gọi hàm mà chính nó thực hiện.</p>
+<img alt="../../../_images/self_curve.png" src="../../../_images/self_curve.png" />
+<p>Bạn có thể thấy <cite>get_neighbors</cite> và <cite>move_subject</cite> đã giảm tầm quan trọng đáng kể. Thực tế, điều đó có nghĩa là <cite>get_neighbors</cite> và <cite>move_subject</cite> phần lớn thời gian là chờ các lời gọi hàm khác hoàn tất, còn <cite>find_nearest_neighbor</cite> mới <strong>thực sự</strong> chậm.</p>
+</section>
+<section id="debugging-slow-code-with-the-profiler">
+<h2>Gỡ lỗi mã chạy chậm bằng profiler<a class="headerlink" href="#debugging-slow-code-with-the-profiler" title="Link to this heading"></a></h2>
+<p>Tìm đoạn code chậm bằng profiler về cơ bản là chạy game và theo dõi biểu đồ hiệu năng khi nó được vẽ. Khi frame time xuất hiện một đột biến không chấp nhận được, bạn có thể nhấp vào biểu đồ để tạm dừng game và thu hẹp _Frame #_ về điểm bắt đầu của đột biến. Bạn có thể cần chuyển qua lại giữa các frame và các hàm để tìm ra nguyên nhân gốc.</p>
+<p>Trong mục Script functions, bật checkbox của một số hàm để tìm ra hàm nào tốn thời gian. Đó là những hàm bạn cần xem xét và tối ưu.</p>
+</section>
+<section id="measuring-manually-in-microseconds">
+<h2>Đo thủ công bằng micro giây<a class="headerlink" href="#measuring-manually-in-microseconds" title="Link to this heading"></a></h2>
+<p>Nếu hàm của bạn phức tạp, việc xác định phần nào cần tối ưu có thể khá khó khăn. Đó là phần tính toán, hay cách bạn truy cập các dữ liệu khác để tính toán? Là vòng lặp <cite>for</cite>? Hay các câu lệnh <cite>if</cite>?</p>
+<p>Bạn có thể thu hẹp phạm vi đo bằng cách tự đếm tick khi code chạy, dùng một vài hàm tạm thời. Hai hàm này thuộc đối tượng lớp <cite>Time</cite>, đó là <cite>get_ticks_msec</cite> và <cite>get_ticks_usec</cite>. Hàm thứ nhất đo bằng mili giây (1.000 mỗi giây), hàm thứ hai đo bằng micro giây (1.000.000 mỗi giây).</p>
+<p>Cả hai đều trả về lượng thời gian kể từ khi game engine khởi động, theo đơn vị thời gian tương ứng.</p>
+<p>Nếu bạn bao một đoạn code bằng số đếm micro giây lúc bắt đầu và lúc kết thúc, hiệu giữa hai giá trị chính là thời gian cần để chạy đoạn code đó.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Measuring the time it takes for worker_function() to run</span>
+<span class="k">var</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+<span class="nf">worker_function</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">worker_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="mf">1000000.0</span>
+
+<span class="c1"># Measuring the time spent running a calculation over each element of an array</span>
+<span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">calc</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">calculations</span><span class="p">:</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">calc</span><span class="o">.</span><span class="vi">power</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">calc</span><span class="o">.</span><span class="vi">product</span>
+<span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">loop_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="mf">1000000.0</span>
+
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Worker time: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">Loop time: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">worker_time</span><span class="p">,</span><span class="w"> </span><span class="n">loop_time</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi bạn trở thành lập trình viên giàu kinh nghiệm hơn, kỹ thuật này sẽ ít cần thiết hơn. Bạn bắt đầu biết những phần nào của chương trình đang chạy là chậm. Việc biết rằng vòng lặp và rẽ nhánh có thể chậm đến từ kinh nghiệm, và bạn tích lũy kinh nghiệm bằng cách đo đạc và tìm hiểu.</p>
+<p>Nhưng với profiler và các hàm tick, bạn đã có đủ công cụ để bắt đầu tìm ra những phần code cần tối ưu.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="debugger_panel.html" class="btn btn-neutral float-left" title="Bảng Debugger" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="objectdb_profiler.html" class="btn btn-neutral float-right" title="Sử dụng ObjectDB profiler" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

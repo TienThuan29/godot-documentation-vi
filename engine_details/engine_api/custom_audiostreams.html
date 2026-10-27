@@ -1,0 +1,645 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="AudioStream tùy chỉnh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/engine_api/custom_audiostreams.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: AudioStream là lớp cơ sở của mọi đối tượng phát âm thanh. AudioStreamPlayer gắn vào một AudioStream để phát dữ liệu PCM vào AudioServer, nơi quản lý các driver âm thanh. Mọi resource âm..." />
+<meta name="description" content="Giới thiệu: AudioStream là lớp cơ sở của mọi đối tượng phát âm thanh. AudioStreamPlayer gắn vào một AudioStream để phát dữ liệu PCM vào AudioServer, nơi quản lý các driver âm thanh. Mọi resource âm..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) AudioStream tùy chỉnh &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Port nền tảng tùy chỉnh" href="custom_platform_ports.html" />
+    <link rel="prev" title="Trình tải định dạng resource tùy chỉnh" href="custom_resource_format_loaders.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/engine_api/custom_audiostreams" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Các API mở rộng engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="custom_modules_in_cpp.html">Module tùy chỉnh bằng C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendor_runtime_module.html">Vendor Runtime Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gdextension/index.html">Hệ thống GDExtension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binding_to_external_libraries.html">Liên kết với thư viện bên ngoài</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_resource_format_loaders.html">Trình tải định dạng resource tùy chỉnh</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">AudioStream tùy chỉnh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#references">Tham khảo:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#what-for">Để làm gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-an-audiostream">Tạo một AudioStream</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Tham khảo:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#create-an-audiostreamplayback">Tạo một AudioStreamPlayback</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#resampling">Lấy mẫu lại (resampling)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Tham khảo:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom_platform_ports.html">Port nền tảng tùy chỉnh</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Các API mở rộng engine</a></li>
+      <li class="breadcrumb-item active">AudioStream tùy chỉnh</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="custom-audiostreams">
+<span id="doc-custom-audiostreams"></span><h1>AudioStream tùy chỉnh<a class="headerlink" href="#custom-audiostreams" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>AudioStream là lớp cơ sở của mọi đối tượng phát âm thanh. AudioStreamPlayer gắn vào một AudioStream để phát dữ liệu PCM vào AudioServer, nơi quản lý các driver âm thanh.</p>
+<p>Mọi resource âm thanh đều cần hai lớp liên quan đến âm thanh: AudioStream và AudioStreamPlayback. Là một vùng chứa dữ liệu, AudioStream chứa resource và expose chính nó cho GDScript. AudioStream tham chiếu tới AudioStreamPlayback tùy chỉnh nội bộ của nó, lớp này chuyển AudioStream thành dữ liệu PCM.</p>
+<p>Hướng dẫn này giả định người đọc đã biết cách tạo module C++. Nếu chưa, hãy xem hướng dẫn <a class="reference internal" href="custom_modules_in_cpp.html#doc-custom-modules-in-cpp"><span class="std std-ref">Module tùy chỉnh bằng C++</span></a>.</p>
+<section id="references">
+<h3>Tham khảo:<a class="headerlink" href="#references" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/servers/audio/audio_stream.h">servers/audio/audio_stream.h</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/scene/audio/audio_stream_player.cpp">scene/audio/audio_stream_player.cpp</a></p></li>
+</ul>
+</section>
+</section>
+<section id="what-for">
+<h2>Để làm gì?<a class="headerlink" href="#what-for" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Liên kết các thư viện bên ngoài (như Wwise, FMOD, v.v.).</p></li>
+<li><p>Thêm hàng đợi âm thanh tùy chỉnh</p></li>
+<li><p>Thêm hỗ trợ cho nhiều định dạng âm thanh hơn</p></li>
+</ul>
+</section>
+<section id="create-an-audiostream">
+<h2>Tạo một AudioStream<a class="headerlink" href="#create-an-audiostream" title="Link to this heading"></a></h2>
+<p>Một AudioStream gồm ba thành phần: vùng chứa dữ liệu, tên stream và một bộ sinh lớp friend AudioStreamPlayback. Dữ liệu âm thanh có thể được tải theo nhiều cách, chẳng hạn bằng bộ đếm nội bộ cho bộ sinh âm (tone generator), bộ đệm nội bộ/bên ngoài, hoặc một tham chiếu file.</p>
+<p>Một số AudioStream cần không có trạng thái (stateless), chẳng hạn các đối tượng được tải từ ResourceLoader. ResourceLoader chỉ tải một lần và tham chiếu cùng một đối tượng bất kể <code class="docutils literal notranslate"><span class="pre">load</span></code> được gọi bao nhiêu lần trên một resource cụ thể. Vì vậy, trạng thái phát phải được chứa gọn trong AudioStreamPlayback.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">audiostream_mytone.h</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/reference.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/resource.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;servers/audio/audio_stream.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamMyTone</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">AudioStream</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">AudioStreamMyTone</span><span class="p">,</span><span class="w"> </span><span class="n">AudioStream</span><span class="p">)</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamPlaybackMyTone</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">mix_rate</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">stereo</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">hz</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">reset</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">set_position</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">pos</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">AudioStreamPlayback</span><span class="o">&gt;</span><span class="w"> </span><span class="n">instance_playback</span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">get_stream_name</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">gen_tone</span><span class="p">(</span><span class="kt">int16_t</span><span class="w"> </span><span class="o">*</span><span class="n">pcm_buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">get_length</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// if supported, otherwise return 0</span>
+<span class="w">    </span><span class="n">AudioStreamMyTone</span><span class="p">();</span>
+
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">audiostream_mytone.cpp</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;audiostream_mytone.h&quot;</span>
+
+<span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">AudioStreamMyTone</span><span class="p">()</span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">mix_rate</span><span class="p">(</span><span class="mi">44100</span><span class="p">),</span><span class="w"> </span><span class="n">stereo</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span><span class="w"> </span><span class="n">hz</span><span class="p">(</span><span class="mi">639</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">Ref</span><span class="o">&lt;</span><span class="n">AudioStreamPlayback</span><span class="o">&gt;</span><span class="w"> </span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">instance_playback</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">&gt;</span><span class="w"> </span><span class="n">talking_tree</span><span class="p">;</span>
+<span class="w">    </span><span class="n">talking_tree</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">    </span><span class="n">talking_tree</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">AudioStreamMyTone</span><span class="o">&gt;</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">talking_tree</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">String</span><span class="w"> </span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">get_stream_name</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;MyTone&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">reset</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">set_position</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">set_position</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">gen_tone</span><span class="p">(</span><span class="kt">int16_t</span><span class="w"> </span><span class="o">*</span><span class="n">pcm_buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">pcm_buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">32767.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Math_PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">double</span><span class="p">(</span><span class="n">pos</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">(</span><span class="n">mix_rate</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="kt">double</span><span class="p">(</span><span class="n">hz</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">pos</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;reset&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">reset</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;get_stream_name&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">AudioStreamMyTone</span><span class="o">::</span><span class="n">get_stream_name</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<section id="id1">
+<h3>Tham khảo:<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/servers/audio/audio_stream.h">servers/audio/audio_stream.h</a></p></li>
+</ul>
+</section>
+</section>
+<section id="create-an-audiostreamplayback">
+<h2>Tạo một AudioStreamPlayback<a class="headerlink" href="#create-an-audiostreamplayback" title="Link to this heading"></a></h2>
+<p>AudioStreamPlayer dùng callback <code class="docutils literal notranslate"><span class="pre">mix</span></code> để lấy dữ liệu PCM. Callback phải khớp tần số lấy mẫu và lấp đầy bộ đệm.</p>
+<p>Vì AudioStreamPlayback được điều khiển bởi luồng âm thanh, các thao tác i/o và cấp phát bộ nhớ động đều bị cấm.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">audiostreamplayer_mytone.h</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/reference.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/resource.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;servers/audio/audio_stream.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamPlaybackMyTone</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">AudioStreamPlayback</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">AudioStreamPlaybackMyTone</span><span class="p">,</span><span class="w"> </span><span class="n">AudioStreamPlayback</span><span class="p">)</span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamMyTone</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">PCM_BUFFER_SIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4096</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MIX_FRAC_BITS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span>
+<span class="w">        </span><span class="n">MIX_FRAC_LEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MIX_FRAC_BITS</span><span class="p">),</span>
+<span class="w">        </span><span class="n">MIX_FRAC_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MIX_FRAC_LEN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">pcm_buffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">AudioStreamMyTone</span><span class="o">&gt;</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">active</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">start</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_from_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">stop</span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_playing</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">get_loop_count</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"> </span><span class="c1">// times it looped</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">seek</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_time</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">mix</span><span class="p">(</span><span class="n">AudioFrame</span><span class="w"> </span><span class="o">*</span><span class="n">p_buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">p_rate_scale</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">p_frames</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">get_length</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"> </span><span class="c1">// if supported, otherwise return 0</span>
+<span class="w">    </span><span class="n">AudioStreamPlaybackMyTone</span><span class="p">();</span>
+<span class="w">    </span><span class="o">~</span><span class="n">AudioStreamPlaybackMyTone</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">audiostreamplayer_mytone.cpp</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;audiostreamplayer_mytone.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/math/math_funcs.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/print_string.h&quot;</span>
+
+<span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">AudioStreamPlaybackMyTone</span><span class="p">()</span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">active</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">    </span><span class="n">pcm_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">audio_data_alloc</span><span class="p">(</span><span class="n">PCM_BUFFER_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zeromem</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">,</span><span class="w"> </span><span class="n">PCM_BUFFER_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="n">AudioStreamPlaybackMyTone</span><span class="o">::~</span><span class="n">AudioStreamPlaybackMyTone</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">audio_data_free</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">);</span>
+<span class="w">        </span><span class="n">pcm_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">stop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">start</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_from_pos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">seek</span><span class="p">(</span><span class="n">p_from_pos</span><span class="p">);</span>
+<span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">seek</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_time</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_length</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p_time</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">p_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">set_position</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">(</span><span class="n">p_time</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">mix_rate</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MIX_FRAC_BITS</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">mix</span><span class="p">(</span><span class="n">AudioFrame</span><span class="w"> </span><span class="o">*</span><span class="n">p_buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">p_rate</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">p_frames</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ERR_FAIL_COND</span><span class="p">(</span><span class="o">!</span><span class="n">active</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">active</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">zeromem</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">,</span><span class="w"> </span><span class="n">PCM_BUFFER_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int16_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">pcm_buffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">gen_tone</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">p_frames</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">p_frames</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">float</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">32767.0</span><span class="p">;</span>
+<span class="w">        </span><span class="n">p_buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AudioFrame</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span><span class="w"> </span><span class="n">sample</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">get_loop_count</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">get_length</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">AudioStreamPlaybackMyTone</span><span class="o">::</span><span class="n">is_playing</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">active</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<section id="resampling">
+<h3>Lấy mẫu lại (resampling)<a class="headerlink" href="#resampling" title="Link to this heading"></a></h3>
+<p>AudioServer của Godot hiện dùng tần số lấy mẫu 44100 Hz. Khi cần tần số lấy mẫu khác như 48000, hãy tự cung cấp hoặc dùng AudioStreamPlaybackResampled. Godot cung cấp nội suy bậc ba (cubic) cho việc lấy mẫu lại âm thanh.</p>
+<p>Thay vì overload <code class="docutils literal notranslate"><span class="pre">mix</span></code>, AudioStreamPlaybackResampled dùng <code class="docutils literal notranslate"><span class="pre">_mix_internal</span></code> để truy vấn AudioFrames và <code class="docutils literal notranslate"><span class="pre">get_stream_sampling_rate</span></code> để truy vấn tần số mix hiện tại.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">mytone_audiostream_resampled.h</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/reference.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/resource.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;servers/audio/audio_stream.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamMyToneResampled</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamPlaybackResampledMyTone</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampled</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="p">,</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampled</span><span class="p">)</span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AudioStreamMyToneResampled</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">PCM_BUFFER_SIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4096</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MIX_FRAC_BITS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span>
+<span class="w">        </span><span class="n">MIX_FRAC_LEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MIX_FRAC_BITS</span><span class="p">),</span>
+<span class="w">        </span><span class="n">MIX_FRAC_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MIX_FRAC_LEN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">pcm_buffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">AudioStreamMyToneResampled</span><span class="o">&gt;</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">active</span><span class="p">;</span>
+
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_mix_internal</span><span class="p">(</span><span class="n">AudioFrame</span><span class="w"> </span><span class="o">*</span><span class="n">p_buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">p_frames</span><span class="p">);</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">start</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_from_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">stop</span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_playing</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">get_loop_count</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"> </span><span class="c1">// times it looped</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">seek</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_time</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">get_length</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"> </span><span class="c1">// if supported, otherwise return 0</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">get_stream_sampling_rate</span><span class="p">();</span>
+<span class="w">    </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="p">();</span>
+<span class="w">    </span><span class="o">~</span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">mytone_audiostream_resampled.cpp</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mytone_audiostream_resampled.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/math/math_funcs.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/print_string.h&quot;</span>
+
+<span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="p">()</span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">active</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">    </span><span class="n">pcm_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">audio_data_alloc</span><span class="p">(</span><span class="n">PCM_BUFFER_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zeromem</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">,</span><span class="w"> </span><span class="n">PCM_BUFFER_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::~</span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">AudioServer</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">audio_data_free</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">);</span>
+<span class="w">        </span><span class="n">pcm_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">stop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">start</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_from_pos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">seek</span><span class="p">(</span><span class="n">p_from_pos</span><span class="p">);</span>
+<span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">seek</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">p_time</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_length</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p_time</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">p_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">set_position</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">(</span><span class="n">p_time</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">mix_rate</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MIX_FRAC_BITS</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">_mix_internal</span><span class="p">(</span><span class="n">AudioFrame</span><span class="w"> </span><span class="o">*</span><span class="n">p_buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">p_frames</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ERR_FAIL_COND</span><span class="p">(</span><span class="o">!</span><span class="n">active</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">active</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">zeromem</span><span class="p">(</span><span class="n">pcm_buffer</span><span class="p">,</span><span class="w"> </span><span class="n">PCM_BUFFER_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int16_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">pcm_buffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">base</span><span class="o">-&gt;</span><span class="n">gen_tone</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">p_frames</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">p_frames</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">float</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">32767.0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">p_buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AudioFrame</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span><span class="w"> </span><span class="n">sample</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">get_stream_sampling_rate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kt">float</span><span class="p">(</span><span class="n">base</span><span class="o">-&gt;</span><span class="n">mix_rate</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">get_loop_count</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">get_length</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">AudioStreamPlaybackResampledMyTone</span><span class="o">::</span><span class="n">is_playing</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">active</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>Tham khảo:<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/math/audio_frame.h">core/math/audio_frame.h</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/servers/audio/audio_stream.h">servers/audio/audio_stream.h</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/scene/audio/audio_stream_player.cpp">scene/audio/audio_stream_player.cpp</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom_resource_format_loaders.html" class="btn btn-neutral float-left" title="Trình tải định dạng resource tùy chỉnh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="custom_platform_ports.html" class="btn btn-neutral float-right" title="Port nền tảng tùy chỉnh" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

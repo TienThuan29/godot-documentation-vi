@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng InputEvent" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/inputs/inputevent.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Đó là gì?: Quản lý đầu vào thường phức tạp, bất kể hệ điều hành hay nền tảng nào. Để đơn giản hóa phần nào, Godot cung cấp một kiểu tích hợp đặc biệt là InputEvent. Kiểu dữ liệu này có thể được cấu..." />
+<meta name="description" content="Đó là gì?: Quản lý đầu vào thường phức tạp, bất kể hệ điều hành hay nền tảng nào. Để đơn giản hóa phần nào, Godot cung cấp một kiểu tích hợp đặc biệt là InputEvent. Kiểu dữ liệu này có thể được cấu..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng InputEvent &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Ví dụ về đầu vào" href="input_examples.html" />
+    <link rel="prev" title="Xử lý đầu vào" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/inputs/inputevent" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Xử lý đầu vào</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng InputEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-it">Đó là gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-does-it-work">Nó hoạt động như thế nào?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anatomy-of-an-inputevent">Cấu trúc của một InputEvent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-actions">Input action</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inputmap">InputMap</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="input_examples.html">Ví dụ về đầu vào</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mouse_and_input_coordinates.html">Tọa độ chuột và đầu vào</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_mouse_cursor.html">Tùy chỉnh con trỏ chuột</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controllers_gamepads_joysticks.html">Tay cầm, gamepad và joystick</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller_features.html">Tính năng của tay cầm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="handling_quit_requests.html">Xử lý yêu cầu thoát</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Xử lý đầu vào</a></li>
+      <li class="breadcrumb-item active">Sử dụng InputEvent</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-inputevent">
+<span id="doc-inputevent"></span><h1>Sử dụng InputEvent<a class="headerlink" href="#using-inputevent" title="Link to this heading"></a></h1>
+<section id="what-is-it">
+<h2>Đó là gì?<a class="headerlink" href="#what-is-it" title="Link to this heading"></a></h2>
+<p>Quản lý đầu vào thường phức tạp, bất kể hệ điều hành hay nền tảng nào. Để đơn giản hóa phần nào, Godot cung cấp một kiểu tích hợp đặc biệt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputevent.html" title="Class reference (English)"><span class="xref std std-ref">InputEvent</span></a>. Kiểu dữ liệu này có thể được cấu hình để chứa nhiều loại sự kiện input. Các sự kiện input đi qua engine và có thể được nhận ở nhiều nơi, tùy theo mục đích.</p>
+<p>Đây là một ví dụ nhanh, đóng game nếu phím escape được nhấn:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_unhandled_input</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="nb">InputEventKey</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="vi">pressed</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="vi">keycode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">KEY_ESCAPE</span><span class="p">:</span>
+<span class="w">            </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">quit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_UnhandledInput</span><span class="p">(</span><span class="n">InputEvent</span><span class="w"> </span><span class="n">@event</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">@event</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">InputEventKey</span><span class="w"> </span><span class="n">eventKey</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eventKey</span><span class="p">.</span><span class="n">Pressed</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">eventKey</span><span class="p">.</span><span class="n">Keycode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Key</span><span class="p">.</span><span class="n">Escape</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Quit</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tuy nhiên, sẽ gọn gàng và linh hoạt hơn nếu dùng tính năng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputmap.html" title="Class reference (English)"><span class="xref std std-ref">InputMap</span></a> được cung cấp sẵn, cho phép bạn định nghĩa các input action và gán cho chúng các phím khác nhau. Bằng cách này, bạn có thể định nghĩa nhiều phím cho cùng một action (ví dụ phím escape trên bàn phím và nút start trên gamepad). Sau đó bạn có thể dễ dàng thay đổi ánh xạ này trong cài đặt dự án mà không cần cập nhật code, thậm chí xây dựng tính năng ánh xạ phím dựa trên nó để game có thể thay đổi ánh xạ phím trong lúc chạy!</p>
+<p>Bạn có thể thiết lập InputMap trong <strong>Project &gt; Project Settings &gt; Input Map</strong> rồi dùng các action đó như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;ui_right&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Move right.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;ui_right&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Move right.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="how-does-it-work">
+<h2>Nó hoạt động như thế nào?<a class="headerlink" href="#how-does-it-work" title="Link to this heading"></a></h2>
+<p>Mọi sự kiện input đều bắt nguồn từ người dùng/người chơi (dù có thể tạo một InputEvent và đưa ngược vào engine, điều này hữu ích cho cử chỉ). DisplayServer của từng nền tảng sẽ đọc sự kiện từ hệ điều hành, rồi đưa chúng tới <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html" title="Class reference (English)"><span class="xref std std-ref">Window</span></a> gốc.</p>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a> của cửa sổ thực hiện khá nhiều việc với đầu vào nhận được, theo thứ tự:</p>
+<img alt="../../_images/input_event_flow.webp" src="../../_images/input_event_flow.webp" />
+<ol class="arabic simple">
+<li><p>Nếu Viewport đang nhúng các Window, Viewport sẽ cố diễn giải sự kiện với vai trò Window-Manager (ví dụ để thay đổi kích thước hoặc di chuyển Window).</p></li>
+<li><p>Tiếp theo, nếu một Window được nhúng đang được focus, sự kiện sẽ được gửi tới Window đó và xử lý trong Viewport của Window, sau đó được coi là đã xử lý. Nếu không có Window được nhúng nào được focus, sự kiện sẽ được gửi tới các node của viewport hiện tại theo thứ tự sau.</p></li>
+<li><p>Đầu tiên, hàm chuẩn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-input" title="Class reference (English)"><span class="xref std std-ref">Node._input()</span></a> sẽ được gọi ở bất kỳ node nào override nó (và chưa tắt xử lý input bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-set-process-input" title="Class reference (English)"><span class="xref std std-ref">Node.set_process_input()</span></a>). Nếu có hàm nào tiêu thụ sự kiện, nó có thể gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-method-set-input-as-handled" title="Class reference (English)"><span class="xref std std-ref">Viewport.set_input_as_handled()</span></a> và sự kiện sẽ không lan truyền nữa. Điều này đảm bảo bạn có thể lọc mọi sự kiện cần quan tâm, ngay cả trước GUI. Với đầu vào gameplay, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-unhandled-input" title="Class reference (English)"><span class="xref std std-ref">Node._unhandled_input()</span></a> thường phù hợp hơn, vì nó cho phép GUI chặn các sự kiện.</p></li>
+<li><p>Thứ hai, nó sẽ cố đưa đầu vào tới GUI và xem có control nào nhận được không. Nếu có, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html" title="Class reference (English)"><span class="xref std std-ref">Control</span></a> sẽ được gọi qua hàm ảo <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-private-method-gui-input" title="Class reference (English)"><span class="xref std std-ref">Control._gui_input()</span></a> và signal &quot;gui_input&quot; sẽ được phát ra (hàm này có thể được triển khai lại bằng script thông qua kế thừa). Nếu control muốn &quot;tiêu thụ&quot; sự kiện, nó sẽ gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-method-accept-event" title="Class reference (English)"><span class="xref std std-ref">Control.accept_event()</span></a> và sự kiện sẽ không lan truyền nữa. Dùng thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-property-mouse-filter" title="Class reference (English)"><span class="xref std std-ref">Control.mouse_filter</span></a> để kiểm soát việc một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html" title="Class reference (English)"><span class="xref std std-ref">Control</span></a> có được thông báo về sự kiện chuột qua callback <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-private-method-gui-input" title="Class reference (English)"><span class="xref std std-ref">Control._gui_input()</span></a> hay không, và các sự kiện này có được lan truyền tiếp hay không.</p></li>
+<li><p>Nếu đến lúc này chưa ai tiêu thụ sự kiện, callback <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-shortcut-input" title="Class reference (English)"><span class="xref std std-ref">Node._shortcut_input()</span></a> sẽ được gọi nếu được override (và chưa bị tắt bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-set-process-shortcut-input" title="Class reference (English)"><span class="xref std std-ref">Node.set_process_shortcut_input()</span></a>). Việc này chỉ xảy ra với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventkey.html" title="Class reference (English)"><span class="xref std std-ref">InputEventKey</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventshortcut.html" title="Class reference (English)"><span class="xref std std-ref">InputEventShortcut</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventjoypadbutton.html" title="Class reference (English)"><span class="xref std std-ref">InputEventJoypadButton</span></a>. Nếu có hàm nào tiêu thụ sự kiện, nó có thể gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-method-set-input-as-handled" title="Class reference (English)"><span class="xref std std-ref">Viewport.set_input_as_handled()</span></a> và sự kiện sẽ không lan truyền nữa. Callback shortcut input rất phù hợp để xử lý các sự kiện dùng làm phím tắt.</p></li>
+<li><p>Nếu đến lúc này chưa ai tiêu thụ sự kiện, callback <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-unhandled-key-input" title="Class reference (English)"><span class="xref std std-ref">Node._unhandled_key_input()</span></a> sẽ được gọi nếu được override (và chưa bị tắt bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-set-process-unhandled-key-input" title="Class reference (English)"><span class="xref std std-ref">Node.set_process_unhandled_key_input()</span></a>). Việc này chỉ xảy ra nếu sự kiện là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventkey.html" title="Class reference (English)"><span class="xref std std-ref">InputEventKey</span></a>. Nếu có hàm nào tiêu thụ sự kiện, nó có thể gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-method-set-input-as-handled" title="Class reference (English)"><span class="xref std std-ref">Viewport.set_input_as_handled()</span></a> và sự kiện sẽ không lan truyền nữa. Callback unhandled key input rất phù hợp cho sự kiện phím.</p></li>
+<li><p>Nếu đến lúc này chưa ai tiêu thụ sự kiện, callback <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-unhandled-input" title="Class reference (English)"><span class="xref std std-ref">Node._unhandled_input()</span></a> sẽ được gọi nếu được override (và chưa bị tắt bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-set-process-unhandled-input" title="Class reference (English)"><span class="xref std std-ref">Node.set_process_unhandled_input()</span></a>). Nếu có hàm nào tiêu thụ sự kiện, nó có thể gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-method-set-input-as-handled" title="Class reference (English)"><span class="xref std std-ref">Viewport.set_input_as_handled()</span></a> và sự kiện sẽ không lan truyền nữa. Callback unhandled input rất phù hợp cho các sự kiện gameplay toàn màn hình, để chúng không được nhận khi có GUI đang hoạt động.</p></li>
+<li><p>Nếu đến lúc này chưa ai cần sự kiện, và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-property-physics-object-picking" title="Class reference (English)"><span class="xref std std-ref">Object Picking</span></a> được bật, sự kiện sẽ được dùng cho object picking. Với viewport gốc, tính năng này cũng có thể được bật trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-physics-common-enable-object-picking" title="Class reference (English)"><span class="xref std std-ref">Project Settings</span></a>. Với scene 3D, nếu một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a> được gán cho Viewport, một tia sẽ được bắn vào thế giới vật lý (theo hướng tia từ điểm nhấp). Nếu tia này chạm vào một đối tượng, nó sẽ gọi hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionobject3d.html#class-collisionobject3d-private-method-input-event" title="Class reference (English)"><span class="xref std std-ref">CollisionObject3D._input_event()</span></a> trong đối tượng vật lý tương ứng. Với scene 2D, về mặt khái niệm điều tương tự xảy ra với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionobject2d.html#class-collisionobject2d-private-method-input-event" title="Class reference (English)"><span class="xref std std-ref">CollisionObject2D._input_event()</span></a>.</p></li>
+</ol>
+<p>Khi gửi sự kiện tới các node con và node hậu duệ, viewport sẽ làm như minh họa trong hình sau, theo thứ tự duyệt theo chiều sâu đảo ngược, bắt đầu từ node ở dưới cùng của scene tree và kết thúc ở node gốc. Window và SubViewport được loại trừ khỏi quá trình này.</p>
+<img alt="../../_images/input_event_scene_flow.webp" src="../../_images/input_event_scene_flow.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Thứ tự này không áp dụng cho <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-private-method-gui-input" title="Class reference (English)"><span class="xref std std-ref">Control._gui_input()</span></a>, vốn dùng một phương thức khác dựa trên vị trí sự kiện hoặc Control đang được focus. Sự kiện <strong>chuột</strong> của GUI cũng đi ngược lên scene tree, tuân theo các giới hạn của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-property-mouse-filter" title="Class reference (English)"><span class="xref std std-ref">Control.mouse_filter</span></a> đã mô tả ở trên. Tuy nhiên, vì các sự kiện này nhắm vào các Control cụ thể, chỉ các tổ tiên trực tiếp của node Control được nhắm tới mới nhận sự kiện. Sự kiện <strong>bàn phím và joypad</strong> của GUI <em>không</em> đi ngược lên scene tree, và chỉ có thể được xử lý bởi Control đã nhận chúng. Nếu không, chúng sẽ được lan truyền như sự kiện không phải GUI qua <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-unhandled-input" title="Class reference (English)"><span class="xref std std-ref">Node._unhandled_input()</span></a>.</p>
+</div>
+<p>Vì Viewport không gửi sự kiện tới các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewports</span></a> khác, bạn phải dùng một trong các cách sau:</p>
+<ol class="arabic simple">
+<li><p>Dùng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewportcontainer.html" title="Class reference (English)"><span class="xref std std-ref">SubViewportContainer</span></a>, nó sẽ tự động gửi sự kiện tới các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewports</span></a> con sau <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-input" title="Class reference (English)"><span class="xref std std-ref">Node._input()</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-private-method-gui-input" title="Class reference (English)"><span class="xref std std-ref">Control._gui_input()</span></a>.</p></li>
+<li><p>Tự triển khai việc lan truyền sự kiện dựa trên yêu cầu riêng.</p></li>
+</ol>
+<p>Phù hợp với thiết kế dựa trên node của Godot, điều này cho phép các node con chuyên biệt xử lý và tiêu thụ các sự kiện cụ thể, trong khi tổ tiên của chúng, và cuối cùng là gốc của scene, có thể cung cấp hành vi tổng quát hơn nếu cần.</p>
+</section>
+<section id="anatomy-of-an-inputevent">
+<h2>Cấu trúc của một InputEvent<a class="headerlink" href="#anatomy-of-an-inputevent" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputevent.html" title="Class reference (English)"><span class="xref std std-ref">InputEvent</span></a> chỉ là một kiểu tích hợp cơ sở, nó không đại diện cho thứ gì và chỉ chứa một số thông tin cơ bản, như ID sự kiện (tăng dần với mỗi sự kiện), chỉ số thiết bị, v.v.</p>
+<p>Có một số loại InputEvent chuyên biệt, được mô tả trong bảng dưới đây:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Sự kiện</p></td>
+<td><p>Mô tả</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputevent.html" title="Class reference (English)"><span class="xref std std-ref">InputEvent</span></a></p></td>
+<td><p>Sự kiện input rỗng.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventkey.html" title="Class reference (English)"><span class="xref std std-ref">InputEventKey</span></a></p></td>
+<td><p>Chứa mã phím và giá trị Unicode, cùng với các phím bổ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmousebutton.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMouseButton</span></a></p></td>
+<td><p>Chứa thông tin nhấp chuột, như nút, phím bổ trợ, v.v.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmousemotion.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMouseMotion</span></a></p></td>
+<td><p>Chứa thông tin chuyển động, như vị trí tương đối và tuyệt đối cùng tốc độ.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventjoypadmotion.html" title="Class reference (English)"><span class="xref std std-ref">InputEventJoypadMotion</span></a></p></td>
+<td><p>Chứa thông tin trục analog của Joystick/Joypad.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventjoypadbutton.html" title="Class reference (English)"><span class="xref std std-ref">InputEventJoypadButton</span></a></p></td>
+<td><p>Chứa thông tin nút của Joystick/Joypad.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventscreentouch.html" title="Class reference (English)"><span class="xref std std-ref">InputEventScreenTouch</span></a></p></td>
+<td><p>Chứa thông tin nhấn/thả đa điểm chạm. (chỉ có trên thiết bị di động)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventscreendrag.html" title="Class reference (English)"><span class="xref std std-ref">InputEventScreenDrag</span></a></p></td>
+<td><p>Chứa thông tin kéo đa điểm chạm. (chỉ có trên thiết bị di động)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmagnifygesture.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMagnifyGesture</span></a></p></td>
+<td><p>Chứa vị trí, hệ số cùng với các phím bổ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventpangesture.html" title="Class reference (English)"><span class="xref std std-ref">InputEventPanGesture</span></a></p></td>
+<td><p>Chứa vị trí, delta cùng với các phím bổ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmidi.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMIDI</span></a></p></td>
+<td><p>Chứa thông tin liên quan đến MIDI.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventshortcut.html" title="Class reference (English)"><span class="xref std std-ref">InputEventShortcut</span></a></p></td>
+<td><p>Chứa một phím tắt.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventaction.html" title="Class reference (English)"><span class="xref std std-ref">InputEventAction</span></a></p></td>
+<td><p>Chứa một action chung. Các sự kiện này thường được lập trình viên tạo ra làm phản hồi. (xem thêm bên dưới)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="input-actions">
+<h2>Input action<a class="headerlink" href="#input-actions" title="Link to this heading"></a></h2>
+<p>Input action là cách nhóm không hoặc nhiều InputEvent dưới một tên gọi chung dễ hiểu (ví dụ, action mặc định &quot;ui_left&quot; nhóm cả đầu vào trái của joypad lẫn phím mũi tên trái trên bàn phím). Chúng không bắt buộc phải đại diện cho một InputEvent nhưng rất hữu ích vì trừu tượng hóa các đầu vào khác nhau khi lập trình logic game.</p>
+<p>Điều này cho phép:</p>
+<ul class="simple">
+<li><p>Cùng một đoạn code hoạt động trên các thiết bị khác nhau với đầu vào khác nhau (ví dụ, bàn phím trên PC, Joypad trên console).</p></li>
+<li><p>Cấu hình lại đầu vào trong lúc chạy.</p></li>
+<li><p>Kích hoạt action bằng lập trình trong lúc chạy.</p></li>
+</ul>
+<p>Action có thể được tạo từ menu Project Settings trong tab <strong>Input Map</strong> và được gán các sự kiện input.</p>
+<p>Mọi sự kiện đều có các phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputevent.html#class-inputevent-method-is-action" title="Class reference (English)"><span class="xref std std-ref">InputEvent.is_action()</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputevent.html#class-inputevent-method-is-pressed" title="Class reference (English)"><span class="xref std std-ref">InputEvent.is_pressed()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputevent.html#class-inputevent-method-is-echo" title="Class reference (English)"><span class="xref std std-ref">InputEvent.is_echo()</span></a>.</p>
+<p>Ngoài ra, có thể bạn muốn đưa ngược một action vào game từ code của game (một ví dụ điển hình là nhận diện cử chỉ). Singleton Input có một phương thức cho việc này: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_input.html#class-input-method-parse-input-event" title="Class reference (English)"><span class="xref std std-ref">Input.parse_input_event()</span></a>. Thông thường bạn sẽ dùng nó như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">ev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">InputEventAction</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="c1"># Set as ui_left, pressed.</span>
+<span class="n">ev</span><span class="o">.</span><span class="vi">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ui_left&quot;</span>
+<span class="n">ev</span><span class="o">.</span><span class="vi">pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="c1"># Feedback.</span>
+<span class="nb">Input</span><span class="o">.</span><span class="nf">parse_input_event</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">ev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InputEventAction</span><span class="p">();</span>
+<span class="c1">// Set as ui_left, pressed.</span>
+<span class="n">ev</span><span class="p">.</span><span class="n">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ui_left&quot;</span><span class="p">;</span>
+<span class="n">ev</span><span class="p">.</span><span class="n">Pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="c1">// Feedback.</span>
+<span class="n">Input</span><span class="p">.</span><span class="n">ParseInputEvent</span><span class="p">(</span><span class="n">ev</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="../../getting_started/first_3d_game/02.player_input.html#doc-first-3d-game-input-actions"><span class="std std-ref">Tạo các input action</span></a> để có bài hướng dẫn về cách thêm input action trong cài đặt dự án.</p>
+</div>
+</section>
+<section id="inputmap">
+<h2>InputMap<a class="headerlink" href="#inputmap" title="Link to this heading"></a></h2>
+<p>Việc tùy chỉnh và ánh xạ lại đầu vào từ code thường được mong muốn. Nếu toàn bộ quy trình làm việc của bạn dựa trên action, singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputmap.html" title="Class reference (English)"><span class="xref std std-ref">InputMap</span></a> là lựa chọn lý tưởng để gán lại hoặc tạo các action khác nhau trong lúc chạy. Singleton này không được lưu (phải sửa thủ công) và trạng thái của nó được nạp từ cài đặt dự án (project.godot). Vì vậy mọi hệ thống động kiểu này cần lưu cài đặt theo cách mà lập trình viên thấy phù hợp nhất.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Xử lý đầu vào" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="input_examples.html" class="btn btn-neutral float-right" title="Ví dụ về đầu vào" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

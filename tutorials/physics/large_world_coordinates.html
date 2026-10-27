@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tọa độ thế giới lớn" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/physics/large_world_coordinates.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Tại sao nên dùng tọa độ thế giới lớn?: Trong Godot, mô phỏng vật lý và kết xuất đều dựa trên số dấu phẩy động(floating-point). Tuy nhiên, trong máy tính, số dấu phẩy động có độ chính xác và phạm vi..." />
+<meta name="description" content="Tại sao nên dùng tọa độ thế giới lớn?: Trong Godot, mô phỏng vật lý và kết xuất đều dựa trên số dấu phẩy động(floating-point). Tuy nhiên, trong máy tính, số dấu phẩy động có độ chính xác và phạm vi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tọa độ thế giới lớn &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Nội suy vật lý" href="interpolation/index.html" />
+    <link rel="prev" title="Hình dạng va chạm (3D)" href="collision_shapes_3d.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/physics/large_world_coordinates" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Vật lý</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="physics_introduction.html">Giới thiệu về vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_jolt_physics.html">Sử dụng Jolt Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigid_body.html">Sử dụng RigidBody</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_area_2d.html">Sử dụng Area2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_character_body_2d.html">Sử dụng CharacterBody2D/3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ray-casting.html">Ray-casting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ragdoll_system.html">Hệ thống ragdoll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematic_character_2d.html">Nhân vật kinematic (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="soft_body.html">Sử dụng SoftBody3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_2d.html">Hình dạng va chạm (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_3d.html">Hình dạng va chạm (3D)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tọa độ thế giới lớn</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#why-use-large-world-coordinates">Tại sao nên dùng tọa độ thế giới lớn?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-large-world-coordinates-work">Cách tọa độ thế giới lớn hoạt động</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#who-are-large-world-coordinates-for">Tọa độ thế giới lớn dành cho ai?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-large-world-coordinates">Bật tọa độ thế giới lớn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compatibility-between-single-precision-and-double-precision-builds">Khả năng tương thích giữa bản build độ chính xác đơn và độ chính xác kép</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#known-incompatibilities">Các điểm không tương thích đã biết</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Hạn chế</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation/index.html">Nội suy vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_physics_issues.html">Khắc phục sự cố vật lý</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Vật lý</a></li>
+      <li class="breadcrumb-item active">Tọa độ thế giới lớn</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="large-world-coordinates">
+<span id="doc-large-world-coordinates"></span><h1>Tọa độ thế giới lớn<a class="headerlink" href="#large-world-coordinates" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tọa độ thế giới lớn chủ yếu hữu ích trong các dự án 3D; chúng hiếm khi cần thiết trong các dự án 2D. Ngoài ra, khác với kết xuất 3D, kết xuất 2D hiện tại không được hưởng lợi từ độ chính xác tăng lên khi bật tọa độ thế giới lớn.</p>
+</div>
+<section id="why-use-large-world-coordinates">
+<h2>Tại sao nên dùng tọa độ thế giới lớn?<a class="headerlink" href="#why-use-large-world-coordinates" title="Link to this heading"></a></h2>
+<p>Trong Godot, mô phỏng vật lý và kết xuất đều dựa trên số <em>dấu phẩy động</em> (floating-point). Tuy nhiên, trong máy tính, số dấu phẩy động có <strong>độ chính xác và phạm vi giới hạn</strong>. Đây có thể là vấn đề với các game có thế giới khổng lồ, như game mô phỏng không gian hoặc quy mô hành tinh.</p>
+<p>Độ chính xác cao nhất khi giá trị gần <code class="docutils literal notranslate"><span class="pre">0.0</span></code>. Độ chính xác giảm dần khi giá trị tăng lên hoặc giảm xuống xa khỏi <code class="docutils literal notranslate"><span class="pre">0.0</span></code>. Điều này xảy ra mỗi khi <em>số mũ</em> (exponent) của số dấu phẩy động tăng lên, tức là khi số dấu phẩy động vượt qua một giá trị lũy thừa của 2 (2, 4, 8, 16, …). Mỗi lần điều này xảy ra, bước nhỏ nhất của số sẽ <em>tăng lên</em>, dẫn đến mất độ chính xác.</p>
+<p>Trên thực tế, điều này có nghĩa là khi người chơi di chuyển ra xa gốc tọa độ thế giới (<code class="docutils literal notranslate"><span class="pre">Vector2(0,</span> <span class="pre">0)</span></code> trong game 2D hoặc <code class="docutils literal notranslate"><span class="pre">Vector3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code> trong game 3D), độ chính xác sẽ giảm đi.</p>
+<p>Việc mất độ chính xác này có thể khiến các đối tượng trông như đang &quot;rung&quot; khi ở xa gốc tọa độ thế giới, vì vị trí của model sẽ bị làm tròn về giá trị gần nhất có thể biểu diễn bằng một số dấu phẩy động. Điều này cũng có thể gây ra các lỗi vật lý chỉ xảy ra khi người chơi ở xa gốc tọa độ thế giới.</p>
+<p>Phạm vi xác định giá trị nhỏ nhất và lớn nhất có thể lưu trong số. Nếu người chơi cố di chuyển vượt quá phạm vi này, họ đơn giản là sẽ không thể. Tuy nhiên, trên thực tế, độ chính xác của số dấu phẩy động gần như luôn trở thành vấn đề trước khi phạm vi trở thành vấn đề.</p>
+<p>Phạm vi và độ chính xác (bước nhỏ nhất giữa hai khoảng số mũ) được xác định bởi kiểu số dấu phẩy động. Phạm vi <em>lý thuyết</em> cho phép lưu các giá trị cực lớn trong float độ chính xác đơn, nhưng với độ chính xác rất thấp. Trên thực tế, một kiểu dấu phẩy động không thể biểu diễn mọi giá trị số nguyên thì không hữu ích lắm. Ở các giá trị cực đại, độ chính xác thấp đến mức số này thậm chí không thể phân biệt hai giá trị <em>số nguyên</em> riêng biệt với nhau.</p>
+<p>Đây là phạm vi mà từng giá trị số nguyên riêng lẻ có thể được biểu diễn trong một số dấu phẩy động:</p>
+<ul class="simple">
+<li><p><strong>Phạm vi float độ chính xác đơn (biểu diễn được mọi số nguyên):</strong> Từ -16.777.216 đến 16.777.216</p></li>
+<li><p><strong>Phạm vi float độ chính xác kép (biểu diễn được mọi số nguyên):</strong> Từ -9 triệu tỷ đến 9 triệu tỷ</p></li>
+</ul>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Phạm vi</p></td>
+<td><p>Bước đơn</p></td>
+<td><p>Bước double</p></td>
+<td><p>Ghi chú</p></td>
+</tr>
+<tr class="row-even"><td><p>[1; 2]</p></td>
+<td><p>~0.0000001</p></td>
+<td><p>~1e-15</p></td>
+<td><p>Độ chính xác cao hơn khi gần 0.0 (bảng này đã được rút gọn).</p></td>
+</tr>
+<tr class="row-odd"><td><p>[2; 4]</p></td>
+<td><p>~0.0000002</p></td>
+<td><p>~1e-15</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>[4; 8]</p></td>
+<td><p>~0.0000005</p></td>
+<td><p>~1e-15</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>[8; 16]</p></td>
+<td><p>~0.000001</p></td>
+<td><p>~1e-14</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>[16; 32]</p></td>
+<td><p>~0.000002</p></td>
+<td><p>~1e-14</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>[32; 64]</p></td>
+<td><p>~0.000004</p></td>
+<td><p>~1e-14</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>[64; 128]</p></td>
+<td><p>~0.000008</p></td>
+<td><p>~1e-13</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>[128; 256]</p></td>
+<td><p>~0.000015</p></td>
+<td><p>~1e-13</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>[256; 512]</p></td>
+<td><p>~0.00003</p></td>
+<td><p>~1e-13</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>[512; 1024]</p></td>
+<td><p>~0.00006</p></td>
+<td><p>~1e-12</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>[1024; 2048]</p></td>
+<td><p>~0.0001</p></td>
+<td><p>~1e-12</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>[2048; 4096]</p></td>
+<td><p>~0.0002</p></td>
+<td><p>~1e-12</p></td>
+<td><p>Phạm vi độ chính xác đơn tối đa <em>được khuyến nghị</em> cho game 3D góc nhìn thứ nhất mà không bị lỗi kết xuất hay lỗi vật lý.</p></td>
+</tr>
+<tr class="row-even"><td><p>[4096; 8192]</p></td>
+<td><p>~0.0005</p></td>
+<td><p>~1e-12</p></td>
+<td><p>Phạm vi độ chính xác đơn tối đa <em>được khuyến nghị</em> cho game 3D góc nhìn thứ ba mà không bị lỗi kết xuất hay lỗi vật lý.</p></td>
+</tr>
+<tr class="row-odd"><td><p>[8192; 16384]</p></td>
+<td><p>~0.001</p></td>
+<td><p>~1e-12</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>[16384; 32768]</p></td>
+<td><p>~0.0019</p></td>
+<td><p>~1e-11</p></td>
+<td><p>Phạm vi độ chính xác đơn tối đa <em>được khuyến nghị</em> cho game 3D góc nhìn từ trên xuống mà không bị lỗi kết xuất hay lỗi vật lý.</p></td>
+</tr>
+<tr class="row-odd"><td><p>[32768; 65536]</p></td>
+<td><p>~0.0039</p></td>
+<td><p>~1e-11</p></td>
+<td><p>Phạm vi độ chính xác đơn tối đa <em>được khuyến nghị</em> cho mọi game 3D. Vượt quá mức này, thường cần đến độ chính xác kép (tọa độ thế giới lớn).</p></td>
+</tr>
+<tr class="row-even"><td><p>[65536; 131072]</p></td>
+<td><p>~0.0078</p></td>
+<td><p>~1e-11</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>[131072; 262144]</p></td>
+<td><p>~0.0156</p></td>
+<td><p>~1e-10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>&gt; 262144</p></td>
+<td><p>&gt; ~0.0313</p></td>
+<td><p>~1e-10 (0.0000000001)</p></td>
+<td><p>Vượt quá giá trị này, độ chính xác kép vẫn chính xác hơn nhiều so với độ chính xác đơn.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Khi dùng float độ chính xác đơn, bạn có thể vượt quá các phạm vi được đề xuất, nhưng lỗi hiển thị sẽ lộ rõ hơn và lỗi vật lý sẽ phổ biến hơn (chẳng hạn người chơi không đi thẳng được theo một số hướng nhất định).</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem bài viết <a class="reference external" href="https://blog.demofox.org/2017/11/21/">Demystifying Floating Point Precision</a> để biết thêm thông tin.</p>
+</div>
+</section>
+<section id="how-large-world-coordinates-work">
+<h2>Cách tọa độ thế giới lớn hoạt động<a class="headerlink" href="#how-large-world-coordinates-work" title="Link to this heading"></a></h2>
+<p>Tọa độ thế giới lớn (còn được gọi là <strong>vật lý độ chính xác kép</strong>) tăng mức độ chính xác của mọi phép tính dấu phẩy động bên trong engine.</p>
+<p>Mặc định, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_float.html" title="Class reference (English)"><span class="xref std std-ref">class_float</span></a> là 64-bit trong GDScript, nhưng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector2</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector3</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector4</span></a> là 32-bit. Điều này có nghĩa là độ chính xác của các kiểu vector bị giới hạn hơn nhiều. Để giải quyết, chúng ta có thể tăng số bit dùng để biểu diễn một số dấu phẩy động trong kiểu Vector. Điều này dẫn đến độ chính xác tăng <em>theo cấp số mũ</em>, nghĩa là giá trị cuối cùng không chỉ chính xác gấp đôi, mà có thể chính xác hơn hàng nghìn lần ở các giá trị lớn. Giá trị lớn nhất có thể biểu diễn cũng tăng lên rất nhiều khi chuyển từ float độ chính xác đơn sang float độ chính xác kép.</p>
+<p>Để tránh vấn đề model bị giật vị trí khi ở xa gốc tọa độ thế giới, engine kết xuất 3D của Godot sẽ tăng độ chính xác cho các thao tác kết xuất khi bật tọa độ thế giới lớn. Vì lý do hiệu năng, các shader không dùng float độ chính xác kép, mà dùng một <a class="reference external" href="https://github.com/godotengine/godot/pull/66178">giải pháp thay thế</a> để mô phỏng độ chính xác kép cho việc kết xuất bằng float độ chính xác đơn.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bật tọa độ thế giới lớn sẽ phải trả giá về hiệu năng và mức sử dụng bộ nhớ, đặc biệt trên CPU 32-bit. Chỉ bật tọa độ thế giới lớn nếu bạn thực sự cần.</p>
+<p>Tính năng này được thiết kế cho các nền tảng desktop tầm trung/cao cấp. Tọa độ thế giới lớn có thể không hoạt động tốt trên thiết bị di động cấp thấp, trừ khi bạn thực hiện các biện pháp khác để giảm mức sử dụng CPU (như giảm số physics tick mỗi giây).</p>
+<p>Trên các nền tảng cấp thấp, có thể dùng phương pháp <em>dịch gốc tọa độ</em> (origin shifting) để hỗ trợ thế giới lớn mà không cần vật lý và kết xuất độ chính xác kép. Dịch gốc tọa độ hoạt động với float độ chính xác đơn, nhưng làm logic game phức tạp hơn, đặc biệt trong game nhiều người chơi. Vì vậy, dịch gốc tọa độ không được trình bày chi tiết trong trang này.</p>
+</div>
+</section>
+<section id="who-are-large-world-coordinates-for">
+<h2>Tọa độ thế giới lớn dành cho ai?<a class="headerlink" href="#who-are-large-world-coordinates-for" title="Link to this heading"></a></h2>
+<p>Tọa độ thế giới lớn thường cần thiết cho các game mô phỏng không gian 3D hoặc quy mô hành tinh. Điều này cũng áp dụng cho các game cần hỗ trợ tốc độ di chuyển <em>rất</em> nhanh, nhưng đôi khi cũng cần các chuyển động rất chậm <em>và</em> chính xác.</p>
+<p>Mặt khác, điều quan trọng là chỉ dùng tọa độ thế giới lớn khi thực sự cần thiết (vì lý do hiệu năng). Tọa độ thế giới lớn thường <strong>không</strong> cần thiết cho:</p>
+<ul class="simple">
+<li><p>Game 2D, vì các vấn đề về độ chính xác thường ít dễ nhận thấy hơn.</p></li>
+<li><p>Game có thế giới quy mô nhỏ hoặc trung bình.</p></li>
+<li><p>Game có thế giới lớn, nhưng được chia thành các màn chơi khác nhau với các đoạn tải ở giữa. Bạn có thể căn giữa từng phần màn chơi quanh gốc tọa độ thế giới để tránh vấn đề về độ chính xác mà không phải trả giá về hiệu năng.</p></li>
+<li><p>Game thế giới mở có <em>khu vực có thể đi bộ</em> không vượt quá 8192×8192 mét (căn giữa quanh gốc tọa độ thế giới). Như thể hiện trong bảng trên, mức độ chính xác vẫn chấp nhận được trong phạm vi đó, kể cả với game góc nhìn thứ nhất.</p></li>
+</ul>
+<p><strong>Nếu còn phân vân</strong>, nhiều khả năng bạn không cần dùng tọa độ thế giới lớn trong dự án của mình. Để tham khảo, hầu hết các tựa game thế giới mở AAA hiện đại không dùng hệ thống tọa độ thế giới lớn và vẫn dựa vào float độ chính xác đơn cho cả kết xuất lẫn vật lý.</p>
+</section>
+<section id="enabling-large-world-coordinates">
+<h2>Bật tọa độ thế giới lớn<a class="headerlink" href="#enabling-large-world-coordinates" title="Link to this heading"></a></h2>
+<p>Quá trình này yêu cầu biên dịch lại trình chỉnh sửa và tất cả các binary export template mà bạn định dùng. Nếu bạn chỉ định xuất dự án ở chế độ release, bạn có thể bỏ qua việc biên dịch các export template debug. Dù thế nào, bạn cũng cần biên dịch một bản build trình chỉnh sửa để có thể kiểm thử thế giới độ chính xác cao mà không phải xuất dự án mỗi lần.</p>
+<p>Xem phần <a class="reference internal" href="../../engine_details/development/compiling/index.html#toc-devel-compiling"><span class="std std-ref">Biên dịch</span></a> để biết hướng dẫn biên dịch cho từng nền tảng đích. Bạn sẽ cần thêm tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">precision=double</span></code> khi biên dịch trình chỉnh sửa và export template.</p>
+<p>Các binary thu được sẽ có hậu tố <code class="docutils literal notranslate"><span class="pre">.double</span></code> để phân biệt với các binary độ chính xác đơn (không có hậu tố độ chính xác nào). Sau đó bạn có thể chỉ định các binary này làm export template tùy chỉnh trong export preset của dự án tại hộp thoại Export.</p>
+</section>
+<section id="compatibility-between-single-precision-and-double-precision-builds">
+<h2>Khả năng tương thích giữa bản build độ chính xác đơn và độ chính xác kép<a class="headerlink" href="#compatibility-between-single-precision-and-double-precision-builds" title="Link to this heading"></a></h2>
+<p>Khi lưu một resource <em>nhị phân</em> bằng singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resourcesaver.html" title="Class reference (English)"><span class="xref std std-ref">class_ResourceSaver</span></a>, một cờ đặc biệt sẽ được lưu vào file nếu resource được lưu bằng một bản build dùng số độ chính xác kép. Do đó, tất cả các resource nhị phân sẽ thay đổi trên đĩa khi bạn chuyển sang bản build độ chính xác kép và lưu đè lên chúng.</p>
+<p>Cả bản build độ chính xác đơn và độ chính xác kép đều hỗ trợ dùng singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resourceloader.html" title="Class reference (English)"><span class="xref std std-ref">class_ResourceLoader</span></a> trên các resource có cờ đặc biệt này. Điều này có nghĩa là bản build độ chính xác đơn có thể tải resource được lưu bằng bản build độ chính xác kép và ngược lại. Resource dạng văn bản không lưu cờ độ chính xác kép, vì chúng không cần cờ đó để đọc chính xác.</p>
+<section id="known-incompatibilities">
+<h3>Các điểm không tương thích đã biết<a class="headerlink" href="#known-incompatibilities" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Trong game nhiều người chơi qua mạng, server và tất cả client nên dùng cùng loại bản build để đảm bảo độ chính xác nhất quán giữa các client. Dùng các loại bản build khác nhau <em>có thể</em> vẫn hoạt động, nhưng có thể phát sinh nhiều vấn đề.</p></li>
+<li><p>API GDExtension thay đổi theo cách không tương thích trong các bản build độ chính xác kép. Điều này có nghĩa là các extension <strong>phải</strong> được build lại để hoạt động với bản build độ chính xác kép. Về phía nhà phát triển extension, define <code class="docutils literal notranslate"><span class="pre">REAL_T_IS_DOUBLE</span></code> được bật khi build một GDExtension với <code class="docutils literal notranslate"><span class="pre">precision=double</span></code>. <code class="docutils literal notranslate"><span class="pre">real_t</span></code> có thể được dùng làm bí danh cho <code class="docutils literal notranslate"><span class="pre">float</span></code> trong bản build độ chính xác đơn, và <code class="docutils literal notranslate"><span class="pre">double</span></code> trong bản build độ chính xác kép.</p></li>
+</ul>
+</section>
+</section>
+<section id="limitations">
+<h2>Hạn chế<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<p>Vì các shader kết xuất 3D thực ra không dùng float độ chính xác kép, nên có một số giới hạn về độ chính xác kết xuất 3D:</p>
+<ul>
+<li><p><a class="reference internal" href="../3d/standard_material_3d.html#doc-standard-material-3d-triplanar-mapping"><span class="std std-ref">Triplanar mapping</span></a> không được hưởng lợi từ độ chính xác tăng lên. Các material dùng triplanar mapping sẽ bị rung rõ rệt khi ở xa gốc tọa độ thế giới.</p></li>
+<li><p>Các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticles3d.html" title="Class reference (English)"><span class="xref std std-ref">class_GPUParticles3D</span></a> có <strong>Local Coords</strong> bị tắt sẽ không được hưởng lợi từ độ chính xác tăng lên. Điều này có thể khiến hạt (particle) bị giật vị trí rõ rệt khi ở xa gốc tọa độ thế giới. Các node bật <strong>Local Coords</strong>, cũng như các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_cpuparticles3d.html" title="Class reference (English)"><span class="xref std std-ref">class_CPUParticles3D</span></a>, vẫn được hưởng lợi từ độ chính xác tăng lên.</p></li>
+<li><p>Các shader dùng render mode <code class="docutils literal notranslate"><span class="pre">skip_vertex_transform</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">world_vertex_coords</span></code> không được hưởng lợi từ độ chính xác tăng lên.</p></li>
+<li><p>Trong bản build độ chính xác kép, tọa độ không gian thế giới trong hàm <code class="docutils literal notranslate"><span class="pre">fragment()</span></code> của shader không thể được dựng lại từ không gian view, ví dụ:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">vec3</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">INV_VIEW_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">VERTEX</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)).</span><span class="n">xyz</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Thay vào đó, hãy tính tọa độ không gian thế giới trong hàm <code class="docutils literal notranslate"><span class="pre">vertex()</span></code> và truyền chúng bằng một <a class="reference internal" href="../shaders/shader_reference/shading_language.html#doc-shading-language-varyings"><span class="std std-ref">varying</span></a>, ví dụ:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">varying</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">world</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">vertex</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">world</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">MODEL_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">VERTEX</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)).</span><span class="n">xyz</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Kết xuất 2D hiện tại không được hưởng lợi từ độ chính xác tăng lên khi bật tọa độ thế giới lớn. Điều này có thể khiến model bị giật vị trí rõ rệt khi ở xa gốc tọa độ thế giới (bắt đầu từ vài triệu pixel ở các mức zoom thông thường). Tuy vậy, các phép tính vật lý 2D vẫn được hưởng lợi từ độ chính xác tăng lên.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="collision_shapes_3d.html" class="btn btn-neutral float-left" title="Hình dạng va chạm (3D)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="interpolation/index.html" class="btn btn-neutral float-right" title="Nội suy vật lý" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

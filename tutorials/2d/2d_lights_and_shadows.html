@@ -1,0 +1,519 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Ánh sáng và bóng đổ 2D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/2d/2d_lights_and_shadows.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Theo mặc định, các scene 2D trong Godot không được tô bóng (unshaded), không có ánh sáng và bóng đổ. Dù kết xuất nhanh, scene không tô bóng có thể trông nhạt nhẽo. Godot cung cấp khả nă..." />
+<meta name="description" content="Giới thiệu: Theo mặc định, các scene 2D trong Godot không được tô bóng (unshaded), không có ánh sáng và bóng đổ. Dù kết xuất nhanh, scene không tô bóng có thể trông nhạt nhẽo. Godot cung cấp khả nă..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Ánh sáng và bóng đổ 2D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Mesh 2D" href="2d_meshes.html" />
+    <link rel="prev" title="Transform của viewport và canvas" href="2d_transforms.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/2d/2d_lights_and_shadows" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_2d.html">Giới thiệu về 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_layers.html">Canvas layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_transforms.html">Transform của viewport và canvas</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Ánh sáng và bóng đổ 2D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nodes">Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#point-lights">Đèn điểm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#directional-light">Đèn định hướng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-light-properties">Các thuộc tính chung của đèn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-up-shadows">Thiết lập bóng đổ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#normal-and-specular-maps">Normal map và specular map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-additive-sprites-as-a-faster-alternative-to-2d-lights">Dùng sprite additive làm giải pháp thay thế nhanh hơn cho ánh sáng 2D</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="2d_meshes.html">Mesh 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_sprite_animation.html">Hoạt ảnh sprite 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particle_systems_2d.html">Hệ thống hạt 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particle_process_material_2d.html">Sử dụng ParticleProcessMaterial trong 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_antialiasing.html">Khử răng cưa 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_drawing_in_2d.html">Vẽ tùy chỉnh trong 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_parallax.html">Parallax 2D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#physics-and-movement">Vật lý và chuyển động</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">2D</a></li>
+      <li class="breadcrumb-item active">Ánh sáng và bóng đổ 2D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="d-lights-and-shadows">
+<span id="doc-2d-lights-and-shadows"></span><h1>Ánh sáng và bóng đổ 2D<a class="headerlink" href="#d-lights-and-shadows" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Theo mặc định, các scene 2D trong Godot không được tô bóng (unshaded), không có ánh sáng và bóng đổ. Dù kết xuất nhanh, scene không tô bóng có thể trông nhạt nhẽo. Godot cung cấp khả năng dùng ánh sáng và bóng đổ 2D theo thời gian thực, giúp tăng đáng kể cảm giác chiều sâu cho dự án của bạn.</p>
+<figure class="align-center" id="id1">
+<img alt="Không có ánh sáng hay bóng đổ 2D, scene không được tô bóng" src="../../_images/2d_lights_and_shadows_disabled.webp" />
+<figcaption>
+<p><span class="caption-text">Không có ánh sáng hay bóng đổ 2D, scene không được tô bóng</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id2">
+<img alt="Đã bật ánh sáng 2D (không có bóng đổ)" src="../../_images/2d_lights_and_shadows_enabled_no_shadows.webp" />
+<figcaption>
+<p><span class="caption-text">Đã bật ánh sáng 2D (không có bóng đổ)</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id3">
+<img alt="Đã bật ánh sáng và bóng đổ 2D" src="../../_images/2d_lights_and_shadows_enabled.webp" />
+<figcaption>
+<p><span class="caption-text">Đã bật ánh sáng và bóng đổ 2D</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="nodes">
+<h2>Node<a class="headerlink" href="#nodes" title="Link to this heading"></a></h2>
+<p>Một thiết lập chiếu sáng 2D hoàn chỉnh gồm có một số node:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasmodulate.html" title="Class reference (English)"><span class="xref std std-ref">CanvasModulate</span></a> (để làm tối phần còn lại của scene)</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pointlight2d.html" title="Class reference (English)"><span class="xref std std-ref">PointLight2D</span></a> (cho đèn đa hướng hoặc đèn chiếu)</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_directionallight2d.html" title="Class reference (English)"><span class="xref std std-ref">DirectionalLight2D</span></a> (cho ánh sáng mặt trời hoặc ánh trăng)</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_lightoccluder2d.html" title="Class reference (English)"><span class="xref std std-ref">LightOccluder2D</span></a> (cho các vật thể đổ bóng)</p></li>
+<li><p>Các node 2D khác nhận ánh sáng, chẳng hạn Sprite2D hoặc TileMapLayer.</p></li>
+</ul>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasmodulate.html" title="Class reference (English)"><span class="xref std std-ref">CanvasModulate</span></a> được dùng để làm tối scene bằng cách chỉ định một màu đóng vai trò màu &quot;môi trường&quot; (ambient) cơ bản. Đây là màu chiếu sáng cuối cùng ở những vùng <em>không</em> được bất kỳ đèn 2D nào chiếu tới. Nếu không có node CanvasModulate, scene cuối cùng sẽ trông quá sáng, vì đèn 2D chỉ làm sáng thêm vẻ ngoài không tô bóng sẵn có (vốn trông như được chiếu sáng hoàn toàn).</p>
+<p>Các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sprite2d.html" title="Class reference (English)"><span class="xref std std-ref">Sprite2D</span></a> được dùng để hiển thị texture cho các đốm sáng, nền, và cho các vật thể đổ bóng.</p>
+<p>Các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pointlight2d.html" title="Class reference (English)"><span class="xref std std-ref">PointLight2D</span></a> được dùng để chiếu sáng scene. Cách một đèn thường hoạt động là thêm một texture được chọn lên trên phần còn lại của scene để mô phỏng ánh sáng.</p>
+<p>Các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_lightoccluder2d.html" title="Class reference (English)"><span class="xref std std-ref">LightOccluder2D</span></a> được dùng để cho shader biết phần nào của scene đổ bóng. Các occluder này có thể được đặt dưới dạng node độc lập hoặc là một phần của node TileMapLayer.</p>
+<p>Bóng đổ chỉ xuất hiện ở những vùng được <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pointlight2d.html" title="Class reference (English)"><span class="xref std std-ref">PointLight2D</span></a> bao phủ, và hướng của chúng dựa trên tâm của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pointlight2d.html" title="Class reference (English)"><span class="xref std std-ref">đèn</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Màu nền <strong>không</strong> nhận bất kỳ ánh sáng nào. Nếu bạn muốn ánh sáng chiếu lên nền, bạn cần thêm một thành phần hiển thị cho nền, chẳng hạn một Sprite2D.</p>
+<p>Các thuộc tính <strong>Region</strong> của Sprite2D có thể giúp nhanh chóng tạo một texture nền lặp lại, nhưng hãy nhớ đặt cả <strong>Texture &gt; Repeat</strong> thành <strong>Enabled</strong> trong thuộc tính của Sprite2D.</p>
+</div>
+</section>
+<section id="point-lights">
+<h2>Đèn điểm<a class="headerlink" href="#point-lights" title="Link to this heading"></a></h2>
+<p>Đèn điểm (còn gọi là đèn định vị) là thành phần phổ biến nhất trong chiếu sáng 2D. Đèn điểm có thể dùng để biểu thị ánh sáng từ đuốc, lửa, đạn bắn, v.v.</p>
+<p>PointLight2D cung cấp các thuộc tính sau để tinh chỉnh trong Inspector:</p>
+<ul class="simple">
+<li><p><strong>Texture:</strong> Texture dùng làm nguồn sáng. Kích thước của texture quyết định kích thước của đèn. Texture có thể có kênh alpha, điều này hữu ích khi dùng chế độ hòa trộn <strong>Mix</strong> của Light2D, nhưng không bắt buộc nếu dùng chế độ hòa trộn <strong>Add</strong> (mặc định) hoặc <strong>Subtract</strong>.</p></li>
+<li><p><strong>Offset:</strong> Độ lệch cho texture của đèn. Khác với khi bạn di chuyển node đèn, việc thay đổi offset <em>không</em> làm bóng đổ di chuyển.</p></li>
+<li><p><strong>Texture Scale:</strong> Hệ số nhân cho kích thước của đèn. Giá trị càng cao, ánh sáng càng lan ra xa. Đèn lớn hơn tốn nhiều hiệu năng hơn vì chúng ảnh hưởng đến nhiều pixel trên màn hình hơn, vì vậy hãy cân nhắc điều này trước khi tăng kích thước đèn.</p></li>
+<li><p><strong>Height:</strong> Chiều cao ảo của đèn liên quan đến normal mapping. Theo mặc định, đèn ở rất gần các bề mặt nhận ánh sáng. Điều này khiến ánh sáng khó thấy nếu dùng normal mapping, vì vậy hãy cân nhắc tăng giá trị này. Việc điều chỉnh chiều cao của đèn chỉ tạo ra khác biệt thấy được trên các bề mặt dùng normal mapping.</p></li>
+</ul>
+<p>Nếu bạn không có sẵn texture để dùng cho đèn, bạn có thể dùng texture đèn điểm &quot;trung tính&quot; này (nhấp chuột phải &gt; <strong>Save Image As…</strong>):</p>
+<figure class="align-center" id="id4">
+<img alt="Texture đèn điểm trung tính" src="../../_images/2d_lights_and_shadows_neutral_point_light.webp" />
+<figcaption>
+<p><span class="caption-text">Texture đèn điểm trung tính</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Nếu bạn cần kiểu suy giảm (falloff) khác, bạn có thể tạo texture theo cách thủ tục bằng cách gán một <strong>New GradientTexture2D</strong> cho thuộc tính <strong>Texture</strong> của đèn. Sau khi tạo resource, mở rộng mục <strong>Fill</strong> của nó và đặt chế độ tô thành <strong>Radial</strong>. Sau đó, bạn cần điều chỉnh gradient để đi từ màu trắng đục sang màu trắng trong suốt, và di chuyển vị trí bắt đầu của nó vào giữa.</p>
+</section>
+<section id="directional-light">
+<h2>Đèn định hướng<a class="headerlink" href="#directional-light" title="Link to this heading"></a></h2>
+<p>Chiếu sáng định hướng được dùng để biểu thị ánh sáng mặt trời hoặc ánh trăng. Các tia sáng được chiếu song song với nhau, như thể mặt trời hoặc mặt trăng ở xa vô tận so với bề mặt nhận ánh sáng.</p>
+<p>DirectionalLight2D có các thuộc tính sau:</p>
+<ul class="simple">
+<li><p><strong>Height:</strong> Chiều cao ảo của đèn liên quan đến normal mapping (<code class="docutils literal notranslate"><span class="pre">0.0</span></code> = song song với bề mặt, <code class="docutils literal notranslate"><span class="pre">1.0</span></code> = vuông góc với bề mặt). Theo mặc định, đèn hoàn toàn song song với các bề mặt nhận ánh sáng. Điều này khiến ánh sáng khó thấy nếu dùng normal mapping, vì vậy hãy cân nhắc tăng giá trị này. Việc điều chỉnh chiều cao của đèn chỉ tạo ra khác biệt về hình ảnh trên các bề mặt dùng normal mapping. <strong>Height</strong> không ảnh hưởng đến vẻ ngoài của bóng đổ.</p></li>
+<li><p><strong>Max Distance:</strong> Khoảng cách tối đa (tính bằng pixel) từ tâm camera mà đối tượng có thể ở trước khi bóng đổ của chúng bị loại bỏ (cull). Giảm giá trị này có thể ngăn các đối tượng nằm ngoài camera đổ bóng (đồng thời cải thiện hiệu năng). <strong>Max Distance</strong> không tính đến mức zoom của Camera2D, nghĩa là ở các mức zoom cao hơn, bóng đổ sẽ có vẻ mờ dần sớm hơn khi phóng to vào một điểm nhất định.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bóng đổ từ ánh sáng định hướng sẽ luôn trông dài vô hạn, bất kể giá trị của thuộc tính <strong>Height</strong>. Đây là hạn chế của phương pháp kết xuất bóng đổ dùng cho ánh sáng 2D trong Godot.</p>
+<p>Để có bóng đổ định hướng không dài vô hạn, bạn nên tắt bóng đổ trong DirectionalLight2D và thay vào đó dùng một shader tùy chỉnh đọc từ signed distance field 2D. Distance field này được tạo tự động từ các node LightOccluder2D có trong scene.</p>
+</div>
+</section>
+<section id="common-light-properties">
+<h2>Các thuộc tính chung của đèn<a class="headerlink" href="#common-light-properties" title="Link to this heading"></a></h2>
+<p>Cả PointLight2D và DirectionalLight2D đều có các thuộc tính chung, thuộc về lớp cơ sở Light2D:</p>
+<ul class="simple">
+<li><p><strong>Enabled:</strong> Cho phép bật/tắt hiển thị của nguồn sáng. Khác với việc ẩn node ánh sáng, tắt thuộc tính này sẽ không ẩn các node con của nguồn sáng.</p></li>
+<li><p><strong>Editor Only:</strong> Nếu bật, nguồn sáng chỉ hiển thị trong trình chỉnh sửa. Nó sẽ tự động bị tắt khi chạy dự án.</p></li>
+<li><p><strong>Color:</strong> Màu của nguồn sáng.</p></li>
+<li><p><strong>Energy:</strong> Hệ số nhân cường độ của nguồn sáng. Giá trị càng cao thì ánh sáng càng sáng.</p></li>
+<li><p><strong>Blend Mode:</strong> Công thức pha trộn dùng cho tính toán ánh sáng. Giá trị mặc định <strong>Add</strong> phù hợp với hầu hết trường hợp. <strong>Subtract</strong> có thể dùng cho ánh sáng âm, vốn không chính xác về mặt vật lý nhưng có thể dùng cho hiệu ứng đặc biệt. Chế độ pha trộn <strong>Mix</strong> trộn giá trị các pixel tương ứng với texture của nguồn sáng với giá trị các pixel bên dưới bằng nội suy tuyến tính.</p></li>
+<li><p><strong>Range &gt; Z Min:</strong> Z index thấp nhất chịu ảnh hưởng của nguồn sáng.</p></li>
+<li><p><strong>Range &gt; Z Max:</strong> Z index cao nhất chịu ảnh hưởng của nguồn sáng.</p></li>
+<li><p><strong>Range &gt; Layer Min:</strong> Visual layer thấp nhất chịu ảnh hưởng của nguồn sáng.</p></li>
+<li><p><strong>Range &gt; Layer Max:</strong> Visual layer cao nhất chịu ảnh hưởng của nguồn sáng.</p></li>
+<li><p><strong>Range &gt; Item Cull Mask:</strong> Kiểm soát những node nào nhận ánh sáng từ node này, tùy theo các visual layer được bật trong <strong>Occluder Light Mask</strong> của các node khác. Có thể dùng để ngăn một số đối tượng nhận ánh sáng.</p></li>
+</ul>
+</section>
+<section id="setting-up-shadows">
+<span id="doc-2d-lights-and-shadows-setting-up-shadows"></span><h2>Thiết lập bóng đổ<a class="headerlink" href="#setting-up-shadows" title="Link to this heading"></a></h2>
+<p>Sau khi bật thuộc tính <strong>Shadow &gt; Enabled</strong> trên node PointLight2D hoặc DirectionalLight2D, ban đầu bạn sẽ không thấy khác biệt gì về hình ảnh. Đó là vì chưa có node nào trong scene có <em>occluder</em>, vốn là cơ sở để đổ bóng.</p>
+<p>Để bóng đổ xuất hiện trong scene, bạn phải thêm các node LightOccluder2D vào scene. Các node này cũng phải có polygon occluder được thiết kế khớp với đường viền của sprite.</p>
+<p>Ngoài resource polygon (phải được thiết lập thì mới có hiệu ứng hình ảnh), node LightOccluder2D có 2 thuộc tính:</p>
+<ul class="simple">
+<li><p><strong>SDF Collision:</strong> Nếu bật, occluder sẽ là một phần của <em>signed distance field</em> được tạo theo thời gian thực, có thể dùng trong shader tùy chỉnh. Khi không dùng shader tùy chỉnh đọc từ SDF này, việc bật thuộc tính không tạo khác biệt về hình ảnh và không tốn hiệu năng, nên nó được bật mặc định cho tiện.</p></li>
+<li><p><strong>Occluder Light Mask:</strong> Thuộc tính này được dùng kết hợp với thuộc tính <strong>Shadow &gt; Item Cull Mask</strong> của PointLight2D và DirectionalLight2D để kiểm soát những đối tượng nào đổ bóng với từng nguồn sáng. Có thể dùng để ngăn các đối tượng cụ thể đổ bóng.</p></li>
+</ul>
+<p>Có hai cách để tạo vật che sáng (light occluder):</p>
+<section id="automatically-generating-a-light-occluder">
+<h3>Tự động tạo light occluder<a class="headerlink" href="#automatically-generating-a-light-occluder" title="Link to this heading"></a></h3>
+<p>Có thể tạo occluder tự động từ node Sprite2D bằng cách chọn node, nhấp vào menu <strong>Sprite2D</strong> ở phía trên trình chỉnh sửa 2D rồi chọn <strong>Create LightOccluder2D Sibling</strong>.</p>
+<p>Trong hộp thoại xuất hiện, một đường viền sẽ bao quanh các cạnh của sprite. Nếu đường viền khớp sát với các cạnh của sprite, bạn có thể nhấp <strong>OK</strong>. Nếu đường viền cách quá xa các cạnh của sprite (hoặc &quot;ăn&quot; vào các cạnh của sprite), hãy điều chỉnh <strong>Grow (pixels)</strong> và <strong>Shrink (pixels)</strong>, rồi nhấp <strong>Update Preview</strong>. Lặp lại thao tác này cho đến khi đạt kết quả ưng ý.</p>
+</section>
+<section id="manually-drawing-a-light-occluder">
+<h3>Vẽ light occluder thủ công<a class="headerlink" href="#manually-drawing-a-light-occluder" title="Link to this heading"></a></h3>
+<p>Tạo một node LightOccluder2D, sau đó chọn node và nhấp nút &quot;+&quot; ở phía trên trình chỉnh sửa 2D. Khi được hỏi có tạo resource polygon không, hãy trả lời <strong>Yes</strong>. Sau đó bạn có thể bắt đầu vẽ polygon occluder bằng cách nhấp để tạo điểm mới. Bạn có thể xóa điểm có sẵn bằng cách nhấp chuột phải vào chúng, và tạo điểm mới từ đường có sẵn bằng cách nhấp vào đường rồi kéo.</p>
+<p>Có thể điều chỉnh các thuộc tính sau trên nguồn sáng 2D đã bật bóng đổ:</p>
+<ul class="simple">
+<li><p><strong>Color:</strong> Màu của vùng bị che bóng. Mặc định, vùng bị che bóng có màu đen hoàn toàn, nhưng bạn có thể thay đổi vì mục đích nghệ thuật. Kênh alpha của màu kiểm soát mức độ bóng đổ được nhuộm bởi màu đã chỉ định.</p></li>
+<li><p><strong>Filter:</strong> Chế độ lọc dùng cho bóng đổ. Giá trị mặc định <strong>None</strong> kết xuất nhanh nhất và rất phù hợp với game có phong cách pixel art (do hình ảnh &quot;vuông vức&quot;). Nếu muốn bóng đổ mềm, hãy dùng <strong>PCF5</strong>. <strong>PCF13</strong> còn mềm hơn nữa nhưng tốn tài nguyên kết xuất nhất. Chỉ nên dùng PCF13 cho vài nguồn sáng cùng lúc do chi phí kết xuất cao.</p></li>
+<li><p><strong>Filter Smooth:</strong> Kiểm soát mức độ làm mềm bóng đổ khi <strong>Filter</strong> được đặt thành <strong>PCF5</strong> hoặc <strong>PCF13</strong>. Giá trị cao hơn cho bóng đổ mềm hơn, nhưng có thể khiến lỗi hình ảnh dạng dải (banding) xuất hiện (nhất là với PCF5).</p></li>
+<li><p><strong>Item Cull Mask:</strong> Kiểm soát những node LightOccluder2D nào đổ bóng, tùy theo thuộc tính <strong>Occluder Light Mask</strong> tương ứng của chúng.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><strong>Độ phân giải chiếu sáng và bóng đổ trong game pixel art</strong></p>
+<p>Engine tính toán chiếu sáng và bóng đổ 2D ở <strong>độ phân giải pixel của Viewport</strong>, không phải ở độ phân giải texel của texture gốc. Diện mạo của ánh sáng và bóng đổ phụ thuộc vào độ phân giải cửa sổ hoặc Viewport, không phụ thuộc vào độ phân giải của từng texture sprite.</p>
+<p>Nếu bạn làm game pixel art và muốn ánh sáng, bóng đổ có dạng pixel hoặc vuông vức khớp với phong cách đồ họa, lọc texture <strong>Nearest</strong> sẽ <strong>không</strong> đạt được hiệu ứng này. Lọc Nearest chỉ ảnh hưởng đến cách engine lấy mẫu texture — nó không thay đổi cách engine kết xuất ánh sáng và bóng đổ.</p>
+<p>Để có ánh sáng và bóng đổ dạng pixel, hãy dùng shader tùy chỉnh để sửa <code class="docutils literal notranslate"><span class="pre">LIGHT_VERTEX</span></code> và <code class="docutils literal notranslate"><span class="pre">SHADOW_VERTEX</span></code> nhằm bám việc lấy mẫu ánh sáng theo lưới pixel. Shader sau bám ánh sáng theo lưới bằng hàm <code class="docutils literal notranslate"><span class="pre">floor()</span></code>:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">canvas_item</span><span class="p">;</span>
+
+<span class="k">uniform</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">pixel_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Snap lighting and shadows to pixel grid.</span>
+<span class="w">    </span><span class="n">LIGHT_VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">floor</span><span class="p">(</span><span class="n">LIGHT_VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pixel_size</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pixel_size</span><span class="p">;</span>
+<span class="w">    </span><span class="n">SHADOW_VERTEX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">floor</span><span class="p">(</span><span class="n">SHADOW_VERTEX</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pixel_size</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pixel_size</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Normal rendering.</span>
+<span class="w">    </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">TEXTURE</span><span class="p">,</span><span class="w"> </span><span class="n">UV</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Cách này hoạt động bằng cách chia vị trí cho <code class="docutils literal notranslate"><span class="pre">pixel_size</span></code> để chuyển sang không gian lưới, dùng <code class="docutils literal notranslate"><span class="pre">floor()</span></code> để làm tròn xuống điểm lưới gần nhất, rồi nhân trở lại để chuyển về không gian màn hình. Kết quả là engine buộc phải lấy mẫu ánh sáng từ các vị trí lưới rời rạc, tạo ra hiệu ứng pixel.</p>
+<p>Để biết thêm về shader canvas item, xem <a class="reference internal" href="../shaders/shader_reference/canvas_item_shader.html#doc-canvas-item-shader"><span class="std std-ref">Shader CanvasItem</span></a>.</p>
+</div>
+<figure class="align-center" id="id5">
+<img alt="Bóng đổ cứng" src="../../_images/2d_lights_and_shadows_hard_shadow.webp" />
+<figcaption>
+<p><span class="caption-text">Bóng đổ cứng</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id6">
+<img alt="Bóng đổ mềm (PCF13, Filter Smooth 1.5)" src="../../_images/2d_lights_and_shadows_soft_shadow.webp" />
+<figcaption>
+<p><span class="caption-text">Bóng đổ mềm (PCF13, Filter Smooth 1.5)</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id7">
+<img alt="Bóng đổ mềm có lỗi vệt sọc do Filter Smooth quá cao (PCF5, Filter Smooth 4)" src="../../_images/2d_lights_and_shadows_soft_shadow_streaks.webp" />
+<figcaption>
+<p><span class="caption-text">Bóng đổ mềm có lỗi vệt sọc do Filter Smooth quá cao (PCF5, Filter Smooth 4)</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="normal-and-specular-maps">
+<h2>Normal map và specular map<a class="headerlink" href="#normal-and-specular-maps" title="Link to this heading"></a></h2>
+<p>Normal map và specular map có thể tăng đáng kể cảm giác chiều sâu cho chiếu sáng 2D. Tương tự cách chúng hoạt động trong kết xuất 3D, normal map giúp ánh sáng trông bớt phẳng bằng cách thay đổi cường độ tùy theo hướng của bề mặt nhận sáng (trên từng pixel). Specular map giúp cải thiện hình ảnh hơn nữa bằng cách khiến một phần ánh sáng phản xạ ngược về phía người xem.</p>
+<p>Cả PointLight2D và DirectionalLight2D đều hỗ trợ normal mapping và specular mapping. Normal map và specular map có thể gán cho bất kỳ phần tử 2D nào, kể cả các node kế thừa từ Node2D hoặc Control.</p>
+<p>Normal map biểu diễn hướng mà mỗi pixel đang &quot;chỉ&quot; tới. Engine dùng thông tin này để áp dụng chiếu sáng chính xác lên các bề mặt 2D theo cách hợp lý về mặt vật lý. Normal map thường được tạo từ height map vẽ tay, nhưng cũng có thể được tạo tự động từ các texture khác.</p>
+<p>Specular map xác định mức độ mỗi pixel phản xạ ánh sáng (và với màu gì, nếu specular map có chứa màu). Giá trị sáng hơn sẽ cho phản xạ sáng hơn tại điểm đó trên texture. Specular map thường được tạo bằng chỉnh sửa thủ công, dùng diffuse texture làm cơ sở.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu chưa có normal map hoặc specular map cho sprite, bạn có thể tạo chúng bằng công cụ miễn phí, mã nguồn mở <a class="reference external" href="https://azagaya.itch.io/laigter">Laigter</a>.</p>
+</div>
+<p>Để thiết lập normal map và/hoặc specular map trên một node 2D, hãy tạo một resource CanvasTexture mới cho thuộc tính vẽ texture của node. Ví dụ, trên Sprite2D:</p>
+<figure class="align-center" id="id8">
+<img alt="Tạo resource CanvasTexture cho node Sprite2D" src="../../_images/2d_lights_and_shadows_create_canvastexture.webp" />
+<figcaption>
+<p><span class="caption-text">Tạo resource CanvasTexture cho node Sprite2D</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Mở rộng resource vừa tạo. Bạn sẽ thấy một số thuộc tính cần điều chỉnh:</p>
+<ul class="simple">
+<li><p><strong>Diffuse &gt; Texture:</strong> Texture màu cơ sở. Trong thuộc tính này, hãy nạp texture bạn đang dùng cho chính sprite.</p></li>
+<li><p><strong>Normal Map &gt; Texture:</strong> Texture normal map. Trong thuộc tính này, hãy nạp texture normal map bạn đã tạo từ height map (xem mẹo ở trên).</p></li>
+<li><p><strong>Specular &gt; Texture:</strong> Texture specular map, kiểm soát cường độ specular của từng pixel trên diffuse texture. Specular map thường là ảnh thang xám, nhưng cũng có thể chứa màu để nhân màu của phản xạ tương ứng. Trong thuộc tính này, hãy nạp texture specular map bạn đã tạo (xem mẹo ở trên).</p></li>
+<li><p><strong>Specular &gt; Color:</strong> Hệ số nhân màu cho phản xạ specular.</p></li>
+<li><p><strong>Specular &gt; Shininess:</strong> Số mũ specular dùng cho phản xạ. Giá trị thấp hơn sẽ tăng độ sáng của phản xạ và làm chúng lan tỏa hơn, còn giá trị cao hơn sẽ khiến phản xạ tập trung hơn. Giá trị cao phù hợp hơn cho các bề mặt trông ẩm ướt.</p></li>
+<li><p><strong>Texture &gt; Filter:</strong> Có thể đặt để ghi đè chế độ lọc texture, bất kể thuộc tính của node được đặt thế nào (hoặc cài đặt dự án <strong>Rendering &gt; Textures &gt; Canvas Textures &gt; Default Texture Filter</strong>).</p></li>
+<li><p><strong>Texture &gt; Repeat:</strong> Có thể đặt để ghi đè chế độ lọc texture, bất kể thuộc tính của node được đặt thế nào (hoặc cài đặt dự án <strong>Rendering &gt; Textures &gt; Canvas Textures &gt; Default Texture Repeat</strong>).</p></li>
+</ul>
+<p>Sau khi bật normal mapping, bạn có thể nhận thấy nguồn sáng có vẻ yếu hơn. Để khắc phục, hãy tăng thuộc tính <strong>Height</strong> trên các node PointLight2D và DirectionalLight2D. Bạn cũng có thể tăng nhẹ thuộc tính <strong>Energy</strong> của nguồn sáng để gần với cường độ chiếu sáng trước khi bật normal mapping.</p>
+</section>
+<section id="using-additive-sprites-as-a-faster-alternative-to-2d-lights">
+<h2>Dùng sprite additive làm giải pháp thay thế nhanh hơn cho ánh sáng 2D<a class="headerlink" href="#using-additive-sprites-as-a-faster-alternative-to-2d-lights" title="Link to this heading"></a></h2>
+<p>Nếu gặp vấn đề hiệu năng khi dùng ánh sáng 2D, bạn có thể cân nhắc thay một số nguồn sáng bằng node Sprite2D dùng pha trộn additive. Cách này đặc biệt phù hợp với các hiệu ứng động tồn tại ngắn, như đạn hoặc vụ nổ.</p>
+<p>Sprite additive kết xuất nhanh hơn nhiều vì chúng không phải đi qua một pipeline kết xuất riêng. Ngoài ra, có thể dùng cách này với AnimatedSprite2D (hoặc Sprite2D + AnimationPlayer), cho phép tạo &quot;ánh sáng&quot; 2D có hoạt ảnh.</p>
+<p>Tuy nhiên, sprite additive có một vài nhược điểm so với ánh sáng 2D:</p>
+<ul class="simple">
+<li><p>Công thức pha trộn không chính xác so với chiếu sáng 2D &quot;thực sự&quot;. Điều này thường không thành vấn đề ở những vùng đủ sáng, nhưng khiến sprite additive không thể chiếu sáng đúng các vùng tối hoàn toàn.</p></li>
+<li><p>Sprite additive không thể đổ bóng, vì chúng không phải nguồn sáng.</p></li>
+<li><p>Sprite additive bỏ qua normal map và specular map dùng trên các sprite khác.</p></li>
+</ul>
+<p>Để hiển thị sprite với pha trộn additive, hãy tạo node Sprite2D và gán texture cho nó. Trong Inspector, cuộn xuống mục <strong>CanvasItem &gt; Material</strong>, mở rộng nó và nhấp vào danh sách thả xuống cạnh thuộc tính <strong>Material</strong>. Chọn <strong>New CanvasItemMaterial</strong>, nhấp vào material vừa tạo để chỉnh sửa, rồi đặt <strong>Blend Mode</strong> thành <strong>Add</strong>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2d_transforms.html" class="btn btn-neutral float-left" title="Transform của viewport và canvas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="2d_meshes.html" class="btn btn-neutral float-right" title="Mesh 2D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Biên dịch cho Web" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/compiling/compiling_for_web.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Yêu cầu: Để biên dịch export template cho Web, bạn cần những thứ sau: Emscripten 4.0.0+., Python 3.9+., Hệ thống build SCons 4.4+.. Build export template: Trước khi bắt đầu, hãy xác nhận rằng emcc ..." />
+<meta name="description" content="Yêu cầu: Để biên dịch export template cho Web, bạn cần những thứ sau: Emscripten 4.0.0+., Python 3.9+., Hệ thống build SCons 4.4+.. Build export template: Trước khi bắt đầu, hãy xác nhận rằng emcc ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Biên dịch cho Web &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Biên dịch chéo cho iOS trên Linux" href="cross-compiling_for_ios_on_linux.html" />
+    <link rel="prev" title="Biên dịch cho visionOS" href="compiling_for_visionos.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/compiling/compiling_for_web" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Build từ mã nguồn</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="getting_source.html">Lấy mã nguồn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introduction_to_the_buildsystem.html">Giới thiệu về hệ thống build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_windows.html">Biên dịch cho Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_linuxbsd.html">Biên dịch cho Linux, *BSD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_macos.html">Biên dịch cho macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_android.html">Biên dịch cho Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_ios.html">Biên dịch cho iOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_visionos.html">Biên dịch cho visionOS</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Biên dịch cho Web</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Yêu cầu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#building-export-templates">Build export template</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gdextension">GDExtension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#building-the-editor">Build trình chỉnh sửa</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cross-compiling_for_ios_on_linux.html">Biên dịch chéo cho iOS trên Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_with_dotnet.html">Biên dịch với .NET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_with_script_encryption_key.html">Biên dịch với khóa mã hóa PCK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizing_for_size.html">Tối ưu hóa kích thước bản build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/index.html">Debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profiling/index.html">Sử dụng profiler C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../handling_compatibility_breakages.html">Xử lý việc phá vỡ tương thích</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Phát triển engine</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Build từ mã nguồn</a></li>
+      <li class="breadcrumb-item active">Biên dịch cho Web</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="compiling-for-the-web">
+<span id="doc-compiling-for-web"></span><h1>Biên dịch cho Web<a class="headerlink" href="#compiling-for-the-web" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Trang này mô tả cách biên dịch các binary trình chỉnh sửa và export template HTML5 từ mã nguồn. Nếu bạn muốn xuất dự án sang HTML5, hãy đọc <a class="reference internal" href="../../../tutorials/export/exporting_for_web.html#doc-exporting-for-web"><span class="std std-ref">Xuất cho Web</span></a>.</p>
+</div>
+<section id="requirements">
+<h2>Yêu cầu<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<p>Để biên dịch export template cho Web, bạn cần những thứ sau:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://emscripten.org">Emscripten 4.0.0+</a>.</p></li>
+<li><p><a class="reference external" href="https://www.python.org/">Python 3.9+</a>.</p></li>
+<li><p>Hệ thống build <a class="reference external" href="https://scons.org/pages/download.html">SCons 4.4+</a>.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để lấy mã nguồn Godot cho việc biên dịch, xem <a class="reference internal" href="getting_source.html#doc-getting-source"><span class="std std-ref">Lấy mã nguồn</span></a>.</p>
+<p>Để có cái nhìn tổng quan về cách dùng SCons cho Godot, xem <a class="reference internal" href="introduction_to_the_buildsystem.html#doc-introduction-to-the-buildsystem"><span class="std std-ref">Giới thiệu về hệ thống build</span></a>.</p>
+</div>
+</section>
+<section id="building-export-templates">
+<h2>Build export template<a class="headerlink" href="#building-export-templates" title="Link to this heading"></a></h2>
+<p>Trước khi bắt đầu, hãy xác nhận rằng <code class="docutils literal notranslate"><span class="pre">emcc</span></code> có sẵn trong PATH. Việc này thường được Emscripten SDK cấu hình, ví dụ khi gọi <code class="docutils literal notranslate"><span class="pre">emsdk</span> <span class="pre">activate</span></code> và <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">./emsdk_env.sh</span></code>/<code class="docutils literal notranslate"><span class="pre">emsdk_env.bat</span></code>.</p>
+<p>Mở terminal và di chuyển tới thư mục gốc của mã nguồn engine. Sau đó yêu cầu SCons build nền tảng Web. Chỉ định <code class="docutils literal notranslate"><span class="pre">target</span></code> là <code class="docutils literal notranslate"><span class="pre">template_release</span></code> cho bản build release hoặc <code class="docutils literal notranslate"><span class="pre">template_debug</span></code> cho bản build debug:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release
+scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug
+</pre></div>
+</div>
+<p>Theo mặc định, <a class="reference internal" href="../../../tutorials/platform/web/javascript_bridge.html#doc-web-javascript-bridge"><span class="std std-ref">singleton JavaScriptBridge</span></a> sẽ được build vào engine. Các export template chính thức cũng bật singleton JavaScript. Vì các lệnh gọi <code class="docutils literal notranslate"><span class="pre">eval()</span></code> có thể gây lo ngại về bảo mật, bạn có thể dùng tùy chọn <code class="docutils literal notranslate"><span class="pre">javascript_eval</span></code> để build mà không có singleton này:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release<span class="w"> </span><span class="nv">javascript_eval</span><span class="o">=</span>no
+scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug<span class="w"> </span><span class="nv">javascript_eval</span><span class="o">=</span>no
+</pre></div>
+</div>
+<p>Theo mặc định, hỗ trợ luồng WebWorker được bật. Để tắt nó và chỉ dùng một luồng duy nhất, bạn có thể dùng tùy chọn <code class="docutils literal notranslate"><span class="pre">threads</span></code> để build web template không hỗ trợ luồng:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release<span class="w"> </span><span class="nv">threads</span><span class="o">=</span>no
+scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug<span class="w"> </span><span class="nv">threads</span><span class="o">=</span>no
+</pre></div>
+</div>
+<p>Giờ engine sẽ được Emscripten biên dịch sang WebAssembly. Khi hoàn tất, file kết quả sẽ được đặt trong thư mục con <code class="docutils literal notranslate"><span class="pre">bin</span></code>. Tên của nó là <code class="docutils literal notranslate"><span class="pre">godot.web.template_release.wasm32.zip</span></code> cho bản release hoặc <code class="docutils literal notranslate"><span class="pre">godot.web.template_debug.wasm32.zip</span></code> cho bản debug.</p>
+<p>Cuối cùng, đổi tên file zip thành <code class="docutils literal notranslate"><span class="pre">web_release.zip</span></code> cho template release:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mv<span class="w"> </span>bin/godot.web.template_release.wasm32.zip<span class="w"> </span>bin/web_release.zip
+</pre></div>
+</div>
+<p>Và <code class="docutils literal notranslate"><span class="pre">web_debug.zip</span></code> cho template debug:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mv<span class="w"> </span>bin/godot.web.template_debug.wasm32.zip<span class="w"> </span>bin/web_debug.zip
+</pre></div>
+</div>
+</section>
+<section id="gdextension">
+<h2>GDExtension<a class="headerlink" href="#gdextension" title="Link to this heading"></a></h2>
+<p>Các export template mặc định không bao gồm hỗ trợ GDExtension vì lý do hiệu năng và khả năng tương thích. Xem <a class="reference internal" href="../../../tutorials/export/exporting_for_web.html#doc-javascript-export-options"><span class="std std-ref">trang xuất</span></a> để biết thêm thông tin.</p>
+<p>Bạn có thể build export template với tùy chọn <code class="docutils literal notranslate"><span class="pre">dlink_enabled=yes</span></code> để bật hỗ trợ GDExtension:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">dlink_enabled</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release
+scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">dlink_enabled</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug
+</pre></div>
+</div>
+<p>Khi hoàn tất, file kết quả sẽ được đặt trong thư mục con <code class="docutils literal notranslate"><span class="pre">bin</span></code>. Tên của nó sẽ có thêm <code class="docutils literal notranslate"><span class="pre">_dlink</span></code>.</p>
+<p>Cuối cùng, đổi tên các file zip thành <code class="docutils literal notranslate"><span class="pre">web_dlink_release.zip</span></code> và <code class="docutils literal notranslate"><span class="pre">web_dlink_release.zip</span></code> cho template release:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mv<span class="w"> </span>bin/godot.web.template_release.wasm32.dlink.zip<span class="w"> </span>bin/web_dlink_release.zip
+mv<span class="w"> </span>bin/godot.web.template_debug.wasm32.dlink.zip<span class="w"> </span>bin/web_dlink_debug.zip
+</pre></div>
+</div>
+</section>
+<section id="building-the-editor">
+<h2>Build trình chỉnh sửa<a class="headerlink" href="#building-the-editor" title="Link to this heading"></a></h2>
+<p>Bạn cũng có thể build một phiên bản trình chỉnh sửa Godot chạy được trong trình duyệt. Phiên bản trình chỉnh sửa này không được khuyến nghị thay cho bản build native. Bạn có thể build trình chỉnh sửa bằng:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>web<span class="w"> </span><span class="nv">target</span><span class="o">=</span>editor
+</pre></div>
+</div>
+<p>Khi hoàn tất, file kết quả sẽ được đặt trong thư mục con <code class="docutils literal notranslate"><span class="pre">bin</span></code>. Tên của nó sẽ là <code class="docutils literal notranslate"><span class="pre">godot.web.editor.wasm32.zip</span></code>. Bạn có thể tải nội dung file zip lên web server và truy cập bằng trình duyệt để dùng trình chỉnh sửa.</p>
+<p>Tham khảo <a class="reference internal" href="../../../tutorials/export/exporting_for_web.html#doc-javascript-export-options"><span class="std std-ref">trang xuất</span></a> để biết các yêu cầu đối với web server.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Repository Godot có kèm một <a class="reference external" href="https://raw.githubusercontent.com/godotengine/godot/master/platform/web/serve.py">script Python để chạy web server cục bộ</a>. Script này có thể dùng để thử web editor trên máy cục bộ.</p>
+<p>Sau khi biên dịch trình chỉnh sửa, hãy giải nén file ZIP được tạo trong thư mục <code class="docutils literal notranslate"><span class="pre">bin/</span></code>, rồi chạy lệnh sau tại thư mục gốc của repository Godot:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># You may need to replace `python` with `python3` on some platforms.</span>
+python<span class="w"> </span>platform/web/serve.py
+</pre></div>
+</div>
+<p>Lệnh này sẽ phục vụ nội dung của thư mục <code class="docutils literal notranslate"><span class="pre">bin/</span></code> và tự động mở trình duyệt web mặc định. Trong trang vừa mở, hãy truy cập <code class="docutils literal notranslate"><span class="pre">godot.editor.html</span></code> và bạn có thể thử web editor theo cách này.</p>
+<p>Lưu ý rằng không nên dùng web server dựa trên Python này cho môi trường production. Thay vào đó, bạn nên dùng một web server phổ biến như Apache hoặc nginx.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="compiling_for_visionos.html" class="btn btn-neutral float-left" title="Biên dịch cho visionOS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="cross-compiling_for_ios_on_linux.html" class="btn btn-neutral float-right" title="Biên dịch chéo cho iOS trên Linux" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

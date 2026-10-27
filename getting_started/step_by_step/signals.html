@@ -1,0 +1,687 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Signal" name="keywords" translated="True" />
+<meta property="og:title" content="Sử dụng signal" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/step_by_step/signals.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong bài này, chúng ta sẽ tìm hiểu về signal. Đó là các thông điệp mà node phát ra khi có điều gì đó cụ thể xảy ra với chúng, chẳng hạn một nút được nhấn. Các node khác có thể kết nối với signal đ..." />
+<meta name="description" content="Trong bài này, chúng ta sẽ tìm hiểu về signal. Đó là các thông điệp mà node phát ra khi có điều gì đó cụ thể xảy ra với chúng, chẳng hạn một nút được nhấn. Các node khác có thể kết nối với signal đ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng signal &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Game 2D đầu tiên của bạn" href="../first_2d_game/index.html" />
+    <link rel="prev" title="Lắng nghe input của người chơi" href="scripting_player_input.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/step_by_step/signals" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Từng bước một</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="nodes_and_scenes.html">Node và Scene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instancing.html">Tạo instance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting_languages.html">Ngôn ngữ script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting_first_script.html">Tạo script đầu tiên</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting_player_input.html">Lắng nghe input của người chơi</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng signal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scene-setup">Thiết lập scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-a-signal-in-the-editor">Kết nối signal trong trình chỉnh sửa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-a-signal-via-code">Kết nối signal bằng code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-script">Script hoàn chỉnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-signals">Signal tùy chỉnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Tóm tắt</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Từng bước một</a></li>
+      <li class="breadcrumb-item active">Sử dụng signal</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-signals">
+<span id="doc-signals"></span><h1>Sử dụng signal<a class="headerlink" href="#using-signals" title="Link to this heading"></a></h1>
+<p>Trong bài này, chúng ta sẽ tìm hiểu về signal. Đó là các thông điệp mà node phát ra khi có điều gì đó cụ thể xảy ra với chúng, chẳng hạn một nút được nhấn. Các node khác có thể kết nối với signal đó và gọi một hàm khi sự kiện xảy ra.</p>
+<p>Signal là cơ chế ủy quyền được tích hợp sẵn trong Godot, cho phép một đối tượng trong game phản ứng với thay đổi ở đối tượng khác mà không cần tham chiếu lẫn nhau. Dùng signal giúp hạn chế <a class="reference external" href="https://en.wikipedia.org/wiki/Coupling_(computer_programming)">sự phụ thuộc (coupling)</a> và giữ cho code của bạn linh hoạt.</p>
+<p>Ví dụ, bạn có thể có một thanh máu trên màn hình thể hiện máu của người chơi. Khi người chơi bị sát thương hoặc dùng bình hồi máu, bạn muốn thanh máu phản ánh thay đổi đó. Để làm việc này trong Godot, bạn sẽ dùng signal.</p>
+<p>Giống như phương thức (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_callable.html" title="Class reference (English)"><span class="xref std std-ref">class_callable</span></a>), signal là kiểu first-class kể từ Godot 4.0. Điều này có nghĩa là bạn có thể truyền chúng trực tiếp làm đối số của phương thức mà không phải truyền dưới dạng chuỗi, giúp tự động hoàn thành tốt hơn và ít lỗi hơn. Xem tài liệu tham khảo lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_signal.html" title="Class reference (English)"><span class="xref std std-ref">class_signal</span></a> để biết danh sách những gì bạn có thể làm trực tiếp với kiểu Signal.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Như đã đề cập trong phần giới thiệu, signal là phiên bản của mẫu observer (observer pattern) trong Godot. Bạn có thể tìm hiểu thêm về nó trong <a class="reference external" href="https://gameprogrammingpatterns.com/observer.html">Game Programming Patterns</a>.</p>
+</div>
+<p>Giờ chúng ta sẽ dùng một signal để làm cho biểu tượng Godot ở bài trước (<a class="reference internal" href="scripting_player_input.html#doc-scripting-player-input"><span class="std std-ref">Lắng nghe input của người chơi</span></a>) di chuyển và dừng lại khi nhấn một nút.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong dự án này, chúng ta sẽ tuân theo quy ước đặt tên của Godot.</p>
+<ul class="simple">
+<li><p><strong>GDScript</strong>: Lớp (node) dùng PascalCase, biến và hàm dùng snake_case, hằng số dùng ALL_CAPS (Xem <a class="reference internal" href="../../tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide"><span class="std std-ref">Hướng dẫn phong cách GDScript</span></a>).</p></li>
+<li><p><strong>C#</strong>: Lớp, biến export và phương thức dùng PascalCase, trường private dùng _camelCase, biến cục bộ và tham số dùng camelCase (Xem <a class="reference internal" href="../../tutorials/scripting/c_sharp/c_sharp_style_guide.html#doc-c-sharp-styleguide"><span class="std std-ref">Hướng dẫn phong cách C#</span></a>). Hãy cẩn thận gõ chính xác tên phương thức khi kết nối signal.</p></li>
+</ul>
+</div>
+<section id="scene-setup">
+<h2>Thiết lập scene<a class="headerlink" href="#scene-setup" title="Link to this heading"></a></h2>
+<p>Để thêm một nút vào game, chúng ta sẽ tạo một scene mới chứa cả một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_button.html" title="Class reference (English)"><span class="xref std std-ref">Button</span></a> và scene <code class="docutils literal notranslate"><span class="pre">sprite_2d.tscn</span></code> mà chúng ta đã tạo trong bài <a class="reference internal" href="scripting_first_script.html#doc-scripting-first-script"><span class="std std-ref">Tạo script đầu tiên</span></a>.</p>
+<p>Tạo một scene mới bằng cách vào menu <span class="role-menu role-ui">Scene &gt; New Scene</span>.</p>
+<img alt="../../_images/signals_01_new_scene.webp" src="../../_images/signals_01_new_scene.webp" />
+<p>Trong dock Scene, nhấp nút <span class="role-button role-ui">2D Scene</span>. Việc này sẽ thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node2d.html" title="Class reference (English)"><span class="xref std std-ref">Node2D</span></a> làm node gốc.</p>
+<img alt="../../_images/signals_02_2d_scene.webp" src="../../_images/signals_02_2d_scene.webp" />
+<p>Trong FileSystem dock, nhấp và kéo file <code class="docutils literal notranslate"><span class="pre">sprite_2d.tscn</span></code> bạn đã lưu trước đó thả vào Node2D để tạo instance cho nó.</p>
+<img alt="../../_images/signals_03_dragging_scene.webp" src="../../_images/signals_03_dragging_scene.webp" />
+<p>Chúng ta muốn thêm một node khác ngang hàng với Sprite2D. Để làm vậy, nhấp chuột phải vào Node2D và chọn <span class="role-button role-ui">Add Child Node</span>.</p>
+<img alt="../../_images/signals_04_add_child_node.webp" src="../../_images/signals_04_add_child_node.webp" />
+<p>Tìm node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_button.html" title="Class reference (English)"><span class="xref std std-ref">Button</span></a> và thêm nó vào.</p>
+<img alt="../../_images/signals_05_add_button.webp" src="../../_images/signals_05_add_button.webp" />
+<p>Mặc định node này khá nhỏ. Nhấp và kéo tay cầm ở góc dưới bên phải của Button trong viewport để thay đổi kích thước.</p>
+<img alt="../../_images/signals_06_drag_button.png" src="../../_images/signals_06_drag_button.png" />
+<p>Nếu bạn không thấy các tay cầm, hãy đảm bảo công cụ chọn (select) đang được bật trên thanh công cụ.</p>
+<img alt="../../_images/signals_07_select_tool.webp" src="../../_images/signals_07_select_tool.webp" />
+<p>Nhấp và kéo chính nút đó để di chuyển nó lại gần sprite.</p>
+<p>Bạn cũng có thể ghi nhãn lên Button bằng cách chỉnh sửa thuộc tính <span class="role-ui">Text</span> của nó trong <span class="role-ui">Inspector</span>. Nhập <code class="docutils literal notranslate"><span class="pre">Toggle</span> <span class="pre">motion</span></code>.</p>
+<img alt="../../_images/signals_08_toggle_motion_text.webp" src="../../_images/signals_08_toggle_motion_text.webp" />
+<p>Cây scene và viewport của bạn sẽ trông như thế này.</p>
+<img alt="../../_images/signals_09_scene_setup.webp" src="../../_images/signals_09_scene_setup.webp" />
+<p>Lưu scene vừa tạo thành <code class="docutils literal notranslate"><span class="pre">node_2d.tscn</span></code> nếu bạn chưa làm. Sau đó bạn có thể chạy nó bằng <kbd class="kbd docutils literal notranslate">F6</kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">R</kbd></kbd> trên macOS). Hiện tại, nút sẽ hiển thị nhưng sẽ không có gì xảy ra nếu bạn nhấn vào.</p>
+</section>
+<section id="connecting-a-signal-in-the-editor">
+<h2>Kết nối signal trong trình chỉnh sửa<a class="headerlink" href="#connecting-a-signal-in-the-editor" title="Link to this heading"></a></h2>
+<p>Ở đây, chúng ta muốn kết nối signal &quot;pressed&quot; của Button với Sprite2D, và muốn gọi một hàm mới để bật/tắt chuyển động của nó. Chúng ta cần có một script được gắn vào node Sprite2D, điều mà chúng ta đã làm ở bài trước.</p>
+<p>Bạn có thể kết nối signal trong dock <span class="role-ui">Signals</span>. Chọn node Button và, ở bên phải trình chỉnh sửa, nhấp vào tab tên là <span class="role-ui">Signals</span> bên cạnh <span class="role-ui">Inspector</span>.</p>
+<img alt="../../_images/signals_10_node_dock.webp" src="../../_images/signals_10_node_dock.webp" />
+<p>Dock này hiển thị danh sách các signal có sẵn trên node đang được chọn.</p>
+<img alt="../../_images/signals_11_pressed_signals.webp" src="../../_images/signals_11_pressed_signals.webp" />
+<p>Nhấp đúp vào signal &quot;pressed&quot; để mở cửa sổ kết nối node.</p>
+<img alt="../../_images/signals_12_node_connection.webp" src="../../_images/signals_12_node_connection.webp" />
+<p>Tại đó, bạn có thể kết nối signal với node Sprite2D. Node cần có một phương thức nhận, tức là hàm mà Godot sẽ gọi khi Button phát ra signal. Trình chỉnh sửa sẽ tạo sẵn một hàm cho bạn. Theo quy ước, chúng ta đặt tên các phương thức callback này là &quot;_on_node_name_signal_name&quot;. Ở đây, nó sẽ là &quot;_on_button_pressed&quot;.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi kết nối signal qua dock Signals của trình chỉnh sửa, bạn có thể dùng hai chế độ. Chế độ đơn giản chỉ cho phép bạn kết nối tới các node đã được gắn script và sẽ tạo một hàm callback mới trên chúng.</p>
+<img alt="../../_images/signals_advanced_connection_window.webp" src="../../_images/signals_advanced_connection_window.webp" />
+<p>Chế độ nâng cao cho phép bạn kết nối tới bất kỳ node nào và bất kỳ hàm có sẵn nào, thêm đối số cho callback và thiết lập các tùy chọn. Bạn có thể chuyển đổi chế độ ở góc dưới bên trái cửa sổ bằng cách nhấp nút <span class="role-button role-ui">Advanced</span>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn dùng trình soạn thảo bên ngoài (chẳng hạn VS Code), tính năng tự động sinh code này có thể không hoạt động. Khi đó, bạn cần kết nối signal bằng code như được giải thích ở phần tiếp theo.</p>
+</div>
+<p>Nhấp nút <span class="role-button role-ui">Connect</span> để hoàn tất kết nối signal và chuyển sang workspace <span class="role-ui">Script</span>. Bạn sẽ thấy phương thức mới với biểu tượng kết nối ở lề trái.</p>
+<img alt="../../_images/signals_13_signals_connection_icon.webp" src="../../_images/signals_13_signals_connection_icon.webp" />
+<p>Nếu bạn nhấp vào biểu tượng, một cửa sổ sẽ hiện ra và hiển thị thông tin về kết nối. Tính năng này chỉ có khi kết nối node trong trình chỉnh sửa.</p>
+<img alt="../../_images/signals_14_signals_connection_info.webp" src="../../_images/signals_14_signals_connection_info.webp" />
+<p>Hãy thay dòng chứa từ khóa <code class="docutils literal notranslate"><span class="pre">pass</span></code> bằng code sẽ bật/tắt chuyển động của node.</p>
+<p>Sprite2D của chúng ta di chuyển nhờ code trong hàm <code class="docutils literal notranslate"><span class="pre">_process()</span></code>. Godot cung cấp một phương thức để bật/tắt việc xử lý: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-set-process" title="Class reference (English)"><span class="xref std std-ref">Node.set_process()</span></a>. Một phương thức khác của lớp Node, <code class="docutils literal notranslate"><span class="pre">is_processing()</span></code>, trả về <code class="docutils literal notranslate"><span class="pre">true</span></code> nếu xử lý idle đang hoạt động. Chúng ta có thể dùng từ khóa <code class="docutils literal notranslate"><span class="pre">not</span></code> để đảo ngược giá trị.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_button_pressed</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">set_process</span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="nf">is_processing</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnButtonPressed</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">SetProcess</span><span class="p">(</span><span class="o">!</span><span class="n">IsProcessing</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hàm này sẽ bật/tắt việc xử lý, và qua đó bật/tắt chuyển động của biểu tượng mỗi khi nhấn nút.</p>
+<p>Trước khi thử game, chúng ta cần đơn giản hóa hàm <code class="docutils literal notranslate"><span class="pre">_process()</span></code> để node tự động di chuyển và không chờ đầu vào từ người dùng. Hãy thay nó bằng đoạn code sau, mà chúng ta đã thấy ở hai bài trước:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">angular_speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="o">.</span><span class="vi">UP</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">_angularSpeed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector2</span><span class="p">.</span><span class="n">Up</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Rotation</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Code <code class="docutils literal notranslate"><span class="pre">sprite_2d.gd</span></code> hoàn chỉnh của bạn sẽ trông như sau.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Sprite2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span>
+<span class="k">var</span><span class="w"> </span><span class="n">angular_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">PI</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">angular_speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="o">.</span><span class="vi">UP</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_button_pressed</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">set_process</span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="nf">is_processing</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MySprite2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Sprite2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_angularSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">_angularSpeed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector2</span><span class="p">.</span><span class="n">Up</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Rotation</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnButtonPressed</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SetProcess</span><span class="p">(</span><span class="o">!</span><span class="n">IsProcessing</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chạy scene hiện tại bằng cách nhấn <kbd class="kbd docutils literal notranslate">F6</kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">R</kbd></kbd> trên macOS), và nhấp nút để thấy sprite bắt đầu và dừng lại.</p>
+</section>
+<section id="connecting-a-signal-via-code">
+<h2>Kết nối signal bằng code<a class="headerlink" href="#connecting-a-signal-via-code" title="Link to this heading"></a></h2>
+<p>Bạn có thể kết nối signal bằng code thay vì dùng trình chỉnh sửa. Điều này là cần thiết khi bạn tạo node hoặc tạo instance scene bên trong script.</p>
+<p>Hãy dùng một node khác ở đây. Godot có node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_timer.html" title="Class reference (English)"><span class="xref std std-ref">Timer</span></a> rất hữu ích để triển khai thời gian hồi chiêu, nạp đạn cho vũ khí, và nhiều thứ khác.</p>
+<p>Quay lại không gian làm việc 2D. Bạn có thể nhấp vào chữ &quot;2D&quot; ở phía trên cửa sổ hoặc nhấn <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">F1</kbd></kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">1</kbd></kbd> trên macOS).</p>
+<p>Trong Scene dock, nhấp chuột phải vào node Sprite2D và thêm một node con mới. Tìm Timer và thêm node tương ứng. Scene của bạn giờ sẽ trông như thế này.</p>
+<img alt="../../_images/signals_15_scene_tree.webp" src="../../_images/signals_15_scene_tree.webp" />
+<p>Khi node Timer đang được chọn, đi đến <span class="role-ui">Inspector</span> và bật thuộc tính <span class="role-ui">Autostart</span>.</p>
+<img alt="../../_images/signals_18_timer_autostart.webp" src="../../_images/signals_18_timer_autostart.webp" />
+<p>Nhấp vào biểu tượng script bên cạnh Sprite2D để quay lại không gian làm việc scripting.</p>
+<img alt="../../_images/signals_16_click_script.webp" src="../../_images/signals_16_click_script.webp" />
+<p>Chúng ta cần thực hiện hai thao tác để kết nối các node bằng code:</p>
+<ol class="arabic simple">
+<li><p>Lấy tham chiếu đến Timer từ Sprite2D.</p></li>
+<li><p>Gọi phương thức <code class="docutils literal notranslate"><span class="pre">connect()</span></code> trên signal &quot;timeout&quot; của Timer.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để kết nối với một signal bằng code, bạn cần gọi phương thức <code class="docutils literal notranslate"><span class="pre">connect()</span></code> của signal mà bạn muốn lắng nghe. Trong trường hợp này, chúng ta muốn lắng nghe signal &quot;timeout&quot; của Timer.</p>
+</div>
+<p>Chúng ta muốn kết nối signal khi scene được tạo instance, và có thể làm điều đó bằng hàm có sẵn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-ready" title="Class reference (English)"><span class="xref std std-ref">Node._ready()</span></a>, được engine gọi tự động khi một node đã được tạo instance hoàn chỉnh.</p>
+<p>Để lấy tham chiếu đến một node tương đối với node hiện tại, chúng ta dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-get-node" title="Class reference (English)"><span class="xref std std-ref">Node.get_node()</span></a>. Chúng ta có thể lưu tham chiếu đó vào một biến.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;Timer&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Timer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Timer&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">get_node()</span></code> tìm trong các node con của Sprite2D và lấy node theo tên. Ví dụ, nếu bạn đổi tên node Timer thành &quot;BlinkingTimer&quot; trong trình chỉnh sửa, bạn sẽ phải đổi lời gọi thành <code class="docutils literal notranslate"><span class="pre">get_node(&quot;BlinkingTimer&quot;)</span></code>.</p>
+<p>Giờ chúng ta có thể kết nối Timer với Sprite2D trong hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;Timer&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">timer</span><span class="o">.</span><span class="vi">timeout</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_timer_timeout</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Timer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Timer&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">timer</span><span class="p">.</span><span class="n">Timeout</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnTimerTimeout</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dòng này có nghĩa là: chúng ta kết nối signal &quot;timeout&quot; của Timer với node mà script được gắn vào. Khi Timer phát ra <code class="docutils literal notranslate"><span class="pre">timeout</span></code>, chúng ta muốn gọi hàm <code class="docutils literal notranslate"><span class="pre">_on_timer_timeout()</span></code>, hàm mà chúng ta cần định nghĩa. Hãy thêm nó vào cuối script và dùng nó để bật/tắt trạng thái hiển thị của sprite.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Theo quy ước, chúng ta đặt tên các phương thức callback này trong GDScript là &quot;_on_node_name_signal_name&quot; và trong C# là &quot;OnNodeNameSignalName&quot;. Ở đây, nó sẽ là &quot;_on_timer_timeout&quot; với GDScript và OnTimerTimeout() với C#.</p>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="n">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">visible</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnTimerTimeout</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">Visible</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">visible</span></code> là một giá trị boolean điều khiển việc hiển thị node. Dòng <code class="docutils literal notranslate"><span class="pre">visible</span> <span class="pre">=</span> <span class="pre">not</span> <span class="pre">visible</span></code> sẽ đảo giá trị. Nếu <code class="docutils literal notranslate"><span class="pre">visible</span></code> là <code class="docutils literal notranslate"><span class="pre">true</span></code>, nó sẽ thành <code class="docutils literal notranslate"><span class="pre">false</span></code>, và ngược lại.</p>
+<p>Nếu bây giờ bạn chạy scene Node2D, bạn sẽ thấy sprite nhấp nháy bật tắt sau mỗi giây.</p>
+</section>
+<section id="complete-script">
+<h2>Script hoàn chỉnh<a class="headerlink" href="#complete-script" title="Link to this heading"></a></h2>
+<p>Vậy là xong bản demo nhỏ về biểu tượng Godot di chuyển và nhấp nháy! Dưới đây là file <code class="docutils literal notranslate"><span class="pre">sprite_2d.gd</span></code> hoàn chỉnh để bạn tham khảo.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Sprite2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span>
+<span class="k">var</span><span class="w"> </span><span class="n">angular_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">PI</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;Timer&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">timer</span><span class="o">.</span><span class="vi">timeout</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_timer_timeout</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">angular_speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="o">.</span><span class="vi">UP</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_button_pressed</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">set_process</span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="nf">is_processing</span><span class="p">())</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="n">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">visible</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MySprite2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Sprite2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_angularSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Timer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Timer&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">timer</span><span class="p">.</span><span class="n">Timeout</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnTimerTimeout</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">_angularSpeed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector2</span><span class="p">.</span><span class="n">Up</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Rotation</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnButtonPressed</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SetProcess</span><span class="p">(</span><span class="o">!</span><span class="n">IsProcessing</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnTimerTimeout</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">Visible</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="custom-signals">
+<h2>Signal tùy chỉnh<a class="headerlink" href="#custom-signals" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Phần này là tài liệu tham khảo về cách định nghĩa và sử dụng signal của riêng bạn, và không dựa trên dự án đã tạo ở các bài trước.</p>
+</div>
+<p>Bạn có thể định nghĩa signal tùy chỉnh trong script. Ví dụ, giả sử bạn muốn hiển thị màn hình game over khi máu của người chơi về 0. Để làm vậy, bạn có thể định nghĩa một signal tên là &quot;died&quot; hoặc &quot;health_depleted&quot; khi máu của họ về 0.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">signal</span><span class="w"> </span><span class="n">health_depleted</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HealthDepletedEventHandler</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_health</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vì signal đại diện cho các sự kiện vừa xảy ra, chúng ta thường dùng một động từ hành động ở thì quá khứ để đặt tên cho chúng.</p>
+</div>
+<p>Signal của bạn hoạt động giống như các signal có sẵn: chúng xuất hiện trong tab <span class="role-ui">Signals</span> và bạn có thể kết nối với chúng như bất kỳ signal nào khác.</p>
+<img alt="../../_images/signals_17_custom_signal.webp" src="../../_images/signals_17_custom_signal.webp" />
+<p>Để phát ra một signal trong script, hãy gọi <code class="docutils literal notranslate"><span class="pre">emit()</span></code> trên signal đó.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">take_damage</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
+<span class="w">    </span><span class="n">health</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">amount</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">        </span><span class="n">health_depleted</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">TakeDamage</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_health</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">amount</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_health</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">HealthDepleted</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Một signal có thể khai báo thêm một hoặc nhiều đối số (không bắt buộc). Hãy chỉ định tên các đối số trong cặp dấu ngoặc đơn:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">signal</span><span class="w"> </span><span class="nf">health_changed</span><span class="p">(</span><span class="n">old_value</span><span class="p">,</span><span class="w"> </span><span class="n">new_value</span><span class="p">)</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HealthChangedEventHandler</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">oldValue</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">newValue</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_health</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các đối số của signal hiển thị trong dock Signals của trình chỉnh sửa, và Godot có thể dùng chúng để sinh các hàm callback cho bạn. Tuy nhiên, bạn vẫn có thể phát đi bao nhiêu đối số tùy ý khi phát signal. Vì vậy, việc phát đúng giá trị là trách nhiệm của bạn.</p>
+</div>
+<p>Để phát ra giá trị kèm theo signal, hãy thêm chúng làm đối số bổ sung cho hàm <code class="docutils literal notranslate"><span class="pre">emit()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-10-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-10-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-10-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">take_damage</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">old_health</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">health</span>
+<span class="w">    </span><span class="n">health</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">amount</span>
+<span class="w">    </span><span class="n">health_changed</span><span class="o">.</span><span class="nf">emit</span><span class="p">(</span><span class="n">old_health</span><span class="p">,</span><span class="w"> </span><span class="n">health</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">TakeDamage</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">oldHealth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_health</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_health</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">amount</span><span class="p">;</span>
+<span class="w">    </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">HealthChanged</span><span class="p">,</span><span class="w"> </span><span class="n">oldHealth</span><span class="p">,</span><span class="w"> </span><span class="n">_health</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="summary">
+<h2>Tóm tắt<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>Mọi node trong Godot đều phát ra signal khi có điều gì đó cụ thể xảy ra với chúng, chẳng hạn một nút được nhấn. Các node khác có thể kết nối với từng signal riêng lẻ và phản ứng với các sự kiện được chọn.</p>
+<p>Signal có rất nhiều công dụng. Với chúng, bạn có thể phản ứng khi một node vào hoặc rời khỏi thế giới game, khi có va chạm, khi nhân vật vào hoặc rời một khu vực, khi một phần tử giao diện thay đổi kích thước, và nhiều hơn nữa.</p>
+<p>Ví dụ, một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_area2d.html" title="Class reference (English)"><span class="xref std std-ref">Area2D</span></a> đại diện cho đồng xu sẽ phát ra signal <code class="docutils literal notranslate"><span class="pre">body_entered</span></code> mỗi khi physics body của người chơi đi vào collision shape của nó, cho phép bạn biết khi nào người chơi đã nhặt được nó.</p>
+<p>Trong phần tiếp theo, <a class="reference internal" href="../first_2d_game/index.html#doc-your-first-2d-game"><span class="std std-ref">Game 2D đầu tiên của bạn</span></a>, bạn sẽ tạo một game 2D hoàn chỉnh và áp dụng mọi thứ đã học từ đầu đến giờ vào thực tế.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scripting_player_input.html" class="btn btn-neutral float-left" title="Lắng nghe input của người chơi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../first_2d_game/index.html" class="btn btn-neutral float-right" title="Game 2D đầu tiên của bạn" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

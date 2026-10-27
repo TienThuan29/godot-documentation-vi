@@ -1,0 +1,764 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng nhiều luồng" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/using_multiple_threads.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Luồng: Luồng cho phép thực thi code đồng thời. Nó cho phép chuyển bớt công việc khỏi luồng chính. Godot hỗ trợ luồng và cung cấp nhiều hàm tiện dụng để sử dụng chúng. Tạo một Thread: Để tạo một luồ..." />
+<meta name="description" content="Luồng: Luồng cho phép thực thi code đồng thời. Nó cho phép chuyển bớt công việc khỏi luồng chính. Godot hỗ trợ luồng và cung cấp nhiều hàm tiện dụng để sử dụng chúng. Tạo một Thread: Để tạo một luồ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng nhiều luồng &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Các API an toàn luồng (thread-safe)" href="thread_safe_apis.html" />
+    <link rel="prev" title="Điều khiển hàng nghìn con cá bằng Particles" href="vertex_animation/controlling_thousands_of_fish.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/using_multiple_threads" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gpu">GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#threads">Luồng</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sử dụng nhiều luồng</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#threads">Luồng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-thread">Tạo một Thread</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mutexes">Mutex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#semaphores">Semaphore</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="thread_safe_apis.html">Các API an toàn luồng (thread-safe)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Sử dụng nhiều luồng</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-multiple-threads">
+<span id="doc-using-multiple-threads"></span><h1>Sử dụng nhiều luồng<a class="headerlink" href="#using-multiple-threads" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để xem danh sách các primitive đa luồng trong C++, xem <a class="reference internal" href="../../engine_details/architecture/core_types.html#doc-core-concurrency-types"><span class="std std-ref">Đa luồng / Đồng thời</span></a>.</p>
+</div>
+<section id="threads">
+<h2>Luồng<a class="headerlink" href="#threads" title="Link to this heading"></a></h2>
+<p>Luồng cho phép thực thi code đồng thời. Nó cho phép chuyển bớt công việc khỏi luồng chính.</p>
+<p>Godot hỗ trợ luồng và cung cấp nhiều hàm tiện dụng để sử dụng chúng.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu dùng các ngôn ngữ khác (C#, C++), có thể dễ hơn khi dùng các lớp luồng mà ngôn ngữ đó hỗ trợ.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Trước khi dùng một lớp tích hợp sẵn trong một luồng, hãy đọc <a class="reference internal" href="thread_safe_apis.html#doc-thread-safe-apis"><span class="std std-ref">Các API an toàn luồng (thread-safe)</span></a> trước để kiểm tra xem nó có thể được dùng an toàn trong luồng hay không.</p>
+</div>
+</section>
+<section id="creating-a-thread">
+<h2>Tạo một Thread<a class="headerlink" href="#creating-a-thread" title="Link to this heading"></a></h2>
+<p>Để tạo một luồng, hãy dùng đoạn mã sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QysrIC5IIEZpbGU=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QysrIC5IIEZpbGU=" name="QysrIC5IIEZpbGU=" role="tab" tabindex="-1">C++ .H File</button><button aria-controls="panel-0-QysrIC5DUFAgRmlsZQ==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QysrIC5DUFAgRmlsZQ==" name="QysrIC5DUFAgRmlsZQ==" role="tab" tabindex="-1">C++ .CPP File</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">thread</span><span class="p">:</span><span class="w"> </span><span class="nb">Thread</span>
+
+<span class="c1"># The thread will start here.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Thread</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># You can bind multiple arguments to a function Callable.</span>
+<span class="w">    </span><span class="n">thread</span><span class="o">.</span><span class="nf">start</span><span class="p">(</span><span class="n">_thread_function</span><span class="o">.</span><span class="nf">bind</span><span class="p">(</span><span class="s2">&quot;Wafflecopter&quot;</span><span class="p">))</span>
+
+
+<span class="c1"># Run here and exit.</span>
+<span class="c1"># The argument is the bound data passed from start().</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_thread_function</span><span class="p">(</span><span class="n">userdata</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Print the userdata (&quot;Wafflecopter&quot;)</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m a thread! Userdata is: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">userdata</span><span class="p">)</span>
+
+
+<span class="c1"># Thread must be disposed (or &quot;joined&quot;), for portability.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_exit_tree</span><span class="p">():</span>
+<span class="w">    </span><span class="n">thread</span><span class="o">.</span><span class="nf">wait_to_finish</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QysrIC5IIEZpbGU=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QysrIC5IIEZpbGU=" name="QysrIC5IIEZpbGU=" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/node.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/thread.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">MultithreadingDemo</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">MultithreadingDemo</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Thread</span><span class="o">&gt;</span><span class="w"> </span><span class="n">worker</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="o">:</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<span class="w">        </span><span class="n">MultithreadingDemo</span><span class="p">();</span>
+<span class="w">        </span><span class="o">~</span><span class="n">MultithreadingDemo</span><span class="p">();</span>
+
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">demo_threaded_function</span><span class="p">();</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace godot</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QysrIC5DUFAgRmlsZQ==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QysrIC5DUFAgRmlsZQ==" name="QysrIC5DUFAgRmlsZQ==" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;multithreading_demo.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/engine.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/os.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/time.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/core/class_db.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/variant/utility_functions.hpp&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MultithreadingDemo::_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;threaded_function&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MultithreadingDemo</span><span class="o">::</span><span class="n">demo_threaded_function</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MultithreadingDemo::_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Prevents this from running in the editor, only during game mode. In Godot 4.3+ use Runtime classes.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Engine</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">is_editor_hint</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_READY</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">worker</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">            </span><span class="n">worker</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">(</span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MultithreadingDemo</span><span class="o">::</span><span class="n">demo_threaded_function</span><span class="p">),</span><span class="w"> </span><span class="n">Thread</span><span class="o">::</span><span class="n">PRIORITY_NORMAL</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_EXIT_TREE</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Thread must be disposed (or &quot;joined&quot;), for portability.</span>
+<span class="w">            </span><span class="c1">// Wait until it exits.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">worker</span><span class="p">.</span><span class="n">is_valid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">worker</span><span class="o">-&gt;</span><span class="n">wait_to_finish</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">            </span><span class="n">worker</span><span class="p">.</span><span class="n">unref</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">MultithreadingDemo</span><span class="o">::</span><span class="n">MultithreadingDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Initialize any variables here.</span>
+<span class="p">}</span>
+
+<span class="n">MultithreadingDemo</span><span class="o">::~</span><span class="n">MultithreadingDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Add your cleanup here.</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">MultithreadingDemo</span><span class="o">::</span><span class="n">demo_threaded_function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;demo_threaded_function started!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">get_ticks_msec</span><span class="p">();</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">Time</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">get_ticks_msec</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">5000</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">OS</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">delay_msec</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">        </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;demo_threaded_function counted to: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi đó, hàm của bạn sẽ chạy trong một luồng riêng cho đến khi nó trả về. Ngay cả khi hàm đã trả về, luồng vẫn phải thu hồi nó, vì vậy hãy gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_thread.html#class-thread-method-wait-to-finish" title="Class reference (English)"><span class="xref std std-ref">Thread.wait_to_finish()</span></a>, hàm này sẽ đợi cho đến khi luồng hoàn thành (nếu chưa xong), rồi giải phóng nó đúng cách.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Tạo luồng là một thao tác chậm, đặc biệt trên Windows. Để tránh chi phí hiệu năng không cần thiết, hãy đảm bảo tạo luồng trước khi cần xử lý nặng thay vì tạo luồng ngay lúc cần.</p>
+<p>Ví dụ, nếu bạn cần nhiều luồng trong khi chơi, bạn có thể tạo luồng trong lúc màn chơi đang tải và chỉ thực sự bắt đầu xử lý với chúng sau đó.</p>
+<p>Ngoài ra, việc khóa và mở khóa mutex cũng có thể là một thao tác tốn kém. Việc khóa nên được thực hiện cẩn thận; tránh khóa quá thường xuyên (hoặc quá lâu).</p>
+</div>
+</section>
+<section id="mutexes">
+<span id="doc-using-multiple-threads-mutexes"></span><h2>Mutex<a class="headerlink" href="#mutexes" title="Link to this heading"></a></h2>
+<p>Việc truy cập đối tượng hoặc dữ liệu từ nhiều luồng không phải lúc nào cũng được hỗ trợ (nếu bạn làm vậy, nó sẽ gây ra hành vi không mong muốn hoặc crash). Hãy đọc tài liệu <a class="reference internal" href="thread_safe_apis.html#doc-thread-safe-apis"><span class="std std-ref">Các API an toàn luồng (thread-safe)</span></a> để hiểu những API nào của engine hỗ trợ truy cập từ nhiều luồng.</p>
+<p>Khi xử lý dữ liệu của riêng bạn hoặc gọi các hàm của riêng bạn, theo nguyên tắc, hãy cố tránh truy cập trực tiếp cùng một dữ liệu từ các luồng khác nhau. Bạn có thể gặp vấn đề đồng bộ hóa, vì dữ liệu không phải lúc nào cũng được cập nhật giữa các nhân CPU khi bị sửa đổi. Hãy luôn dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mutex.html" title="Class reference (English)"><span class="xref std std-ref">Mutex</span></a> khi truy cập một phần dữ liệu từ các luồng khác nhau.</p>
+<p>Khi gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mutex.html#class-mutex-method-lock" title="Class reference (English)"><span class="xref std std-ref">Mutex.lock()</span></a>, một luồng đảm bảo rằng tất cả các luồng khác sẽ bị chặn (đưa vào trạng thái tạm dừng) nếu chúng cố <em>khóa</em> cùng mutex đó. Khi mutex được mở khóa bằng cách gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mutex.html#class-mutex-method-unlock" title="Class reference (English)"><span class="xref std std-ref">Mutex.unlock()</span></a>, các luồng khác sẽ được phép tiếp tục khóa (nhưng chỉ từng luồng một).</p>
+<p>Đây là một ví dụ sử dụng Mutex:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QysrIC5IIEZpbGU=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QysrIC5IIEZpbGU=" name="QysrIC5IIEZpbGU=" role="tab" tabindex="-1">C++ .H File</button><button aria-controls="panel-1-QysrIC5DUFAgRmlsZQ==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QysrIC5DUFAgRmlsZQ==" name="QysrIC5DUFAgRmlsZQ==" role="tab" tabindex="-1">C++ .CPP File</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">var</span><span class="w"> </span><span class="n">mutex</span><span class="p">:</span><span class="w"> </span><span class="nb">Mutex</span>
+<span class="k">var</span><span class="w"> </span><span class="n">thread</span><span class="p">:</span><span class="w"> </span><span class="nb">Thread</span>
+
+
+<span class="c1"># The thread will start here.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">mutex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Mutex</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Thread</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">thread</span><span class="o">.</span><span class="nf">start</span><span class="p">(</span><span class="n">_thread_function</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Increase value, protect it with Mutex.</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">    </span><span class="n">counter</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+
+<span class="c1"># Increment the value from the thread, too.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_thread_function</span><span class="p">():</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">    </span><span class="n">counter</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+
+<span class="c1"># Thread must be disposed (or &quot;joined&quot;), for portability.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_exit_tree</span><span class="p">():</span>
+<span class="w">    </span><span class="n">thread</span><span class="o">.</span><span class="nf">wait_to_finish</span><span class="p">()</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Counter is: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="p">)</span><span class="w"> </span><span class="c1"># Should be 2.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QysrIC5IIEZpbGU=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QysrIC5IIEZpbGU=" name="QysrIC5IIEZpbGU=" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/mutex.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/node.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/thread.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">MutexDemo</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">MutexDemo</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mutex</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Thread</span><span class="o">&gt;</span><span class="w"> </span><span class="kr">thread</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="o">:</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<span class="w">        </span><span class="n">MutexDemo</span><span class="p">();</span>
+<span class="w">        </span><span class="o">~</span><span class="n">MutexDemo</span><span class="p">();</span>
+
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">thread_function</span><span class="p">();</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace godot</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QysrIC5DUFAgRmlsZQ==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QysrIC5DUFAgRmlsZQ==" name="QysrIC5DUFAgRmlsZQ==" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mutex_demo.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/engine.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/time.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/core/class_db.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/variant/utility_functions.hpp&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MutexDemo::_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;thread_function&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MutexDemo</span><span class="o">::</span><span class="n">thread_function</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MutexDemo::_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Prevents this from running in the editor, only during game mode.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Engine</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">is_editor_hint</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_READY</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Mutex Demo Counter is starting at: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="p">);</span>
+<span class="w">            </span><span class="n">mutex</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">            </span><span class="kr">thread</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">            </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">(</span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MutexDemo</span><span class="o">::</span><span class="n">thread_function</span><span class="p">),</span><span class="w"> </span><span class="n">Thread</span><span class="o">::</span><span class="n">PRIORITY_NORMAL</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// Increase value, protect it with Mutex.</span>
+<span class="w">            </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">            </span><span class="n">counter</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Mutex Demo Counter is &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot; after adding with Mutex protection.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_EXIT_TREE</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Thread must be disposed (or &quot;joined&quot;), for portability.</span>
+<span class="w">            </span><span class="c1">// Wait until it exits.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kr">thread</span><span class="p">.</span><span class="n">is_valid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">wait_to_finish</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="kr">thread</span><span class="p">.</span><span class="n">unref</span><span class="p">();</span>
+
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Mutex Demo Counter is &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot; at EXIT_TREE.&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Should be 2.</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">MutexDemo</span><span class="o">::</span><span class="n">MutexDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Initialize any variables here.</span>
+<span class="p">}</span>
+
+<span class="n">MutexDemo</span><span class="o">::~</span><span class="n">MutexDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Add your cleanup here.</span>
+<span class="p">}</span>
+
+<span class="c1">// Increment the value from the thread, too.</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">MutexDemo</span><span class="o">::</span><span class="n">thread_function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">    </span><span class="n">counter</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="semaphores">
+<h2>Semaphore<a class="headerlink" href="#semaphores" title="Link to this heading"></a></h2>
+<p>Đôi khi bạn muốn luồng của mình làm việc <em>&quot;theo yêu cầu&quot;</em>. Nói cách khác, bạn báo cho nó khi nào cần làm việc và để nó tạm dừng khi không làm gì. Để làm điều này, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_semaphore.html" title="Class reference (English)"><span class="xref std std-ref">Semaphore</span></a> được sử dụng. Hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_semaphore.html#class-semaphore-method-wait" title="Class reference (English)"><span class="xref std std-ref">Semaphore.wait()</span></a> được dùng trong luồng để tạm dừng nó cho đến khi có dữ liệu đến.</p>
+<p>Ngược lại, luồng chính dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_semaphore.html#class-semaphore-method-post" title="Class reference (English)"><span class="xref std std-ref">Semaphore.post()</span></a> để báo hiệu rằng dữ liệu đã sẵn sàng để xử lý:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QysrIC5IIEZpbGU=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QysrIC5IIEZpbGU=" name="QysrIC5IIEZpbGU=" role="tab" tabindex="-1">C++ .H File</button><button aria-controls="panel-2-QysrIC5DUFAgRmlsZQ==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QysrIC5DUFAgRmlsZQ==" name="QysrIC5DUFAgRmlsZQ==" role="tab" tabindex="-1">C++ .CPP File</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">var</span><span class="w"> </span><span class="n">mutex</span><span class="p">:</span><span class="w"> </span><span class="nb">Mutex</span>
+<span class="k">var</span><span class="w"> </span><span class="n">semaphore</span><span class="p">:</span><span class="w"> </span><span class="nb">Semaphore</span>
+<span class="k">var</span><span class="w"> </span><span class="n">thread</span><span class="p">:</span><span class="w"> </span><span class="nb">Thread</span>
+<span class="k">var</span><span class="w"> </span><span class="n">exit_thread</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+
+<span class="c1"># The thread will start here.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">mutex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Mutex</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">semaphore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Semaphore</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">exit_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">    </span><span class="n">thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Thread</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">thread</span><span class="o">.</span><span class="nf">start</span><span class="p">(</span><span class="n">_thread_function</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_thread_function</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">while</span><span class="w"> </span><span class="l">true</span><span class="p">:</span>
+<span class="w">        </span><span class="n">semaphore</span><span class="o">.</span><span class="nf">wait</span><span class="p">()</span><span class="w"> </span><span class="c1"># Wait until posted.</span>
+
+<span class="w">        </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">should_exit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exit_thread</span><span class="w"> </span><span class="c1"># Protect with Mutex.</span>
+<span class="w">        </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">should_exit</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">break</span>
+
+<span class="w">        </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">        </span><span class="n">counter</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1"># Increment counter, protect with Mutex.</span>
+<span class="w">        </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">increment_counter</span><span class="p">():</span>
+<span class="w">    </span><span class="n">semaphore</span><span class="o">.</span><span class="nf">post</span><span class="p">()</span><span class="w"> </span><span class="c1"># Make the thread process.</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_counter</span><span class="p">():</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Copy counter, protect with Mutex.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">counter_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">counter</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">counter_value</span>
+
+
+<span class="c1"># Thread must be disposed (or &quot;joined&quot;), for portability.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_exit_tree</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Set exit condition to true.</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">    </span><span class="n">exit_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span><span class="w"> </span><span class="c1"># Protect with Mutex.</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Unblock by posting.</span>
+<span class="w">    </span><span class="n">semaphore</span><span class="o">.</span><span class="nf">post</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Wait until it exits.</span>
+<span class="w">    </span><span class="n">thread</span><span class="o">.</span><span class="nf">wait_to_finish</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Print the counter.</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Counter is: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QysrIC5IIEZpbGU=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QysrIC5IIEZpbGU=" name="QysrIC5IIEZpbGU=" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/mutex.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/node.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/semaphore.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/thread.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">SemaphoreDemo</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">SemaphoreDemo</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mutex</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Semaphore</span><span class="o">&gt;</span><span class="w"> </span><span class="n">semaphore</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Thread</span><span class="o">&gt;</span><span class="w"> </span><span class="kr">thread</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="n">exit_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="o">:</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<span class="w">        </span><span class="n">SemaphoreDemo</span><span class="p">();</span>
+<span class="w">        </span><span class="o">~</span><span class="n">SemaphoreDemo</span><span class="p">();</span>
+
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">thread_function</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">increment_counter</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="nf">get_counter</span><span class="p">();</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace godot</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QysrIC5DUFAgRmlsZQ==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QysrIC5DUFAgRmlsZQ==" name="QysrIC5DUFAgRmlsZQ==" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;semaphore_demo.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/engine.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/classes/time.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/core/class_db.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;godot_cpp/variant/utility_functions.hpp&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">SemaphoreDemo::_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;thread_function&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">SemaphoreDemo</span><span class="o">::</span><span class="n">thread_function</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">SemaphoreDemo::_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Prevents this from running in the editor, only during game mode.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Engine</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">is_editor_hint</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_READY</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Semaphore Demo Counter is starting at: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">counter</span><span class="p">);</span>
+<span class="w">            </span><span class="n">mutex</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">            </span><span class="n">semaphore</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">            </span><span class="n">exit_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">            </span><span class="kr">thread</span><span class="p">.</span><span class="n">instantiate</span><span class="p">();</span>
+<span class="w">            </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">(</span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">SemaphoreDemo</span><span class="o">::</span><span class="n">thread_function</span><span class="p">),</span><span class="w"> </span><span class="n">Thread</span><span class="o">::</span><span class="n">PRIORITY_NORMAL</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">increment_counter</span><span class="p">();</span><span class="w"> </span><span class="c1">// Call increment counter to test.</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_EXIT_TREE</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Thread must be disposed (or &quot;joined&quot;), for portability.</span>
+<span class="w">            </span><span class="c1">// Set exit condition to true.</span>
+<span class="w">            </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">            </span><span class="n">exit_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="c1">// Protect with Mutex.</span>
+<span class="w">            </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+
+<span class="w">            </span><span class="c1">// Unblock by posting.</span>
+<span class="w">            </span><span class="n">semaphore</span><span class="o">-&gt;</span><span class="k">post</span><span class="p">();</span>
+
+<span class="w">            </span><span class="c1">// Wait until it exits.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kr">thread</span><span class="p">.</span><span class="n">is_valid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">wait_to_finish</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="kr">thread</span><span class="p">.</span><span class="n">unref</span><span class="p">();</span>
+
+<span class="w">            </span><span class="c1">// Print the counter.</span>
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Semaphore Demo Counter is &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">get_counter</span><span class="p">(),</span><span class="w">  </span><span class="s">&quot; at EXIT_TREE.&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">SemaphoreDemo</span><span class="o">::</span><span class="n">SemaphoreDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Initialize any variables here.</span>
+<span class="p">}</span>
+
+<span class="n">SemaphoreDemo</span><span class="o">::~</span><span class="n">SemaphoreDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Add your cleanup here.</span>
+<span class="p">}</span>
+
+<span class="c1">// Increment the value from the thread, too.</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">SemaphoreDemo</span><span class="o">::</span><span class="n">thread_function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">semaphore</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="c1">// Wait until posted.</span>
+
+<span class="w">        </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="n">should_exit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exit_thread</span><span class="p">;</span><span class="w"> </span><span class="c1">// Protect with Mutex.</span>
+<span class="w">        </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">should_exit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">        </span><span class="n">counter</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Increment counter, protect with Mutex.</span>
+<span class="w">        </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">SemaphoreDemo</span><span class="o">::</span><span class="n">increment_counter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">semaphore</span><span class="o">-&gt;</span><span class="k">post</span><span class="p">();</span><span class="w"> </span><span class="c1">// Make the thread process.</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">SemaphoreDemo</span><span class="o">::</span><span class="n">get_counter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Copy counter, protect with Mutex.</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">counter_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">counter</span><span class="p">;</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">counter_value</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vertex_animation/controlling_thousands_of_fish.html" class="btn btn-neutral float-left" title="Điều khiển hàng nghìn con cá bằng Particles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="thread_safe_apis.html" class="btn btn-neutral float-right" title="Các API an toàn luồng (thread-safe)" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

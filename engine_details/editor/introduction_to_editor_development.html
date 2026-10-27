@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Giới thiệu về phát triển trình chỉnh sửa" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/editor/introduction_to_editor_development.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong trang này, bạn sẽ học: Các quyết định thiết kế đằng sau trình chỉnh sửa Godot., Cách làm việc hiệu quả với mã C++ của trình chỉnh sửa Godot.. Hướng dẫn này dành cho những người đang hoặc sẽ đ..." />
+<meta name="description" content="Trong trang này, bạn sẽ học: Các quyết định thiết kế đằng sau trình chỉnh sửa Godot., Cách làm việc hiệu quả với mã C++ của trình chỉnh sửa Godot.. Hướng dẫn này dành cho những người đang hoặc sẽ đ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Giới thiệu về phát triển trình chỉnh sửa &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Biểu tượng trình chỉnh sửa" href="creating_icons.html" />
+    <link rel="prev" title="Phát triển trình chỉnh sửa" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/editor/introduction_to_editor_development" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Phát triển trình chỉnh sửa</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Giới thiệu về phát triển trình chỉnh sửa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#technical-choices">Các lựa chọn kỹ thuật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directory-structure">Cấu trúc thư mục</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#editor-dependencies-in-scene-files">Phụ thuộc vào trình chỉnh sửa trong các file <code class="docutils literal notranslate"><span class="pre">scene/</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-tips">Mẹo phát triển</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creating_icons.html">Biểu tượng trình chỉnh sửa</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Phát triển trình chỉnh sửa</a></li>
+      <li class="breadcrumb-item active">Giới thiệu về phát triển trình chỉnh sửa</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="introduction-to-editor-development">
+<span id="doc-introduction-to-editor-development"></span><h1>Giới thiệu về phát triển trình chỉnh sửa<a class="headerlink" href="#introduction-to-editor-development" title="Link to this heading"></a></h1>
+<p>Trong trang này, bạn sẽ học:</p>
+<ul class="simple">
+<li><p>Các <strong>quyết định thiết kế</strong> đằng sau trình chỉnh sửa Godot.</p></li>
+<li><p>Cách làm việc hiệu quả với mã C++ của trình chỉnh sửa Godot.</p></li>
+</ul>
+<p>Hướng dẫn này dành cho những người đang hoặc sẽ đóng góp cho engine. Để tạo plugin cho trình chỉnh sửa bằng GDScript, hãy xem <a class="reference internal" href="../../tutorials/plugins/editor/making_plugins.html#doc-making-plugins"><span class="std std-ref">Tạo plugin</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Nếu bạn mới làm quen với Godot, bạn nên đọc <a class="reference internal" href="../../getting_started/introduction/godot_design_philosophy.html#doc-godot-design-philosophy"><span class="std std-ref">Triết lý thiết kế của Godot</span></a> trước khi tiếp tục. Vì trình chỉnh sửa Godot là một dự án Godot viết bằng C++, phần lớn triết lý của engine cũng áp dụng cho trình chỉnh sửa.</p>
+</div>
+<section id="technical-choices">
+<h2>Các lựa chọn kỹ thuật<a class="headerlink" href="#technical-choices" title="Link to this heading"></a></h2>
+<p>Trình chỉnh sửa Godot được vẽ bằng renderer và <a class="reference internal" href="../../tutorials/ui/index.html#doc-user-interface"><span class="std std-ref">hệ thống UI</span></a> của Godot. Nó <em>không</em> dựa vào bộ công cụ giao diện nào như GTK hay Qt. Về tinh thần, điều này tương tự các phần mềm như Blender. Mặc dù dùng các bộ công cụ đó giúp dễ đạt được giao diện &quot;native&quot; hơn, chúng cũng khá nặng và giấy phép của chúng không tương thích với giấy phép của Godot.</p>
+<p>Trình chỉnh sửa được viết hoàn toàn bằng C++. Nó không thể chứa bất kỳ mã GDScript hay C# nào.</p>
+</section>
+<section id="directory-structure">
+<h2>Cấu trúc thư mục<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
+<p>Mã của trình chỉnh sửa nằm gọn hoàn toàn trong thư mục <a class="reference external" href="https://github.com/godotengine/godot/tree/master/editor">editor/</a> của repository mã nguồn Godot.</p>
+<p>Một số chức năng của trình chỉnh sửa cũng được hiện thực qua <a class="reference internal" href="../engine_api/custom_modules_in_cpp.html#doc-custom-modules-in-cpp"><span class="std std-ref">module</span></a>. Một số module chỉ được bật trong bản build trình chỉnh sửa để giảm kích thước binary của export template. Xem thư mục <a class="reference external" href="https://github.com/godotengine/godot/tree/master/modules">modules/</a> trong repository mã nguồn Godot.</p>
+<p>Một số file quan trọng trong trình chỉnh sửa:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/editor/editor_node.cpp">editor/editor_node.cpp</a>: File khởi tạo chính của trình chỉnh sửa. Về thực chất là &quot;scene chính&quot; của trình chỉnh sửa.</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/editor/project_manager/project_manager.cpp">editor/project_manager/project_manager.cpp</a>: File khởi tạo chính của Project Manager. Về thực chất là &quot;scene chính&quot; của Project Manager.</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/editor/scene/canvas_item_editor_plugin.cpp">editor/scene/canvas_item_editor_plugin.cpp</a>: Viewport trình chỉnh sửa 2D và các chức năng liên quan (thanh công cụ phía trên, các chế độ chỉnh sửa, các helper/panel hiển thị chồng lên, …).</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/editor/scene/3d/node_3d_editor_plugin.cpp">editor/scene/3d/node_3d_editor_plugin.cpp</a>: Viewport trình chỉnh sửa 3D và các chức năng liên quan (thanh công cụ phía trên, các chế độ chỉnh sửa, các panel hiển thị chồng lên, …).</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/editor/scene/3d/node_3d_editor_gizmos.cpp">editor/scene/3d/node_3d_editor_gizmos.cpp</a>: Nơi các gizmo của trình chỉnh sửa 3D được định nghĩa và vẽ. File này không có phiên bản 2D tương ứng vì gizmo 2D do chính các node tự vẽ.</p></li>
+</ul>
+</section>
+<section id="editor-dependencies-in-scene-files">
+<h2>Phụ thuộc vào trình chỉnh sửa trong các file <code class="docutils literal notranslate"><span class="pre">scene/</span></code><a class="headerlink" href="#editor-dependencies-in-scene-files" title="Link to this heading"></a></h2>
+<p>Khi làm việc trên một tính năng của trình chỉnh sửa, bạn có thể phải sửa các file của các node GUI trong Godot, nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">scene/</span></code>.</p>
+<p>Một quy tắc cần ghi nhớ là bạn <strong>không được</strong> thêm các phụ thuộc mới tới các include của <code class="docutils literal notranslate"><span class="pre">editor/</span></code> trong những thư mục khác như <code class="docutils literal notranslate"><span class="pre">scene/</span></code>. Quy tắc này áp dụng ngay cả khi bạn dùng <code class="docutils literal notranslate"><span class="pre">#ifdef</span> <span class="pre">TOOLS_ENABLED</span></code>.</p>
+<p>Để mã nguồn dễ theo dõi và độc lập hơn, thứ tự phụ thuộc được phép là:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">editor/</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">scene/</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">servers/</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">core/</span></code></p></li>
+</ul>
+<p>Điều này có nghĩa là các file trong <code class="docutils literal notranslate"><span class="pre">editor/</span></code> có thể phụ thuộc vào include từ <code class="docutils literal notranslate"><span class="pre">scene/</span></code>, <code class="docutils literal notranslate"><span class="pre">servers/</span></code> và <code class="docutils literal notranslate"><span class="pre">core/</span></code>. Nhưng chẳng hạn, trong khi <code class="docutils literal notranslate"><span class="pre">scene/</span></code> có thể phụ thuộc vào include từ <code class="docutils literal notranslate"><span class="pre">servers/</span></code> và <code class="docutils literal notranslate"><span class="pre">core/</span></code>, nó không thể phụ thuộc vào include từ <code class="docutils literal notranslate"><span class="pre">editor/</span></code>.</p>
+<p>Hiện tại vẫn còn một số phụ thuộc tới include của <code class="docutils literal notranslate"><span class="pre">editor/</span></code> trong các file <code class="docutils literal notranslate"><span class="pre">scene/</span></code>, nhưng <a class="reference external" href="https://github.com/godotengine/godot/issues/53295">chúng đang dần được loại bỏ</a>.</p>
+</section>
+<section id="development-tips">
+<h2>Mẹo phát triển<a class="headerlink" href="#development-tips" title="Link to this heading"></a></h2>
+<p>Để lặp nhanh khi phát triển trình chỉnh sửa, bạn nên tạo một dự án thử nghiệm và <a class="reference internal" href="../../tutorials/editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">mở nó từ dòng lệnh</span></a> sau khi biên dịch trình chỉnh sửa. Bằng cách này, bạn không phải đi qua Project Manager mỗi lần khởi động Godot.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Phát triển trình chỉnh sửa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="creating_icons.html" class="btn btn-neutral float-right" title="Biểu tượng trình chỉnh sửa" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

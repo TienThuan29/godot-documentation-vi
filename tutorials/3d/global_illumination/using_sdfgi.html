@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Chiếu sáng toàn cục bằng signed distance field (SDFGI)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/global_illumination/using_sdfgi.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Chiếu sáng toàn cục bằng signed distance field (SDFGI) là một kỹ thuật mới có trong Godot. Nó cung cấp chiếu sáng toàn cục bán thời gian thực, mở rộng được cho thế giới có kích thước bất kỳ và hoạt..." />
+<meta name="description" content="Chiếu sáng toàn cục bằng signed distance field (SDFGI) là một kỹ thuật mới có trong Godot. Nó cung cấp chiếu sáng toàn cục bán thời gian thực, mở rộng được cho thế giới có kích thước bất kỳ và hoạt..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Chiếu sáng toàn cục bằng signed distance field (SDFGI) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Dùng chiếu sáng toàn cục bằng lightmap" href="using_lightmap_gi.html" />
+    <link rel="prev" title="Sử dụng chiếu sáng toàn cục Voxel" href="using_voxel_gi.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/global_illumination/using_sdfgi" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Chiếu sáng toàn cục (Global illumination)</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="introduction_to_global_illumination.html">Giới thiệu về chiếu sáng toàn cục</a></li>
+<li class="toctree-l4"><a class="reference internal" href="using_voxel_gi.html">Sử dụng chiếu sáng toàn cục Voxel</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Chiếu sáng toàn cục bằng signed distance field (SDFGI)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="using_lightmap_gi.html">Dùng chiếu sáng toàn cục bằng lightmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection_probes.html">Reflection probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="faking_global_illumination.html">Giả lập chiếu sáng toàn cục</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">3D</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+      <li class="breadcrumb-item active">Chiếu sáng toàn cục bằng signed distance field (SDFGI)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="signed-distance-field-global-illumination-sdfgi">
+<span id="doc-using-sdfgi"></span><h1>Chiếu sáng toàn cục bằng signed distance field (SDFGI)<a class="headerlink" href="#signed-distance-field-global-illumination-sdfgi" title="Link to this heading"></a></h1>
+<p>Chiếu sáng toàn cục bằng signed distance field (SDFGI) là một kỹ thuật mới có trong Godot. Nó cung cấp chiếu sáng toàn cục bán thời gian thực, mở rộng được cho thế giới có kích thước bất kỳ và hoạt động với màn chơi được sinh thủ tục.</p>
+<p>SDFGI hỗ trợ đèn động, nhưng <em>không</em> hỗ trợ vật che khuất động hay bề mặt phát sáng động. Do đó, SDFGI có khả năng thời gian thực tốt hơn <a class="reference internal" href="using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">lightmap đã bake</span></a>, nhưng kém hơn <a class="reference internal" href="using_voxel_gi.html#doc-using-voxel-gi"><span class="std std-ref">VoxelGI</span></a>.</p>
+<p>Về mặt hiệu năng, SDFGI là một trong những kỹ thuật chiếu sáng toàn cục đòi hỏi cao nhất trong Godot. Giống như VoxelGI, vẫn có nhiều cài đặt để tinh chỉnh yêu cầu hiệu năng của nó, đổi lại giảm chất lượng.</p>
+<div class="admonition important">
+<p class="admonition-title">Quan trọng</p>
+<p>SDFGI chỉ được hỗ trợ khi dùng renderer Forward+, không hỗ trợ renderer Mobile hay Compatibility.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Không chắc SDFGI có phù hợp với nhu cầu của bạn? Xem <a class="reference internal" href="introduction_to_global_illumination.html#doc-introduction-to-global-illumination-comparison"><span class="std std-ref">Nên dùng kỹ thuật chiếu sáng toàn cục nào?</span></a> để so sánh các kỹ thuật GI có trong Godot 4.</p>
+</div>
+<section id="visual-comparison">
+<h2>So sánh trực quan<a class="headerlink" href="#visual-comparison" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id1">
+<img alt="SDFGI bị tắt." src="../../../_images/gi_none.webp" />
+<figcaption>
+<p><span class="caption-text">SDFGI bị tắt.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<img alt="Bật SDFGI." src="../../../_images/gi_sdfgi.webp" />
+<figcaption>
+<p><span class="caption-text">Bật SDFGI.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="setting-up-sdfgi">
+<h2>Thiết lập SDFGI<a class="headerlink" href="#setting-up-sdfgi" title="Link to this heading"></a></h2>
+<p>Trong Godot, SDFGI là kỹ thuật chiếu sáng toàn cục cần ít bước nhất để bật:</p>
+<ol class="arabic simple">
+<li><p>Đảm bảo các node MeshInstance của bạn có thuộc tính <strong>Global Illumination &gt; Mode</strong> được đặt là <strong>Static</strong> trong Inspector.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Với các scene 3D đã import, có thể cấu hình chế độ bake trong dock Import sau khi chọn tệp scene 3D trong FileSystem dock.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Thêm một node WorldEnvironment và tạo một resource Environment cho nó.</p></li>
+<li><p>Chỉnh sửa resource Environment, cuộn xuống mục <strong>SDFGI</strong> và mở rộng nó.</p></li>
+<li><p>Bật <strong>SDFGI &gt; Enabled</strong>. SDFGI sẽ tự động đi theo camera khi camera di chuyển, nên bạn không cần cấu hình extents (khác với VoxelGI).</p></li>
+</ol>
+</section>
+<section id="environment-sdfgi-properties">
+<h2>Các thuộc tính SDFGI của Environment<a class="headerlink" href="#environment-sdfgi-properties" title="Link to this heading"></a></h2>
+<p>Trong resource Environment, có một số thuộc tính để điều chỉnh diện mạo và chất lượng của SDFGI:</p>
+<ul class="simple">
+<li><p><strong>Use Occlusion:</strong> Nếu bật, SDFGI sẽ bắn thêm tia để phát hiện và giảm rò sáng. Việc này tốn hiệu năng, nên chỉ bật thuộc tính này khi thực sự cần.</p></li>
+<li><p><strong>Read Sky Light:</strong> Nếu bật, chiếu sáng môi trường được thể hiện trong chiếu sáng toàn cục. Nên bật trong scene ngoài trời và tắt trong scene hoàn toàn trong nhà.</p></li>
+<li><p><strong>Bounce Feedback:</strong> Theo mặc định, chiếu sáng gián tiếp chỉ nảy một lần khi dùng SDFGI. Đặt giá trị này lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code> sẽ khiến SDFGI nảy nhiều hơn một lần, cho chiếu sáng gián tiếp chân thực hơn với chi phí hiệu năng nhỏ. Giá trị hợp lý thường nằm trong khoảng <code class="docutils literal notranslate"><span class="pre">0.3</span></code> đến <code class="docutils literal notranslate"><span class="pre">1.0</span></code> tùy theo scene. Lưu ý rằng trong một số scene, giá trị lớn hơn <code class="docutils literal notranslate"><span class="pre">0.5</span></code> có thể gây vòng phản hồi vô hạn, khiến scene trở nên cực sáng chỉ trong vài giây. Nếu chiếu sáng gián tiếp trông &quot;loang lổ&quot;, hãy cân nhắc tăng giá trị này lên trên <code class="docutils literal notranslate"><span class="pre">0.0</span></code> để chiếu sáng trông đồng đều hơn. Nếu kết quả là chiếu sáng trông quá sáng, hãy giảm <strong>Energy</strong> để bù lại.</p></li>
+<li><p><strong>Cascades:</strong> Giá trị cao hơn cho thông tin GI chi tiết hơn (và/hoặc khoảng cách tối đa lớn hơn), nhưng tốn kém hơn đáng kể cho CPU và GPU. Chi phí hiệu năng của việc có nhiều cascade hơn tăng đặc biệt khi camera di chuyển nhanh, nên hãy cân nhắc giảm xuống <code class="docutils literal notranslate"><span class="pre">4</span></code> hoặc thấp hơn nếu camera của bạn di chuyển nhanh.</p></li>
+<li><p><strong>Min Cell Size:</strong> Kích thước ô SDFGI tối thiểu dùng cho cascade gần nhất, chi tiết nhất. Giá trị thấp hơn cho chiếu sáng gián tiếp và phản xạ chính xác hơn, đổi lại hiệu năng thấp hơn. Điều chỉnh cài đặt này cũng tự động ảnh hưởng đến <strong>Cascade 0 Distance</strong> và <strong>Max Distance</strong>.</p></li>
+<li><p><strong>Cascade 0 Distance:</strong> Khoảng cách tại đó cascade gần nhất, chi tiết nhất kết thúc. Giá trị lớn hơn làm phần chuyển tiếp của cascade gần nhất ít lộ hơn, đổi lại giảm mức chi tiết trong cascade gần nhất. Điều chỉnh cài đặt này cũng tự động ảnh hưởng đến <strong>Min Cell Size</strong> và <strong>Max Distance</strong>.</p></li>
+<li><p><strong>Max Distance:</strong> Kiểm soát signed distance field sẽ được tính xa đến đâu (cho cascade ít chi tiết nhất). SDFGI sẽ không có tác dụng gì vượt quá khoảng cách này. Giá trị này luôn nên đặt thấp hơn giá trị Far của Camera, vì tính SDFGI vượt quá khoảng cách nhìn không mang lại lợi ích gì. Điều chỉnh cài đặt này cũng tự động ảnh hưởng đến <strong>Min Cell Size</strong> và <strong>Cascade 0 Distance</strong>.</p></li>
+<li><p><strong>Y Scale:</strong> Kiểm soát khoảng cách giữa các probe SDFGI theo <em>chiều dọc</em>. Theo mặc định, mật độ theo chiều dọc giống chiều ngang. Tuy nhiên, vì phần lớn scene game không quá cao theo chiều dọc, đặt Y Scale thành <code class="docutils literal notranslate"><span class="pre">75%</span></code> hoặc thậm chí <code class="docutils literal notranslate"><span class="pre">50%</span></code> có thể cho chất lượng tốt hơn và giảm rò sáng mà không ảnh hưởng hiệu năng.</p></li>
+<li><p><strong>Energy:</strong> Hệ số nhân độ sáng cho chiếu sáng gián tiếp của SDFGI.</p></li>
+<li><p><strong>Normal Bias:</strong> Độ lệch pháp tuyến dùng cho các lần nảy tia probe của SDFGI. Khác với <strong>Probe Bias</strong>, giá trị này chỉ tăng theo pháp tuyến của mesh. Điều này giúp việc điều chỉnh độ lệch tinh tế hơn và tránh tăng độ lệch quá mức không cần thiết. Hãy tăng giá trị này nếu bạn thấy lỗi sọc trong chiếu sáng gián tiếp hoặc phản xạ.</p></li>
+<li><p><strong>Probe Bias:</strong> Độ lệch dùng cho các lần nảy tia probe của SDFGI. Hãy tăng giá trị này nếu bạn thấy lỗi sọc trong chiếu sáng gián tiếp hoặc phản xạ.</p></li>
+</ul>
+</section>
+<section id="sdfgi-interaction-with-lights-and-objects">
+<h2>Tương tác của SDFGI với đèn và vật thể<a class="headerlink" href="#sdfgi-interaction-with-lights-and-objects" title="Link to this heading"></a></h2>
+<p>Lượng năng lượng gián tiếp mà một đèn phát ra được xác định bởi các thuộc tính màu, năng lượng <em>và</em> năng lượng gián tiếp của nó. Để một đèn cụ thể phát nhiều hoặc ít năng lượng gián tiếp hơn mà không ảnh hưởng đến lượng ánh sáng trực tiếp nó phát ra, hãy điều chỉnh thuộc tính <strong>Indirect Energy</strong> trong Inspector của Light3D.</p>
+<p>Để đảm bảo hình ảnh đúng khi dùng SDFGI, bạn phải cấu hình các thuộc tính chiếu sáng toàn cục của mesh và đèn theo <em>mục đích</em> của chúng trong scene (tĩnh hay động).</p>
+<p>Có 3 chế độ chiếu sáng toàn cục cho mesh:</p>
+<ul class="simple">
+<li><p><strong>Disabled:</strong> Mesh sẽ không được tính đến khi tạo SDFGI. Mesh sẽ nhận chiếu sáng gián tiếp từ scene, nhưng sẽ không đóng góp chiếu sáng gián tiếp cho scene.</p></li>
+<li><p><strong>Static (mặc định):</strong> Mesh sẽ được tính đến khi tạo SDFGI. Mesh vừa nhận <em>vừa</em> đóng góp chiếu sáng gián tiếp cho scene. Nếu mesh bị thay đổi theo bất kỳ cách nào sau khi SDFGI được tạo, camera phải di chuyển ra xa vật thể rồi quay lại gần để SDFGI được tạo lại. Hoặc bạn có thể tắt rồi bật lại SDFGI. Nếu không làm cách nào, chiếu sáng gián tiếp sẽ trông không đúng.</p></li>
+<li><p><strong>Dynamic (không hỗ trợ với SDFGI):</strong> Mesh sẽ không được tính đến khi tạo SDFGI. Mesh sẽ nhận chiếu sáng gián tiếp từ scene, nhưng sẽ không đóng góp chiếu sáng gián tiếp cho scene. Chế độ này hoạt động giống hệt chế độ bake <strong>Disabled</strong> khi dùng SDFGI.</p></li>
+</ul>
+<p>Ngoài ra, có 3 chế độ bake dành cho đèn (DirectionalLight3D, OmniLight3D, SpotLight3D và AreaLight3D):</p>
+<ul class="simple">
+<li><p><strong>Disabled:</strong> Đèn sẽ không được tính đến khi bake SDFGI. Đèn sẽ không đóng góp ánh sáng gián tiếp cho scene.</p></li>
+<li><p><strong>Static:</strong> Đèn sẽ được tính đến khi bake SDFGI. Đèn sẽ đóng góp ánh sáng gián tiếp cho scene. Nếu đèn bị thay đổi theo bất kỳ cách nào sau khi bake, ánh sáng gián tiếp sẽ hiển thị sai cho đến khi camera di chuyển ra xa đèn rồi quay lại (điều này khiến SDFGI được bake lại). Nếu không chắc, hãy dùng chế độ này cho chiếu sáng của màn chơi.</p></li>
+<li><p><strong>Dynamic (mặc định):</strong> Đèn sẽ không được tính đến khi bake SDFGI, nhưng vẫn đóng góp ánh sáng gián tiếp cho scene theo thời gian thực. Tùy chọn này chậm hơn so với <strong>Static</strong>. Chỉ dùng chế độ chiếu sáng toàn cục <strong>Dynamic</strong> cho những đèn sẽ thay đổi đáng kể trong lúc chơi.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Lượng năng lượng gián tiếp mà một đèn phát ra phụ thuộc vào các thuộc tính màu, năng lượng <em>và</em> năng lượng gián tiếp của nó. Để một đèn cụ thể phát ra nhiều hoặc ít năng lượng gián tiếp hơn mà không ảnh hưởng đến lượng ánh sáng trực tiếp do đèn phát ra, hãy điều chỉnh thuộc tính <strong>Indirect Energy</strong> trong inspector của Light3D.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="introduction_to_global_illumination.html#doc-introduction-to-global-illumination-gi-mode-recommendations"><span class="std std-ref">Nên dùng chế độ chiếu sáng toàn cục nào cho mesh và đèn?</span></a> để biết các khuyến nghị sử dụng chung.</p>
+</div>
+</section>
+<section id="adjusting-sdfgi-performance-and-quality">
+<h2>Điều chỉnh hiệu năng và chất lượng SDFGI<a class="headerlink" href="#adjusting-sdfgi-performance-and-quality" title="Link to this heading"></a></h2>
+<p>Vì SDFGI tương đối nặng, nó sẽ chạy tốt nhất trên các hệ thống có GPU rời đời mới. Trên GPU rời đời cũ và đồ họa tích hợp, cần tinh chỉnh các cài đặt để đạt hiệu năng chấp nhận được.</p>
+<p>Trong mục <strong>Rendering &gt; Global Illumination</strong> của Project Settings, chất lượng SDFGI cũng có thể được điều chỉnh theo nhiều cách:</p>
+<ul class="simple">
+<li><p><strong>Sdfgi &gt; Probe Ray Count:</strong> Giá trị cao hơn cho chất lượng tốt hơn, đổi lại tốn GPU hơn. Nếu đặt giá trị này quá thấp, bề mặt có thể xuất hiện các &quot;vết loang&quot; ánh sáng gián tiếp dễ thấy do số tia được bắn ra quá ít.</p></li>
+<li><p><strong>Sdfgi &gt; Frames To Converge:</strong> Giá trị cao hơn cho chất lượng tốt hơn, nhưng GI sẽ mất nhiều thời gian hơn để hội tụ hoàn toàn. Hiệu ứng của cài đặt này đặc biệt dễ nhận thấy khi mới tải một scene, hoặc khi các đèn có chế độ bake khác <strong>Disabled</strong> di chuyển nhanh. Nếu đặt giá trị này quá thấp, bề mặt có thể xuất hiện các &quot;vết loang&quot; ánh sáng gián tiếp dễ thấy do số tia được bắn ra quá ít. Nếu chiếu sáng trong scene của bạn không có đèn di chuyển nhanh đóng góp vào GI, hãy cân nhắc đặt giá trị này thành <code class="docutils literal notranslate"><span class="pre">30</span></code> để cải thiện chất lượng mà không ảnh hưởng đến hiệu năng.</p></li>
+<li><p><strong>Sdfgi &gt; Frames To Update Light:</strong> Giá trị thấp hơn giúp đèn di chuyển được phản chiếu nhanh hơn, đổi lại tốn GPU hơn. Nếu chiếu sáng trong scene của bạn không có đèn di chuyển nhanh đóng góp vào GI, hãy cân nhắc đặt giá trị này thành <code class="docutils literal notranslate"><span class="pre">16</span></code> để cải thiện hiệu năng.</p></li>
+<li><p><strong>Gi &gt; Use Half Resolution:</strong> Nếu bật, cả SDFGI và VoxelGI sẽ kết xuất buffer GI ở một nửa độ phân giải. Ví dụ, khi kết xuất ở 3840×2160, buffer GI sẽ được tính ở độ phân giải 1920×1080. Bật tùy chọn này tiết kiệm rất nhiều thời gian GPU, nhưng có thể gây răng cưa dễ thấy quanh các chi tiết mảnh.</p></li>
+</ul>
+<p>Hiệu năng kết xuất SDFGI cũng phụ thuộc vào số lượng cascade và kích thước ô được chọn trong resource Environment (xem ở trên).</p>
+</section>
+<section id="sdfgi-caveats">
+<h2>Các hạn chế của SDFGI<a class="headerlink" href="#sdfgi-caveats" title="Link to this heading"></a></h2>
+<p>SDFGI có một số nhược điểm do bản chất phân tầng (cascade) của nó. Khi camera di chuyển, sự dịch chuyển cascade có thể hiện ra trong ánh sáng gián tiếp. Có thể giảm bớt điều này bằng cách điều chỉnh kích thước cascade, hoặc thêm sương mù (giúp sự dịch chuyển cascade ở xa ít bị chú ý hơn).</p>
+<p>Ngoài ra, hiệu năng sẽ giảm nếu camera di chuyển quá nhanh. Có hai cách khắc phục:</p>
+<ul class="simple">
+<li><p>Đảm bảo camera không di chuyển quá nhanh trong bất kỳ tình huống nào.</p></li>
+<li><p>Tạm thời tắt SDFGI trong resource Environment nếu camera cần di chuyển với tốc độ cao, rồi bật lại SDFGI khi camera chậm lại.</p></li>
+</ul>
+<p>Khi SDFGI được bật, chiếu sáng toàn cục cũng sẽ mất một khoảng thời gian để hội tụ hoàn toàn (mặc định 30 frame). Điều này có thể tạo ra hiệu ứng chuyển tiếp dễ nhận thấy trong khi GI vẫn đang hội tụ. Để che điều này, bạn có thể dùng một node ColorRect phủ toàn bộ viewport và làm nó mờ dần khi chuyển scene bằng một node AnimationPlayer.</p>
+<p>Trường khoảng cách có dấu (signed distance field) chỉ được cập nhật khi camera di chuyển vào và ra khỏi một cascade. Điều này có nghĩa là nếu hình học ở xa bị thay đổi, chiếu sáng toàn cục sẽ hiển thị đúng khi camera tiến lại gần. Tuy nhiên, nếu một vật thể gần đó có chế độ bake là <strong>Static</strong> hoặc <strong>Dynamic</strong> bị di chuyển (chẳng hạn một cánh cửa), chiếu sáng toàn cục sẽ hiển thị sai cho đến khi camera di chuyển ra xa vật thể đó.</p>
+<p>Phản chiếu sắc nét của SDFGI chỉ hiển thị trên các material đục. Material trong suốt sẽ chỉ dùng phản chiếu nhám, ngay cả khi độ nhám (roughness) của material thấp hơn 0.2.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_voxel_gi.html" class="btn btn-neutral float-left" title="Sử dụng chiếu sáng toàn cục Voxel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="using_lightmap_gi.html" class="btn btn-neutral float-right" title="Dùng chiếu sáng toàn cục bằng lightmap" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

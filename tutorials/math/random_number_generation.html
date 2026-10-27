@@ -1,0 +1,818 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tạo số ngẫu nhiên" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/math/random_number_generation.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Nhiều game dựa vào tính ngẫu nhiên để triển khai các cơ chế cốt lõi. Trang này hướng dẫn bạn qua các dạng ngẫu nhiên phổ biến và cách triển khai chúng trong Godot. Sau phần tổng quan ngắn về các hà..." />
+<meta name="description" content="Nhiều game dựa vào tính ngẫu nhiên để triển khai các cơ chế cốt lõi. Trang này hướng dẫn bạn qua các dạng ngẫu nhiên phổ biến và cách triển khai chúng trong Godot. Sau phần tổng quan ngắn về các hà..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tạo số ngẫu nhiên &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Điều hướng" href="../navigation/index.html" />
+    <link rel="prev" title="Bezier, đường cong và đường đi" href="beziers_and_curves.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/math/random_number_generation" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Toán học</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="vector_math.html">Toán vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vectors_advanced.html">Toán vector nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrices_and_transforms.html">Ma trận và transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html">Nội suy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beziers_and_curves.html">Bezier, đường cong và đường đi</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tạo số ngẫu nhiên</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#global-scope-versus-randomnumbergenerator-class">Phạm vi toàn cục so với lớp RandomNumberGenerator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#random-seed-and-internal-state">Seed ngẫu nhiên và trạng thái bên trong</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-a-random-number">Lấy một số ngẫu nhiên</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-a-random-array-element">Lấy một phần tử ngẫu nhiên trong mảng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-a-random-dictionary-value">Lấy một giá trị ngẫu nhiên trong dictionary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weighted-random-probability">Xác suất ngẫu nhiên có trọng số</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#better-randomness-using-shuffle-bags">Ngẫu nhiên &quot;tốt hơn&quot; với shuffle bag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#random-noise">Nhiễu ngẫu nhiên</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cryptographically-secure-pseudorandom-number-generation">Tạo số giả ngẫu nhiên an toàn về mặt mật mã</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Toán học</a></li>
+      <li class="breadcrumb-item active">Tạo số ngẫu nhiên</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="random-number-generation">
+<span id="doc-random-number-generation"></span><h1>Tạo số ngẫu nhiên<a class="headerlink" href="#random-number-generation" title="Link to this heading"></a></h1>
+<p>Nhiều game dựa vào tính ngẫu nhiên để triển khai các cơ chế cốt lõi. Trang này hướng dẫn bạn qua các dạng ngẫu nhiên phổ biến và cách triển khai chúng trong Godot.</p>
+<p>Sau phần tổng quan ngắn về các hàm hữu ích để tạo số ngẫu nhiên, bạn sẽ học cách lấy phần tử ngẫu nhiên từ mảng, dictionary, và cách dùng bộ tạo nhiễu (noise) trong GDScript. Cuối cùng, chúng ta sẽ xem xét việc tạo số ngẫu nhiên an toàn về mặt mật mã học và nó khác gì so với việc tạo số ngẫu nhiên thông thường.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Máy tính không thể tạo ra số ngẫu nhiên &quot;thật sự&quot;. Thay vào đó, chúng dựa vào <a class="reference external" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">bộ tạo số giả ngẫu nhiên</a> (PRNG).</p>
+<p>Bên trong, Godot dùng <a class="reference external" href="https://www.pcg-random.org/">họ PCG</a> của các bộ tạo số giả ngẫu nhiên.</p>
+</div>
+<section id="global-scope-versus-randomnumbergenerator-class">
+<h2>Phạm vi toàn cục so với lớp RandomNumberGenerator<a class="headerlink" href="#global-scope-versus-randomnumbergenerator-class" title="Link to this heading"></a></h2>
+<p>Godot cung cấp hai cách để tạo số ngẫu nhiên: thông qua các phương thức <em>phạm vi toàn cục</em> (global scope) hoặc dùng lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html" title="Class reference (English)"><span class="xref std std-ref">class_RandomNumberGenerator</span></a>.</p>
+<p>Các phương thức phạm vi toàn cục dễ thiết lập hơn, nhưng không cho nhiều quyền kiểm soát.</p>
+<p>RandomNumberGenerator đòi hỏi viết nhiều code hơn, nhưng cho phép tạo nhiều instance, mỗi instance có seed và trạng thái riêng. Điều này hữu ích trong một số tình huống như chơi mạng nhiều người, hệ thống replay, game có cơ chế tua ngược thời gian, v.v.</p>
+<p>Bài hướng dẫn này dùng các phương thức phạm vi toàn cục, trừ khi phương thức đó chỉ có trong lớp RandomNumberGenerator.</p>
+</section>
+<section id="random-seed-and-internal-state">
+<h2>Seed ngẫu nhiên và trạng thái bên trong<a class="headerlink" href="#random-seed-and-internal-state" title="Link to this heading"></a></h2>
+<p>Theo mặc định, Godot dùng một seed ngẫu nhiên được đặt theo giờ cục bộ của thiết bị. Điều này có nghĩa là kết quả sẽ khác nhau ở mỗi lần chạy. Để có kết quả tất định, bạn có thể đặt một seed cố định bằng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-seed" title="Class reference (English)"><span class="xref std std-ref">seed()</span></a>. <em>Seed</em> là một số nguyên dùng để khởi tạo trạng thái của bộ tạo số ngẫu nhiên. Nếu dùng cùng một seed, bạn sẽ nhận được cùng một dãy số ngẫu nhiên ở mỗi lần chạy.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># To use a string as a seed, you can hash it to a number.</span>
+<span class="w">    </span><span class="nb nb-Function">seed</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="o">.</span><span class="nf">hash</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// To use a string as a seed, you can hash it to a number.</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Seed</span><span class="p">(</span><span class="s">&quot;Hello world&quot;</span><span class="p">.</span><span class="n">Hash</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi dùng lớp RandomNumberGenerator, bạn có thể đặt thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html#class-randomnumbergenerator-property-seed" title="Class reference (English)"><span class="xref std std-ref">RandomNumberGenerator.seed</span></a> trên từng instance:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RandomNumberGenerator</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">random</span><span class="o">.</span><span class="vi">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RandomNumberGenerator</span><span class="p">();</span>
+<span class="n">random</span><span class="p">.</span><span class="n">Seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn có thể đặt lại seed thành một giá trị được tạo ngẫu nhiên bằng phương thức phạm vi toàn cục <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randomize" title="Class reference (English)"><span class="xref std std-ref">randomize()</span></a>. Tính năng này cũng có dưới dạng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html#class-randomnumbergenerator-method-randomize" title="Class reference (English)"><span class="xref std std-ref">RandomNumberGenerator.randomize()</span></a> trên các instance RandomNumberGenerator.</p>
+<p>Bộ tạo số ngẫu nhiên cũng có một <em>trạng thái</em> (state) bên trong, thay đổi mỗi khi một số ngẫu nhiên được tạo ra. Trạng thái này được dùng để tạo số ngẫu nhiên tiếp theo trong dãy.</p>
+<p>Khác với việc tạo số ngẫu nhiên ở phạm vi toàn cục, RandomNumberGenerator có thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html#class-randomnumbergenerator-property-state" title="Class reference (English)"><span class="xref std std-ref">state</span></a>. Điều này hữu ích nếu bạn thực hiện nhiều thao tác tạo số ngẫu nhiên và muốn quay lại một trạng thái trước đó của bộ tạo số ngẫu nhiên mà không thay đổi seed. Để làm vậy, hãy lưu trạng thái hiện tại vào một biến, rồi đặt lại thuộc tính state về biến đó khi cần:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RandomNumberGenerator</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="c1"># Changing the seed will reset the state, so make sure to set the seed first.</span>
+<span class="n">random</span><span class="o">.</span><span class="vi">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span>
+<span class="k">var</span><span class="w"> </span><span class="n">previous_random_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">random</span><span class="o">.</span><span class="vi">state</span>
+<span class="c1"># Each call to a random function on this instance alters its state.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="nf">randi</span><span class="p">())</span>
+
+<span class="n">random</span><span class="o">.</span><span class="vi">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previous_random_state</span>
+<span class="c1"># This will return the same value as the previous call,</span>
+<span class="c1"># even though we didn&#39;t change the seed.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="nf">randi</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RandomNumberGenerator</span><span class="p">();</span>
+<span class="c1">// Changing the seed will reset the state, so make sure to set the seed first.</span>
+<span class="n">random</span><span class="p">.</span><span class="n">Seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12345</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">previousRandomState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">random</span><span class="p">.</span><span class="n">State</span><span class="p">;</span>
+<span class="c1">// Each call to a random function on this instance alters its state.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">random</span><span class="p">.</span><span class="n">Randi</span><span class="p">());</span>
+
+<span class="n">random</span><span class="p">.</span><span class="n">State</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousRandomState</span><span class="p">;</span>
+<span class="c1">// This will return the same value as the previous call,</span>
+<span class="c1">// even though we didn&#39;t change the seed.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">random</span><span class="p">.</span><span class="n">Randi</span><span class="p">());</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="getting-a-random-number">
+<h2>Lấy một số ngẫu nhiên<a class="headerlink" href="#getting-a-random-number" title="Link to this heading"></a></h2>
+<p>Hãy xem một số hàm và phương thức thường dùng nhất để tạo số ngẫu nhiên trong Godot.</p>
+<p>Hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randi" title="Class reference (English)"><span class="xref std std-ref">randi()</span></a> trả về một số ngẫu nhiên trong khoảng <code class="docutils literal notranslate"><span class="pre">0</span></code> đến <code class="docutils literal notranslate"><span class="pre">2^32</span> <span class="pre">-</span> <span class="pre">1</span></code>. Vì giá trị tối đa rất lớn, nhiều khả năng bạn sẽ muốn dùng toán tử chia lấy dư (<code class="docutils literal notranslate"><span class="pre">%</span></code>) để giới hạn kết quả trong khoảng từ 0 đến số chia:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prints a random integer between 0 and 49.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="nb nb-Function">randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Prints a random integer between 10 and 60.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="nb nb-Function">randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">51</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prints a random integer between 0 and 49.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">50</span><span class="p">);</span>
+
+<span class="c1">// Prints a random integer between 10 and 60.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">51</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randf" title="Class reference (English)"><span class="xref std std-ref">randf()</span></a> trả về một số thực ngẫu nhiên trong khoảng 0 đến 1. Hàm này hữu ích để triển khai hệ thống <a class="reference internal" href="#doc-random-number-generation-weighted-random-probability"><span class="std std-ref">Xác suất ngẫu nhiên có trọng số</span></a>, cùng nhiều việc khác.</p>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randfn" title="Class reference (English)"><span class="xref std std-ref">randfn()</span></a> trả về một số thực ngẫu nhiên tuân theo <a class="reference external" href="https://en.wikipedia.org/wiki/Normal_distribution">phân phối chuẩn</a>. Điều này có nghĩa là giá trị trả về có khả năng cao nằm quanh giá trị trung bình (mặc định là 0.0), dao động theo độ lệch (mặc định là 1.0):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prints a random floating-point number from a normal distribution with a mean 0.0 and deviation 1.0.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="nb nb-Function">randfn</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prints a random floating-point number from a normal distribution with a mean 0.0 and deviation 1.0.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GD</span><span class="p">.</span><span class="n">Randfn</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></div>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randf-range" title="Class reference (English)"><span class="xref std std-ref">randf_range()</span></a> nhận hai tham số <code class="docutils literal notranslate"><span class="pre">from</span></code> và <code class="docutils literal notranslate"><span class="pre">to</span></code>, và trả về một số thực ngẫu nhiên trong khoảng từ <code class="docutils literal notranslate"><span class="pre">from</span></code> đến <code class="docutils literal notranslate"><span class="pre">to</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prints a random floating-point number between -4 and 6.5.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mf">6.5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prints a random floating-point number between -4 and 6.5.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.5</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></div>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randi-range" title="Class reference (English)"><span class="xref std std-ref">randi_range()</span></a> nhận hai tham số <code class="docutils literal notranslate"><span class="pre">from</span></code> và <code class="docutils literal notranslate"><span class="pre">to</span></code>, và trả về một số nguyên ngẫu nhiên trong khoảng từ <code class="docutils literal notranslate"><span class="pre">from</span></code> đến <code class="docutils literal notranslate"><span class="pre">to</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prints a random integer between -10 and 10.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="nb nb-Function">randi_range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prints a random integer number between -10 and 10.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="get-a-random-array-element">
+<h2>Lấy một phần tử ngẫu nhiên trong mảng<a class="headerlink" href="#get-a-random-array-element" title="Link to this heading"></a></h2>
+<p>Ta có thể dùng việc tạo số nguyên ngẫu nhiên để lấy một phần tử ngẫu nhiên từ mảng, hoặc dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_array.html#class-array-method-pick-random" title="Class reference (English)"><span class="xref std std-ref">Array.pick_random</span></a> để làm việc đó:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="p">]</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Pick 100 fruits randomly.</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="nf">get_fruit</span><span class="p">())</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Pick 100 fruits randomly, this time using the `Array.pick_random()`</span>
+<span class="w">        </span><span class="c1"># helper method. This has the same behavior as `get_fruit()`.</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">_fruits</span><span class="o">.</span><span class="nf">pick_random</span><span class="p">())</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_fruit</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_fruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="nb nb-Function">randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">size</span><span class="p">()]</span>
+<span class="w">    </span><span class="c1"># Returns &quot;apple&quot;, &quot;orange&quot;, &quot;pear&quot;, or &quot;banana&quot; every time the code runs.</span>
+<span class="w">    </span><span class="c1"># We may get the same fruit multiple times in a row.</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">random_fruit</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Use Godot&#39;s Array type instead of a BCL type so we can use `PickRandom()` on it.</span>
+<span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;banana&quot;</span><span class="p">];</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Pick 100 fruits randomly.</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GetFruit</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Pick 100 fruits randomly, this time using the `Array.PickRandom()`</span>
+<span class="w">        </span><span class="c1">// helper method. This has the same behavior as `GetFruit()`.</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">_fruits</span><span class="p">.</span><span class="n">PickRandom</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="nf">GetFruit</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">randomFruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_fruits</span><span class="p">.</span><span class="n">Size</span><span class="p">()];</span>
+<span class="w">    </span><span class="c1">// Returns &quot;apple&quot;, &quot;orange&quot;, &quot;pear&quot;, or &quot;banana&quot; every time the code runs.</span>
+<span class="w">    </span><span class="c1">// We may get the same fruit multiple times in a row.</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">randomFruit</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để tránh cùng một loại trái cây bị chọn nhiều lần liên tiếp, ta có thể thêm logic vào phương thức trên. Trong trường hợp này, ta không thể dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_array.html#class-array-method-pick-random" title="Class reference (English)"><span class="xref std std-ref">Array.pick_random</span></a> vì nó không có cách nào ngăn lặp lại:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="p">]</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_last_fruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Pick 100 fruits randomly.</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="nf">get_fruit</span><span class="p">())</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_fruit</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_fruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="nb nb-Function">randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">size</span><span class="p">()]</span>
+<span class="w">    </span><span class="k k-ControlFlow">while</span><span class="w"> </span><span class="n">random_fruit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">_last_fruit</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># The last fruit was picked. Try again until we get a different fruit.</span>
+<span class="w">        </span><span class="n">random_fruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="nb nb-Function">randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">size</span><span class="p">()]</span>
+
+<span class="w">    </span><span class="c1"># Note: if the random element to pick is passed by reference,</span>
+<span class="w">    </span><span class="c1"># such as an array or dictionary,</span>
+<span class="w">    </span><span class="c1"># use `_last_fruit = random_fruit.duplicate()` instead.</span>
+<span class="w">    </span><span class="n">_last_fruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">random_fruit</span>
+
+<span class="w">    </span><span class="c1"># Returns &quot;apple&quot;, &quot;orange&quot;, &quot;pear&quot;, or &quot;banana&quot; every time the code runs.</span>
+<span class="w">    </span><span class="c1"># The function will never return the same fruit more than once in a row.</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">random_fruit</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;banana&quot;</span><span class="p">];</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">_lastFruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Pick 100 fruits randomly.</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GetFruit</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="nf">GetFruit</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">randomFruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_fruits</span><span class="p">.</span><span class="n">Length</span><span class="p">];</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">randomFruit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">_lastFruit</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// The last fruit was picked. Try again until we get a different fruit.</span>
+<span class="w">        </span><span class="n">randomFruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_fruits</span><span class="p">.</span><span class="n">Length</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">_lastFruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randomFruit</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Returns &quot;apple&quot;, &quot;orange&quot;, &quot;pear&quot;, or &quot;banana&quot; every time the code runs.</span>
+<span class="w">    </span><span class="c1">// The function will never return the same fruit more than once in a row.</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">randomFruit</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cách tiếp cận này có thể hữu ích để việc tạo số ngẫu nhiên có cảm giác ít lặp lại hơn. Tuy vậy, nó không ngăn kết quả &quot;nhảy qua nhảy lại&quot; giữa một tập giá trị hạn chế. Để ngăn điều này, hãy dùng mẫu <a class="reference internal" href="#doc-random-number-generation-shuffle-bags"><span class="std std-ref">shuffle bag</span></a>.</p>
+</section>
+<section id="get-a-random-dictionary-value">
+<h2>Lấy một giá trị ngẫu nhiên trong dictionary<a class="headerlink" href="#get-a-random-dictionary-value" title="Link to this heading"></a></h2>
+<p>Ta cũng có thể áp dụng logic tương tự từ mảng cho dictionary:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">_metals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;copper&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;silver&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;gold&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">},</span>
+<span class="p">}</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="nf">get_metal</span><span class="p">())</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_metal</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_metal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_metals</span><span class="o">.</span><span class="nf">values</span><span class="p">()[</span><span class="nb nb-Function">randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">metals</span><span class="o">.</span><span class="nf">size</span><span class="p">()]</span>
+<span class="w">    </span><span class="c1"># Returns a random metal value dictionary every time the code runs.</span>
+<span class="w">    </span><span class="c1"># The same metal may be selected multiple times in succession.</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">random_metal</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">_metals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="s">&quot;copper&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{{</span><span class="s">&quot;quantity&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;price&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">}}},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">&quot;silver&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{{</span><span class="s">&quot;quantity&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;price&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">150</span><span class="p">}}},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">&quot;gold&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{{</span><span class="s">&quot;quantity&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;price&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">500</span><span class="p">}}},</span>
+<span class="p">};</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GetMetal</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetMetal</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">randomMetal</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_metals</span><span class="p">.</span><span class="n">ElementAt</span><span class="p">((</span><span class="kt">int</span><span class="p">)(</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">_metals</span><span class="p">.</span><span class="n">Count</span><span class="p">));</span>
+<span class="w">    </span><span class="c1">// Returns a random metal value dictionary every time the code runs.</span>
+<span class="w">    </span><span class="c1">// The same metal may be selected multiple times in succession.</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">randomMetal</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="weighted-random-probability">
+<span id="doc-random-number-generation-weighted-random-probability"></span><h2>Xác suất ngẫu nhiên có trọng số<a class="headerlink" href="#weighted-random-probability" title="Link to this heading"></a></h2>
+<p>Phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-randf" title="Class reference (English)"><span class="xref std std-ref">randf()</span></a> trả về một số thực trong khoảng 0.0 đến 1.0. Ta có thể dùng nó để tạo xác suất &quot;có trọng số&quot;, trong đó các kết quả khác nhau có khả năng xảy ra khác nhau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-10-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-10-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-10-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="nf">get_item_rarity</span><span class="p">())</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_item_rarity</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">random_float</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.8</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># 80% chance of being returned.</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;Common&quot;</span>
+<span class="w">    </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">random_float</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.95</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># 15% chance of being returned.</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;Uncommon&quot;</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># 5% chance of being returned.</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;Rare&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GetItemRarity</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="nf">GetItemRarity</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">randomFloat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Randf</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">randomFloat</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.8f</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 80% chance of being returned.</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Common&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">randomFloat</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.95f</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 15% chance of being returned.</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Uncommon&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 5% chance of being returned.</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Rare&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn cũng có thể lấy một <em>chỉ số</em> ngẫu nhiên có trọng số bằng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html#class-randomnumbergenerator-method-rand-weighted" title="Class reference (English)"><span class="xref std std-ref">RandomNumberGenerator.rand_weighted()</span></a> trên một instance RandomNumberGenerator. Phương thức này trả về một số nguyên ngẫu nhiên trong khoảng từ 0 đến kích thước của mảng được truyền vào làm tham số. Mỗi giá trị trong mảng là một số thực biểu diễn khả năng <em>tương đối</em> mà chỉ số của nó được trả về. Giá trị càng cao thì càng có khả năng được trả về làm chỉ số, còn giá trị <code class="docutils literal notranslate"><span class="pre">0</span></code> nghĩa là nó sẽ không bao giờ được trả về làm chỉ số.</p>
+<p>Ví dụ, nếu truyền <code class="docutils literal notranslate"><span class="pre">[0.5,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">2]</span></code> làm tham số, thì so với các chỉ số <code class="docutils literal notranslate"><span class="pre">1</span></code> và <code class="docutils literal notranslate"><span class="pre">2</span></code>, phương thức có khả năng trả về <code class="docutils literal notranslate"><span class="pre">3</span></code> (chỉ số của giá trị <code class="docutils literal notranslate"><span class="pre">2</span></code>) cao gấp đôi và khả năng trả về <code class="docutils literal notranslate"><span class="pre">0</span></code> (chỉ số của giá trị <code class="docutils literal notranslate"><span class="pre">0.5</span></code>) thấp bằng một nửa.</p>
+<p>Vì giá trị trả về khớp với kích thước của mảng, nó có thể được dùng làm chỉ số để lấy giá trị từ một mảng khác như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-11-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-11-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-11-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prints a random element using the weighted index that is returned by `rand_weighted()`.</span>
+<span class="c1"># Here, &quot;apple&quot; will be returned twice as rarely as &quot;orange&quot; and &quot;pear&quot;.</span>
+<span class="c1"># &quot;banana&quot; is twice as common as &quot;orange&quot; and &quot;pear&quot;, and four times as common as &quot;apple&quot;.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="p">]</span>
+<span class="k">var</span><span class="w"> </span><span class="n">probabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">];</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RandomNumberGenerator</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">fruits</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="nf">rand_weighted</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prints a random element using the weighted index that is returned by `RandWeighted()`.</span>
+<span class="c1">// Here, &quot;apple&quot; will be returned twice as rarely as &quot;orange&quot; and &quot;pear&quot;.</span>
+<span class="c1">// &quot;banana&quot; is twice as common as &quot;orange&quot; and &quot;pear&quot;, and four times as common as &quot;apple&quot;.</span>
+<span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="n">fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;banana&quot;</span><span class="p">];</span>
+<span class="kt">float</span><span class="p">[]</span><span class="w"> </span><span class="n">probabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">];</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RandomNumberGenerator</span><span class="p">();</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">fruits</span><span class="p">[</span><span class="n">random</span><span class="p">.</span><span class="n">RandWeighted</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)]);</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="better-randomness-using-shuffle-bags">
+<span id="doc-random-number-generation-shuffle-bags"></span><h2>Ngẫu nhiên &quot;tốt hơn&quot; với shuffle bag<a class="headerlink" href="#better-randomness-using-shuffle-bags" title="Link to this heading"></a></h2>
+<p>Lấy lại ví dụ ở trên, ta muốn chọn trái cây một cách ngẫu nhiên. Tuy nhiên, việc dựa vào tạo số ngẫu nhiên mỗi lần chọn trái cây có thể dẫn đến phân phối kém <em>đồng đều</em>. Nếu người chơi may mắn (hoặc kém may mắn), họ có thể nhận cùng một loại trái cây ba lần liên tiếp hoặc hơn.</p>
+<p>Bạn có thể làm được điều này bằng mẫu <em>shuffle bag</em>. Nó hoạt động bằng cách loại bỏ một phần tử khỏi mảng sau khi chọn nó. Sau nhiều lần chọn, mảng sẽ trở nên rỗng. Khi điều đó xảy ra, bạn khởi tạo lại nó về giá trị mặc định:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-12-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-12-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-12-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="p">]</span>
+<span class="c1"># A copy of the fruits array so we can restore the original value into `fruits`.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_fruits_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">_fruits_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">duplicate</span><span class="p">()</span>
+<span class="w">    </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">shuffle</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mi">100</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="nf">get_fruit</span><span class="p">())</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_fruit</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">is_empty</span><span class="p">():</span>
+<span class="w">        </span><span class="c1"># Fill the fruits array again and shuffle it.</span>
+<span class="w">        </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits_full</span><span class="o">.</span><span class="nf">duplicate</span><span class="p">()</span>
+<span class="w">        </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">shuffle</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Get a random fruit, since we shuffled the array,</span>
+<span class="w">    </span><span class="c1"># and remove it from the `_fruits` array.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_fruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="o">.</span><span class="nf">pop_front</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Returns &quot;apple&quot;, &quot;orange&quot;, &quot;pear&quot;, or &quot;banana&quot; every time the code runs, removing it from the array.</span>
+<span class="w">    </span><span class="c1"># When all fruit are removed, it refills the array.</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">random_fruit</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;apple&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;orange&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pear&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;banana&quot;</span><span class="p">];</span>
+<span class="c1">// A copy of the fruits array so we can restore the original value into `fruits`.</span>
+<span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_fruitsFull</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_fruitsFull</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">.</span><span class="n">Duplicate</span><span class="p">();</span>
+<span class="w">    </span><span class="n">_fruits</span><span class="p">.</span><span class="n">Shuffle</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GetFruit</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="nf">GetFruit</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">_fruits</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Fill the fruits array again and shuffle it.</span>
+<span class="w">        </span><span class="n">_fruits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruitsFull</span><span class="p">.</span><span class="n">Duplicate</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_fruits</span><span class="p">.</span><span class="n">Shuffle</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Get a random fruit, since we shuffled the array,</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">randomFruit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_fruits</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">    </span><span class="c1">// and remove it from the `_fruits` array.</span>
+<span class="w">    </span><span class="n">_fruits</span><span class="p">.</span><span class="n">RemoveAt</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Returns &quot;apple&quot;, &quot;orange&quot;, &quot;pear&quot;, or &quot;banana&quot; every time the code runs, removing it from the array.</span>
+<span class="w">    </span><span class="c1">// When all fruit are removed, it refills the array.</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">randomFruit</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi chạy đoạn code trên, vẫn có khả năng nhận cùng một loại trái cây hai lần liên tiếp. Khi đã chọn một loại trái cây, nó sẽ không còn là giá trị có thể trả về nữa trừ khi mảng đã rỗng. Khi mảng rỗng, ta đặt lại nó về giá trị mặc định, khiến có thể nhận lại cùng loại trái cây đó, nhưng chỉ một lần.</p>
+</section>
+<section id="random-noise">
+<h2>Nhiễu ngẫu nhiên<a class="headerlink" href="#random-noise" title="Link to this heading"></a></h2>
+<p>Cách tạo số ngẫu nhiên ở trên có thể bộc lộ giới hạn khi bạn cần một giá trị thay đổi <em>từ từ</em> tùy theo đầu vào. Đầu vào có thể là vị trí, thời gian hoặc bất cứ thứ gì khác.</p>
+<p>Để làm được điều này, bạn có thể dùng các hàm <em>nhiễu</em> (noise) ngẫu nhiên. Hàm nhiễu đặc biệt phổ biến trong tạo nội dung thủ tục (procedural generation) để tạo địa hình trông chân thực. Godot cung cấp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fastnoiselite.html" title="Class reference (English)"><span class="xref std std-ref">class_fastnoiselite</span></a> cho việc này, hỗ trợ nhiễu 1D, 2D và 3D. Đây là một ví dụ với nhiễu 1D:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-13-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-13-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-13-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">_noise</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FastNoiseLite</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Configure the FastNoiseLite instance.</span>
+<span class="w">    </span><span class="n">_noise</span><span class="o">.</span><span class="vi">noise_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FastNoiseLite</span><span class="o">.</span><span class="vi">NoiseType</span><span class="o">.</span><span class="vi">TYPE_SIMPLEX_SMOOTH</span>
+<span class="w">    </span><span class="n">_noise</span><span class="o">.</span><span class="vi">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randi</span><span class="p">()</span>
+<span class="w">    </span><span class="n">_noise</span><span class="o">.</span><span class="vi">fractal_octaves</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
+<span class="w">    </span><span class="n">_noise</span><span class="o">.</span><span class="vi">frequency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">20.0</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mi">100</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Prints a slowly-changing series of floating-point numbers</span>
+<span class="w">        </span><span class="c1"># between -1.0 and 1.0.</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">_noise</span><span class="o">.</span><span class="nf">get_noise_1d</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">FastNoiseLite</span><span class="w"> </span><span class="n">_noise</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FastNoiseLite</span><span class="p">();</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Configure the FastNoiseLite instance.</span>
+<span class="w">    </span><span class="n">_noise</span><span class="p">.</span><span class="n">NoiseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FastNoiseLite</span><span class="p">.</span><span class="n">NoiseTypeEnum</span><span class="p">.</span><span class="n">SimplexSmooth</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_noise</span><span class="p">.</span><span class="n">Seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">GD</span><span class="p">.</span><span class="n">Randi</span><span class="p">();</span>
+<span class="w">    </span><span class="n">_noise</span><span class="p">.</span><span class="n">FractalOctaves</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_noise</span><span class="p">.</span><span class="n">Frequency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">20.0f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">_noise</span><span class="p">.</span><span class="n">GetNoise1D</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="cryptographically-secure-pseudorandom-number-generation">
+<h2>Tạo số giả ngẫu nhiên an toàn về mặt mật mã<a class="headerlink" href="#cryptographically-secure-pseudorandom-number-generation" title="Link to this heading"></a></h2>
+<p>Cho đến giờ, các cách tiếp cận nêu trên <strong>không</strong> phù hợp để tạo số giả ngẫu nhiên <em>an toàn về mặt mật mã</em> (CSPRNG). Điều này không sao đối với game, nhưng không đủ cho các trường hợp liên quan đến mã hóa, xác thực hoặc ký số.</p>
+<p>Godot cung cấp lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_crypto.html" title="Class reference (English)"><span class="xref std std-ref">class_Crypto</span></a> cho việc này. Lớp này có thể thực hiện mã hóa/giải mã bằng khóa bất đối xứng, ký/xác minh chữ ký, đồng thời tạo các byte ngẫu nhiên an toàn về mặt mật mã, khóa RSA, HMAC digest và các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_x509certificate.html" title="Class reference (English)"><span class="xref std std-ref">class_X509Certificate</span></a> tự ký.</p>
+<p>Nhược điểm của <abbr title="Cryptographically secure pseudorandom number generation">CSPRNG</abbr> là nó chậm hơn nhiều so với cách tạo số giả ngẫu nhiên tiêu chuẩn. API của nó cũng kém tiện dụng hơn. Do đó, nên tránh dùng <abbr title="Cryptographically secure pseudorandom number generation">CSPRNG</abbr> cho các yếu tố gameplay.</p>
+<p>Ví dụ dùng lớp Crypto để tạo 2 số nguyên ngẫu nhiên trong khoảng từ <code class="docutils literal notranslate"><span class="pre">0</span></code> đến <code class="docutils literal notranslate"><span class="pre">2^32</span> <span class="pre">-</span> <span class="pre">1</span></code> (bao gồm cả hai đầu):</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">crypto</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">Crypto</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="c1"># Request as many bytes as you need, but try to minimize the amount</span>
+<span class="c1"># of separate requests to improve performance.</span>
+<span class="c1"># Each 32-bit integer requires 4 bytes, so we request 8 bytes.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">byte_array</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">crypto</span><span class="o">.</span><span class="nf">generate_random_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Use the ``decode_u32()`` method from PackedByteArray to decode a 32-bit unsigned integer</span>
+<span class="c1"># from the beginning of `byte_array`. This method doesn&#39;t modify `byte_array`.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">random_int_1</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">byte_array</span><span class="o">.</span><span class="nf">decode_u32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Do the same as above, but with an offset of 4 bytes since we&#39;ve already decoded</span>
+<span class="c1"># the first 4 bytes previously.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">random_int_2</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">byte_array</span><span class="o">.</span><span class="nf">decode_u32</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nb nb-Function">prints</span><span class="p">(</span><span class="s2">&quot;Random integers:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">random_int_1</span><span class="p">,</span><span class="w"> </span><span class="n">random_int_2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem tài liệu của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedbytearray.html" title="Class reference (English)"><span class="xref std std-ref">class_PackedByteArray</span></a> để biết các phương thức khác mà bạn có thể dùng để giải mã các byte đã tạo thành nhiều kiểu dữ liệu khác nhau, chẳng hạn số nguyên hoặc số thực (float).</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="beziers_and_curves.html" class="btn btn-neutral float-left" title="Bezier, đường cong và đường đi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../navigation/index.html" class="btn btn-neutral float-right" title="Điều hướng" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

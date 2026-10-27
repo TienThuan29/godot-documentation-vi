@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Retarget bộ xương 3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/assets_pipeline/retargeting_3d_skeletons.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Để chia sẻ hoạt ảnh giữa nhiều Skeleton: Godot có các track Position/Rotation/Scale 3D (tài liệu này gọi chung là track &quot;Transform&quot;) với Nodepath trỏ tới các xương để tạo hoạt ảnh xương c..." />
+<meta name="description" content="Để chia sẻ hoạt ảnh giữa nhiều Skeleton: Godot có các track Position/Rotation/Scale 3D (tài liệu này gọi chung là track &quot;Transform&quot;) với Nodepath trỏ tới các xương để tạo hoạt ảnh xương c..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Retarget bộ xương 3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Xuất scene 3D" href="exporting_3d_scenes.html" />
+    <link rel="prev" title="Cài đặt import nâng cao" href="importing_3d_scenes/advanced_import_settings.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/assets_pipeline/retargeting_3d_skeletons" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Quy trình asset</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="import_process.html">Quy trình import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="importing_images.html">Import hình ảnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="importing_audio_samples.html">Import mẫu âm thanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="importing_translations.html">Import bản dịch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="importing_3d_scenes/index.html">Import scene 3D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Retarget bộ xương 3D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#to-share-animations-among-multiple-skeletons">Để chia sẻ hoạt ảnh giữa nhiều Skeleton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#options-for-retargeting">Các tùy chọn retarget</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bone-map">Bone Map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remove-tracks">Remove Tracks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bone-renamer">Bone Renamer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rest-fixer">Rest Fixer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_3d_scenes.html">Xuất scene 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escn_exporter/index.html">Trình xuất ESCN cho Blender</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Quy trình asset</a></li>
+      <li class="breadcrumb-item active">Retarget bộ xương 3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="retargeting-3d-skeletons">
+<span id="doc-retargeting-3d-skeletons"></span><h1>Retarget bộ xương 3D<a class="headerlink" href="#retargeting-3d-skeletons" title="Link to this heading"></a></h1>
+<section id="to-share-animations-among-multiple-skeletons">
+<h2>Để chia sẻ hoạt ảnh giữa nhiều Skeleton<a class="headerlink" href="#to-share-animations-among-multiple-skeletons" title="Link to this heading"></a></h2>
+<p>Godot có các track Position/Rotation/Scale 3D (tài liệu này gọi chung là track &quot;Transform&quot;) với Nodepath trỏ tới các xương để tạo hoạt ảnh xương cho Skeleton. Điều này có nghĩa là bạn không thể chia sẻ hoạt ảnh giữa nhiều Skeleton chỉ bằng cách dùng cùng tên xương.</p>
+<p>Godot cho phép mỗi xương có quan hệ cha-con và có thể có rotation và scale bên cạnh position, nghĩa là các xương có cùng tên vẫn có thể có giá trị Transform khác nhau.</p>
+<p>Skeleton lưu các giá trị Transform cần thiết cho tư thế mặc định dưới dạng Bone Rest. Nếu Bone Pose bằng Bone Rest, nghĩa là Skeleton đang ở tư thế mặc định.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot 3 và Godot 4 có cách xử lý Bone Pose khác nhau. Trong Godot 3, Bone Pose là tương đối so với Bone Rest, còn trong Godot 4, nó bao gồm cả Bone Rest. Xem <a class="reference external" href="https://godotengine.org/article/animation-data-redesign-40">bài viết</a> này để biết thêm thông tin.</p>
+</div>
+<p>Các model có xương có Bone Rest khác nhau tùy thuộc vào môi trường mà chúng được xuất ra. Ví dụ, xương của model glTF xuất từ Blender có &quot;Edit Bone Orientation&quot; làm rotation của Bone Rest. Tuy nhiên, cũng có những model có xương không có bất kỳ rotation Bone Rest nào, chẳng hạn model glTF xuất từ Maya.</p>
+<p>Để chia sẻ hoạt ảnh trong Godot, cần khớp cả Bone Rest lẫn Bone Name, và trong một số trường hợp cần loại bỏ các track không mong muốn. Bạn có thể làm điều đó bằng trình import scene.</p>
+</section>
+<section id="options-for-retargeting">
+<h2>Các tùy chọn retarget<a class="headerlink" href="#options-for-retargeting" title="Link to this heading"></a></h2>
+<section id="bone-map">
+<h3>Bone Map<a class="headerlink" href="#bone-map" title="Link to this heading"></a></h3>
+<p>Khi bạn chọn node Skeleton3D trong menu import scene nâng cao, một menu sẽ xuất hiện ở bên phải chứa mục &quot;Retarget&quot;. Mục Retarget có một thuộc tính duy nhất là <code class="docutils literal notranslate"><span class="pre">bone_map</span></code>.</p>
+<img alt="../../_images/retargeting1.webp" src="../../_images/retargeting1.webp" />
+<p>Khi đã chọn node Skeleton, trước tiên hãy thiết lập một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_bonemap.html" title="Class reference (English)"><span class="xref std std-ref">class_bonemap</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a> mới. Godot có một preset tên là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a> dành cho các model hình người. Bài hướng dẫn này giả định rằng bạn đang dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn cần một profile khác với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a>, bạn có thể xuất một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a> từ trình chỉnh sửa bằng cách chọn một Skeleton3D và dùng menu <strong>Skeleton3D</strong> trên thanh công cụ của viewport 3D.</p>
+</div>
+<p>Khi bạn dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a>, việc ánh xạ tự động sẽ được thực hiện khi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a> được đặt. Nếu ánh xạ tự động không hoạt động tốt, bạn có thể ánh xạ xương thủ công.</p>
+<img alt="../../_images/retargeting2.webp" src="../../_images/retargeting2.webp" />
+<p>Mọi ánh xạ bị thiếu, bị trùng lặp hoặc có quan hệ cha-con không đúng sẽ được biểu thị bằng nút màu đỏ tươi / đỏ (tùy theo cài đặt trình chỉnh sửa). Điều này không chặn quá trình import, nhưng nó cảnh báo rằng hoạt ảnh có thể không được chia sẻ chính xác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Việc ánh xạ tự động dùng so khớp mẫu (pattern matching) cho tên xương. Vì vậy, chúng tôi khuyên bạn nên dùng các tên tiếng Anh thông dụng cho xương.</p>
+</div>
+<p>Sau khi bạn thiết lập <code class="docutils literal notranslate"><span class="pre">bone_map</span></code>, có một số tùy chọn trong các mục bên dưới.</p>
+<img alt="../../_images/retargeting3.webp" src="../../_images/retargeting3.webp" />
+</section>
+<section id="remove-tracks">
+<h3>Remove Tracks<a class="headerlink" href="#remove-tracks" title="Link to this heading"></a></h3>
+<p>Nếu bạn import resource dưới dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animationlibrary.html" title="Class reference (English)"><span class="xref std std-ref">class_animationlibrary</span></a> để chia sẻ, chúng tôi khuyên bạn nên bật các tùy chọn này. Tuy nhiên, nếu bạn import resource dưới dạng scene, trong một số trường hợp nên tắt chúng. Ví dụ, nếu bạn import một nhân vật có phụ kiện được tạo hoạt ảnh, các tùy chọn này có thể khiến phụ kiện không chuyển động.</p>
+<section id="except-bone-transform">
+<h4>Except Bone Transform<a class="headerlink" href="#except-bone-transform" title="Link to this heading"></a></h4>
+<p>Loại bỏ mọi track khỏi hoạt ảnh ngoại trừ track Transform của xương.</p>
+</section>
+<section id="unimportant-positions">
+<h4>Unimportant Positions<a class="headerlink" href="#unimportant-positions" title="Link to this heading"></a></h4>
+<p>Loại bỏ khỏi hoạt ảnh các track Position khác với <code class="docutils literal notranslate"><span class="pre">root_bone</span></code> và <code class="docutils literal notranslate"><span class="pre">scale_base_bone</span></code> được định nghĩa trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a>. Trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a>, điều này nghĩa là loại bỏ các track Position khác với &quot;Root&quot; và &quot;Hips&quot;. Kể từ Godot 4, hoạt ảnh bao gồm Bone Rest trong giá trị Transform. Nếu bạn tắt tùy chọn này, hoạt ảnh có thể làm thay đổi hình dạng cơ thể một cách khó lường.</p>
+</section>
+<section id="unmapped-bones">
+<h4>Unmapped Bones<a class="headerlink" href="#unmapped-bones" title="Link to this heading"></a></h4>
+<p>Loại bỏ khỏi hoạt ảnh các track Transform của những xương chưa được ánh xạ.</p>
+</section>
+</section>
+<section id="bone-renamer">
+<h3>Bone Renamer<a class="headerlink" href="#bone-renamer" title="Link to this heading"></a></h3>
+<section id="rename-bones">
+<h4>Rename Bones<a class="headerlink" href="#rename-bones" title="Link to this heading"></a></h4>
+<p>Đổi tên các xương đã được ánh xạ.</p>
+</section>
+<section id="unique-node">
+<h4>Unique Node<a class="headerlink" href="#unique-node" title="Link to this heading"></a></h4>
+<p>Biến Skeleton thành một node duy nhất (unique node) với tên được chỉ định trong <code class="docutils literal notranslate"><span class="pre">skeleton_name</span></code>. Điều này cho phép thống nhất đường dẫn track hoạt ảnh mà không phụ thuộc vào cấu trúc phân cấp của scene.</p>
+</section>
+</section>
+<section id="rest-fixer">
+<h3>Rest Fixer<a class="headerlink" href="#rest-fixer" title="Link to this heading"></a></h3>
+<p>Các tư thế tham chiếu được định nghĩa trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a> tuân theo các quy tắc sau:</p>
+<ul class="simple">
+<li><p>Hình người ở tư thế T (T-pose)</p></li>
+<li><p>Hình người quay mặt về hướng +Z trong hệ tọa độ tay phải, trục Y hướng lên (Right-Handed Y-UP)</p></li>
+<li><p>Hình người không nên có Transform ở dạng Node</p></li>
+<li><p>Trục +Y hướng từ khớp cha tới khớp con</p></li>
+<li><p>Xoay theo +X làm khớp gập lại như cơ đang co</p></li>
+</ul>
+<p>Các quy tắc này là những định nghĩa thuận tiện cho blend hoạt ảnh và Inverse Kinematics (IK). Nếu model của bạn không khớp với định nghĩa này, bạn cần sửa nó bằng các tùy chọn sau.</p>
+<section id="apply-node-transform">
+<h4>Apply Node Transform<a class="headerlink" href="#apply-node-transform" title="Link to this heading"></a></h4>
+<p>Nếu asset không được xuất đúng cách để chia sẻ, Skeleton được import có thể có Transform ở dạng Node. Ví dụ, một tệp glTF xuất từ Blender mà chưa thực hiện &quot;Apply Transform&quot; là một trường hợp như vậy. Trông thì có vẻ model khớp với định nghĩa, nhưng các Transform bên trong lại khác với định nghĩa. Tùy chọn này sửa các model như vậy bằng cách áp dụng Transform khi import.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu scene được import chứa các đối tượng khác ngoài Skeleton, tùy chọn này có thể gây ảnh hưởng tiêu cực.</p>
+</div>
+</section>
+<section id="normalize-position-tracks">
+<h4>Normalize Position Tracks<a class="headerlink" href="#normalize-position-tracks" title="Link to this heading"></a></h4>
+<p>Track Position chủ yếu được dùng cho chuyển động của model, nhưng chia sẻ hoạt ảnh di chuyển giữa các model có chiều cao khác nhau có thể gây ra hiện tượng trượt chân do khác biệt về độ dài sải bước. Tùy chọn này chuẩn hóa giá trị track Position dựa trên chiều cao của <code class="docutils literal notranslate"><span class="pre">scale_base_bone</span></code>. Chiều cao của <code class="docutils literal notranslate"><span class="pre">scale_base_bone</span></code> được lưu trong Skeleton dưới dạng <code class="docutils literal notranslate"><span class="pre">motion_scale</span></code>, và các giá trị track Position đã chuẩn hóa sẽ được nhân với giá trị đó khi phát. Nếu tắt tùy chọn này, các track Position sẽ không được chuẩn hóa và <code class="docutils literal notranslate"><span class="pre">motion_scale</span></code> của Skeleton luôn được import là <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+<p>Với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a>, <code class="docutils literal notranslate"><span class="pre">scale_base_bone</span></code> là &quot;Hips&quot;, do đó chiều cao của Hips được dùng làm <code class="docutils literal notranslate"><span class="pre">motion_scale</span></code>.</p>
+</section>
+<section id="overwrite-axis">
+<h4>Overwrite Axis<a class="headerlink" href="#overwrite-axis" title="Link to this heading"></a></h4>
+<p>Thống nhất Bone Rest của các model bằng cách ghi đè chúng cho khớp với các tư thế tham chiếu được định nghĩa trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đây là tùy chọn quan trọng nhất để chia sẻ hoạt ảnh trong Godot 4, nhưng hãy lưu ý rằng tùy chọn này có thể cho ra kết quả rất tệ <strong>nếu Bone Rest gốc được thiết lập từ bên ngoài là quan trọng</strong>. Nếu bạn muốn chia sẻ hoạt ảnh mà vẫn giữ Bone Rest gốc, hãy cân nhắc dùng <a class="reference external" href="https://github.com/TokageItLab/realtime_retarget">Realtime Retarget Module</a>.</p>
+</div>
+</section>
+<section id="fix-silhouette">
+<h4>Fix Silhouette<a class="headerlink" href="#fix-silhouette" title="Link to this heading"></a></h4>
+<p>Cố gắng làm cho dáng (silhouette) của model khớp với dáng của các tư thế tham chiếu được định nghĩa trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a>, chẳng hạn T-Pose. Tùy chọn này không thể sửa các dáng quá khác biệt, và có thể không hiệu quả trong việc sửa bone roll.</p>
+<p>Với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofilehumanoid.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofilehumanoid</span></a>, không cần bật tùy chọn này cho model tư thế T, nhưng nên bật cho model tư thế A. Tuy nhiên trong trường hợp đó, kết quả sửa bàn chân có thể không tốt tùy theo chiều cao gót chân của model, vì vậy có thể cần thêm các tên xương <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeletonprofile.html" title="Class reference (English)"><span class="xref std std-ref">class_skeletonprofile</span></a> mà bạn không muốn sửa vào mảng <code class="docutils literal notranslate"><span class="pre">filter</span></code>, như trong ví dụ bên dưới.</p>
+<img alt="../../_images/retargeting4.webp" src="../../_images/retargeting4.webp" />
+<p>Ngoài ra, với các model có đầu gối hoặc bàn chân bị gập, có thể cần điều chỉnh chiều cao của <code class="docutils literal notranslate"><span class="pre">scale_base_bone</span></code>. Để làm vậy, bạn có thể dùng tùy chọn <code class="docutils literal notranslate"><span class="pre">base_height_adjustment</span></code>.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="importing_3d_scenes/advanced_import_settings.html" class="btn btn-neutral float-left" title="Cài đặt import nâng cao" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="exporting_3d_scenes.html" class="btn btn-neutral float-right" title="Xuất scene 3D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

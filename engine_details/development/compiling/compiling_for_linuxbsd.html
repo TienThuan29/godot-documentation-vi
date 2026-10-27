@@ -1,0 +1,796 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Biên dịch cho Linux, *BSD" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/compiling/compiling_for_linuxbsd.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Yêu cầu: Để biên dịch trên Linux hoặc các biến thể Unix khác, bạn cần những thứ sau: GCC 9+ hoặc Clang 6+., Python 3.9+., Hệ thống build SCons 4.4+., pkg-config (dùng để phát hiện các thư viện phát..." />
+<meta name="description" content="Yêu cầu: Để biên dịch trên Linux hoặc các biến thể Unix khác, bạn cần những thứ sau: GCC 9+ hoặc Clang 6+., Python 3.9+., Hệ thống build SCons 4.4+., pkg-config (dùng để phát hiện các thư viện phát..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Biên dịch cho Linux, *BSD &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Biên dịch cho macOS" href="compiling_for_macos.html" />
+    <link rel="prev" title="Biên dịch cho Windows" href="compiling_for_windows.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/compiling/compiling_for_linuxbsd" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Build từ mã nguồn</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="getting_source.html">Lấy mã nguồn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introduction_to_the_buildsystem.html">Giới thiệu về hệ thống build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_windows.html">Biên dịch cho Windows</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Biên dịch cho Linux, *BSD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Yêu cầu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiling">Biên dịch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiling-with-accesskit-support">Biên dịch với hỗ trợ AccessKit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-a-headless-server-build">Chạy bản build headless/server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#building-export-templates">Build export template</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cross-compiling-for-risc-v-devices">Biên dịch chéo cho thiết bị RISC-V</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-clang-and-lld-for-faster-development">Dùng Clang và LLD để phát triển nhanh hơn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-mold-for-faster-development">Dùng mold để phát triển nhanh hơn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-system-libraries-for-faster-development">Dùng thư viện hệ thống để phát triển nhanh hơn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_macos.html">Biên dịch cho macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_android.html">Biên dịch cho Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_ios.html">Biên dịch cho iOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_visionos.html">Biên dịch cho visionOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_web.html">Biên dịch cho Web</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cross-compiling_for_ios_on_linux.html">Biên dịch chéo cho iOS trên Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_with_dotnet.html">Biên dịch với .NET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_with_script_encryption_key.html">Biên dịch với khóa mã hóa PCK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizing_for_size.html">Tối ưu hóa kích thước bản build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/index.html">Debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profiling/index.html">Sử dụng profiler C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../handling_compatibility_breakages.html">Xử lý việc phá vỡ tương thích</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Phát triển engine</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Build từ mã nguồn</a></li>
+      <li class="breadcrumb-item active">Biên dịch cho Linux, *BSD</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="compiling-for-linux-bsd">
+<span id="doc-compiling-for-linuxbsd"></span><h1>Biên dịch cho Linux, *BSD<a class="headerlink" href="#compiling-for-linux-bsd" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Trang này mô tả cách biên dịch các binary trình chỉnh sửa và export template cho Linux từ mã nguồn. Nếu bạn muốn xuất dự án sang Linux, hãy đọc <a class="reference internal" href="../../../tutorials/export/exporting_for_linux.html#doc-exporting-for-linux"><span class="std std-ref">Xuất cho Linux</span></a>.</p>
+</div>
+<section id="requirements">
+<h2>Yêu cầu<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<p>Để biên dịch trên Linux hoặc các biến thể Unix khác, bạn cần những thứ sau:</p>
+<ul class="simple">
+<li><p>GCC 9+ hoặc Clang 6+.</p></li>
+<li><p><a class="reference external" href="https://www.python.org/downloads/">Python 3.9+</a>.</p></li>
+<li><p>Hệ thống build <a class="reference external" href="https://scons.org/pages/download.html">SCons 4.4+</a>.</p></li>
+<li><p>pkg-config (dùng để phát hiện các thư viện phát triển được liệt kê bên dưới).</p></li>
+<li><p>Thư viện phát triển:</p>
+<ul>
+<li><p>X11, Xcursor, Xinerama, Xi và XRandR.</p></li>
+<li><p>Wayland và wayland-scanner.</p></li>
+<li><p>Mesa.</p></li>
+<li><p>ALSA.</p></li>
+<li><p>PulseAudio.</p></li>
+</ul>
+</li>
+<li><p><em>Tùy chọn</em> - libudev (build với <code class="docutils literal notranslate"><span class="pre">udev=yes</span></code>).</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để lấy mã nguồn Godot cho việc biên dịch, xem <a class="reference internal" href="getting_source.html#doc-getting-source"><span class="std std-ref">Lấy mã nguồn</span></a>.</p>
+<p>Để có cái nhìn tổng quan về cách dùng SCons cho Godot, xem <a class="reference internal" href="introduction_to_the_buildsystem.html#doc-introduction-to-the-buildsystem"><span class="std std-ref">Giới thiệu về hệ thống build</span></a>.</p>
+</div>
+<section id="distro-specific-one-liners">
+<span id="doc-compiling-for-linuxbsd-oneliners"></span><h3>Lệnh một dòng cho từng bản phân phối<a class="headerlink" href="#distro-specific-one-liners" title="Link to this heading"></a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Alpine Linux</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Arch Linux</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">Debian/Ubuntu</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">Fedora</button><button aria-controls="panel-0-0-4" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-4" name="0-4" role="tab" tabindex="-1">FreeBSD</button><button aria-controls="panel-0-0-5" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-5" name="0-5" role="tab" tabindex="-1">Gentoo</button><button aria-controls="panel-0-0-6" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-6" name="0-6" role="tab" tabindex="-1">Mageia</button><button aria-controls="panel-0-0-7" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-7" name="0-7" role="tab" tabindex="-1">NetBSD</button><button aria-controls="panel-0-0-8" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-8" name="0-8" role="tab" tabindex="-1">OpenBSD</button><button aria-controls="panel-0-0-9" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-9" name="0-9" role="tab" tabindex="-1">openKylin</button><button aria-controls="panel-0-0-10" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-10" name="0-10" role="tab" tabindex="-1">openSUSE</button><button aria-controls="panel-0-0-11" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-11" name="0-11" role="tab" tabindex="-1">Solus</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>apk<span class="w"> </span>add<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkgconf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>gcc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>g++<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libx11-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxcursor-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxinerama-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxi-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxrandr-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mesa-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>eudev-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alsa-lib-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pulseaudio-dev
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pacman<span class="w"> </span>-Sy<span class="w"> </span>--noconfirm<span class="w"> </span>--needed<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkgconf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>gcc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxcursor<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxinerama<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxi<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxrandr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland-utils<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mesa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>glu<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libglvnd<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alsa-lib<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pulseaudio
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>build-essential<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkg-config<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libx11-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxcursor-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxinerama-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libgl1-mesa-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libglu1-mesa-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libasound2-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libpulse-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libudev-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxi-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxrandr-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libwayland-dev
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkgconfig<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>gcc-c++<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libstdc++-static<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland-devel
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-4" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-4" name="0-4" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pkg<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>devel/scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkgconf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>xorg-libraries<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXcursor<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXrandr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXi<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>xorgproto<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libGLU<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alsa-lib<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pulseaudio<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-5" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-5" name="0-5" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>emerge<span class="w"> </span>--sync
+emerge<span class="w"> </span>-an<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>dev-build/scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>x11-libs/libX11<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>x11-libs/libXcursor<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>x11-libs/libXinerama<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>x11-libs/libXi<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>dev-util/wayland-scanner<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>media-libs/mesa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>media-libs/glu<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>media-libs/alsa-lib<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>media-sound/pulseaudio
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-6" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-6" name="0-6" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>urpmi<span class="w"> </span>--auto<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>task-c++-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(alsa)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(glu)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(libpulse)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(udev)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(x11)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(xcursor)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(xinerama)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(xi)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;pkgconfig(xrandr)&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-7" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-7" name="0-7" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pkg_add<span class="w"> </span>pkgin
+pkgin<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkg-config<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>py313-scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pulseaudio
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-8" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-8" name="0-8" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pkg_add<span class="w"> </span>-I<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pulseaudio
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-9" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-9" name="0-9" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python3-pip<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>build-essential<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkg-config<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libx11-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxcursor-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxinerama-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libgl1-mesa-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libglu1-mesa-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libasound2-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libpulse-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libudev-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxi-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxrandr-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libwayland-dev
+sudo<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>scons
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-10" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-10" name="0-10" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkgconfig<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libX11-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXcursor-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXrandr-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXinerama-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libXi-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>Mesa-libGL-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alsa-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libpulse-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libudev-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>gcc-c++<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libGLU1
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-11" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-11" name="0-11" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>eopkg<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-c<span class="w"> </span>system.devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>scons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxcursor-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxinerama-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxi-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libxrandr-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>wayland-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mesalib-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libglu<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alsa-lib-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pulseaudio-devel
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="compiling">
+<h2>Biên dịch<a class="headerlink" href="#compiling" title="Link to this heading"></a></h2>
+<p>Mở terminal, đi tới thư mục gốc của mã nguồn engine và gõ:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trước Godot 4.0, target Linux/*BSD có tên là <code class="docutils literal notranslate"><span class="pre">x11</span></code> thay vì <code class="docutils literal notranslate"><span class="pre">linuxbsd</span></code>. Nếu bạn muốn biên dịch Godot 3.x, hãy dùng <a class="reference external" href="https://docs.godotengine.org/en/3.6/development/compiling/compiling_for_x11.html">nhánh 3.x của tài liệu này</a>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn biên dịch Godot để thay đổi hoặc đóng góp cho engine, bạn có thể muốn dùng các tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">dev_build=yes</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">dev_mode=yes</span></code>. Xem <a class="reference internal" href="introduction_to_the_buildsystem.html#doc-introduction-to-the-buildsystem-development-and-production-aliases"><span class="std std-ref">Các alias cho development và production</span></a> để biết thêm thông tin.</p>
+</div>
+<p>Nếu mọi thứ suôn sẻ, file thực thi binary kết quả sẽ được đặt trong thư mục con &quot;bin&quot;. File thực thi này chứa toàn bộ engine và chạy mà không cần bất kỳ phụ thuộc nào. Chạy nó sẽ mở Project Manager.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn muốn biên dịch bằng Clang thay vì GCC, hãy dùng lệnh sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">use_llvm</span><span class="o">=</span>yes
+</pre></div>
+</div>
+<p>Dùng Clang dường như là bắt buộc với OpenBSD, nếu không font sẽ không build được. Với các thiết bị kiến trúc RISC-V, hãy dùng trình biên dịch Clang thay vì GCC.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Biên dịch trên một số nền tảng như OpenBSD có thể cần nhiều bộ nhớ hơn mức mặc định. Để tăng giới hạn bộ nhớ trên OpenBSD trong phạm vi tối đa của người dùng hiện tại, hãy chạy <code class="docutils literal notranslate"><span class="pre">ulimit</span> <span class="pre">-d</span> <span class="pre">{new</span> <span class="pre">amount</span> <span class="pre">in</span> <span class="pre">kB}</span></code>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn biên dịch Godot để dùng cho production, bạn có thể làm file thực thi cuối cùng nhỏ hơn và nhanh hơn bằng cách thêm tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">production=yes</span></code>. Tùy chọn này bật thêm các tối ưu hóa của trình biên dịch và tối ưu hóa lúc liên kết (link-time optimization).</p>
+<p>LTO mất khá nhiều thời gian và cần khoảng 7 GB RAM trống khi biên dịch. Nếu bạn bị thiếu bộ nhớ với tùy chọn trên, hãy dùng <code class="docutils literal notranslate"><span class="pre">production=yes</span> <span class="pre">lto=none</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">production=yes</span> <span class="pre">lto=thin</span></code> để có một dạng LTO nhẹ hơn nhưng kém hiệu quả hơn.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn muốn dùng cài đặt trình chỉnh sửa riêng cho các bản build Godot của mình và các bản phát hành chính thức, bạn có thể bật <a class="reference internal" href="../../../tutorials/io/data_paths.html#doc-data-paths-self-contained-mode"><span class="std std-ref">Chế độ tự chứa (self-contained)</span></a> bằng cách tạo một file tên <code class="docutils literal notranslate"><span class="pre">._sc_</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">_sc_</span></code> trong thư mục <code class="docutils literal notranslate"><span class="pre">bin/</span></code>.</p>
+</div>
+</section>
+<section id="compiling-with-accesskit-support">
+<h2>Biên dịch với hỗ trợ AccessKit<a class="headerlink" href="#compiling-with-accesskit-support" title="Link to this heading"></a></h2>
+<p>AccessKit cung cấp hỗ trợ cho trình đọc màn hình.</p>
+<p>Theo mặc định, Godot được build với AccessKit liên kết động. Bạn có thể dùng nó bằng cách đặt <code class="docutils literal notranslate"><span class="pre">accesskit.so</span></code> cạnh file thực thi.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn cũng có thể dùng AccessKit liên kết động với export template: đổi tên file SO thành <code class="docutils literal notranslate"><span class="pre">accesskit.{architecture}.so</span></code> và đặt chúng cạnh các file thực thi export template, các thư viện sẽ được tự động sao chép trong quá trình xuất.</p>
+</div>
+<p>Để biên dịch Godot với AccessKit liên kết tĩnh:</p>
+<ul>
+<li><p>Tải các thư viện tĩnh dựng sẵn từ <a class="reference external" href="https://github.com/godotengine/godot-accesskit-c-static/releases">thư viện godot-accesskit-c-static</a> và giải nén chúng.</p></li>
+<li><p>Khi build Godot, hãy thêm <code class="docutils literal notranslate"><span class="pre">accesskit_sdk_path={path}</span></code> để chỉ cho SCons nơi tìm các thư viện AccessKit:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">accesskit_sdk_path</span><span class="o">=</span>&lt;...&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể tùy chọn tự build các thư viện godot-angle-static theo các bước sau:</p>
+<ol class="arabic simple">
+<li><p>Clone thư mục <a class="reference external" href="https://github.com/godotengine/godot-accesskit-c-static/">godot-accesskit-c-static</a> và di chuyển vào đó.</p></li>
+<li><p>Chạy lệnh sau:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>accesskit-c
+cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+cmake<span class="w"> </span>--build<span class="w"> </span>build
+cmake<span class="w"> </span>--install<span class="w"> </span>build
+</pre></div>
+</div>
+<p>Thư viện tĩnh AccessKit nên được build bằng cùng trình biên dịch mà bạn dùng để build Godot.</p>
+</div>
+</section>
+<section id="running-a-headless-server-build">
+<h2>Chạy bản build headless/server<a class="headerlink" href="#running-a-headless-server-build" title="Link to this heading"></a></h2>
+<p>Để chạy ở chế độ <em>headless</em>, chế độ cung cấp chức năng của trình chỉnh sửa để xuất dự án một cách tự động, hãy dùng bản build thông thường:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>editor
+</pre></div>
+</div>
+<p>Sau đó dùng đối số dòng lệnh <code class="docutils literal notranslate"><span class="pre">--headless</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/godot.linuxbsd.editor.x86_64<span class="w"> </span>--headless
+</pre></div>
+</div>
+<p>Để biên dịch bản build <em>server</em> debug có thể dùng với <a class="reference internal" href="../../../tutorials/editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">các công cụ gỡ lỗi từ xa</span></a>, hãy dùng:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug
+</pre></div>
+</div>
+<p>Để biên dịch bản build <em>server</em> được tối ưu để chạy dedicated game server, hãy dùng:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release<span class="w"> </span><span class="nv">production</span><span class="o">=</span>yes
+</pre></div>
+</div>
+</section>
+<section id="building-export-templates">
+<h2>Build export template<a class="headerlink" href="#building-export-templates" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Binary Linux thường không chạy được trên các bản phân phối cũ hơn bản phân phối dùng để build chúng. Nếu bạn muốn phân phối binary chạy được trên hầu hết các bản phân phối, bạn nên build chúng trên một bản phân phối cũ như Ubuntu 20.04. Bạn có thể dùng máy ảo hoặc container để thiết lập môi trường build phù hợp.</p>
+</div>
+<p>Để build export template cho Linux hoặc *BSD, hãy chạy hệ thống build với các tham số sau:</p>
+<ul class="simple">
+<li><p>(32 bit)</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release<span class="w"> </span><span class="nv">arch</span><span class="o">=</span>x86_32
+scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug<span class="w"> </span><span class="nv">arch</span><span class="o">=</span>x86_32
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>(64 bit)</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release<span class="w"> </span><span class="nv">arch</span><span class="o">=</span>x86_64
+scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_debug<span class="w"> </span><span class="nv">arch</span><span class="o">=</span>x86_64
+</pre></div>
+</div>
+<p>Lưu ý rằng biên dịch chéo cho kiến trúc bit ngược lại (64/32) so với nền tảng máy chủ không phải lúc nào cũng đơn giản và có thể cần môi trường chroot.</p>
+<p>Để tạo export template chuẩn, các file kết quả trong thư mục <code class="docutils literal notranslate"><span class="pre">bin/</span></code> phải được sao chép tới:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$HOME</span>/.local/share/godot/export_templates/&lt;version&gt;/
+</pre></div>
+</div>
+<p>và đặt tên như sau (kể cả với *BSD, vốn được Godot xem là &quot;Linux/X11&quot;):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>linux_debug.arm32
+linux_debug.arm64
+linux_debug.x86_32
+linux_debug.x86_64
+linux_release.arm32
+linux_release.arm64
+linux_release.x86_32
+linux_release.x86_64
+</pre></div>
+</div>
+<p>Tuy nhiên, nếu bạn đang viết module tùy chỉnh hoặc mã C++ tùy chỉnh, bạn có thể muốn cấu hình các binary làm export template tùy chỉnh trong menu xuất dự án. Bạn phải bật <strong>Advanced Options</strong> để thiết lập mục này.</p>
+<img alt="../../../_images/lintemplates.webp" src="../../../_images/lintemplates.webp" />
+<p>Bạn thậm chí không cần sao chép chúng, chỉ cần tham chiếu tới các file kết quả trong thư mục <code class="docutils literal notranslate"><span class="pre">bin/</span></code> của thư mục mã nguồn Godot, để lần build tiếp theo bạn sẽ tự động có các template tùy chỉnh được tham chiếu.</p>
+</section>
+<section id="cross-compiling-for-risc-v-devices">
+<h2>Biên dịch chéo cho thiết bị RISC-V<a class="headerlink" href="#cross-compiling-for-risc-v-devices" title="Link to this heading"></a></h2>
+<p>Để biên dịch chéo Godot cho thiết bị RISC-V, chúng ta cần thiết lập các thành phần sau:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/riscv-collab/riscv-gnu-toolchain/releases">riscv-gnu-toolchain</a>. Dù chúng ta sẽ không dùng trực tiếp, nó cung cấp một sysroot cùng các file header và thư viện mà chúng ta cần. Có nhiều phiên bản để lựa chọn, tuy nhiên toolchain càng cũ thì binary cuối cùng càng tương thích tốt. Nếu phân vân, hãy <a class="reference external" href="https://github.com/riscv-collab/riscv-gnu-toolchain/releases/tag/2023.07.07">dùng phiên bản này</a> và tải <code class="docutils literal notranslate"><span class="pre">riscv64-glibc-ubuntu-20.04-gcc-nightly-2023.07.07-nightly.tar.gz</span></code>. Giải nén nó ở đâu đó và ghi nhớ đường dẫn.</p></li>
+<li><p><a class="reference external" href="https://github.com/rui314/mold/releases">mold</a>. Linker nhanh này là linker duy nhất liên kết binary kết quả một cách chính xác. Hãy tải về, giải nén và đảm bảo thêm thư mục <code class="docutils literal notranslate"><span class="pre">bin</span></code> của nó vào PATH. Chạy <code class="docutils literal notranslate"><span class="pre">mold</span> <span class="pre">--help</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">support</span></code> để kiểm tra phiên bản Mold của bạn có hỗ trợ RISC-V hay không. Nếu không thấy RISC-V, có thể bạn cần cập nhật Mold.</p></li>
+</ul>
+<p>Để việc tham chiếu toolchain dễ dàng hơn, chúng ta có thể đặt một biến môi trường như sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RISCV_TOOLCHAIN_PATH</span><span class="o">=</span><span class="s2">&quot;path to toolchain here&quot;</span>
+</pre></div>
+</div>
+<p>Bằng cách này, chúng ta sẽ không phải đặt thủ công vị trí thư mục mỗi lần cần tham chiếu tới nó.</p>
+<p>Sau khi thiết lập xong tất cả những điều trên, giờ chúng ta đã sẵn sàng build Godot.</p>
+<p>Đi tới thư mục gốc của mã nguồn và chạy lệnh build sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$RISCV_TOOLCHAIN_PATH</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+scons<span class="w"> </span><span class="nv">arch</span><span class="o">=</span>rv64<span class="w"> </span><span class="nv">use_llvm</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">linker</span><span class="o">=</span>mold<span class="w"> </span><span class="nv">lto</span><span class="o">=</span>none<span class="w"> </span><span class="nv">target</span><span class="o">=</span>editor<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">ccflags</span><span class="o">=</span><span class="s2">&quot;--sysroot=</span><span class="nv">$RISCV_TOOLCHAIN_PATH</span><span class="s2">/sysroot --gcc-toolchain=</span><span class="nv">$RISCV_TOOLCHAIN_PATH</span><span class="s2"> -target riscv64-unknown-linux-gnu&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">linkflags</span><span class="o">=</span><span class="s2">&quot;--sysroot=</span><span class="nv">$RISCV_TOOLCHAIN_PATH</span><span class="s2">/sysroot --gcc-toolchain=</span><span class="nv">$RISCV_TOOLCHAIN_PATH</span><span class="s2"> -target riscv64-unknown-linux-gnu&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>RISC-V GCC có <a class="reference external" href="https://github.com/riscv-collab/riscv-gcc/issues/15">lỗi với các thao tác atomic</a> khiến nó không biên dịch Godot đúng cách. Đó là lý do Clang được dùng thay thế. Hãy đảm bảo Clang <em>có thể</em> biên dịch cho RISC-V. Bạn có thể kiểm tra bằng lệnh <code class="docutils literal notranslate"><span class="pre">clang</span> <span class="pre">-print-targets</span></code>, và đảm bảo thấy <code class="docutils literal notranslate"><span class="pre">riscv64</span></code> trong danh sách target.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Đoạn mã trên có thêm <code class="docutils literal notranslate"><span class="pre">$RISCV_TOOLCHAIN_PATH/bin</span></code> vào PATH, nhưng chỉ cho lệnh <code class="docutils literal notranslate"><span class="pre">scons</span></code> đi kèm. Vì riscv-gnu-toolchain dùng Clang riêng nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">bin</span></code>, việc thêm <code class="docutils literal notranslate"><span class="pre">$RISCV_TOOLCHAIN_PATH/bin</span></code> vào biến môi trường PATH của người dùng có thể khiến bạn không truy cập được phiên bản Clang khác nếu đã cài. Vì lý do này, không nên thêm thư mục bin một cách vĩnh viễn. Bạn cũng có thể bỏ dòng <code class="docutils literal notranslate"><span class="pre">PATH=&quot;$RISCV_TOOLCHAIN_PATH/bin:$PATH&quot;</span></code> nếu muốn dùng scons với phiên bản Clang tự cài, nhưng nó có thể gặp vấn đề tương thích với riscv-gnu-toolchain.</p>
+</div>
+<p>Lệnh này về bản chất tương tự, nhưng có vài thay đổi quan trọng. <code class="docutils literal notranslate"><span class="pre">ccflags</span></code> và <code class="docutils literal notranslate"><span class="pre">linkflags</span></code> bổ sung thêm các flag cho bản build. <code class="docutils literal notranslate"><span class="pre">--sysroot</span></code> trỏ tới một thư mục mô phỏng hệ thống Linux, chứa mọi header, thư viện và file <code class="docutils literal notranslate"><span class="pre">.so</span></code> mà Clang sẽ dùng. <code class="docutils literal notranslate"><span class="pre">--gcc-toolchain</span></code> cho Clang biết toolchain đầy đủ nằm ở đâu, và <code class="docutils literal notranslate"><span class="pre">-target</span> <span class="pre">riscv64-unknown-linux-gnu</span></code> chỉ cho Clang kiến trúc đích và hệ điều hành mà chúng ta muốn build.</p>
+<p>Nếu mọi thứ suôn sẻ, giờ bạn sẽ thấy thư mục <code class="docutils literal notranslate"><span class="pre">bin</span></code>, và bên trong có một binary tương tự như sau:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>godot.linuxbsd.editor.rv64.llvm
+</pre></div>
+</div>
+<p>Giờ bạn có thể sao chép file thực thi này sang thiết bị RISC-V yêu thích, rồi khởi chạy nó bằng cách nhấp đúp, thao tác này sẽ mở Project Manager.</p>
+<p>Nếu sau này bạn quyết định biên dịch export template, hãy sao chép lệnh build ở trên nhưng đổi giá trị <code class="docutils literal notranslate"><span class="pre">target</span></code> thành <code class="docutils literal notranslate"><span class="pre">template_debug</span></code> cho bản build debug, hoặc <code class="docutils literal notranslate"><span class="pre">template_release</span></code> cho bản build release.</p>
+</section>
+<section id="using-clang-and-lld-for-faster-development">
+<h2>Dùng Clang và LLD để phát triển nhanh hơn<a class="headerlink" href="#using-clang-and-lld-for-faster-development" title="Link to this heading"></a></h2>
+<p>Bạn cũng có thể dùng Clang và LLD để build Godot. Cách này có hai ưu điểm so với thiết lập mặc định GCC + GNU ld:</p>
+<ul class="simple">
+<li><p>LLD liên kết Godot nhanh hơn đáng kể so với GNU ld hoặc gold. Điều này giúp rút ngắn thời gian lặp.</p></li>
+<li><p>Clang thường đưa ra thông báo lỗi hữu ích hơn so với GCC.</p></li>
+</ul>
+<p>Để làm vậy, hãy cài Clang và gói <code class="docutils literal notranslate"><span class="pre">lld</span></code> từ trình quản lý gói của bản phân phối, sau đó dùng lệnh SCons sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">use_llvm</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">linker</span><span class="o">=</span>lld
+</pre></div>
+</div>
+<p>Sau khi build xong, một binary mới với hậu tố <code class="docutils literal notranslate"><span class="pre">.llvm</span></code> sẽ được tạo trong thư mục <code class="docutils literal notranslate"><span class="pre">bin/</span></code>.</p>
+<p>Vẫn nên dùng GCC cho các bản build production vì đây là trình biên dịch được dùng cho các bản build chính thức và được kiểm thử kỹ lưỡng hơn.</p>
+<p>Nếu gặp lỗi này:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/usr/bin/ld: cannot find -l:libatomic.a: No such file or directory
+</pre></div>
+</div>
+<p>Có hai giải pháp:</p>
+<ul class="simple">
+<li><p>Trong lệnh SCons, hãy thêm tham số <code class="docutils literal notranslate"><span class="pre">use_static_cpp=no</span></code>.</p></li>
+<li><p>Làm theo <a class="reference external" href="https://github.com/ivmai/libatomic_ops#installation-and-usage">hướng dẫn này</a> để cấu hình, build và cài đặt <code class="docutils literal notranslate"><span class="pre">libatomic_ops</span></code>. Sau đó, sao chép <code class="docutils literal notranslate"><span class="pre">/usr/lib/libatomic_ops.a</span></code> thành <code class="docutils literal notranslate"><span class="pre">/usr/lib/libatomic.a</span></code>, hoặc tạo soft link tới <code class="docutils literal notranslate"><span class="pre">libatomic_ops</span></code> bằng lệnh <code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">-s</span> <span class="pre">/usr/lib/libatomic_ops.a</span> <span class="pre">/usr/lib/libatomic.a</span></code>. Soft link đảm bảo phiên bản <code class="docutils literal notranslate"><span class="pre">libatomic_ops</span></code> mới nhất sẽ được dùng mà không cần sao chép lại mỗi khi nó được cập nhật.</p></li>
+</ul>
+</section>
+<section id="using-mold-for-faster-development">
+<h2>Dùng mold để phát triển nhanh hơn<a class="headerlink" href="#using-mold-for-faster-development" title="Link to this heading"></a></h2>
+<p>Để liên kết nhanh hơn cả LLD, bạn có thể dùng <a class="reference external" href="https://github.com/rui314/mold">mold</a>. mold có thể dùng với GCC hoặc Clang.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Debian/Ubuntu</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Fedora</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">Arch Linux</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>mold
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>mold
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pacman<span class="w"> </span>-Sy<span class="w"> </span>--noconfirm<span class="w"> </span>--needed<span class="w"> </span>mold
+</pre></div>
+</div>
+</div></div>
+<p>Sau khi cài mold, hãy dùng lệnh SCons sau khi biên dịch Godot:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">linker</span><span class="o">=</span>mold
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="using-system-libraries-for-faster-development">
+<h2>Dùng thư viện hệ thống để phát triển nhanh hơn<a class="headerlink" href="#using-system-libraries-for-faster-development" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/thirdparty">Godot đóng gói kèm mã nguồn của nhiều thư viện bên thứ ba.</a> Thay vào đó, bạn có thể chọn dùng phiên bản hệ thống của các thư viện bên thứ ba. Điều này giúp binary Godot liên kết nhanh hơn, vì các thư viện bên thứ ba được liên kết động. Do đó, chúng không cần được liên kết tĩnh mỗi lần bạn build engine (kể cả với những thay đổi nhỏ tăng dần).</p>
+<p>Tuy nhiên, không phải bản phân phối Linux nào cũng có sẵn gói cho các thư viện bên thứ ba (hoặc các gói đó có thể không được cập nhật).</p>
+<p>Chuyển sang thư viện hệ thống có thể giảm thời gian liên kết vài giây trên CPU chậm, nhưng cần kiểm thử thủ công tùy theo bản phân phối Linux của bạn. Ngoài ra, bạn có thể không dùng được thư viện hệ thống cho mọi thứ do lỗi trong các gói thư viện hệ thống (hoặc trong hệ thống build, vì tính năng này ít được kiểm thử hơn).</p>
+<p>Để biên dịch Godot với thư viện hệ thống, hãy cài các phụ thuộc sau <strong>bổ sung</strong> cho các phụ thuộc đã liệt kê trong <a class="reference internal" href="#doc-compiling-for-linuxbsd-oneliners"><span class="std std-ref">Lệnh một dòng cho từng bản phân phối</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Debian/Ubuntu</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Fedora</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libembree-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libenet-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libfreetype-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libpng-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>zlib1g-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libgraphite2-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libharfbuzz-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libogg-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libtheora-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libvorbis-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libwebp-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libmbedtls-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libminiupnpc-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libpcre2-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libsdl3-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libzstd-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libsquish-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libicu-dev
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>embree-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>enet-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>glslang-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>graphite2-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>harfbuzz-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libicu-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libsquish-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libtheora-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libvorbis-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libwebp-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libzstd-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mbedtls-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>miniupnpc-devel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>SDL3-devel
+</pre></div>
+</div>
+</div></div>
+<p>Sau khi cài mọi gói cần thiết, hãy dùng lệnh sau để build Godot:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd<span class="w"> </span><span class="nv">builtin_embree</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_enet</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_freetype</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_graphite</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_harfbuzz</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_libogg</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_libpng</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_libtheora</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_libvorbis</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_libwebp</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_mbedtls</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_miniupnpc</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_pcre2</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_sdl</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_zlib</span><span class="o">=</span>no<span class="w"> </span><span class="nv">builtin_zstd</span><span class="o">=</span>no
+</pre></div>
+</div>
+<p>Trên Debian stable, bạn cần bỏ <cite>builtin_embree=no</cite> vì phiên bản Embree do hệ thống cung cấp quá cũ để hoạt động với nhánh <cite>master</cite> mới nhất của Godot (vốn yêu cầu Embree 4).</p>
+<p>Bạn có thể xem danh sách mọi thư viện tích hợp sẵn có phiên bản thay thế từ hệ thống bằng cách chạy <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">-h</span></code>, rồi tìm các tùy chọn bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">builtin_</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Khi dùng thư viện hệ thống, binary kết quả <strong>không</strong> còn di động giữa các bản phân phối Linux nữa. Đừng dùng cách này để tạo binary mà bạn định phân phối cho người khác, trừ khi bạn đang tạo gói cho một bản phân phối Linux.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="compiling_for_windows.html" class="btn btn-neutral float-left" title="Biên dịch cho Windows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="compiling_for_macos.html" class="btn btn-neutral float-right" title="Biên dịch cho macOS" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

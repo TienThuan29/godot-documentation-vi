@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Perfetto" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/profiling/perfetto.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Perfetto là hệ thống tracing mặc định của Android. Thực tế, dịch vụ tracing hệ thống của nó đã được tích hợp sẵn vào nền tảng kể từ Android 9. Dùng template Perfetto chính thức: Bắt đầu từ Godot 4...." />
+<meta name="description" content="Perfetto là hệ thống tracing mặc định của Android. Thực tế, dịch vụ tracing hệ thống của nó đã được tích hợp sẵn vào nền tảng kể từ Android 9. Dùng template Perfetto chính thức: Bắt đầu từ Godot 4...." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Perfetto &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Tracy" href="tracy.html" />
+    <link rel="prev" title="Instruments" href="instruments.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/profiling/perfetto" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compiling/index.html">Build từ mã nguồn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/index.html">Debug</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sử dụng profiler C++</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#sampling-profilers">Sampling profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#tracing-profilers">Tracing profiler</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#all-recommended-profilers">Tất cả profiler được khuyên dùng</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hotspot.html">Hotspot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="instruments.html">Instruments</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Perfetto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tracy.html">Tracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="very_sleepy.html">VerySleepy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../handling_compatibility_breakages.html">Xử lý việc phá vỡ tương thích</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Phát triển engine</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Sử dụng profiler C++</a></li>
+      <li class="breadcrumb-item active">Perfetto</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="perfetto">
+<span id="doc-profiler-perfetto"></span><h1>Perfetto<a class="headerlink" href="#perfetto" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Vui lòng xem <a class="reference internal" href="index.html#doc-tracing-profilers"><span class="std std-ref">hướng dẫn về tracing profiler</span></a> để biết thêm thông tin.</p>
+</div>
+<p><a class="reference external" href="https://perfetto.dev">Perfetto</a> là hệ thống tracing mặc định của Android. Thực tế, dịch vụ tracing hệ thống của nó đã được tích hợp sẵn vào nền tảng kể từ Android 9.</p>
+<section id="using-official-perfetto-templates">
+<h2>Dùng template Perfetto chính thức<a class="headerlink" href="#using-official-perfetto-templates" title="Link to this heading"></a></h2>
+<p>Bắt đầu từ Godot 4.7, export template Perfetto được cung cấp cho mọi bản phát hành Godot ổn định và có thể tải về từ <a class="reference external" href="https://github.com/godotengine/godot/releases/">trang GitHub Releases</a>.</p>
+<section id="using-the-gradle-build-template">
+<h3>Dùng Gradle build template<a class="headerlink" href="#using-the-gradle-build-template" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Truy cập trang phát hành và tải artifact <code class="docutils literal notranslate"><span class="pre">Godot_v&lt;godot_version&gt;_android_source.perfetto.zip</span></code>, trong đó <code class="docutils literal notranslate"><span class="pre">godot_version</span></code> tương ứng với phiên bản engine đang dùng.</p></li>
+<li><p>Trong hộp thoại <strong>Project &gt; Export</strong>, phải bật <strong>Advanced Options</strong> và <strong>Use Gradle Build</strong>.</p></li>
+<li><p>Trỏ <strong>Android Source Template</strong> đến export template đã tải về.</p></li>
+</ul>
+<img alt="../../../_images/cpp_profiler_perfetto_gradle_build_config.webp" src="../../../_images/cpp_profiler_perfetto_gradle_build_config.webp" />
+<p>Làm theo hướng dẫn trong <a class="reference internal" href="#doc-profiler-perfetto-configuration"><span class="std std-ref">phần Cấu hình</span></a> để tìm hiểu cách cấu hình và tạo trace.</p>
+</section>
+<section id="using-non-gradle-build-templates">
+<h3>Dùng build template không phải Gradle<a class="headerlink" href="#using-non-gradle-build-templates" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Truy cập trang phát hành và tải các artifact sau, trong đó <code class="docutils literal notranslate"><span class="pre">godot_version</span></code> tương ứng với phiên bản engine đang dùng:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Godot_v&lt;godot_version&gt;_android_debug.perfetto.apk</span></code> (cho bản build debug)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Godot_v&lt;godot_version&gt;_android_release.perfetto.apk</span></code> (cho bản build release)</p></li>
+</ul>
+</li>
+<li><p>Trong hộp thoại <strong>Project &gt; Export</strong>:</p>
+<ul>
+<li><p>Phải bật <strong>Advanced Options</strong></p></li>
+<li><p>Phải tắt <strong>Use Gradle Build</strong></p></li>
+</ul>
+</li>
+<li><p>Trỏ <strong>Custom Template</strong> đến các export template đã tải về.</p></li>
+</ul>
+<img alt="../../../_images/cpp_profiler_perfetto_non_gradle_build_config.webp" src="../../../_images/cpp_profiler_perfetto_non_gradle_build_config.webp" />
+<p>Làm theo hướng dẫn trong <a class="reference internal" href="#doc-profiler-perfetto-configuration"><span class="std std-ref">phần Cấu hình</span></a> để tìm hiểu cách cấu hình và tạo trace.</p>
+</section>
+</section>
+<section id="custom-godot-builds-with-perfetto-support">
+<h2>Bản build Godot tùy chỉnh có hỗ trợ Perfetto<a class="headerlink" href="#custom-godot-builds-with-perfetto-support" title="Link to this heading"></a></h2>
+<p>Từ thư mục gốc <code class="docutils literal notranslate"><span class="pre">godot</span></code>, chạy script python sau để cài đặt phiên bản mới nhất của Perfetto SDK vào <code class="docutils literal notranslate"><span class="pre">thirdparty/perfetto</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>misc/scripts/install_perfetto.py
+</pre></div>
+</div>
+<p>Tiếp theo, build template Android debug hoặc release cho kiến trúc của bạn bằng <code class="docutils literal notranslate"><span class="pre">scons</span></code> (theo <a class="reference internal" href="../compiling/compiling_for_android.html#doc-compiling-for-android"><span class="std std-ref">Biên dịch cho Android</span></a>), nhưng thêm tham số <code class="docutils literal notranslate"><span class="pre">profiler=perfetto</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nhìn chung, bạn nên profile template release, vì đó là phiên bản người chơi sẽ dùng và nó sẽ có hiệu năng khác với các loại bản build khác. Tuy nhiên, với Android, đôi khi dùng template debug lại hữu ích, vì Godot chỉ có thể debug từ xa các game được xuất từ template debug.</p>
+</div>
+<p>Ví dụ, để build template release cho arm64:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>android<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release<span class="w"> </span><span class="nv">arch</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">generate_android_binaries</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">profiler</span><span class="o">=</span>perfetto
+</pre></div>
+</div>
+</section>
+<section id="configuration">
+<span id="doc-profiler-perfetto-configuration"></span><h2>Cấu hình<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>Perfetto cần một tệp cấu hình để biết cần theo dõi những sự kiện nào.</p>
+<p>Tạo một tệp tên <code class="docutils literal notranslate"><span class="pre">godot.config</span></code> với nội dung sau:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Trace for 10 seconds.
+duration_ms: 10000
+
+buffers {
+    size_kb: 32768
+    fill_policy: RING_BUFFER
+}
+
+# Write to file once every second to prevent overflowing the buffer.
+write_into_file: true
+file_write_period_ms: 1000
+
+# Track events in the &quot;godot&quot; category.
+data_sources {
+    config {
+        name: &quot;track_event&quot;
+        track_event_config {
+            enabled_categories: &quot;godot&quot;
+        }
+    }
+}
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot ghi lại hai nhóm track event:</p>
+<ul class="simple">
+<li><p><strong>godot</strong>: Dùng để ghi lại các sự kiện của Godot engine. Nhóm này được dùng để phân tích hiệu năng. Chi phí tracing sự kiện không nên ảnh hưởng đáng kể đến hiệu năng. Đây nên là chế độ tracing thông thường cho hầu hết nhà phát triển.</p></li>
+<li><p><strong>godot_scripting</strong>: Dùng để ghi lại các sự kiện scripting của Godot. Đây là nhóm chậm vì nó profile toàn bộ logic script của game. Nhóm này được dùng để hiểu mã / debug / tìm nguyên nhân gây giật frame. Hiệu năng chậm hơn nhiều, nhưng nó giúp tìm ra lời gọi hàm có vấn đề mà nếu không thì sẽ bị ẩn đi.</p></li>
+</ul>
+</div>
+</section>
+<section id="record-a-trace">
+<h2>Ghi trace<a class="headerlink" href="#record-a-trace" title="Link to this heading"></a></h2>
+<p>Cuối cùng, khởi chạy game trên thiết bị Android bằng các export template bạn đã build trước đó.</p>
+<p>Khi bạn sẵn sàng ghi trace (ví dụ, khi đã đến phần game đang gặp vấn đề hiệu năng), bạn có thể dùng <a class="reference external" href="https://github.com/google/perfetto/blob/main/tools/record_android_trace">script này từ kho GitHub của Perfetto</a>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./record_android_trace<span class="w"> </span>-c<span class="w"> </span>/path/to/godot.config
+</pre></div>
+</div>
+<p>Script sẽ ghi trong 10 giây (theo cấu hình), hoặc cho đến khi bạn nhấn <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">C</kbd></kbd>.</p>
+</section>
+<section id="examining-the-trace">
+<h2>Xem xét trace<a class="headerlink" href="#examining-the-trace" title="Link to this heading"></a></h2>
+<p>Ngay khi script đó kết thúc, nó sẽ mở giao diện Perfetto UI trong trình duyệt web.</p>
+<p>Để xem các sự kiện của Godot, hãy mở rộng hàng của ứng dụng bằng cách nhấp vào <em>Unique Name</em> / <em>Package Name</em> / <em>App ID</em> Android của nó (Perfetto cũng sẽ đưa một số sự kiện từ các dịch vụ hệ thống vào trace).</p>
+<img alt="../../../_images/cpp_profiler_perfetto.webp" src="../../../_images/cpp_profiler_perfetto.webp" />
+<p>Sau đó bạn có thể dùng các phím <code class="docutils literal notranslate"><span class="pre">WASD</span></code> để điều hướng biểu đồ:</p>
+<ul class="simple">
+<li><p>Nhấn <kbd class="kbd docutils literal notranslate">A</kbd> hoặc <kbd class="kbd docutils literal notranslate">D</kbd> để di chuyển tới hoặc lui dọc theo dòng thời gian</p></li>
+<li><p>Nhấn <kbd class="kbd docutils literal notranslate">W</kbd> hoặc <kbd class="kbd docutils literal notranslate">S</kbd> để phóng to hoặc thu nhỏ</p></li>
+</ul>
+<p>Có thể bạn sẽ cần phóng to một chút trước khi thấy được từng sự kiện riêng lẻ của Godot.</p>
+<p>Để tìm hiểu thêm, xem <a class="reference external" href="https://perfetto.dev/docs/visualization/perfetto-ui">tài liệu Perfetto UI</a>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="instruments.html" class="btn btn-neutral float-left" title="Instruments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="tracy.html" class="btn btn-neutral float-right" title="Tracy" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Ray-casting" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/physics/ray-casting.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Một trong những tác vụ phổ biến nhất trong phát triển game là bắn một tia (hoặc một đối tượng có hình dạng tùy chỉnh) và kiểm tra xem nó trúng vào đâu. Điều này cho phép hiện thực các h..." />
+<meta name="description" content="Giới thiệu: Một trong những tác vụ phổ biến nhất trong phát triển game là bắn một tia (hoặc một đối tượng có hình dạng tùy chỉnh) và kiểm tra xem nó trúng vào đâu. Điều này cho phép hiện thực các h..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Ray-casting &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Hệ thống ragdoll" href="ragdoll_system.html" />
+    <link rel="prev" title="Sử dụng CharacterBody2D/3D" href="using_character_body_2d.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/physics/ray-casting" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Vật lý</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="physics_introduction.html">Giới thiệu về vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_jolt_physics.html">Sử dụng Jolt Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigid_body.html">Sử dụng RigidBody</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_area_2d.html">Sử dụng Area2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_character_body_2d.html">Sử dụng CharacterBody2D/3D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ray-casting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#space">Space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-space">Truy cập space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raycast-query">Truy vấn raycast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collision-exceptions">Ngoại lệ va chạm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collision-mask">Collision Mask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-ray-casting-from-screen">Ray casting 3D từ màn hình</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ragdoll_system.html">Hệ thống ragdoll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematic_character_2d.html">Nhân vật kinematic (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="soft_body.html">Sử dụng SoftBody3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_2d.html">Hình dạng va chạm (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_3d.html">Hình dạng va chạm (3D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="large_world_coordinates.html">Tọa độ thế giới lớn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation/index.html">Nội suy vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_physics_issues.html">Khắc phục sự cố vật lý</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Vật lý</a></li>
+      <li class="breadcrumb-item active">Ray-casting</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="ray-casting">
+<span id="doc-ray-casting"></span><h1>Ray-casting<a class="headerlink" href="#ray-casting" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Một trong những tác vụ phổ biến nhất trong phát triển game là bắn một tia (hoặc một đối tượng có hình dạng tùy chỉnh) và kiểm tra xem nó trúng vào đâu. Điều này cho phép hiện thực các hành vi phức tạp, AI, v.v. Bài hướng dẫn này sẽ giải thích cách làm điều đó trong 2D và 3D.</p>
+<p>Godot lưu toàn bộ thông tin game cấp thấp trong các server, còn scene chỉ là phần giao diện phía trước. Vì vậy, ray casting nhìn chung là một tác vụ cấp thấp hơn. Với các raycast đơn giản, những node như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_raycast3d.html" title="Class reference (English)"><span class="xref std std-ref">RayCast3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_raycast2d.html" title="Class reference (English)"><span class="xref std std-ref">RayCast2D</span></a> sẽ đáp ứng được, vì chúng trả về kết quả raycast ở mỗi frame.</p>
+<p>Tuy nhiên, nhiều khi ray-casting cần là một quá trình tương tác hơn, nên phải có cách thực hiện nó bằng code.</p>
+</section>
+<section id="space">
+<h2>Space<a class="headerlink" href="#space" title="Link to this heading"></a></h2>
+<p>Trong thế giới vật lý, Godot lưu toàn bộ thông tin va chạm và vật lý cấp thấp trong một <em>space</em>. Có thể lấy space 2D hiện tại (cho vật lý 2D) bằng cách truy cập <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-get-world-2d" title="Class reference (English)"><span class="xref std std-ref">CanvasItem.get_world_2d().space</span></a>. Với 3D, đó là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html#class-node3d-method-get-world-3d" title="Class reference (English)"><span class="xref std std-ref">Node3D.get_world_3d().space</span></a>.</p>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">RID</span></a> của space thu được có thể dùng trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver3d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicsServer3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver2d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicsServer2D</span></a>, lần lượt cho 3D và 2D.</p>
+</section>
+<section id="accessing-space">
+<h2>Truy cập space<a class="headerlink" href="#accessing-space" title="Link to this heading"></a></h2>
+<p>Theo mặc định, vật lý của Godot chạy trên cùng thread với logic game, nhưng có thể được thiết lập để chạy trên một thread riêng nhằm hoạt động hiệu quả hơn. Vì thế, thời điểm duy nhất truy cập space an toàn là trong callback <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-physics-process" title="Class reference (English)"><span class="xref std std-ref">Node._physics_process()</span></a>. Truy cập nó từ bên ngoài hàm này có thể gây lỗi do space đang bị <em>khóa</em>.</p>
+<p>Để thực hiện truy vấn vào physics space, bạn phải dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsdirectspacestate2d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicsDirectSpaceState2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsdirectspacestate3d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicsDirectSpaceState3D</span></a>.</p>
+<p>Dùng đoạn code sau trong 2D:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_rid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="vi">space</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">space_get_direct_state</span><span class="p">(</span><span class="n">space_rid</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceRid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">Space</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">SpaceGetDirectState</span><span class="p">(</span><span class="n">spaceRid</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hoặc trực tiếp hơn:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="vi">direct_space_state</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">DirectSpaceState</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và trong 3D:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_3d</span><span class="p">()</span><span class="o">.</span><span class="vi">direct_space_state</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld3D</span><span class="p">().</span><span class="n">DirectSpaceState</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="raycast-query">
+<h2>Truy vấn raycast<a class="headerlink" href="#raycast-query" title="Link to this heading"></a></h2>
+<p>Để thực hiện một truy vấn raycast 2D, có thể dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsdirectspacestate2d.html#class-physicsdirectspacestate2d-method-intersect-ray" title="Class reference (English)"><span class="xref std std-ref">PhysicsDirectSpaceState2D.intersect_ray()</span></a>. Ví dụ:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="vi">direct_space_state</span>
+<span class="w">    </span><span class="c1"># use global coordinates, not local to node</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsRayQueryParameters2D</span><span class="o">.</span><span class="nf">create</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">))</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">space_state</span><span class="o">.</span><span class="nf">intersect_ray</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">DirectSpaceState</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// use global coordinates, not local to node</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsRayQueryParameters2D</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">Vector2</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">));</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spaceState</span><span class="p">.</span><span class="n">IntersectRay</span><span class="p">(</span><span class="n">query</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Kết quả là một dictionary. Nếu tia không trúng gì, dictionary sẽ rỗng. Nếu tia trúng thứ gì đó, nó sẽ chứa thông tin va chạm:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">result</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Hit at point: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="vi">position</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Hit at point: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="s">&quot;position&quot;</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dictionary <code class="docutils literal notranslate"><span class="pre">result</span></code> khi xảy ra va chạm chứa các dữ liệu sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="n">position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="c1"># point in world space for collision</span>
+<span class="w">   </span><span class="n">normal</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="c1"># normal in world space for collision</span>
+<span class="w">   </span><span class="n">collider</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Object</span><span class="w"> </span><span class="c1"># Object collided or null (if unassociated)</span>
+<span class="w">   </span><span class="n">collider_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectID</span><span class="w"> </span><span class="c1"># Object it collided against</span>
+<span class="w">   </span><span class="n">rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="c1"># RID it collided against</span>
+<span class="w">   </span><span class="n">shape</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="c1"># shape index of collider</span>
+<span class="w">   </span><span class="n">metadata</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Variant</span><span class="p">()</span><span class="w"> </span><span class="c1"># metadata of collider</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Dữ liệu trong không gian 3D cũng tương tự, sử dụng tọa độ Vector3. Lưu ý rằng để bật va chạm với Area3D, tham số boolean <code class="docutils literal notranslate"><span class="pre">collide_with_areas</span></code> phải được đặt thành <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">RAY_LENGTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_3d</span><span class="p">()</span><span class="o">.</span><span class="vi">direct_space_state</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">cam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Camera3D</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mousepos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_viewport</span><span class="p">()</span><span class="o">.</span><span class="nf">get_mouse_position</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cam</span><span class="o">.</span><span class="nf">project_ray_origin</span><span class="p">(</span><span class="n">mousepos</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cam</span><span class="o">.</span><span class="nf">project_ray_normal</span><span class="p">(</span><span class="n">mousepos</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">RAY_LENGTH</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsRayQueryParameters3D</span><span class="o">.</span><span class="nf">create</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="p">)</span>
+<span class="w">    </span><span class="n">query</span><span class="o">.</span><span class="vi">collide_with_areas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">space_state</span><span class="o">.</span><span class="nf">intersect_ray</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">RayLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld3D</span><span class="p">().</span><span class="n">DirectSpaceState</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">cam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Camera3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Camera3D&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">mousePos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewport</span><span class="p">().</span><span class="n">GetMousePosition</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cam</span><span class="p">.</span><span class="n">ProjectRayOrigin</span><span class="p">(</span><span class="n">mousePos</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cam</span><span class="p">.</span><span class="n">ProjectRayNormal</span><span class="p">(</span><span class="n">mousePos</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">RayLength</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsRayQueryParameters3D</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="p">);</span>
+<span class="w">    </span><span class="n">query</span><span class="p">.</span><span class="n">CollideWithAreas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spaceState</span><span class="p">.</span><span class="n">IntersectRay</span><span class="p">(</span><span class="n">query</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="collision-exceptions">
+<h2>Ngoại lệ va chạm<a class="headerlink" href="#collision-exceptions" title="Link to this heading"></a></h2>
+<p>Một trường hợp dùng ray casting phổ biến là giúp nhân vật thu thập dữ liệu về thế giới xung quanh. Một vấn đề ở đây là chính nhân vật đó cũng có collider, nên tia sẽ chỉ phát hiện collider của node cha, như trong hình sau:</p>
+<img alt="../../_images/raycast_falsepositive.webp" src="../../_images/raycast_falsepositive.webp" />
+<p>Để tránh tự giao cắt, đối tượng tham số của <code class="docutils literal notranslate"><span class="pre">intersect_ray()</span></code> có thể nhận một mảng ngoại lệ thông qua thuộc tính <code class="docutils literal notranslate"><span class="pre">exclude</span></code>. Đây là ví dụ cách dùng nó từ một CharacterBody2D hoặc bất kỳ node collision object nào khác:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody2D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="vi">direct_space_state</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsRayQueryParameters2D</span><span class="o">.</span><span class="nf">create</span><span class="p">(</span><span class="n">global_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">)</span>
+<span class="w">    </span><span class="n">query</span><span class="o">.</span><span class="vi">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">space_state</span><span class="o">.</span><span class="nf">intersect_ray</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyCharacterBody2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">DirectSpaceState</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsRayQueryParameters2D</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">globalPosition</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">);</span>
+<span class="w">        </span><span class="n">query</span><span class="p">.</span><span class="n">Exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">GetRid</span><span class="p">()];</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spaceState</span><span class="p">.</span><span class="n">IntersectRay</span><span class="p">(</span><span class="n">query</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Mảng ngoại lệ có thể chứa các đối tượng hoặc RID.</p>
+</section>
+<section id="collision-mask">
+<h2>Collision Mask<a class="headerlink" href="#collision-mask" title="Link to this heading"></a></h2>
+<p>Dù cách dùng ngoại lệ hoạt động tốt để loại trừ body cha, nó trở nên rất bất tiện nếu bạn cần một danh sách ngoại lệ lớn và/hoặc thay đổi động. Trong trường hợp này, dùng hệ thống collision layer/mask hiệu quả hơn nhiều.</p>
+<p>Đối tượng tham số của <code class="docutils literal notranslate"><span class="pre">intersect_ray()</span></code> cũng có thể nhận một collision mask. Ví dụ, để dùng cùng mask với body cha, hãy dùng biến thành viên <code class="docutils literal notranslate"><span class="pre">collision_mask</span></code>. Mảng ngoại lệ cũng có thể được truyền vào làm đối số cuối cùng:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody2D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">space_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="vi">direct_space_state</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsRayQueryParameters2D</span><span class="o">.</span><span class="nf">create</span><span class="p">(</span><span class="n">global_position</span><span class="p">,</span><span class="w"> </span><span class="n">target_position</span><span class="p">,</span>
+<span class="w">        </span><span class="n">collision_mask</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="bp">self</span><span class="p">])</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">space_state</span><span class="o">.</span><span class="nf">intersect_ray</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyCharacterBody2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">spaceState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">DirectSpaceState</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsRayQueryParameters2D</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">globalPosition</span><span class="p">,</span><span class="w"> </span><span class="n">targetPosition</span><span class="p">,</span>
+<span class="w">            </span><span class="n">CollisionMask</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">GetRid</span><span class="p">()]);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spaceState</span><span class="p">.</span><span class="n">IntersectRay</span><span class="p">(</span><span class="n">query</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Xem <a class="reference internal" href="physics_introduction.html#doc-physics-introduction-collision-layer-code-example"><span class="std std-ref">Ví dụ mã</span></a> để biết chi tiết cách thiết lập collision mask.</p>
+</section>
+<section id="d-ray-casting-from-screen">
+<h2>Ray casting 3D từ màn hình<a class="headerlink" href="#d-ray-casting-from-screen" title="Link to this heading"></a></h2>
+<p>Bắn một tia từ màn hình vào physics space 3D rất hữu ích cho việc chọn đối tượng. Thường thì không cần làm vậy vì <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionobject3d.html" title="Class reference (English)"><span class="xref std std-ref">CollisionObject3D</span></a> có signal &quot;input_event&quot; cho bạn biết khi nó được nhấp, nhưng nếu bạn muốn tự làm thủ công thì đây là cách.</p>
+<p>Để bắn một tia từ màn hình, bạn cần một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a>. Một <code class="docutils literal notranslate"><span class="pre">Camera3D</span></code> có thể ở hai chế độ chiếu: phối cảnh (perspective) và trực giao (orthogonal). Vì vậy, phải lấy cả điểm gốc lẫn hướng của tia. Lý do là <code class="docutils literal notranslate"><span class="pre">origin</span></code> thay đổi trong chế độ trực giao, còn <code class="docutils literal notranslate"><span class="pre">normal</span></code> thay đổi trong chế độ phối cảnh:</p>
+<img alt="../../_images/raycast_projection.png" src="../../_images/raycast_projection.png" />
+<p>Để lấy chúng bằng camera, có thể dùng đoạn code sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">RAY_LENGTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1000.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_input</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="nb">InputEventMouseButton</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="vi">pressed</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="vi">button_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">camera3d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Camera3D</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">camera3d</span><span class="o">.</span><span class="nf">project_ray_origin</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="vi">position</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">camera3d</span><span class="o">.</span><span class="nf">project_ray_normal</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="vi">position</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">RAY_LENGTH</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">RayLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1000.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Input</span><span class="p">(</span><span class="n">InputEvent</span><span class="w"> </span><span class="n">@event</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">@event</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">InputEventMouseButton</span><span class="w"> </span><span class="n">eventMouseButton</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">eventMouseButton</span><span class="p">.</span><span class="n">Pressed</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">eventMouseButton</span><span class="p">.</span><span class="n">ButtonIndex</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MouseButton</span><span class="p">.</span><span class="n">Left</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">camera3D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Camera3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Camera3D&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">camera3D</span><span class="p">.</span><span class="n">ProjectRayOrigin</span><span class="p">(</span><span class="n">eventMouseButton</span><span class="p">.</span><span class="n">Position</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">camera3D</span><span class="p">.</span><span class="n">ProjectRayNormal</span><span class="p">(</span><span class="n">eventMouseButton</span><span class="p">.</span><span class="n">Position</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">RayLength</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hãy nhớ rằng trong <code class="docutils literal notranslate"><span class="pre">_input()</span></code>, space có thể bị khóa, nên trên thực tế truy vấn này nên được chạy trong <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_character_body_2d.html" class="btn btn-neutral float-left" title="Sử dụng CharacterBody2D/3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="ragdoll_system.html" class="btn btn-neutral float-right" title="Hệ thống ragdoll" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

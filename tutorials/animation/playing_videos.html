@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Phát video" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/animation/playing_videos.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Godot hỗ trợ phát video bằng node class_VideoStreamPlayer. Các định dạng phát được hỗ trợ: Định dạng duy nhất được hỗ trợ trong core là Ogg Theora(đừng nhầm với âm thanh Ogg Vorbis) với các track â..." />
+<meta name="description" content="Godot hỗ trợ phát video bằng node class_VideoStreamPlayer. Các định dạng phát được hỗ trợ: Định dạng duy nhất được hỗ trợ trong core là Ogg Theora(đừng nhầm với âm thanh Ogg Vorbis) với các track â..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Phát video &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo phim" href="creating_movies.html" />
+    <link rel="prev" title="Sử dụng AnimationTree" href="animation_tree.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/animation/playing_videos" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hoạt ảnh</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Giới thiệu về các tính năng hoạt ảnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="animation_track_types.html">Các loại track hoạt ảnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cutout_animation.html">Hoạt ảnh cắt ghép (cutout)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_skeletons.html">Bộ xương 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="animation_tree.html">Sử dụng AnimationTree</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Phát video</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#supported-playback-formats">Các định dạng phát được hỗ trợ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-videostreamplayer">Thiết lập VideoStreamPlayer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#handling-resizing-and-different-aspect-ratios">Xử lý thay đổi kích thước và các tỷ lệ khung hình khác nhau</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#displaying-a-video-on-a-3d-surface">Hiển thị video trên bề mặt 3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#looping-a-video">Phát lặp video</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#video-decoding-conditions-and-recommended-resolutions">Điều kiện giải mã video và độ phân giải khuyến nghị</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#playback-limitations">Giới hạn khi phát video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recommended-theora-encoding-settings">Cài đặt mã hóa Theora khuyến nghị</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#balancing-quality-and-file-size">Cân bằng giữa chất lượng và kích thước tệp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ffmpeg-convert-while-preserving-original-video-resolution">FFmpeg: Chuyển đổi và giữ nguyên độ phân giải video gốc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ffmpeg-resize-the-video-then-convert-it">FFmpeg: Thay đổi kích thước video rồi chuyển đổi</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chroma-key-videos">Video Chroma Key</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scene-setup">Thiết lập scene</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-the-custom-shader">Viết shader tùy chỉnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ui-controls">Điều khiển UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#signal-handling">Xử lý signal</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="creating_movies.html">Tạo phim</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hoạt ảnh</a></li>
+      <li class="breadcrumb-item active">Phát video</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="playing-videos">
+<span id="doc-playing-videos"></span><h1>Phát video<a class="headerlink" href="#playing-videos" title="Link to this heading"></a></h1>
+<p>Godot hỗ trợ phát video bằng node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_videostreamplayer.html" title="Class reference (English)"><span class="xref std std-ref">class_VideoStreamPlayer</span></a>.</p>
+<section id="supported-playback-formats">
+<h2>Các định dạng phát được hỗ trợ<a class="headerlink" href="#supported-playback-formats" title="Link to this heading"></a></h2>
+<p>Định dạng duy nhất được hỗ trợ trong core là <strong>Ogg Theora</strong> (đừng nhầm với âm thanh Ogg Vorbis) với các track âm thanh Ogg Vorbis tùy chọn. Các extension có thể bổ sung hỗ trợ cho các định dạng khác.</p>
+<p>H.264 và H.265 không thể được hỗ trợ trong core của Godot vì cả hai đều bị ràng buộc bởi bằng sáng chế phần mềm. AV1 miễn phí bản quyền, nhưng vẫn giải mã chậm trên CPU và hỗ trợ giải mã phần cứng chưa có sẵn trên tất cả GPU đang được sử dụng.</p>
+<p>WebM từng được hỗ trợ trong core ở Godot 3.x, nhưng đã bị loại bỏ từ 4.0 vì quá nhiều lỗi và khó bảo trì.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể gặp video có phần mở rộng <code class="docutils literal notranslate"><span class="pre">.ogg</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.ogx</span></code>, đây là các phần mở rộng chung cho dữ liệu nằm trong container Ogg.</p>
+<p>Đổi phần mở rộng của các file này thành <code class="docutils literal notranslate"><span class="pre">.ogv</span></code> <em>có thể</em> giúp video được import vào Godot. Tuy nhiên, không phải file nào có phần mở rộng <code class="docutils literal notranslate"><span class="pre">.ogg</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.ogx</span></code> cũng là video - một số có thể chỉ chứa âm thanh.</p>
+</div>
+</section>
+<section id="setting-up-videostreamplayer">
+<h2>Thiết lập VideoStreamPlayer<a class="headerlink" href="#setting-up-videostreamplayer" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Tạo node VideoStreamPlayer bằng hộp thoại Create New Node.</p></li>
+<li><p>Chọn node VideoStreamPlayer trong dock cây scene, vào inspector và tải file <code class="docutils literal notranslate"><span class="pre">.ogv</span></code> vào thuộc tính Stream.</p>
+<ul class="simple">
+<li><p>Nếu video của bạn chưa ở định dạng Ogg Theora, hãy chuyển đến <a class="reference internal" href="#doc-playing-videos-recommended-theora-encoding-settings"><span class="std std-ref">Cài đặt mã hóa Theora khuyến nghị</span></a>.</p></li>
+</ul>
+</li>
+<li><p>Nếu muốn video phát ngay khi scene được tải, hãy đánh dấu <strong>Autoplay</strong> trong inspector. Nếu không, để <strong>Autoplay</strong> tắt và gọi <code class="docutils literal notranslate"><span class="pre">play()</span></code> trên node VideoStreamPlayer trong script để bắt đầu phát khi cần.</p></li>
+</ol>
+<section id="handling-resizing-and-different-aspect-ratios">
+<h3>Xử lý thay đổi kích thước và các tỷ lệ khung hình khác nhau<a class="headerlink" href="#handling-resizing-and-different-aspect-ratios" title="Link to this heading"></a></h3>
+<p>Mặc định, VideoStreamPlayer sẽ tự động thay đổi kích thước để khớp với độ phân giải của video. Bạn có thể làm cho nó tuân theo cách định kích thước <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html" title="Class reference (English)"><span class="xref std std-ref">class_Control</span></a> thông thường bằng cách bật <strong>Expand</strong> trên node VideoStreamPlayer.</p>
+<p>Để điều chỉnh cách node VideoStreamPlayer thay đổi kích thước theo kích thước cửa sổ, hãy điều chỉnh các anchor bằng menu <strong>Layout</strong> ở phía trên viewport của trình chỉnh sửa 2D. Tuy nhiên, thiết lập này có thể không đủ mạnh để xử lý mọi trường hợp, chẳng hạn phát video toàn màn hình mà không làm méo video (thay vào đó để khoảng trống ở các cạnh). Để kiểm soát tốt hơn, bạn có thể dùng node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_aspectratiocontainer.html" title="Class reference (English)"><span class="xref std std-ref">class_AspectRatioContainer</span></a>, được thiết kế cho đúng trường hợp này:</p>
+<p>Thêm một node AspectRatioContainer. Đảm bảo nó không phải là con của bất kỳ node container nào khác. Chọn node AspectRatioContainer, rồi đặt <strong>Layout</strong> của nó ở phía trên trình chỉnh sửa 2D thành <strong>Full Rect</strong>. Đặt <strong>Ratio</strong> trong node AspectRatioContainer khớp với tỷ lệ khung hình của video. Bạn có thể dùng công thức toán học trong inspector để hỗ trợ. Hãy nhớ đặt một trong các toán hạng là số thực (float). Nếu không, kết quả phép chia sẽ luôn là số nguyên.</p>
+<figure class="figure-w480 align-center" id="id1">
+<img alt="Thuộc tính Ratio của AspectRatioContainer đang được chỉnh sửa trong inspector của trình chỉnh sửa" src="../../_images/playing_videos_aspect_ratio_container.png" />
+<figcaption>
+<p><span class="caption-text">Biểu thức này sẽ cho kết quả (xấp xỉ) 1.777778</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Sau khi cấu hình AspectRatioContainer, hãy đổi cha cho node VideoStreamPlayer để nó trở thành con của node AspectRatioContainer. Đảm bảo <strong>Expand</strong> được bật trên VideoStreamPlayer. Giờ video của bạn sẽ tự động co giãn để vừa toàn màn hình mà không bị méo.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="../rendering/multiple_resolutions.html#doc-multiple-resolutions"><span class="std std-ref">Đa độ phân giải</span></a> để có thêm mẹo hỗ trợ nhiều tỷ lệ khung hình trong dự án của bạn.</p>
+</div>
+</section>
+<section id="displaying-a-video-on-a-3d-surface">
+<h3>Hiển thị video trên bề mặt 3D<a class="headerlink" href="#displaying-a-video-on-a-3d-surface" title="Link to this heading"></a></h3>
+<p>Bằng cách dùng node VideoStreamPlayer làm con của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">class_SubViewport</span></a>, bạn có thể hiển thị bất kỳ node 2D nào trên bề mặt 3D. Ví dụ, cách này có thể dùng để hiển thị biển quảng cáo động khi hoạt ảnh frame-by-frame sẽ tốn quá nhiều bộ nhớ.</p>
+<p>Bạn có thể làm điều này theo các bước sau:</p>
+<ol class="arabic simple">
+<li><p>Tạo một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">class_SubViewport</span></a>. Đặt kích thước của nó khớp với kích thước video tính theo pixel.</p></li>
+<li><p>Tạo một node VideoStreamPlayer <em>làm node con của node SubViewport</em> và chỉ định đường dẫn video cho nó. Đảm bảo <strong>Expand</strong> đã bị tắt, và bật <strong>Autoplay</strong> nếu cần.</p></li>
+<li><p>Tạo một node MeshInstance3D với resource PlaneMesh hoặc QuadMesh trong thuộc tính Mesh. Thay đổi kích thước mesh cho khớp với tỷ lệ khung hình của video (nếu không, video sẽ bị méo).</p></li>
+<li><p>Tạo một resource StandardMaterial3D mới trong thuộc tính <strong>Material Override</strong> ở mục GeometryInstance3D.</p></li>
+<li><p>Bật <strong>Local To Scene</strong> trong mục Resource của StandardMaterial3D (ở dưới cùng). Đây là bước <em>bắt buộc</em> trước khi bạn có thể dùng ViewportTexture trong thuộc tính Albedo Texture của nó.</p></li>
+<li><p>Trong StandardMaterial3D, đặt thuộc tính <strong>Albedo &gt; Texture</strong> thành <strong>New ViewportTexture</strong>. Chỉnh sửa resource mới bằng cách nhấp vào nó, rồi chỉ định đường dẫn tới node SubViewport trong thuộc tính <strong>Viewport Path</strong>.</p></li>
+<li><p>Bật <strong>Albedo Texture Force sRGB</strong> trong StandardMaterial3D để tránh màu sắc bị nhợt nhạt.</p></li>
+<li><p>Nếu billboard cần tự phát sáng, hãy đặt <strong>Shading Mode</strong> thành <strong>Unshaded</strong> để cải thiện hiệu năng kết xuất.</p></li>
+</ol>
+<p>Xem <a class="reference internal" href="../rendering/viewports.html#doc-viewports"><span class="std std-ref">Sử dụng Viewport</span></a> và <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/viewport/gui_in_3d">bản demo GUI in 3D</a> để biết thêm thông tin về cách thiết lập.</p>
+</section>
+<section id="looping-a-video">
+<h3>Phát lặp video<a class="headerlink" href="#looping-a-video" title="Link to this heading"></a></h3>
+<p>Để phát video lặp lại, bạn có thể bật thuộc tính <strong>Loop</strong>. Thuộc tính này sẽ khởi động lại video một cách liền mạch khi video phát đến cuối.</p>
+<p>Lưu ý rằng việc đặt cài đặt dự án <strong>Video Delay Compensation</strong> thành giá trị khác 0 có thể khiến vòng lặp không liền mạch, vì việc đồng bộ âm thanh và video diễn ra ở đầu mỗi vòng lặp, thỉnh thoảng gây mất khung hình. Hãy đặt <strong>Video Delay Compensation</strong> trong cài đặt dự án thành <strong>0</strong> để tránh hiện tượng rớt khung hình.</p>
+</section>
+</section>
+<section id="video-decoding-conditions-and-recommended-resolutions">
+<h2>Điều kiện giải mã video và độ phân giải khuyến nghị<a class="headerlink" href="#video-decoding-conditions-and-recommended-resolutions" title="Link to this heading"></a></h2>
+<p>Việc giải mã video được thực hiện trên CPU, vì GPU không có tăng tốc phần cứng để giải mã video Theora. CPU máy tính để bàn hiện đại có thể giải mã video Ogg Theora ở 1440p &#64; 60 FPS hoặc cao hơn, nhưng CPU di động cấp thấp nhiều khả năng sẽ gặp khó khăn với video độ phân giải cao.</p>
+<p>Để đảm bảo video được giải mã mượt mà trên nhiều loại phần cứng:</p>
+<ul class="simple">
+<li><p>Khi phát triển game cho nền tảng máy tính để bàn, bạn nên mã hóa ở tối đa 1080p (tốt nhất là 30 FPS). Phần lớn người dùng vẫn đang dùng màn hình 1080p hoặc độ phân giải thấp hơn, nên việc mã hóa video độ phân giải cao hơn có thể không đáng so với kích thước tệp và yêu cầu CPU tăng thêm.</p></li>
+<li><p>Khi phát triển game cho nền tảng di động hoặc web, bạn nên mã hóa ở tối đa 720p (tốt nhất là 30 FPS hoặc thấp hơn nữa). Sự khác biệt về hình ảnh giữa video 720p và 1080p trên thiết bị di động thường không quá rõ rệt.</p></li>
+</ul>
+</section>
+<section id="playback-limitations">
+<h2>Giới hạn khi phát video<a class="headerlink" href="#playback-limitations" title="Link to this heading"></a></h2>
+<p>Cách triển khai phát video hiện tại trong Godot có một số giới hạn:</p>
+<ul class="simple">
+<li><p>Không hỗ trợ phát video trực tuyến từ URL.</p></li>
+<li><p>Chỉ hỗ trợ đầu ra âm thanh mono và stereo. Video có 4, 5.1 và 7.1 kênh âm thanh vẫn được hỗ trợ nhưng sẽ được down-mix xuống stereo.</p></li>
+</ul>
+</section>
+<section id="recommended-theora-encoding-settings">
+<span id="doc-playing-videos-recommended-theora-encoding-settings"></span><h2>Cài đặt mã hóa Theora khuyến nghị<a class="headerlink" href="#recommended-theora-encoding-settings" title="Link to this heading"></a></h2>
+<p>Lời khuyên là <strong>tránh dựa vào các trình xuất Ogg Theora tích hợp sẵn</strong> (trong hầu hết trường hợp). Có 2 lý do khiến bạn nên ưu tiên dùng một chương trình bên ngoài để mã hóa video:</p>
+<ul class="simple">
+<li><p>Một số chương trình như Blender có thể render ra Ogg Theora. Tuy nhiên, các preset chất lượng mặc định thường rất thấp so với tiêu chuẩn hiện nay. Bạn có thể tăng các tùy chọn chất lượng trong phần mềm đang dùng, nhưng chất lượng đầu ra có thể vẫn chưa thật sự tốt (so với kích thước tệp tăng thêm). Điều này thường có nghĩa là phần mềm chỉ hỗ trợ mã hóa với bitrate cố định (CBR) thay vì bitrate thay đổi (VBR). Nên ưu tiên mã hóa VBR trong hầu hết trường hợp vì nó cho tỷ lệ chất lượng trên kích thước tệp tốt hơn.</p></li>
+<li><p>Một số chương trình khác hoàn toàn không thể render ra Ogg Theora.</p></li>
+</ul>
+<p>Trong trường hợp này, bạn có thể <strong>render video ra một định dạng trung gian chất lượng cao</strong> (chẳng hạn video H.264 bitrate cao) rồi mã hóa lại sang Ogg Theora. Lý tưởng nhất, bạn nên dùng định dạng lossless hoặc không nén làm định dạng trung gian để tối đa hóa chất lượng video Ogg Theora đầu ra, nhưng cách này có thể tốn nhiều dung lượng đĩa.</p>
+<p><a class="reference external" href="https://ffmpeg.org/">FFmpeg</a> (CLI) là một công cụ mã nguồn mở phổ biến cho mục đích này. FFmpeg khá khó học, nhưng là một công cụ mạnh mẽ.</p>
+<p>Dưới đây là các lệnh FFmpeg ví dụ để chuyển đổi video MP4 sang Ogg Theora. Vì FFmpeg hỗ trợ rất nhiều định dạng đầu vào, bạn có thể dùng các lệnh bên dưới với hầu hết mọi định dạng video đầu vào (AVI, MOV, WebM, …).</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đảm bảo bản FFmpeg của bạn được biên dịch với hỗ trợ libtheora và libvorbis. Bạn có thể kiểm tra bằng cách chạy <code class="docutils literal notranslate"><span class="pre">ffmpeg</span></code> không kèm đối số nào, rồi xem dòng <code class="docutils literal notranslate"><span class="pre">configuration:</span></code> trong kết quả của lệnh.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Các bản phát hành FFmpeg chính thức hiện tại có một số lỗi trong bộ multiplexer Ogg/Theora. Bạn rất nên dùng một trong các bản build tĩnh hằng ngày mới nhất, hoặc tự build từ nhánh master của họ để có các bản sửa lỗi mới nhất.</p>
+<p>Trên Windows, hãy đảm bảo dùng bản build 32-bit của FFmpeg. Các bản build 64-bit trên Windows có lỗi đã biết khi mã hóa Theora, gây ra các lỗi hình ảnh (artifact) trong tệp đầu ra.</p>
+</div>
+<section id="balancing-quality-and-file-size">
+<h3>Cân bằng giữa chất lượng và kích thước tệp<a class="headerlink" href="#balancing-quality-and-file-size" title="Link to this heading"></a></h3>
+<p>Mức <strong>chất lượng video</strong> (<code class="docutils literal notranslate"><span class="pre">-q:v</span></code>) phải nằm trong khoảng <code class="docutils literal notranslate"><span class="pre">1</span></code> đến <code class="docutils literal notranslate"><span class="pre">10</span></code>. Chất lượng <code class="docutils literal notranslate"><span class="pre">6</span></code> là mức cân bằng tốt giữa chất lượng và kích thước tệp. Nếu mã hóa ở độ phân giải cao (như 1440p hoặc 4K), có lẽ bạn sẽ muốn giảm <code class="docutils literal notranslate"><span class="pre">-q:v</span></code> xuống <code class="docutils literal notranslate"><span class="pre">5</span></code> để giữ kích thước tệp hợp lý. Vì mật độ điểm ảnh của video 1440p hoặc 4K cao hơn, các preset chất lượng thấp hơn ở độ phân giải cao sẽ trông bằng hoặc đẹp hơn so với video độ phân giải thấp.</p>
+<p>Mức <strong>chất lượng âm thanh</strong> (<code class="docutils literal notranslate"><span class="pre">-q:a</span></code>) phải nằm trong khoảng <code class="docutils literal notranslate"><span class="pre">-1</span></code> đến <code class="docutils literal notranslate"><span class="pre">10</span></code>. Chất lượng <code class="docutils literal notranslate"><span class="pre">6</span></code> mang lại sự cân bằng tốt giữa chất lượng và kích thước tệp. Khác với chất lượng video, việc tăng chất lượng âm thanh không làm tăng kích thước tệp đầu ra nhiều bằng. Vì vậy, nếu muốn âm thanh sạch nhất có thể, bạn có thể tăng giá trị này lên <code class="docutils literal notranslate"><span class="pre">9</span></code> để có âm thanh <em>lossless về mặt cảm nhận</em>. Điều này đặc biệt có giá trị nếu tệp đầu vào đã dùng nén âm thanh lossy. Âm thanh chất lượng cao hơn sẽ làm tăng mức sử dụng CPU của bộ giải mã, nên có thể gây ngắt tiếng khi hệ thống chịu tải cao. Xem <a class="reference external" href="https://wiki.hydrogenaud.io/index.php?title=Recommended_Ogg_Vorbis#Recommended_Encoder_Settings">trang này</a> để có bảng liệt kê các preset chất lượng âm thanh Ogg Vorbis và bitrate thay đổi tương ứng.</p>
+<p><strong>Kích thước GOP (Group of Pictures)</strong> (<code class="docutils literal notranslate"><span class="pre">-g:v</span></code>) là khoảng cách tối đa giữa các keyframe. Tăng giá trị này có thể cải thiện khả năng nén mà hầu như không ảnh hưởng đến chất lượng. Kích thước mặc định (<code class="docutils literal notranslate"><span class="pre">12</span></code>) là quá thấp với hầu hết các loại nội dung, vì vậy bạn nên dùng giá trị GOP cao hơn trước khi giảm chất lượng video. Tuy nhiên, lợi ích nén sẽ giảm dần khi kích thước GOP tăng lên. Các giá trị trong khoảng <code class="docutils literal notranslate"><span class="pre">64</span></code> đến <code class="docutils literal notranslate"><span class="pre">512</span></code> thường cho khả năng nén tốt nhất.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kích thước GOP lớn hơn sẽ làm tăng thời gian tua (seek) tối đa, với mức tăng đột ngột khi vượt qua các lũy thừa của hai bắt đầu từ <code class="docutils literal notranslate"><span class="pre">64</span></code>. Thời gian tua tối đa với kích thước GOP <code class="docutils literal notranslate"><span class="pre">65</span></code> có thể dài gần gấp đôi so với kích thước GOP <code class="docutils literal notranslate"><span class="pre">64</span></code>, tùy thuộc vào tốc độ giải mã.</p>
+</div>
+</section>
+<section id="ffmpeg-convert-while-preserving-original-video-resolution">
+<h3>FFmpeg: Chuyển đổi và giữ nguyên độ phân giải video gốc<a class="headerlink" href="#ffmpeg-convert-while-preserving-original-video-resolution" title="Link to this heading"></a></h3>
+<p>Lệnh sau chuyển đổi video và giữ nguyên độ phân giải gốc. Bitrate của video và âm thanh sẽ thay đổi để tối đa hóa chất lượng, đồng thời tiết kiệm dung lượng ở những phần của video/âm thanh không cần bitrate cao (chẳng hạn các cảnh tĩnh).</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">ffmpeg</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="vi">mp4</span><span class="w"> </span><span class="o">-</span><span class="n">q</span><span class="p">:</span><span class="n">v</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">-</span><span class="n">q</span><span class="p">:</span><span class="n">a</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="p">:</span><span class="n">v</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="n">output</span><span class="o">.</span><span class="vi">ogv</span>
+</pre></div>
+</div>
+</section>
+<section id="ffmpeg-resize-the-video-then-convert-it">
+<h3>FFmpeg: Thay đổi kích thước video rồi chuyển đổi<a class="headerlink" href="#ffmpeg-resize-the-video-then-convert-it" title="Link to this heading"></a></h3>
+<p>Lệnh sau thay đổi kích thước video thành cao 720 pixel (720p), đồng thời giữ nguyên tỷ lệ khung hình hiện có. Cách này giúp giảm đáng kể kích thước tệp nếu nguồn được quay ở độ phân giải cao hơn 720p:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">ffmpeg</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="vi">mp4</span><span class="w"> </span><span class="o">-</span><span class="n">vf</span><span class="w"> </span><span class="s2">&quot;scale=-1:720&quot;</span><span class="w"> </span><span class="o">-</span><span class="n">q</span><span class="p">:</span><span class="n">v</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">-</span><span class="n">q</span><span class="p">:</span><span class="n">a</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="p">:</span><span class="n">v</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="n">output</span><span class="o">.</span><span class="vi">ogv</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="chroma-key-videos">
+<h2>Video Chroma Key<a class="headerlink" href="#chroma-key-videos" title="Link to this heading"></a></h2>
+<p>Chroma key, thường được biết đến với tên hiệu ứng &quot;phông xanh lá&quot; hoặc &quot;phông xanh dương&quot;, cho phép bạn loại bỏ một màu cụ thể khỏi ảnh hoặc video và thay thế bằng một nền khác. Hiệu ứng này được dùng rộng rãi trong sản xuất video để ghép các thành phần khác nhau lại với nhau một cách liền mạch.</p>
+<blockquote>
+<div><img alt="../../_images/chroma_key_video.webp" src="../../_images/chroma_key_video.webp" />
+</div></blockquote>
+<p>Chúng ta sẽ tạo hiệu ứng chroma key bằng cách viết một shader tùy chỉnh trong GDScript và dùng node <cite>VideoStreamPlayer</cite> để hiển thị nội dung video.</p>
+<section id="scene-setup">
+<h3>Thiết lập scene<a class="headerlink" href="#scene-setup" title="Link to this heading"></a></h3>
+<p>Đảm bảo scene có một node <cite>VideoStreamPlayer</cite> để phát video và một node <cite>Control</cite> để chứa các thành phần UI dùng điều khiển hiệu ứng chroma key.</p>
+<blockquote>
+<div><img alt="../../_images/chroma_key_scene.webp" src="../../_images/chroma_key_scene.webp" />
+</div></blockquote>
+</section>
+<section id="writing-the-custom-shader">
+<h3>Viết shader tùy chỉnh<a class="headerlink" href="#writing-the-custom-shader" title="Link to this heading"></a></h3>
+<p>Để triển khai hiệu ứng chroma key, hãy làm theo các bước sau:</p>
+<ol class="arabic simple">
+<li><p>Chọn node <cite>VideoStreamPlayer</cite> trong scene và đi tới các thuộc tính của nó. Trong <cite>CanvasItem &gt; Material</cite>, tạo một shader mới có tên &quot;ChromaKeyShader.gdshader.&quot;</p></li>
+<li><p>Trong tệp &quot;ChromaKeyShader.gdshader&quot;, viết mã shader tùy chỉnh như bên dưới:</p></li>
+</ol>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">canvas_item</span><span class="p">;</span>
+
+<span class="c1">// Uniform variables for chroma key effect</span>
+<span class="k">uniform</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">chroma_key_color</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">source_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="k">uniform</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">pickup_range</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+<span class="k">uniform</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">fade_amount</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Get the color from the texture at the given UV coordinates</span>
+<span class="w">    </span><span class="kt">vec4</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">TEXTURE</span><span class="p">,</span><span class="w"> </span><span class="n">UV</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Calculate the distance between the current color and the chroma key color</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">color</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">chroma_key_color</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// If the distance is within the pickup range, discard the pixel</span>
+<span class="w">    </span><span class="c1">// the lesser the distance more likely the colors are</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">distance</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">pickup_range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">discard</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Calculate the fade factor based on the pickup range and fade amount</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">fade_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smoothstep</span><span class="p">(</span><span class="n">pickup_range</span><span class="p">,</span><span class="w"> </span><span class="n">pickup_range</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fade_amount</span><span class="p">,</span><span class="w"> </span><span class="n">distance</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Set the output color with the original RGB values and the calculated fade factor</span>
+<span class="w">    </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">color</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span><span class="w"> </span><span class="n">fade_factor</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Shader dùng phép tính khoảng cách để xác định các pixel gần với màu chroma key và loại bỏ chúng, qua đó xóa màu đã chọn. Các pixel cách xa màu chroma key hơn một chút sẽ được làm mờ dần dựa trên fade_factor, hòa trộn mượt mà với các màu xung quanh. Quá trình này tạo ra hiệu ứng chroma key mong muốn, khiến nền trông như đã được thay bằng một ảnh hoặc video khác.</p>
+<p>Đoạn mã trên là một minh họa đơn giản cho shader Chroma Key, và người dùng có thể tùy chỉnh theo nhu cầu cụ thể của mình.</p>
+</section>
+<section id="ui-controls">
+<h3>Điều khiển UI<a class="headerlink" href="#ui-controls" title="Link to this heading"></a></h3>
+<p>Để người dùng có thể điều chỉnh hiệu ứng chroma key theo thời gian thực, chúng ta đã tạo các thanh trượt trong node <cite>Control</cite>. Script của node <cite>Control</cite> chứa các hàm sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nb">Control</span>
+
+<span class="w"> </span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_color_picker_button_color_changed</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+<span class="w">     </span><span class="c1"># Update the &quot;chroma_key_color&quot; shader parameter of the VideoStreamPlayer&#39;s material.</span>
+<span class="w">     </span><span class="sx">$VideoStreamPlayer</span><span class="o">.</span><span class="vi">material</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="s2">&quot;shader_parameter/chroma_key_color&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="p">)</span>
+
+<span class="w"> </span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_h_slider_value_changed</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">     </span><span class="c1"># Update the &quot;pickup_range&quot; shader parameter of the VideoStreamPlayer&#39;s material.</span>
+<span class="w">     </span><span class="sx">$VideoStreamPlayer</span><span class="o">.</span><span class="vi">material</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="s2">&quot;shader_parameter/pickup_range&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+
+<span class="w"> </span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_h_slider_2_value_changed</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">     </span><span class="c1"># Update the &quot;fade_amount&quot; shader parameter of the VideoStreamPlayer&#39;s material.</span>
+<span class="w">     </span><span class="sx">$VideoStreamPlayer</span><span class="o">.</span><span class="vi">material</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="s2">&quot;shader_parameter/fade_amount&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_video_stream_player_finished</span><span class="p">():</span>
+<span class="w">     </span><span class="c1"># Restart the video playback when it&#39;s finished.</span>
+<span class="w">     </span><span class="sx">$VideoStreamPlayer</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyControl</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Control</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">VideoStreamPlayer</span><span class="w"> </span><span class="n">_videoStreamPlayer</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_videoStreamPlayer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">VideoStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;VideoStreamPlayer&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnColorPickerButtonColorChanged</span><span class="p">(</span><span class="n">Color</span><span class="w"> </span><span class="n">color</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Update the &quot;chroma_key_color&quot; shader parameter of the VideoStreamPlayer&#39;s material.</span>
+<span class="w">        </span><span class="n">_videoStreamPlayer</span><span class="p">.</span><span class="n">Material</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;shader_parameter/chroma_key_color&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnHSliderValueChanged</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Update the &quot;pickup_range&quot; shader parameter of the VideoStreamPlayer&#39;s material.</span>
+<span class="w">        </span><span class="n">_videoStreamPlayer</span><span class="p">.</span><span class="n">Material</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;shader_parameter/pickup_range&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnHSlider2ValueChanged</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Update the &quot;fade_amount&quot; shader parameter of the VideoStreamPlayer&#39;s material.</span>
+<span class="w">        </span><span class="n">_videoStreamPlayer</span><span class="p">.</span><span class="n">Material</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;shader_parameter/fade_amount&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnVideoStreamPlayerFinished</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Restart the video playback when it&#39;s finished.</span>
+<span class="w">        </span><span class="n">_videoStreamPlayer</span><span class="p">.</span><span class="n">Play</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>đồng thời đảm bảo phạm vi của các thanh trượt là phù hợp, cài đặt của chúng tôi là :</p>
+<blockquote>
+<div><img alt="../../_images/slider_range.webp" src="../../_images/slider_range.webp" />
+</div></blockquote>
+</section>
+<section id="signal-handling">
+<h3>Xử lý signal<a class="headerlink" href="#signal-handling" title="Link to this heading"></a></h3>
+<p>Kết nối signal phù hợp từ các thành phần UI tới script của node <cite>Control</cite>. bạn đã tạo trong script của node <cite>Control</cite> để điều khiển hiệu ứng chroma key. Các hàm xử lý signal này sẽ cập nhật các biến uniform của shader để phản hồi đầu vào của người dùng.</p>
+<p>Lưu và chạy scene để xem hiệu ứng chroma key hoạt động! Với các điều khiển UI đã cung cấp, giờ đây bạn có thể điều chỉnh màu chroma key, phạm vi chọn màu và mức độ làm mờ theo thời gian thực, đạt được chức năng chroma key mong muốn cho nội dung video của mình.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="animation_tree.html" class="btn btn-neutral float-left" title="Sử dụng AnimationTree" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="creating_movies.html" class="btn btn-neutral float-right" title="Tạo phim" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Nội suy" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/math/interpolation.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Nội suy là một phép toán phổ biến trong lập trình đồ họa, được dùng để pha trộn hoặc chuyển tiếp giữa hai giá trị. Nội suy cũng có thể được dùng để làm mượt chuyển động, phép xoay, v.v. Bạn nên làm..." />
+<meta name="description" content="Nội suy là một phép toán phổ biến trong lập trình đồ họa, được dùng để pha trộn hoặc chuyển tiếp giữa hai giá trị. Nội suy cũng có thể được dùng để làm mượt chuyển động, phép xoay, v.v. Bạn nên làm..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Nội suy &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Bezier, đường cong và đường đi" href="beziers_and_curves.html" />
+    <link rel="prev" title="Ma trận và transform" href="matrices_and_transforms.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/math/interpolation" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Toán học</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="vector_math.html">Toán vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vectors_advanced.html">Toán vector nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrices_and_transforms.html">Ma trận và transform</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Nội suy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vector-interpolation">Nội suy vector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transform-interpolation">Nội suy transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#smoothing-motion">Làm mượt chuyển động</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="beziers_and_curves.html">Bezier, đường cong và đường đi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random_number_generation.html">Tạo số ngẫu nhiên</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Toán học</a></li>
+      <li class="breadcrumb-item active">Nội suy</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="interpolation">
+<span id="doc-interpolation"></span><h1>Nội suy<a class="headerlink" href="#interpolation" title="Link to this heading"></a></h1>
+<p>Nội suy là một phép toán phổ biến trong lập trình đồ họa, được dùng để pha trộn hoặc chuyển tiếp giữa hai giá trị. Nội suy cũng có thể được dùng để làm mượt chuyển động, phép xoay, v.v. Bạn nên làm quen với nó để mở rộng tầm hiểu biết của mình với tư cách là một nhà phát triển game.</p>
+<p>Ý tưởng cơ bản là bạn muốn chuyển tiếp từ A sang B. Một giá trị <code class="docutils literal notranslate"><span class="pre">t</span></code> biểu diễn các trạng thái ở giữa.</p>
+<p>Ví dụ, nếu <code class="docutils literal notranslate"><span class="pre">t</span></code> bằng 0 thì trạng thái là A. Nếu <code class="docutils literal notranslate"><span class="pre">t</span></code> bằng 1 thì trạng thái là B. Bất kỳ giá trị nào ở giữa là một phép <em>nội suy</em>.</p>
+<p>Giữa hai số thực (số dấu phẩy động), một phép nội suy có thể được mô tả như sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">interpolation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span>
+</pre></div>
+</div>
+<p>Và thường được rút gọn thành:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">interpolation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">B</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">A</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span>
+</pre></div>
+</div>
+<p>Tên của loại nội suy này, biến đổi một giá trị thành giá trị khác với <em>tốc độ không đổi</em>, là <em>&quot;tuyến tính&quot;</em>. Vì vậy, khi bạn nghe nói về <em>Nội suy tuyến tính</em> (Linear Interpolation), bạn biết họ đang nói đến công thức này.</p>
+<p>Có những loại nội suy khác sẽ không được đề cập ở đây. Bạn nên đọc thêm trang <a class="reference internal" href="beziers_and_curves.html#doc-beziers-and-curves"><span class="std std-ref">Bezier</span></a> sau đó.</p>
+<section id="vector-interpolation">
+<h2>Nội suy vector<a class="headerlink" href="#vector-interpolation" title="Link to this heading"></a></h2>
+<p>Các kiểu vector (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">Vector2</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">Vector3</span></a>) cũng có thể được nội suy, chúng đi kèm các hàm tiện dụng để làm việc này: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-lerp" title="Class reference (English)"><span class="xref std std-ref">Vector2.lerp()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-lerp" title="Class reference (English)"><span class="xref std std-ref">Vector3.lerp()</span></a>.</p>
+<p>Với nội suy bậc ba, còn có <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-cubic-interpolate" title="Class reference (English)"><span class="xref std std-ref">Vector2.cubic_interpolate()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-cubic-interpolate" title="Class reference (English)"><span class="xref std std-ref">Vector3.cubic_interpolate()</span></a>, thực hiện phép nội suy kiểu <a class="reference internal" href="beziers_and_curves.html#doc-beziers-and-curves"><span class="std std-ref">Bezier</span></a>.</p>
+<p>Đây là ví dụ mã giả để đi từ điểm A đến B bằng nội suy:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.4</span>
+
+<span class="w">    </span><span class="sx">$Sprite2D</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$A</span><span class="o">.</span><span class="vi">position</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="sx">$B</span><span class="o">.</span><span class="vi">position</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.4f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Marker2D</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Marker2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Marker2D</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Marker2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Sprite2D</span><span class="w"> </span><span class="n">sprite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Sprite2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Sprite2D&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">sprite</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">Position</span><span class="p">,</span><span class="w"> </span><span class="n">_t</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nó sẽ tạo ra chuyển động sau:</p>
+<img alt="../../_images/interpolation_vector.gif" src="../../_images/interpolation_vector.gif" />
+</section>
+<section id="transform-interpolation">
+<h2>Nội suy transform<a class="headerlink" href="#transform-interpolation" title="Link to this heading"></a></h2>
+<p>Cũng có thể nội suy toàn bộ transform (hãy đảm bảo chúng có tỉ lệ đồng đều, hoặc ít nhất là cùng một tỉ lệ không đồng đều). Để làm việc này, có thể dùng hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html#class-transform3d-method-interpolate-with" title="Class reference (English)"><span class="xref std std-ref">Transform3D.interpolate_with()</span></a>.</p>
+<p>Đây là ví dụ biến đổi một con khỉ từ Position1 sang Position2:</p>
+<img alt="../../_images/interpolation_positions.png" src="../../_images/interpolation_positions.png" />
+<p>Sử dụng mã giả sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span>
+
+<span class="w">    </span><span class="sx">$Monkey</span><span class="o">.</span><span class="vi">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Position1</span><span class="o">.</span><span class="vi">transform</span><span class="o">.</span><span class="nf">interpolate_with</span><span class="p">(</span><span class="sx">$Position2</span><span class="o">.</span><span class="vi">transform</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Marker3D</span><span class="w"> </span><span class="n">p1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Marker3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Position1&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Marker3D</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Marker3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Position2&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">CSGMesh3D</span><span class="w"> </span><span class="n">monkey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">CSGMesh3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Monkey&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">monkey</span><span class="p">.</span><span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="p">.</span><span class="n">Transform</span><span class="p">.</span><span class="n">InterpolateWith</span><span class="p">(</span><span class="n">p2</span><span class="p">.</span><span class="n">Transform</span><span class="p">,</span><span class="w"> </span><span class="n">_t</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và một lần nữa, nó sẽ tạo ra chuyển động sau:</p>
+<img alt="../../_images/interpolation_monkey.gif" src="../../_images/interpolation_monkey.gif" />
+</section>
+<section id="smoothing-motion">
+<h2>Làm mượt chuyển động<a class="headerlink" href="#smoothing-motion" title="Link to this heading"></a></h2>
+<p>Nội suy có thể được dùng để bám theo một giá trị đích đang di chuyển một cách mượt mà, chẳng hạn như vị trí hoặc góc xoay. Mỗi frame, <code class="docutils literal notranslate"><span class="pre">lerp()</span></code> di chuyển giá trị hiện tại về phía giá trị đích một tỉ lệ phần trăm cố định của phần chênh lệch còn lại giữa hai giá trị. Giá trị hiện tại sẽ di chuyển mượt về phía đích, chậm dần khi đến gần. Đây là ví dụ một hình tròn bám theo chuột bằng cách làm mượt nội suy:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">FOLLOW_SPEED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mouse_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_local_mouse_position</span><span class="p">()</span>
+
+<span class="w">    </span><span class="sx">$Sprite2D</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Sprite2D</span><span class="o">.</span><span class="vi">position</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">mouse_pos</span><span class="p">,</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">FOLLOW_SPEED</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">FollowSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">mousePos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetLocalMousePosition</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">Sprite2D</span><span class="w"> </span><span class="n">sprite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Sprite2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Sprite2D&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">sprite</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sprite</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">mousePos</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">FollowSpeed</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Kết quả trông như sau:</p>
+<img alt="../../_images/interpolation_follow.gif" src="../../_images/interpolation_follow.gif" />
+<p>Điều này hữu ích để làm mượt chuyển động camera, cho đồng minh bám theo người chơi (đảm bảo họ ở trong một phạm vi nhất định) và cho nhiều mẫu thiết kế game phổ biến khác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dù có dùng <code class="docutils literal notranslate"><span class="pre">delta</span></code>, công thức ở trên vẫn phụ thuộc vào framerate, vì tham số <code class="docutils literal notranslate"><span class="pre">weight</span></code> của <code class="docutils literal notranslate"><span class="pre">lerp()</span></code> biểu diễn một <em>tỉ lệ phần trăm</em> của phần chênh lệch còn lại giữa các giá trị, chứ không phải một <em>lượng thay đổi tuyệt đối</em>. Trong <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>, điều này thường không sao vì vật lý được kỳ vọng duy trì framerate không đổi, và do đó <code class="docutils literal notranslate"><span class="pre">delta</span></code> được kỳ vọng giữ nguyên.</p>
+<p>Để có phiên bản làm mượt nội suy không phụ thuộc framerate, có thể dùng cả trong <code class="docutils literal notranslate"><span class="pre">process()</span></code>, hãy dùng công thức sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">FOLLOW_SPEED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mouse_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_local_mouse_position</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb nb-Function">exp</span><span class="p">(</span><span class="o">-</span><span class="n">FOLLOW_SPEED</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="sx">$Sprite2D</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Sprite2D</span><span class="o">.</span><span class="vi">position</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">mouse_pos</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">FollowSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">mousePos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetLocalMousePosition</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">Sprite2D</span><span class="w"> </span><span class="n">sprite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Sprite2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Sprite2D&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Exp</span><span class="p">(</span><span class="o">-</span><span class="n">FollowSpeed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">);</span>
+<span class="w">    </span><span class="n">sprite</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sprite</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">mousePos</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Việc suy ra công thức này nằm ngoài phạm vi của trang này. Để được giải thích, hãy xem <a class="reference external" href="https://www.gamedeveloper.com/programming/improved-lerp-smoothing-">Improved Lerp Smoothing</a> hoặc xem video <a class="reference external" href="https://www.youtube.com/watch?v=LSNQuFEDOyQ">Lerp smoothing is broken</a>.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="matrices_and_transforms.html" class="btn btn-neutral float-left" title="Ma trận và transform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="beziers_and_curves.html" class="btn btn-neutral float-right" title="Bezier, đường cong và đường đi" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

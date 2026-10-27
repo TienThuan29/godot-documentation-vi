@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Composition layer trong OpenXR" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/xr/openxr_composition_layers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Trong game XR, bạn thường muốn tạo các tương tác người dùng diễn ra trong không gian 3D, nơi người dùng chạm vào đồ vật như thể đang chạm vào chúng ngoài đời thực. Tuy nhiên, đôi khi vi..." />
+<meta name="description" content="Giới thiệu: Trong game XR, bạn thường muốn tạo các tương tác người dùng diễn ra trong không gian 3D, nơi người dùng chạm vào đồ vật như thể đang chạm vào chúng ngoài đời thực. Tuy nhiên, đôi khi vi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Composition layer trong OpenXR &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Theo dõi bàn tay (hand tracking) trong OpenXR" href="openxr_hand_tracking.html" />
+    <link rel="prev" title="XR action map" href="xr_action_map.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/xr/openxr_composition_layers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XR</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xr_terminology.html">Thuật ngữ XR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Bắt đầu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#xr-interfaces">Các XR interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#openxr">OpenXR</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="a_better_xr_start_script.html">Một script khởi động XR tốt hơn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploying_to_android.html">Triển khai lên Android</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_settings.html">Cài đặt OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xr_action_map.html">XR action map</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Composition layer trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_hand_tracking.html">Theo dõi bàn tay (hand tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_body_tracking.html">Theo dõi cơ thể (body tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_render_models.html">Render model trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_spatial_entities.html">Spatial entities trong OpenXR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#webxr">WebXR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#others">Khác</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#godot-xr-tools">Godot XR Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Chủ đề nâng cao</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">XR</a></li>
+      <li class="breadcrumb-item active">Composition layer trong OpenXR</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="openxr-composition-layers">
+<span id="doc-openxr-composition-layers"></span><h1>Composition layer trong OpenXR<a class="headerlink" href="#openxr-composition-layers" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Trong game XR, bạn thường muốn tạo các tương tác người dùng diễn ra trong không gian 3D, nơi người dùng chạm vào đồ vật như thể đang chạm vào chúng ngoài đời thực.</p>
+<p>Tuy nhiên, đôi khi việc tạo một giao diện 2D truyền thống hơn là không thể tránh khỏi. Nhưng trong XR, bạn không thể chỉ thêm các thành phần 2D vào scene. Godot cần thông tin chiều sâu để định vị đúng các phần tử này sao cho chúng xuất hiện ở vị trí thoải mái với người dùng. Ngay cả khi có thông tin chiều sâu, vẫn có những kính có màn hình đặt nghiêng khiến pipeline 2D tiêu chuẩn không thể kết xuất chính xác các phần tử 2D.</p>
+<p>Giải pháp là kết xuất UI vào một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> và hiển thị kết quả bằng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewporttexture.html" title="Class reference (English)"><span class="xref std std-ref">ViewportTexture</span></a> trên một mesh 3D. <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_quadmesh.html" title="Class reference (English)"><span class="xref std std-ref">QuadMesh</span></a> là lựa chọn phù hợp cho việc này.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Xem dự án mẫu <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/viewport/gui_in_3d">GUI in 3D</a> để có ví dụ về cách tiếp cận này.</p>
+</div>
+<p>Vấn đề khi hiển thị viewport theo cách này là kết quả kết xuất bị XR runtime lấy mẫu lại để bù méo thấu kính, và sự suy giảm chất lượng đi kèm có thể khiến chữ trên UI khó đọc.</p>
+<p>OpenXR đưa ra giải pháp cho vấn đề này thông qua composition layer. Với composition layer, nội dung của một viewport có thể được chiếu lên một bề mặt sau bước bù méo thấu kính, cho ra kết quả cuối cùng chất lượng cao hơn nhiều.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vì không phải XR runtime nào cũng hỗ trợ mọi loại composition layer, Godot triển khai một giải pháp dự phòng, trong đó viewport được kết xuất như một phần của scene thông thường nhưng chịu các hạn chế về chất lượng đã nêu ở trên.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Khi composition layer được hỗ trợ, chính XR runtime sẽ hiển thị subviewport. Điều này có nghĩa là UI chỉ hiển thị trong kính, Godot không truy cập được nó và do đó nó sẽ không xuất hiện khi bạn dùng chế độ xem của người quan sát (spectator view) trên máy tính.</p>
+</div>
+<p>Hiện có 3 node cung cấp chức năng này:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrcompositionlayercylinder.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRCompositionLayerCylinder</span></a> hiển thị nội dung của SubViewport ở mặt trong của một hình trụ (hoặc một &quot;lát&quot; của hình trụ).</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrcompositionlayerequirect.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRCompositionLayerEquirect</span></a> hiển thị nội dung của SubViewport ở mặt trong của một hình cầu (hoặc một &quot;lát&quot; của hình cầu).</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrcompositionlayerquad.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRCompositionLayerQuad</span></a> hiển thị nội dung của SubViewport trên một hình chữ nhật phẳng.</p></li>
+</ul>
+</section>
+<section id="setting-up-the-subviewport">
+<h2>Thiết lập SubViewport<a class="headerlink" href="#setting-up-the-subviewport" title="Link to this heading"></a></h2>
+<p>Bước đầu tiên là thêm một SubViewport cho UI 2D; việc này không cần bước đặc biệt nào. Trong ví dụ, chúng ta đánh dấu viewport là trong suốt.</p>
+<p>Giờ bạn có thể tạo UI 2D bằng cách thêm các node con vào SubViewport như bình thường. Bạn nên lưu UI 2D trong một scene con (subscene) để việc bố trí layout dễ dàng hơn.</p>
+<img alt="../../_images/openxr_composition_layer_subviewport.webp" src="../../_images/openxr_composition_layer_subviewport.webp" />
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Chế độ cập nhật &quot;When Visible&quot; sẽ không hoạt động vì Godot không thể xác định viewport có đang hiển thị với người dùng hay không. Khi gán viewport cho một composition layer, Godot sẽ tự động điều chỉnh cài đặt này.</p>
+</div>
+</section>
+<section id="adding-a-composition-layer">
+<h2>Thêm composition layer<a class="headerlink" href="#adding-a-composition-layer" title="Link to this heading"></a></h2>
+<p>Bước thứ hai là thêm composition layer. Chúng ta có thể thêm node composition layer phù hợp làm node con của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a>. Điều này rất quan trọng vì XR runtime định vị mọi thứ tương đối với origin.</p>
+<p>Chúng ta muốn đặt composition layer ở ngang tầm mắt và cách người chơi khoảng 1 đến 1,5 mét.</p>
+<p>Giờ chúng ta gán SubViewport cho thuộc tính <code class="docutils literal notranslate"><span class="pre">Layer</span> <span class="pre">Viewport</span></code> và bật Alpha Blend.</p>
+<img alt="../../_images/openxr_composition_layer_quad.webp" src="../../_images/openxr_composition_layer_quad.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vì người chơi có thể đi ra xa điểm origin, bạn sẽ muốn định vị lại composition layer khi người chơi căn giữa lại góc nhìn (recenter). Dùng reference space <code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">Floor</span></code> sẽ tự động áp dụng logic này.</p>
+</div>
+</section>
+<section id="making-the-interface-work">
+<h2>Làm cho giao diện hoạt động<a class="headerlink" href="#making-the-interface-work" title="Link to this heading"></a></h2>
+<p>Đến giờ chúng ta mới chỉ hiển thị UI; để nó hoạt động, chúng ta cần thêm code. Trong ví dụ này, chúng ta sẽ giữ mọi thứ đơn giản và cho một trong hai tay cầm hoạt động như con trỏ. Sau đó chúng ta sẽ mô phỏng các thao tác chuột bằng con trỏ này.</p>
+<p>Đoạn code này cũng yêu cầu một node <code class="docutils literal notranslate"><span class="pre">MeshInstance3D</span></code> tên <code class="docutils literal notranslate"><span class="pre">Pointer</span></code> được thêm làm node con của node <code class="docutils literal notranslate"><span class="pre">OpenXRCompositionLayerQuad</span></code>. Chúng ta cấu hình một <code class="docutils literal notranslate"><span class="pre">SphereMesh</span></code> với bán kính <code class="docutils literal notranslate"><span class="pre">0.01</span></code> mét. Chúng ta sẽ dùng nó làm công cụ hỗ trợ để hiển thị nơi người dùng đang trỏ tới.</p>
+<p>Hàm chính điều khiển chức năng này là hàm <code class="docutils literal notranslate"><span class="pre">intersects_ray</span></code> trên node composition layer. Hàm này nhận vị trí và hướng toàn cục của con trỏ và trả về tọa độ UV nơi tia cắt viewport. Nó trả về <code class="docutils literal notranslate"><span class="pre">Vector2(-1.0,</span> <span class="pre">-1.0)</span></code> nếu chúng ta không trỏ vào viewport.</p>
+<p>Chúng ta bắt đầu bằng việc thiết lập một số biến; quan trọng ở đây là các biến export xác định node tay cầm mà chúng ta dùng để trỏ vào màn hình.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">OpenXRCompositionLayerQuad</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">NO_INTERSECTION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">controller</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">XRController3D</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">button_action</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;trigger_click&quot;</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">was_pressed</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+<span class="k">var</span><span class="w"> </span><span class="n">was_intersect</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NO_INTERSECTION</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Tiếp theo, chúng ta định nghĩa một hàm hỗ trợ nhận giá trị trả về từ <code class="docutils literal notranslate"><span class="pre">intersects_ray</span></code> và cho ta vị trí toàn cục của điểm giao đó. Bản triển khai này chỉ hoạt động với node <code class="docutils literal notranslate"><span class="pre">OpenXRCompositionLayerQuad</span></code>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_intersect_to_global_pos</span><span class="p">(</span><span class="n">intersect</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">intersect</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">NO_INTERSECTION</span><span class="p">:</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">local_pos</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">intersect</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">quad_size</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">global_transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="n">local_pos</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">local_pos</span><span class="o">.</span><span class="vi">y</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">()</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Chúng ta cũng định nghĩa một hàm hỗ trợ nhận giá trị <code class="docutils literal notranslate"><span class="pre">intersect</span></code> và trả về vị trí của ta trong hệ tọa độ cục bộ của viewport:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_intersect_to_viewport_pos</span><span class="p">(</span><span class="n">intersect</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">layer_viewport</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">intersect</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">NO_INTERSECTION</span><span class="p">:</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">intersect</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="n">layer_viewport</span><span class="o">.</span><span class="vi">size</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Logic chính nằm trong hàm <code class="docutils literal notranslate"><span class="pre">_process</span></code>. Ở đây, chúng ta bắt đầu bằng cách ẩn con trỏ, sau đó kiểm tra xem có tay cầm và viewport hợp lệ không, rồi gọi <code class="docutils literal notranslate"><span class="pre">intersects_ray</span></code> với vị trí và hướng của tay cầm:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Called every frame. &#39;delta&#39; is the elapsed time since the previous frame.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Hide our pointer, we&#39;ll make it visible if we&#39;re interacting with the viewport.</span>
+<span class="w">    </span><span class="sx">$Pointer</span><span class="o">.</span><span class="vi">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">controller</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">layer_viewport</span><span class="p">:</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">controller_t</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">controller</span><span class="o">.</span><span class="vi">global_transform</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">intersect</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">intersects_ray</span><span class="p">(</span><span class="n">controller_t</span><span class="o">.</span><span class="vi">origin</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">controller_t</span><span class="o">.</span><span class="vi">basis</span><span class="o">.</span><span class="vi">z</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Tiếp theo, chúng ta kiểm tra xem có đang giao với viewport không. Nếu có, chúng ta kiểm tra nút có đang được nhấn không và đặt con trỏ tại điểm giao.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">intersect</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">NO_INTERSECTION</span><span class="p">:</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">is_pressed</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">controller</span><span class="o">.</span><span class="nf">is_button_pressed</span><span class="p">(</span><span class="n">button_action</span><span class="p">)</span>
+
+<span class="w">            </span><span class="c1"># Place our pointer where we&#39;re pointing</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_intersect_to_global_pos</span><span class="p">(</span><span class="n">intersect</span><span class="p">)</span>
+<span class="w">            </span><span class="sx">$Pointer</span><span class="o">.</span><span class="vi">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="w">            </span><span class="sx">$Pointer</span><span class="o">.</span><span class="vi">global_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Nếu ở lần gọi process trước chúng ta đã giao với viewport và con trỏ đã di chuyển, chúng ta chuẩn bị một đối tượng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmousemotion.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMouseMotion</span></a> để mô phỏng chuột di chuyển và gửi nó đến viewport để xử lý tiếp.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">was_intersect</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">NO_INTERSECTION</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">intersect</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">was_intersect</span><span class="p">:</span>
+<span class="w">                </span><span class="c1"># Pointer moved</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">InputEventMouseMotion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">InputEventMouseMotion</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_intersect_to_viewport_pos</span><span class="p">(</span><span class="n">was_intersect</span><span class="p">)</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_intersect_to_viewport_pos</span><span class="p">(</span><span class="n">intersect</span><span class="p">)</span>
+<span class="w">                </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">was_pressed</span><span class="p">:</span>
+<span class="w">                    </span><span class="n">event</span><span class="o">.</span><span class="vi">button_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MOUSE_BUTTON_MASK_LEFT</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">relative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">from</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to</span>
+<span class="w">                </span><span class="n">layer_viewport</span><span class="o">.</span><span class="nf">push_input</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Nếu vừa thả nút, chúng ta cũng chuẩn bị một đối tượng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmousebutton.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMouseButton</span></a> để mô phỏng việc thả nút và gửi nó đến viewport để xử lý tiếp.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">is_pressed</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">was_pressed</span><span class="p">:</span>
+<span class="w">                </span><span class="c1"># Button was let go?</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">InputEventMouseButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">InputEventMouseButton</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">button_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_intersect_to_viewport_pos</span><span class="p">(</span><span class="n">intersect</span><span class="p">)</span>
+<span class="w">                </span><span class="n">layer_viewport</span><span class="o">.</span><span class="nf">push_input</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Hoặc nếu vừa nhấn nút, chúng ta chuẩn bị một đối tượng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_inputeventmousebutton.html" title="Class reference (English)"><span class="xref std std-ref">InputEventMouseButton</span></a> để mô phỏng việc nhấn nút và gửi nó đến viewport để xử lý tiếp.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="w">            </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">is_pressed</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">was_pressed</span><span class="p">:</span>
+<span class="w">                </span><span class="c1"># Button was pressed?</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">InputEventMouseButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">InputEventMouseButton</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">button_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">button_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MOUSE_BUTTON_MASK_LEFT</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="w">                </span><span class="n">event</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_intersect_to_viewport_pos</span><span class="p">(</span><span class="n">intersect</span><span class="p">)</span>
+<span class="w">                </span><span class="n">layer_viewport</span><span class="o">.</span><span class="nf">push_input</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Tiếp theo, chúng ta ghi nhớ trạng thái cho frame kế tiếp.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="w">            </span><span class="n">was_pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_pressed</span>
+<span class="w">            </span><span class="n">was_intersect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">intersect</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Cuối cùng, nếu không giao với viewport, chúng ta xóa trạng thái.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="w">        </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">            </span><span class="n">was_pressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+<span class="w">            </span><span class="n">was_intersect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NO_INTERSECTION</span>
+</pre></div>
+</div>
+</section>
+<section id="hole-punching">
+<h2>Hole punching<a class="headerlink" href="#hole-punching" title="Link to this heading"></a></h2>
+<p>Vì composition layer được ghép (composite) lên trên kết quả kết xuất, nó có thể bị vẽ đè lên trước các đối tượng thực ra nằm phía trước viewport.</p>
+<p>Khi bật hole punch, bạn yêu cầu Godot kết xuất một đối tượng trong suốt tại nơi viewport được hiển thị. Việc này được thực hiện theo cách ghi vào depth buffer và xóa kết quả kết xuất hiện tại. Mọi thứ phía sau viewport giờ sẽ bị xóa, còn mọi thứ phía trước viewport sẽ được kết xuất như bình thường.</p>
+<p>Bạn cũng cần đặt <code class="docutils literal notranslate"><span class="pre">Sort</span> <span class="pre">Order</span></code> thành giá trị âm; khi đó XR compositor sẽ vẽ viewport trước, rồi phủ kết quả kết xuất của chúng ta lên trên.</p>
+<figure class="align-center" id="id1">
+<img alt="../../_images/openxr_composition_layer_hole_punch.webp" src="../../_images/openxr_composition_layer_hole_punch.webp" />
+<figcaption>
+<p><span class="caption-text">Trường hợp minh họa bàn tay người dùng bị composition layer che khuất sai khi không dùng hole punching.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xr_action_map.html" class="btn btn-neutral float-left" title="XR action map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="openxr_hand_tracking.html" class="btn btn-neutral float-right" title="Theo dõi bàn tay (hand tracking) trong OpenXR" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

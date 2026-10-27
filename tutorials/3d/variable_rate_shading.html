@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Variable rate shading" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/variable_rate_shading.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Variable rate shading là gì?: Trong các engine kết xuất 3D hiện đại, shader phức tạp hơn nhiều so với trước đây. Sự ra đời của kết xuất dựa trên vật lý, global illumination thời gian thực và các hi..." />
+<meta name="description" content="Variable rate shading là gì?: Trong các engine kết xuất 3D hiện đại, shader phức tạp hơn nhiều so với trước đây. Sự ra đời của kết xuất dựa trên vật lý, global illumination thời gian thực và các hi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Variable rate shading &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo nguyên mẫu level bằng CSG" href="csg_tools.html" />
+    <link rel="prev" title="Co giãn độ phân giải" href="resolution_scaling.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/variable_rate_shading" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="using_multi_mesh_instance.html">Sử dụng MultiMeshInstance3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_lod.html">Mức độ chi tiết của mesh (LOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visibility_ranges.html">Visibility range (HLOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="occlusion_culling.html">Occlusion culling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resolution_scaling.html">Co giãn độ phân giải</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Variable rate shading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-variable-rate-shading">Variable rate shading là gì?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hardware-support">Hỗ trợ phần cứng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-variable-rate-shading-in-godot">Sử dụng variable rate shading trong Godot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Variable rate shading</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="variable-rate-shading">
+<span id="doc-variable-rate-shading"></span><h1>Variable rate shading<a class="headerlink" href="#variable-rate-shading" title="Link to this heading"></a></h1>
+<section id="what-is-variable-rate-shading">
+<h2>Variable rate shading là gì?<a class="headerlink" href="#what-is-variable-rate-shading" title="Link to this heading"></a></h2>
+<p>Trong các engine kết xuất 3D hiện đại, shader phức tạp hơn nhiều so với trước đây. Sự ra đời của kết xuất dựa trên vật lý, global illumination thời gian thực và các hiệu ứng screen-space đã làm tăng khối lượng shading <em>theo từng pixel</em> cần thực hiện để kết xuất mỗi frame. Ngoài ra, độ phân giải màn hình cũng tăng lên rất nhiều, với 1440p và 4K giờ đây là các độ phân giải mục tiêu phổ biến. Kết quả là tổng chi phí shading khi kết xuất scene thường chiếm một phần đáng kể thời gian kết xuất mỗi frame.</p>
+<p>Variable rate shading (VRS) là phương pháp giảm chi phí shading này bằng cách giảm độ phân giải của shading <em>theo từng pixel</em> (còn gọi là shading <em>fragment</em>), trong khi vẫn giữ độ phân giải gốc khi kết xuất hình học. Điều này có nghĩa các cạnh hình học vẫn sắc nét như khi không có VRS. VRS có thể kết hợp với bất kỳ kỹ thuật <a class="reference internal" href="3d_antialiasing.html#doc-3d-antialiasing"><span class="std std-ref">Khử răng cưa 3D</span></a> nào (MSAA, FXAA, TAA, SSAA).</p>
+<p>VRS cho phép chỉ định chất lượng shading theo từng vùng cục bộ, giúp một số phần của viewport nhận shading chi tiết hơn các phần khác. Điều này đặc biệt hữu ích trong thực tế ảo (VR) để đạt được <em>foveated rendering</em>, trong đó vùng trung tâm của viewport chi tiết hơn các cạnh.</p>
+<p>Dưới đây là một scene được kết xuất khi tắt rồi bật rate shading, dùng density map được liên kết ở cuối trang này:</p>
+<figure class="align-center" id="id1">
+<img alt="Variable rate shading bị tắt trong scene có texture" src="../../_images/variable_rate_shading_textured_disabled.webp" />
+<figcaption>
+<p><span class="caption-text">Variable rate shading bị tắt trong scene có texture</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id2">
+<img alt="Variable rate shading được bật trong scene có texture (chất lượng thấp hơn, nhưng hiệu năng cao hơn)" src="../../_images/variable_rate_shading_textured_enabled.webp" />
+<figcaption>
+<p><span class="caption-text">Variable rate shading được bật trong scene có texture (chất lượng thấp hơn, nhưng hiệu năng cao hơn)</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi dùng trong các scene có chi tiết tần số thấp (chẳng hạn scene theo phong cách stylized/low-poly), có thể đạt mức tăng hiệu năng tương tự nhưng ít suy giảm chất lượng hình ảnh hơn:</p>
+<figure class="align-center" id="id3">
+<img alt="Variable rate shading bị tắt trong scene không có texture" src="../../_images/variable_rate_shading_untextured_disabled.webp" />
+<figcaption>
+<p><span class="caption-text">Variable rate shading bị tắt trong scene không có texture</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id4">
+<img alt="Variable rate shading được bật trong scene không có texture (chất lượng thấp hơn, nhưng hiệu năng cao hơn)" src="../../_images/variable_rate_shading_untextured_enabled.webp" />
+<figcaption>
+<p><span class="caption-text">Variable rate shading được bật trong scene không có texture (chất lượng thấp hơn, nhưng hiệu năng cao hơn)</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="hardware-support">
+<h2>Hỗ trợ phần cứng<a class="headerlink" href="#hardware-support" title="Link to this heading"></a></h2>
+<p>Variable rate shading chỉ được hỗ trợ trên một số GPU nhất định:</p>
+<p><strong>Máy tính để bàn:</strong></p>
+<ul class="simple">
+<li><p>NVIDIA Turing trở lên (bao gồm dòng GTX 1600)</p></li>
+<li><p>AMD RDNA2 trở lên (cả GPU tích hợp và GPU rời – bao gồm Steam Deck)</p></li>
+<li><p>Intel Arc Alchemist trở lên <strong>(chỉ GPU rời)</strong></p>
+<ul>
+<li><p>Đồ họa tích hợp Intel không hỗ trợ variable rate shading.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>SoC di động:</strong></p>
+<ul class="simple">
+<li><p>Snapdragon 888 trở lên</p></li>
+<li><p>MediaTek Dimensity 9000 trở lên</p></li>
+<li><p>ARM Mali-G615 trở lên</p></li>
+</ul>
+<p>Tính đến tháng 1 năm 2023, GPU của Apple và Raspberry Pi không hỗ trợ variable rate shading.</p>
+</section>
+<section id="using-variable-rate-shading-in-godot">
+<h2>Sử dụng variable rate shading trong Godot<a class="headerlink" href="#using-variable-rate-shading-in-godot" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Cả renderer Forward+ và Mobile đều hỗ trợ variable rate shading. VRS có thể dùng ở cả chế độ hiển thị pancake (không phải XR) và XR.</p>
+<p>Renderer Compatibility <strong>không</strong> hỗ trợ variable rate shading. Với XR, bạn có thể dùng <a class="reference internal" href="../xr/openxr_settings.html#doc-openxr-settings-foveation-level"><span class="std std-ref">foveation level</span></a> làm giải pháp thay thế.</p>
+</div>
+<p>Trong Project Settings nâng cao, mục <strong>Rendering &gt; VRS</strong> cung cấp các cài đặt để điều khiển variable rate shading trên root viewport:</p>
+<ul class="simple">
+<li><p><strong>Mode:</strong> Điều khiển chế độ variable rate shading. <strong>Disabled</strong> tắt variable rate shading. <strong>Texture</strong> dùng một texture được tạo thủ công để đặt mật độ shading (xem thuộc tính bên dưới). <strong>XR</strong> tự động tạo một texture phù hợp cho foveated rendering trong thực tế ảo/thực tế tăng cường.</p></li>
+<li><p><strong>Texture:</strong> Texture dùng để điều khiển mật độ shading trên root viewport. Chỉ được dùng nếu <strong>Mode</strong> là <strong>Texture</strong>.</p></li>
+</ul>
+<p>Với các viewport tùy chỉnh, chế độ VRS và texture phải được đặt thủ công trên node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">class_Viewport</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trên phần cứng không được hỗ trợ, không có khác biệt hình ảnh nào khi bật variable rate shading. Bạn có thể kiểm tra phần cứng có hỗ trợ variable rate shading hay không bằng cách chạy trình chỉnh sửa hoặc dự án với <a class="reference internal" href="../editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> <code class="docutils literal notranslate"><span class="pre">--verbose</span></code>.</p>
+</div>
+<section id="creating-a-vrs-density-map">
+<h3>Tạo bản đồ mật độ VRS<a class="headerlink" href="#creating-a-vrs-density-map" title="Link to this heading"></a></h3>
+<p>Nếu dùng chế độ VRS <strong>Texture</strong>, bạn <em>phải</em> đặt một texture để dùng làm density map. Nếu không, sẽ không thấy hiệu ứng nào.</p>
+<p>Bạn có thể tự tạo VRS density map thủ công bằng trình chỉnh sửa ảnh, hoặc tạo bằng phương pháp khác (ví dụ trên CPU bằng lớp Image, hoặc trên GPU bằng shader). Tuy nhiên, hãy cẩn thận với ảnh hưởng hiệu năng khi tạo ảnh VRS động. Nếu chọn tạo động, hãy đảm bảo quá trình tạo ảnh VRS đủ nhanh để không làm mất đi mức tăng hiệu năng từ VRS.</p>
+<p>Texture phải tuân theo các quy tắc sau:</p>
+<ul class="simple">
+<li><p>Texture <em>phải</em> dùng định dạng nén không mất dữ liệu để màu sắc có thể được so khớp chính xác.</p></li>
+<li><p>Các mật độ VRS sau được ánh xạ sang các màu khác nhau, với màu sáng hơn biểu thị mức độ chính xác shading thấp hơn:</p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mật độ</p></th>
+<th class="head"><p>Màu sắc</p></th>
+<th class="head"><p>Ghi chú</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1×1 (chi tiết cao nhất)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(0,</span> <span class="pre">0,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#000000</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>1×2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(0,</span> <span class="pre">85,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#005500</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>2×1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(85,</span> <span class="pre">0,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#550000</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>2×2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(85,</span> <span class="pre">85,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#555500</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>2×4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(85,</span> <span class="pre">170,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#55aa00</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>4×2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(170,</span> <span class="pre">85,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#aa5500</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>4×4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(170,</span> <span class="pre">170,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#aaaa00</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>4×8</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(170,</span> <span class="pre">255,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#aaff00</span></code></p></td>
+<td><p>Không được hỗ trợ trên hầu hết phần cứng.</p></td>
+</tr>
+<tr class="row-even"><td><p>8×4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(255,</span> <span class="pre">170,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#ffaa00</span></code></p></td>
+<td><p>Không được hỗ trợ trên hầu hết phần cứng.</p></td>
+</tr>
+<tr class="row-odd"><td><p>8×8 (chi tiết thấp nhất)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rgb(255,</span> <span class="pre">255,</span> <span class="pre">0)</span> <span class="pre">-</span> <span class="pre">#ffff00</span></code></p></td>
+<td><p>Không được hỗ trợ trên hầu hết phần cứng.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Ví dụ, texture mật độ VRS này cho mật độ shading cao nhất ở trung tâm viewport, và thấp nhất ở các góc:</p>
+<figure class="align-center" id="id5">
+<img alt="Ví dụ texture VRS density map, mô phỏng foveated rendering" src="../../_images/variable_rate_shading_texture_example.webp" />
+<figcaption>
+<p><span class="caption-text">Ví dụ texture VRS density map, mô phỏng foveated rendering</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Không có yêu cầu nào về kích thước hay tỷ lệ khung hình cho texture mật độ VRS. Tuy nhiên, không có lợi ích gì khi dùng VRS density map lớn hơn độ phân giải viewport chia cho <em>tile size</em> của GPU. Tile size quyết định vùng pixel nhỏ nhất mà mật độ shading có thể thay đổi riêng biệt với các tile khác. Trên hầu hết GPU, tile size là 8×8 pixel. Bạn có thể xem tile size bằng cách chạy Godot với tham số dòng lệnh <code class="docutils literal notranslate"><span class="pre">--verbose</span></code>, vì nó được in trong thông tin gỡ lỗi VRS.</p>
+<p>Do đó, nên dùng độ phân giải tương đối thấp như 256×256 (vuông) hoặc 480×270 (16:9). Tùy trường hợp sử dụng, texture vuông có thể phù hợp hơn so với texture khớp với tỷ lệ khung hình viewport phổ biến nhất trong dự án của bạn (chẳng hạn 16:9).</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Khi dùng variable rate shading, bạn có thể dùng <a class="reference internal" href="resolution_scaling.html#doc-resolution-scaling-mipmap-bias"><span class="std std-ref">texture mipmap LOD bias</span></a> âm để giảm độ mờ ở các vùng có tốc độ shading thấp.</p>
+<p>Lưu ý rằng texture LOD bias được đặt toàn cục, nên nó cũng sẽ ảnh hưởng đến các vùng của viewport có tốc độ shading đầy đủ. Đừng dùng giá trị quá thấp, nếu không texture sẽ trông lấm tấm.</p>
+</div>
+</section>
+<section id="performance-comparison">
+<h3>So sánh hiệu năng<a class="headerlink" href="#performance-comparison" title="Link to this heading"></a></h3>
+<p>Để hình dung VRS có thể cải thiện hiệu năng bao nhiêu về mặt lý thuyết, đây là so sánh hiệu năng với scene ví dụ có texture ở đầu trang này. Ví dụ VRS density map có trên trang này được sử dụng.</p>
+<p>Kết quả được đo trên GeForce RTX 4090 với driver NVIDIA 525.60.11.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Độ phân giải</p></th>
+<th class="head"><p>VRS tắt</p></th>
+<th class="head"><p>VRS bật</p></th>
+<th class="head"><p>Mức cải thiện hiệu năng</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1920×1080 (Full HD)</p></td>
+<td><p>2832 FPS</p></td>
+<td><p>3136 FPS</p></td>
+<td><p>+10.7%</p></td>
+</tr>
+<tr class="row-odd"><td><p>2560×1440 (QHD)</p></td>
+<td><p>2008 FPS</p></td>
+<td><p>2256 FPS</p></td>
+<td><p>+12.3%</p></td>
+</tr>
+<tr class="row-even"><td><p>3840×2160 (4K)</p></td>
+<td><p>1236 FPS</p></td>
+<td><p>1436 FPS</p></td>
+<td><p>+16.2%</p></td>
+</tr>
+<tr class="row-odd"><td><p>7680×4320 (8K)</p></td>
+<td><p>384 FPS</p></td>
+<td><p>473 FPS</p></td>
+<td><p>+23.1%</p></td>
+</tr>
+</tbody>
+</table>
+<p>Xét về cải thiện hiệu năng, variable rate shading có lợi hơn ở các độ phân giải mục tiêu cao hơn. Sự suy giảm chất lượng hình ảnh cũng ít nhận thấy hơn ở độ phân giải cao.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Với các game không phải VR, có lẽ bạn sẽ phải dùng một texture VRS ít mạnh tay hơn so với ví dụ này. Do đó, mức tăng hiệu năng thực tế sẽ thấp hơn.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="resolution_scaling.html" class="btn btn-neutral float-left" title="Co giãn độ phân giải" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="csg_tools.html" class="btn btn-neutral float-right" title="Tạo nguyên mẫu level bằng CSG" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

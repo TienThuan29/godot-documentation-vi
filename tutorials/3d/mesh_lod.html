@@ -1,0 +1,415 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Mức độ chi tiết của mesh (LOD)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/mesh_lod.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Mức độ chi tiết (LOD) là một trong những cách quan trọng nhất để tối ưu hiệu năng kết xuất trong dự án 3D, cùng với Occlusion culling. Trong trang này, bạn sẽ học: Cách mesh LOD có thể cải thiện hi..." />
+<meta name="description" content="Mức độ chi tiết (LOD) là một trong những cách quan trọng nhất để tối ưu hiệu năng kết xuất trong dự án 3D, cùng với Occlusion culling. Trong trang này, bạn sẽ học: Cách mesh LOD có thể cải thiện hi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Mức độ chi tiết của mesh (LOD) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Visibility range (HLOD)" href="visibility_ranges.html" />
+    <link rel="prev" title="Sử dụng MultiMeshInstance3D" href="using_multi_mesh_instance.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/mesh_lod" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="using_multi_mesh_instance.html">Sử dụng MultiMeshInstance3D</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Mức độ chi tiết của mesh (LOD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visual-comparison">So sánh trực quan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generating-mesh-lod">Tạo LOD cho mesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#comparing-mesh-lod-visuals-and-performance">So sánh hình ảnh và hiệu năng của mesh LOD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuring-mesh-lod-performance-and-quality">Cấu hình hiệu năng và chất lượng của mesh LOD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-mesh-lod-with-multimesh-and-particles">Dùng mesh LOD với MultiMesh và hạt (particles)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="visibility_ranges.html">Visibility range (HLOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="occlusion_culling.html">Occlusion culling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resolution_scaling.html">Co giãn độ phân giải</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable_rate_shading.html">Variable rate shading</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Mức độ chi tiết của mesh (LOD)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="mesh-level-of-detail-lod">
+<span id="doc-mesh-lod"></span><h1>Mức độ chi tiết của mesh (LOD)<a class="headerlink" href="#mesh-level-of-detail-lod" title="Link to this heading"></a></h1>
+<p>Mức độ chi tiết (LOD) là một trong những cách quan trọng nhất để tối ưu hiệu năng kết xuất trong dự án 3D, cùng với <a class="reference internal" href="occlusion_culling.html#doc-occlusion-culling"><span class="std std-ref">Occlusion culling</span></a>.</p>
+<p>Trong trang này, bạn sẽ học:</p>
+<ul class="simple">
+<li><p>Cách mesh LOD có thể cải thiện hiệu năng kết xuất của dự án 3D.</p></li>
+<li><p>Cách thiết lập mesh LOD trong Godot.</p></li>
+<li><p>Cách đo hiệu quả của mesh LOD trong dự án (và các phương án thay thế bạn có thể tìm hiểu nếu nó không đáp ứng kỳ vọng).</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem mesh LOD hoạt động thực tế bằng <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/occlusion_culling_mesh_lod">dự án demo Occlusion Culling và Mesh LOD</a>.</p>
+</div>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Trước đây, mức độ chi tiết trong game 3D đòi hỏi phải tạo thủ công các mesh có mật độ hình học thấp hơn, rồi cấu hình các ngưỡng khoảng cách mà tại đó các mesh ít chi tiết hơn này sẽ được vẽ. Cách tiếp cận này vẫn được dùng ngày nay khi cần kiểm soát nhiều hơn.</p>
+<p>Tuy nhiên, trong các dự án có lượng lớn asset 3D chi tiết, việc thiết lập LOD thủ công có thể rất tốn thời gian. Do đó, việc tự động giản lược (decimation) mesh và cấu hình LOD ngày càng trở nên phổ biến.</p>
+<p>Godot cung cấp cách tự động tạo các mesh ít chi tiết hơn để dùng cho LOD khi import, rồi tự động dùng các mesh LOD đó khi cần. Quá trình này hoàn toàn trong suốt với người dùng. Thư viện <a class="reference external" href="https://meshoptimizer.org/">meshoptimizer</a> được dùng ở hậu trường để tạo mesh LOD.</p>
+<p>Mesh LOD hoạt động với mọi node vẽ mesh 3D. Bao gồm MeshInstance3D, MultiMeshInstance3D, GPUParticles3D và CPUParticles3D.</p>
+</section>
+<section id="visual-comparison">
+<h2>So sánh trực quan<a class="headerlink" href="#visual-comparison" title="Link to this heading"></a></h2>
+<p>Đây là ví dụ về các mesh LOD được tạo khi import. Các mesh ít chi tiết hơn sẽ được dùng khi camera ở xa vật thể:</p>
+<figure class="align-center" id="id1">
+<img alt="Từ chi tiết nhất (trái) đến ít chi tiết nhất (phải), chế độ xem có shading" src="../../_images/mesh_lod_comparison_shaded.png" />
+<figcaption>
+<p><span class="caption-text">Từ chi tiết nhất (trái) đến ít chi tiết nhất (phải), chế độ xem có shading</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Đây là cùng hình ảnh đó với chế độ kết xuất wireframe để dễ thấy việc giản lược hơn:</p>
+<figure class="align-center" id="id2">
+<img alt="Từ chi tiết nhất (trái) đến ít chi tiết nhất (phải), chế độ xem wireframe" src="../../_images/mesh_lod_comparison_wireframe.png" />
+<figcaption>
+<p><span class="caption-text">Từ chi tiết nhất (trái) đến ít chi tiết nhất (phải), chế độ xem wireframe</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Nếu bạn cần cấu hình mức độ chi tiết thủ công với các mesh do họa sĩ tạo, hãy dùng <a class="reference internal" href="visibility_ranges.html#doc-visibility-ranges"><span class="std std-ref">Visibility range (HLOD)</span></a> thay vì mesh LOD tự động.</p>
+</div>
+</section>
+<section id="generating-mesh-lod">
+<h2>Tạo LOD cho mesh<a class="headerlink" href="#generating-mesh-lod" title="Link to this heading"></a></h2>
+<p>Theo mặc định, việc tạo mesh LOD diễn ra tự động cho các scene 3D được import (glTF, .blend, Collada, FBX). Khi mesh LOD đã được tạo, chúng sẽ tự động được dùng khi kết xuất scene. Bạn không cần cấu hình gì thủ công.</p>
+<p>Tuy nhiên, việc tạo mesh LOD <strong>không</strong> tự động diễn ra cho các mesh 3D được import (OBJ). Đó là vì theo mặc định, file OBJ không được import như scene 3D đầy đủ, mà chỉ như các resource mesh riêng lẻ để nạp vào node MeshInstance3D (hoặc GPUParticles3D, CPUParticles3D, ...).</p>
+<p>Để tạo mesh LOD cho một file OBJ, hãy chọn nó trong FileSystem dock, chuyển sang Import dock, đổi tùy chọn <strong>Import As</strong> thành <strong>Scene</strong> rồi nhấn <strong>Reimport</strong>:</p>
+<figure class="align-center" id="id3">
+<img alt="Thay đổi kiểu import của một file OBJ trong Import dock" src="../../_images/mesh_lod_obj_import.png" />
+<figcaption>
+<p><span class="caption-text">Thay đổi kiểu import của một file OBJ trong Import dock</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Việc này sẽ yêu cầu khởi động lại trình chỉnh sửa sau khi nhấn <strong>Reimport</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Quá trình tạo mesh LOD không hoàn hảo và đôi khi có thể gây ra vấn đề kết xuất (đặc biệt với skinned mesh). Việc tạo mesh LOD cũng có thể mất khá lâu với các mesh phức tạp.</p>
+<p>Nếu mesh LOD khiến một mesh cụ thể trông bị lỗi, bạn có thể tắt việc tạo LOD cho mesh đó trong Import dock. Điều này cũng giúp tăng tốc việc import resource. Có thể làm điều này trên toàn cục trong tùy chọn import của scene 3D, hoặc cho từng mesh bằng hộp thoại Advanced Import Settings.</p>
+<p>Xem <a class="reference internal" href="../assets_pipeline/importing_3d_scenes/import_configuration.html#doc-importing-3d-scenes-using-the-import-dock"><span class="std std-ref">Import scene 3D</span></a> để biết thêm thông tin.</p>
+</div>
+</section>
+<section id="comparing-mesh-lod-visuals-and-performance">
+<h2>So sánh hình ảnh và hiệu năng của mesh LOD<a class="headerlink" href="#comparing-mesh-lod-visuals-and-performance" title="Link to this heading"></a></h2>
+<p>Để tắt mesh LOD trong trình chỉnh sửa nhằm so sánh, hãy dùng chế độ debug draw nâng cao <strong>Disable Mesh LOD</strong>. Có thể làm điều này bằng menu ở góc trên bên trái của viewport 3D (có nhãn <strong>Perspective</strong> hoặc <strong>Orthogonal</strong> tùy theo chế độ camera):</p>
+<figure class="align-center" id="id4">
+<img alt="Tắt mesh LOD trong menu góc trên bên trái của viewport 3D" src="../../_images/mesh_lod_disable_lod.png" />
+<figcaption>
+<p><span class="caption-text">Tắt mesh LOD trong menu góc trên bên trái của viewport 3D</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Bật <strong>View Frame Time</strong> trong cùng menu đó để xem FPS ở góc trên bên phải. Đồng thời bật <strong>View Information</strong> trong cùng menu để xem số primitive (đỉnh + chỉ số) được kết xuất ở góc dưới bên phải.</p>
+<p>Nếu mesh LOD hoạt động đúng trong scene và camera ở đủ xa mesh, bạn sẽ thấy số primitive được vẽ giảm xuống và FPS tăng lên khi để mesh LOD được bật (trừ khi bạn bị nghẽn ở CPU).</p>
+<p>Để xem việc giản lược của mesh LOD hoạt động thực tế, hãy đổi chế độ debug draw thành <strong>Display Wireframe</strong> trong menu nêu trên, rồi điều chỉnh cài đặt dự án <strong>Rendering &gt; Mesh LOD &gt; LOD Change &gt; Threshold Pixels</strong>.</p>
+</section>
+<section id="configuring-mesh-lod-performance-and-quality">
+<h2>Cấu hình hiệu năng và chất lượng của mesh LOD<a class="headerlink" href="#configuring-mesh-lod-performance-and-quality" title="Link to this heading"></a></h2>
+<p>Bạn có thể điều chỉnh mức độ mạnh của các chuyển tiếp mesh LOD trong viewport gốc bằng cách thay đổi cài đặt dự án <strong>Rendering &gt; Mesh LOD &gt; LOD Change &gt; Threshold Pixels</strong>. Để thay đổi giá trị này khi đang chạy, hãy đặt <code class="docutils literal notranslate"><span class="pre">mesh_lod_threshold</span></code> trên viewport gốc như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span><span class="o">.</span><span class="vi">mesh_lod_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">.</span><span class="n">MeshLodThreshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Mỗi viewport có thuộc tính <code class="docutils literal notranslate"><span class="pre">mesh_lod_threshold</span></code> riêng, có thể được đặt độc lập với các viewport khác.</p>
+<p>Ngưỡng mesh LOD mặc định là 1 pixel được tinh chỉnh để trông không mất mát về mặt <em>cảm nhận</em>; nó mang lại lợi ích hiệu năng đáng kể với mức giảm chất lượng không thể nhận ra. Giá trị cao hơn sẽ khiến chuyển tiếp LOD diễn ra sớm hơn khi camera di chuyển ra xa, cho hiệu năng cao hơn nhưng chất lượng thấp hơn.</p>
+<p>Nếu bạn cần điều chỉnh mesh LOD cho từng đối tượng, bạn có thể điều chỉnh mức độ mạnh của các chuyển tiếp LOD bằng thuộc tính <strong>LOD Bias</strong> trên bất kỳ node nào kế thừa từ GeometryInstance3D. Giá trị <em>trên</em> <code class="docutils literal notranslate"><span class="pre">1.0</span></code> sẽ khiến chuyển tiếp LOD diễn ra muộn hơn bình thường (cho chất lượng cao hơn nhưng hiệu năng thấp hơn). Giá trị <em>dưới</em> <code class="docutils literal notranslate"><span class="pre">1.0</span></code> sẽ khiến chuyển tiếp LOD diễn ra sớm hơn bình thường (cho chất lượng thấp hơn nhưng hiệu năng cao hơn).</p>
+<p>Ngoài ra, các node ReflectionProbe có thuộc tính <strong>Mesh LOD Threshold</strong> riêng, có thể điều chỉnh để cải thiện hiệu năng kết xuất khi reflection probe cập nhật. Điều này đặc biệt quan trọng với các ReflectionProbe dùng chế độ cập nhật <strong>Always</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi kết xuất scene, việc chọn mesh LOD dùng một thước đo trong không gian màn hình. Điều này có nghĩa là nó tự động tính đến trường nhìn (FOV) của camera và độ phân giải của viewport. FOV camera cao hơn và độ phân giải viewport thấp hơn sẽ khiến việc chọn LOD mạnh tay hơn; engine sẽ hiển thị các model bị giản lược nhiều sớm hơn khi camera di chuyển ra xa.</p>
+<p>Do đó, không giống <a class="reference internal" href="visibility_ranges.html#doc-visibility-ranges"><span class="std std-ref">Visibility range (HLOD)</span></a>, bạn không cần làm gì đặc biệt trong dự án để tính đến FOV camera và độ phân giải viewport.</p>
+</div>
+</section>
+<section id="using-mesh-lod-with-multimesh-and-particles">
+<h2>Dùng mesh LOD với MultiMesh và hạt (particles)<a class="headerlink" href="#using-mesh-lod-with-multimesh-and-particles" title="Link to this heading"></a></h2>
+<p>Để chọn LOD, điểm trên <abbr title="Axis-Aligned Bounding Box">AABB</abbr> của node gần camera nhất được dùng làm cơ sở. Điều này áp dụng cho mọi loại mesh LOD (kể cả cho từng MeshInstance3D riêng lẻ), nhưng có một số hệ quả đối với các node hiển thị nhiều mesh cùng lúc, như MultiMeshInstance3D, CPUParticles3D và GPUParticles3D. Quan trọng nhất, điều này có nghĩa là mọi instance sẽ được vẽ với cùng một mức LOD tại một thời điểm.</p>
+<p>Nếu bạn thấy việc chọn LOD không đúng với GPUParticles3D, hãy đảm bảo AABB hiển thị của node đã được cấu hình bằng cách chọn node GPUParticles3D và dùng <strong>GPUParticles3D &gt; Generate AABB</strong> ở phía trên viewport 3D.</p>
+<p>Nếu bạn có các instance trong một MultiMesh ở cách xa nhau, chúng nên được đặt trong một node MultiMeshInstance3D riêng. Làm vậy cũng sẽ cải thiện hiệu năng kết xuất, vì frustum culling và occlusion culling sẽ có thể loại bỏ từng node riêng lẻ (trong khi chúng không thể loại bỏ từng instance riêng lẻ trong một MultiMesh).</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_multi_mesh_instance.html" class="btn btn-neutral float-left" title="Sử dụng MultiMeshInstance3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="visibility_ranges.html" class="btn btn-neutral float-right" title="Visibility range (HLOD)" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

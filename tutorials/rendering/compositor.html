@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Compositor" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/rendering/compositor.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Compositor là một tính năng mới trong Godot 4, cho phép kiểm soát pipeline kết xuất khi kết xuất nội dung của một Viewport. Nó có thể được cấu hình trên node WorldEnvironment, khi đó nó áp dụng cho..." />
+<meta name="description" content="Compositor là một tính năng mới trong Godot 4, cho phép kiểm soát pipeline kết xuất khi kết xuất nội dung của một Viewport. Nó có thể được cấu hình trên node WorldEnvironment, khi đó nó áp dụng cho..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Compositor &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng DrawableTexture" href="drawable_textures.html" />
+    <link rel="prev" title="Khắc phục jitter, stutter và độ trễ input" href="jitter_stutter.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/rendering/compositor" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kết xuất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="renderers.html">Tổng quan về các trình kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="viewports.html">Sử dụng Viewport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_resolutions.html">Đa độ phân giải</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jitter_stutter.html">Khắc phục jitter, stutter và độ trễ input</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Compositor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compositor-effects">Hiệu ứng compositor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="drawable_textures.html">Sử dụng DrawableTexture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdr_output.html">Đầu ra HDR</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kết xuất</a></li>
+      <li class="breadcrumb-item active">Compositor</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="the-compositor">
+<span id="doc-compositor"></span><h1>Compositor<a class="headerlink" href="#the-compositor" title="Link to this heading"></a></h1>
+<p>Compositor là một tính năng mới trong Godot 4, cho phép kiểm soát pipeline kết xuất khi kết xuất nội dung của một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a>.</p>
+<p>Nó có thể được cấu hình trên node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_worldenvironment.html" title="Class reference (English)"><span class="xref std std-ref">WorldEnvironment</span></a>, khi đó nó áp dụng cho mọi Viewport, hoặc được cấu hình trên <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a> và chỉ áp dụng cho Viewport dùng camera đó.</p>
+<p>Resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_compositor.html" title="Class reference (English)"><span class="xref std std-ref">Compositor</span></a> được dùng để cấu hình compositor. Để bắt đầu, hãy tạo một compositor mới trên node phù hợp:</p>
+<img alt="../../_images/new_compositor.webp" src="../../_images/new_compositor.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Compositor hiện là tính năng chỉ được hỗ trợ bởi các renderer Mobile và Forward+.</p>
+</div>
+<section id="compositor-effects">
+<h2>Hiệu ứng compositor<a class="headerlink" href="#compositor-effects" title="Link to this heading"></a></h2>
+<p>Hiệu ứng compositor cho phép bạn chèn thêm logic vào pipeline kết xuất ở nhiều giai đoạn khác nhau. Đây là tính năng nâng cao, đòi hỏi hiểu biết sâu về pipeline kết xuất để tận dụng tối đa.</p>
+<p>Vì logic cốt lõi của hiệu ứng compositor được gọi từ pipeline kết xuất, cần lưu ý rằng logic này sẽ chạy trên thread thực hiện việc kết xuất. Cần cẩn thận để tránh gặp các vấn đề về đa luồng.</p>
+<p>Để minh họa cách dùng hiệu ứng compositor, chúng ta sẽ tạo một hiệu ứng hậu xử lý đơn giản cho phép bạn viết code shader của riêng mình và áp dụng nó lên toàn màn hình thông qua compute shader. Bạn có thể tìm dự án demo hoàn chỉnh <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/compute/post_shader">tại đây</a>.</p>
+<p>Chúng ta bắt đầu bằng cách tạo một script mới tên <code class="docutils literal notranslate"><span class="pre">post_process_shader.gd</span></code>. Chúng ta sẽ biến nó thành tool script để có thể thấy hiệu ứng compositor hoạt động trong trình chỉnh sửa. Chúng ta cần kế thừa từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_compositoreffect.html" title="Class reference (English)"><span class="xref std std-ref">CompositorEffect</span></a>. Chúng ta cũng phải đặt tên lớp cho script.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">CompositorEffect</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">PostProcessShader</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="na">[GlobalClass, Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">PostProcessShader</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CompositorEffect</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tiếp theo, chúng ta sẽ định nghĩa một hằng số cho code mẫu của shader. Đây là code khung giúp compute shader của chúng ta hoạt động.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">template_shader</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">#version 450</span>
+
+<span class="s2">// Invocations in the (x, y, z) dimension</span>
+<span class="s2">layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;</span>
+
+<span class="s2">layout(rgba16f, set = 0, binding = 0) uniform image2D color_image;</span>
+
+<span class="s2">// Our push constant</span>
+<span class="s2">layout(push_constant, std430) uniform Params {</span>
+<span class="w">    </span><span class="s2">vec2 raster_size;</span>
+<span class="w">    </span><span class="s2">vec2 reserved;</span>
+<span class="s2">} params;</span>
+
+<span class="s2">// The code we want to execute in each invocation</span>
+<span class="s2">void main() {</span>
+<span class="w">    </span><span class="s2">ivec2 uv = ivec2(gl_GlobalInvocationID.xy);</span>
+<span class="w">    </span><span class="s2">ivec2 size = ivec2(params.raster_size);</span>
+
+<span class="w">    </span><span class="s2">if (uv.x &gt;= size.x || uv.y &gt;= size.y) {</span>
+<span class="w">        </span><span class="s2">return;</span>
+<span class="w">    </span><span class="s2">}</span>
+
+<span class="w">    </span><span class="s2">vec4 color = imageLoad(color_image, uv);</span>
+
+<span class="w">    </span><span class="s2">#COMPUTE_CODE</span>
+
+<span class="w">    </span><span class="s2">imageStore(color_image, uv, color);</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">_templateShader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">@&quot;</span>
+<span class="s">#version 450</span>
+
+<span class="s">// Invocations in the (x, y, z) dimension</span>
+<span class="s">layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;</span>
+
+<span class="s">layout(rgba16f, set = 0, binding = 0) uniform image2D color_image;</span>
+
+<span class="s">// Our push constant</span>
+<span class="s">layout(push_constant, std430) uniform Params {</span>
+<span class="s">        vec2 raster_size;</span>
+<span class="s">        vec2 reserved;</span>
+<span class="s">} params;</span>
+
+<span class="s">// The code we want to execute in each invocation</span>
+<span class="s">void main() {</span>
+<span class="s">        ivec2 uv = ivec2(gl_GlobalInvocationID.xy);</span>
+<span class="s">        ivec2 size = ivec2(params.raster_size);</span>
+
+<span class="s">        if (uv.x &gt;= size.x || uv.y &gt;= size.y) {</span>
+<span class="s">                return;</span>
+<span class="s">        }</span>
+
+<span class="s">        vec4 color = imageLoad(color_image, uv);</span>
+
+<span class="s">        #COMPUTE_CODE</span>
+
+<span class="s">        imageStore(color_image, uv, color);</span>
+<span class="s">}</span>
+<span class="s">&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để biết thêm về cách compute shader hoạt động, vui lòng xem <a class="reference internal" href="../shaders/compute_shaders.html#doc-compute-shaders"><span class="std std-ref">Sử dụng compute shader</span></a>.</p>
+<p>Điểm quan trọng ở đây là với mỗi pixel trên màn hình, hàm <code class="docutils literal notranslate"><span class="pre">main</span></code> của chúng ta được thực thi, và bên trong đó chúng ta nạp giá trị màu hiện tại của pixel, thực thi code của người dùng, rồi ghi màu đã sửa đổi trở lại ảnh màu.</p>
+<p><code class="docutils literal notranslate"><span class="pre">#COMPUTE_CODE</span></code> sẽ được thay thế bằng code của người dùng.</p>
+<p>Để đặt code của người dùng, chúng ta cần một biến export. Chúng ta cũng sẽ định nghĩa một vài biến script sẽ dùng đến:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_multiline</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">shader_code</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">        </span><span class="n">shader_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span>
+<span class="w">        </span><span class="n">shader_is_dirty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="w">        </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">rd</span><span class="p">:</span><span class="w"> </span><span class="nb">RenderingDevice</span>
+<span class="k">var</span><span class="w"> </span><span class="n">shader</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span>
+<span class="k">var</span><span class="w"> </span><span class="n">pipeline</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">mutex</span><span class="p">:</span><span class="w"> </span><span class="nb">Mutex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Mutex</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">shader_is_dirty</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">_shaderCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="na">[Export(PropertyHint.MultilineText)]</span>
+<span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ShaderCode</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">get</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">_shaderCode</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">set</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_mutex</span><span class="p">.</span><span class="n">Lock</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_shaderCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">        </span><span class="n">shaderIsDirty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_mutex</span><span class="p">.</span><span class="n">Unlock</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">private</span><span class="w"> </span><span class="n">RenderingDevice</span><span class="w"> </span><span class="n">_rd</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_shader</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_pipeline</span><span class="p">;</span>
+
+<span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Mutex</span><span class="w"> </span><span class="n">_mutex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Mutex</span><span class="p">();</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">_shaderIsDirty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu ý việc dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mutex.html" title="Class reference (English)"><span class="xref std std-ref">Mutex</span></a> trong code. Phần lớn phần cài đặt của chúng ta được gọi từ engine kết xuất và do đó chạy trên thread kết xuất.</p>
+<p>Chúng ta cần đảm bảo rằng khi đặt code shader mới và đánh dấu code shader là &quot;dirty&quot;, thread kết xuất không đồng thời truy cập dữ liệu này.</p>
+<p>Tiếp theo, chúng ta khởi tạo hiệu ứng.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Called when this resource is constructed.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_init</span><span class="p">():</span>
+<span class="w">    </span><span class="n">effect_callback_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EFFECT_CALLBACK_TYPE_POST_TRANSPARENT</span>
+<span class="w">    </span><span class="n">rd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">get_rendering_device</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Called when this resource is constructed.</span>
+<span class="k">public</span><span class="w"> </span><span class="nf">PostProcessShader</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">EffectCallbackType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EffectCallbackTypeEnum</span><span class="p">.</span><span class="n">PostTransparent</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_rd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">GetRenderingDevice</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Điều chính ở đây là đặt <code class="docutils literal notranslate"><span class="pre">effect_callback_type</span></code>, cho engine kết xuất biết cần gọi code của chúng ta ở giai đoạn nào của pipeline kết xuất.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hiện tại chúng ta chỉ truy cập được các giai đoạn của pipeline kết xuất 3D!</p>
+</div>
+<p>Chúng ta cũng lấy tham chiếu đến rendering device, thứ sẽ rất hữu ích.</p>
+<p>Chúng ta cũng cần tự dọn dẹp; để làm vậy, chúng ta phản hồi thông báo <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_PREDELETE</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># System notifications, we want to react on the notification that</span>
+<span class="c1"># alerts us we are about to be destroyed.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_notification</span><span class="p">(</span><span class="n">what</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NOTIFICATION_PREDELETE</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">shader</span><span class="o">.</span><span class="nf">is_valid</span><span class="p">():</span>
+<span class="w">            </span><span class="c1"># Freeing our shader will also free any dependents such as the pipeline!</span>
+<span class="w">            </span><span class="n">rd</span><span class="o">.</span><span class="nf">free_rid</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// System notifications, we want to react on the notification that</span>
+<span class="c1">// alerts us we are about to be destroyed.</span>
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">what</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">what</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NotificationPredelete</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_shader</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Freeing our shader will also free any dependents such as the pipeline!</span>
+<span class="w">            </span><span class="n">_rd</span><span class="p">.</span><span class="n">FreeRid</span><span class="p">(</span><span class="n">_shader</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu ý rằng chúng ta không dùng mutex ở đây dù chúng ta tạo shader bên trong thread kết xuất. Các phương thức của rendering server là thread safe và <code class="docutils literal notranslate"><span class="pre">free_rid</span></code> sẽ hoãn việc dọn dẹp shader cho đến khi mọi frame đang được kết xuất hoàn tất.</p>
+<p>Cũng lưu ý rằng chúng ta không giải phóng pipeline. Rendering device có theo dõi phụ thuộc, và vì pipeline phụ thuộc vào shader nên nó sẽ được tự động giải phóng khi shader bị hủy.</p>
+<p>Từ thời điểm này trở đi, code của chúng ta sẽ chạy trên thread kết xuất.</p>
+<p>Bước tiếp theo là một hàm trợ giúp sẽ biên dịch lại shader nếu code của người dùng thay đổi.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if our shader has changed and needs to be recompiled.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_check_shader</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">rd</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">new_shader_code</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+<span class="w">    </span><span class="c1"># Check if our shader is dirty.</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">lock</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">shader_is_dirty</span><span class="p">:</span>
+<span class="w">        </span><span class="n">new_shader_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shader_code</span>
+<span class="w">        </span><span class="n">shader_is_dirty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+<span class="w">    </span><span class="n">mutex</span><span class="o">.</span><span class="nf">unlock</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># We don&#39;t have a (new) shader?</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">new_shader_code</span><span class="o">.</span><span class="nf">is_empty</span><span class="p">():</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">pipeline</span><span class="o">.</span><span class="nf">is_valid</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Apply template.</span>
+<span class="w">    </span><span class="n">new_shader_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_templateShader</span><span class="o">.</span><span class="nf">replace</span><span class="p">(</span><span class="s2">&quot;#COMPUTE_CODE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">new_shader_code</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1"># Out with the old.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">shader</span><span class="o">.</span><span class="nf">is_valid</span><span class="p">():</span>
+<span class="w">        </span><span class="n">rd</span><span class="o">.</span><span class="nf">free_rid</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
+<span class="w">        </span><span class="n">shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="p">()</span>
+<span class="w">        </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># In with the new.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">shader_source</span><span class="p">:</span><span class="w"> </span><span class="nb">RDShaderSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RDShaderSource</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">shader_source</span><span class="o">.</span><span class="vi">language</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingDevice</span><span class="o">.</span><span class="vi">SHADER_LANGUAGE_GLSL</span>
+<span class="w">    </span><span class="n">shader_source</span><span class="o">.</span><span class="vi">source_compute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_shader_code</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">shader_spirv</span><span class="p">:</span><span class="w"> </span><span class="nb">RDShaderSPIRV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">shader_compile_spirv_from_source</span><span class="p">(</span><span class="n">shader_source</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">shader_spirv</span><span class="o">.</span><span class="vi">compile_error_compute</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="n">shader_spirv</span><span class="o">.</span><span class="vi">compile_error_compute</span><span class="p">)</span>
+<span class="w">        </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;In: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">new_shader_code</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">    </span><span class="n">shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">shader_create_from_spirv</span><span class="p">(</span><span class="n">shader_spirv</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">shader</span><span class="o">.</span><span class="nf">is_valid</span><span class="p">():</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">    </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_pipeline_create</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">pipeline</span><span class="o">.</span><span class="nf">is_valid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Check if our shader has changed and needs to be recompiled.</span>
+<span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">CheckShader</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_rd</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">newShaderCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Check if our shader is dirty.</span>
+<span class="w">    </span><span class="n">_mutex</span><span class="p">.</span><span class="n">Lock</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_shaderIsDirty</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">newShaderCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_shaderCode</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_shaderIsDirty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">_mutex</span><span class="p">.</span><span class="n">Unlock</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// We don&#39;t have a (new) shader?</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">newShaderCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">_pipeline</span><span class="p">.</span><span class="n">IsValid</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Apply template.</span>
+<span class="w">    </span><span class="n">newShaderCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_templateShader</span><span class="p">.</span><span class="n">Replace</span><span class="p">(</span><span class="s">&quot;#COMPUTE_CODE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">newShaderCode</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Out with the old.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_shader</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_rd</span><span class="p">.</span><span class="n">FreeRid</span><span class="p">(</span><span class="n">_shader</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Rid</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Rid</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// In with the new.</span>
+<span class="w">    </span><span class="n">RDShaderSource</span><span class="w"> </span><span class="n">shaderSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RDShaderSource</span><span class="p">();</span>
+<span class="w">    </span><span class="n">shaderSource</span><span class="p">.</span><span class="n">Language</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingDevice</span><span class="p">.</span><span class="n">ShaderLanguage</span><span class="p">.</span><span class="n">Glsl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderSource</span><span class="p">.</span><span class="n">SourceCompute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newShaderCode</span><span class="p">;</span>
+<span class="w">    </span><span class="n">RDShaderSpirV</span><span class="w"> </span><span class="n">shaderSpirV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_rd</span><span class="p">.</span><span class="n">ShaderCompileSpirVFromSource</span><span class="p">(</span><span class="n">shaderSource</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shaderSpirV</span><span class="p">.</span><span class="n">CompileErrorCompute</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">PushError</span><span class="p">(</span><span class="n">shaderSpirV</span><span class="p">.</span><span class="n">CompileErrorCompute</span><span class="p">);</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">PushError</span><span class="p">(</span><span class="s">&quot;In: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">newShaderCode</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">_shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_rd</span><span class="p">.</span><span class="n">ShaderCreateFromSpirV</span><span class="p">(</span><span class="n">shaderSpirV</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_shader</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">_pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputePipelineCreate</span><span class="p">(</span><span class="n">_shader</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">_pipeline</span><span class="p">.</span><span class="n">IsValid</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ở đầu phương thức này, chúng ta lại dùng mutex để bảo vệ việc truy cập code shader của người dùng và cờ &quot;is dirty&quot;. Chúng ta tạo một bản sao cục bộ của code shader người dùng nếu nó đang &quot;dirty&quot;.</p>
+<p>Nếu không có đoạn code mới, chúng ta trả về true nếu đã có một pipeline hợp lệ.</p>
+<p>Nếu có đoạn code mới, chúng ta nhúng nó vào code mẫu rồi biên dịch.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Code ở đây biên dịch code mới lúc chạy. Điều này rất tốt cho việc làm prototype vì chúng ta có thể thấy ngay tác dụng của shader đã thay đổi.</p>
+<p>Cách này ngăn việc biên dịch trước và cache shader, điều có thể gây vấn đề trên một số nền tảng như console. Lưu ý rằng dự án demo có kèm một ví dụ thay thế, trong đó một file <code class="docutils literal notranslate"><span class="pre">glsl</span></code> chứa toàn bộ compute shader và file này được sử dụng. Với cách này, Godot có thể biên dịch trước và cache shader.</p>
+</div>
+<p>Cuối cùng, chúng ta cần cài đặt callback của hiệu ứng; engine kết xuất sẽ gọi nó ở đúng giai đoạn kết xuất.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Called by the rendering thread every frame.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_render_callback</span><span class="p">(</span><span class="n">p_effect_callback_type</span><span class="p">,</span><span class="w"> </span><span class="n">p_render_data</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">rd</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">p_effect_callback_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EFFECT_CALLBACK_TYPE_POST_TRANSPARENT</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">_check_shader</span><span class="p">():</span>
+<span class="w">        </span><span class="c1"># Get our render scene buffers object, this gives us access to our render buffers.</span>
+<span class="w">        </span><span class="c1"># Note that implementation differs per renderer hence the need for the cast.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">render_scene_buffers</span><span class="p">:</span><span class="w"> </span><span class="nb">RenderSceneBuffersRD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_render_data</span><span class="o">.</span><span class="nf">get_render_scene_buffers</span><span class="p">()</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">render_scene_buffers</span><span class="p">:</span>
+<span class="w">            </span><span class="c1"># Get our render size, this is the 3D render resolution!</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">render_scene_buffers</span><span class="o">.</span><span class="nf">get_internal_size</span><span class="p">()</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">size</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">size</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">                </span><span class="k k-ControlFlow">return</span>
+
+<span class="w">            </span><span class="c1"># We can use a compute shader here.</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">x_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">y_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">z_groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="w">            </span><span class="c1"># Push constant.</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">push_constant</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedFloat32Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedFloat32Array</span><span class="p">()</span>
+<span class="w">            </span><span class="n">push_constant</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="vi">x</span><span class="p">)</span>
+<span class="w">            </span><span class="n">push_constant</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="vi">y</span><span class="p">)</span>
+<span class="w">            </span><span class="n">push_constant</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">push_constant</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+<span class="w">            </span><span class="c1"># Loop through views just in case we&#39;re doing stereo rendering. No extra cost if this is mono.</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">view_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">render_scene_buffers</span><span class="o">.</span><span class="nf">get_view_count</span><span class="p">()</span>
+<span class="w">            </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">view_count</span><span class="p">):</span>
+<span class="w">                </span><span class="c1"># Get the RID for our color image, we will be reading from and writing to it.</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">input_image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">render_scene_buffers</span><span class="o">.</span><span class="nf">get_color_layer</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+<span class="w">                </span><span class="c1"># Create a uniform set.</span>
+<span class="w">                </span><span class="c1"># This will be cached; the cache will be cleared if our viewport&#39;s configuration is changed.</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">uniform</span><span class="p">:</span><span class="w"> </span><span class="nb">RDUniform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RDUniform</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">                </span><span class="n">uniform</span><span class="o">.</span><span class="vi">uniform_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingDevice</span><span class="o">.</span><span class="vi">UNIFORM_TYPE_IMAGE</span>
+<span class="w">                </span><span class="n">uniform</span><span class="o">.</span><span class="vi">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                </span><span class="n">uniform</span><span class="o">.</span><span class="nf">add_id</span><span class="p">(</span><span class="n">input_image</span><span class="p">)</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">uniform_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">UniformSetCacheRD</span><span class="o">.</span><span class="nf">get_cache</span><span class="p">(</span><span class="n">shader</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">uniform</span><span class="w"> </span><span class="p">])</span>
+
+<span class="w">                </span><span class="c1"># Run our compute shader.</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">compute_list</span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_begin</span><span class="p">()</span>
+<span class="w">                </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_bind_compute_pipeline</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="n">pipeline</span><span class="p">)</span>
+<span class="w">                </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_bind_uniform_set</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="n">uniform_set</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_set_push_constant</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="n">push_constant</span><span class="o">.</span><span class="nf">to_byte_array</span><span class="p">(),</span><span class="w"> </span><span class="n">push_constant</span><span class="o">.</span><span class="nf">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="w">                </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_dispatch</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="n">x_groups</span><span class="p">,</span><span class="w"> </span><span class="n">y_groups</span><span class="p">,</span><span class="w"> </span><span class="n">z_groups</span><span class="p">)</span>
+<span class="w">                </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_end</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Called by the rendering thread every frame.</span>
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_RenderCallback</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">effectCallbackType</span><span class="p">,</span><span class="w"> </span><span class="n">RenderData</span><span class="w"> </span><span class="n">renderData</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_rd</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">effectCallbackType</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">EffectCallbackTypeEnum</span><span class="p">.</span><span class="n">PostTransparent</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">CheckShader</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Get our render scene buffers object, this gives us access to our render buffers.</span>
+<span class="w">        </span><span class="c1">// Note that implementation differs per renderer hence the need for the cast.</span>
+
+<span class="w">        </span><span class="n">RenderSceneBuffersRD</span><span class="w"> </span><span class="n">renderSceneBuffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">renderData</span><span class="p">.</span><span class="n">GetRenderSceneBuffers</span><span class="p">()</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">RenderSceneBuffersRD</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">renderSceneBuffers</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Get our render size, this is the 3D resolution!</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">renderSceneBuffers</span><span class="p">.</span><span class="n">GetInternalSize</span><span class="p">();</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">size</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">            </span><span class="c1">// We can use a compute shader here.</span>
+<span class="w">            </span><span class="kt">uint</span><span class="w"> </span><span class="n">xGroups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)((</span><span class="n">size</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">uint</span><span class="w"> </span><span class="n">yGroups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)((</span><span class="n">size</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">uint</span><span class="w"> </span><span class="n">zGroups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c1">// Push Constant.</span>
+<span class="w">            </span><span class="kt">float</span><span class="p">[]</span><span class="w"> </span><span class="n">tempPushConstant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">size</span><span class="p">.</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">.</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
+<span class="w">            </span><span class="kt">byte</span><span class="p">[]</span><span class="w"> </span><span class="n">pushConstant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="p">[</span><span class="n">tempPushConstant</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)];</span>
+<span class="w">            </span><span class="n">Buffer</span><span class="p">.</span><span class="n">BlockCopy</span><span class="p">(</span><span class="n">tempPushConstant</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">pushConstant</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">pushConstant</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// Loop through views just in case we&#39;re doing stereo rendering. No extra cost if this is mono.</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">viewCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">renderSceneBuffers</span><span class="p">.</span><span class="n">GetViewCount</span><span class="p">();</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">viewCount</span><span class="p">;</span><span class="w"> </span><span class="n">view</span><span class="o">++</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// Get the RID for our color image, we will be reading from and writing to it.</span>
+<span class="w">                </span><span class="kt">var</span><span class="w"> </span><span class="n">inputImage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">renderSceneBuffers</span><span class="p">.</span><span class="n">GetColorLayer</span><span class="p">(</span><span class="n">view</span><span class="p">);</span>
+
+<span class="w">                </span><span class="c1">// Create a uniform set.</span>
+<span class="w">                </span><span class="c1">// This will be cached; the cache will be cleared if our viewport&#39;s configuration is changed.</span>
+<span class="w">                </span><span class="n">RDUniform</span><span class="w"> </span><span class="n">uniform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RDUniform</span><span class="p">()</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">UniformType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingDevice</span><span class="p">.</span><span class="n">UniformType</span><span class="p">.</span><span class="n">Image</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">Binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                </span><span class="p">};</span>
+<span class="w">                </span><span class="n">uniform</span><span class="p">.</span><span class="n">AddId</span><span class="p">(</span><span class="n">inputImage</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">var</span><span class="w"> </span><span class="n">uniformSet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UniformSetCacheRD</span><span class="p">.</span><span class="n">GetCache</span><span class="p">(</span><span class="n">_shader</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">uniform</span><span class="p">]);</span>
+
+<span class="w">                </span><span class="c1">// Run our compute shader.</span>
+<span class="w">                </span><span class="kt">var</span><span class="w"> </span><span class="n">computeList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputeListBegin</span><span class="p">();</span>
+<span class="w">                </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputeListBindComputePipeline</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">_pipeline</span><span class="p">);</span>
+<span class="w">                </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputeListBindUniformSet</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">uniformSet</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputeListSetPushConstant</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">pushConstant</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class="n">pushConstant</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+<span class="w">                </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputeListDispatch</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">xGroups</span><span class="p">,</span><span class="w"> </span><span class="n">yGroups</span><span class="p">,</span><span class="w"> </span><span class="n">zGroups</span><span class="p">);</span>
+<span class="w">                </span><span class="n">_rd</span><span class="p">.</span><span class="n">ComputeListEnd</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ở đầu phương thức này, chúng ta kiểm tra xem có rendering device không, kiểu callback có đúng không, và kiểm tra xem đã có shader chưa.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Việc kiểm tra kiểu hiệu ứng chỉ là cơ chế an toàn. Chúng ta đã đặt nó trong hàm <code class="docutils literal notranslate"><span class="pre">_init</span></code>, tuy nhiên người dùng vẫn có thể thay đổi nó trong UI.</p>
+</div>
+<p>Tham số <code class="docutils literal notranslate"><span class="pre">p_render_data</span></code> cho chúng ta truy cập một đối tượng chứa dữ liệu riêng cho frame đang được kết xuất. Hiện tại chúng ta chỉ quan tâm đến render scene buffers, cho phép truy cập mọi buffer nội bộ mà engine kết xuất sử dụng. Lưu ý rằng chúng ta ép kiểu nó sang <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderscenebuffersrd.html" title="Class reference (English)"><span class="xref std std-ref">RenderSceneBuffersRD</span></a> để truy cập toàn bộ API cho dữ liệu này.</p>
+<p>Tiếp theo, chúng ta lấy <code class="docutils literal notranslate"><span class="pre">internal</span> <span class="pre">size</span></code>, tức độ phân giải của các render buffer 3D trước khi được upscale (nếu có); việc upscale diễn ra sau khi các bước hậu xử lý của chúng ta đã chạy.</p>
+<p>Từ internal size, chúng ta tính group size; xem local size trong shader mẫu.</p>
+<p>Chúng ta cũng điền push constant để shader biết kích thước. Godot <strong>chưa</strong> hỗ trợ struct ở đây, nên chúng ta dùng <code class="docutils literal notranslate"><span class="pre">PackedFloat32Array</span></code> để lưu dữ liệu này. Lưu ý rằng chúng ta phải đệm mảng này theo căn chỉnh 16 byte. Nói cách khác, độ dài mảng phải là bội số của 4.</p>
+<p>Giờ chúng ta lặp qua các view; điều này phòng trường hợp dùng kết xuất multiview, áp dụng cho kết xuất stereo (XR). Trong hầu hết trường hợp, chúng ta chỉ có một view.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Ở đây, dùng multiview cho hậu xử lý không mang lại lợi ích hiệu năng; xử lý riêng từng view như thế này vẫn cho phép GPU tận dụng xử lý song song nếu có lợi.</p>
+</div>
+<p>Tiếp theo, chúng ta lấy color buffer cho view này. Đây là buffer mà scene 3D đã được kết xuất vào.</p>
+<p>Sau đó chúng ta chuẩn bị một uniform set để truyền color buffer cho shader.</p>
+<p>Lưu ý việc dùng cache <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_uniformsetcacherd.html" title="Class reference (English)"><span class="xref std std-ref">UniformSetCacheRD</span></a>, giúp chúng ta có thể kiểm tra uniform set ở mỗi frame. Vì color buffer có thể thay đổi giữa các frame và uniform cache sẽ tự động dọn dẹp các uniform set khi buffer bị giải phóng, đây là cách an toàn để đảm bảo không rò rỉ bộ nhớ hay dùng một set đã lỗi thời.</p>
+<p>Cuối cùng, chúng ta xây dựng compute list bằng cách bind pipeline, bind uniform set, đẩy dữ liệu push constant và gọi dispatch cho các group.</p>
+<p>Khi hiệu ứng compositor đã hoàn tất, giờ chúng ta cần thêm nó vào compositor.</p>
+<p>Trên compositor, chúng ta mở rộng thuộc tính compositor effects và nhấn <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Element</span></code>.</p>
+<p>Giờ chúng ta có thể thêm hiệu ứng compositor:</p>
+<img alt="../../_images/add_compositor_effect.webp" src="../../_images/add_compositor_effect.webp" />
+<p>Sau khi chọn <code class="docutils literal notranslate"><span class="pre">PostProcessShader</span></code>, chúng ta cần đặt code shader của người dùng:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">gray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">color</span><span class="p">.</span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.2125</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">color</span><span class="p">.</span><span class="n">g</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.7154</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">color</span><span class="p">.</span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.0721</span><span class="p">;</span>
+<span class="n">color</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">gray</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Khi đã xong tất cả, kết quả đầu ra của chúng ta có màu xám (grayscale).</p>
+<img alt="../../_images/post_process_shader.webp" src="../../_images/post_process_shader.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để xem ví dụ nâng cao hơn về hiệu ứng hậu xử lý, hãy tham khảo dự án ví dụ <a class="reference external" href="https://github.com/BastiaanOlij/RERadialSunRays">Tia sáng bầu trời dựa trên radial blur</a> do Bastiaan Olij tạo.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="jitter_stutter.html" class="btn btn-neutral float-left" title="Khắc phục jitter, stutter và độ trễ input" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="drawable_textures.html" class="btn btn-neutral float-right" title="Sử dụng DrawableTexture" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,649 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tổ chức scene" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/best_practices/scene_organization.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Bài viết này đề cập đến các chủ đề liên quan đến việc tổ chức nội dung scene hiệu quả. Nên dùng node nào? Nên đặt chúng ở đâu? Chúng nên tương tác với nhau thế nào? Cách xây dựng quan hệ hiệu quả: ..." />
+<meta name="description" content="Bài viết này đề cập đến các chủ đề liên quan đến việc tổ chức nội dung scene hiệu quả. Nên dùng node nào? Nên đặt chúng ở đâu? Chúng nên tương tác với nhau thế nào? Cách xây dựng quan hệ hiệu quả: ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tổ chức scene &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Khi nào dùng scene, khi nào dùng script" href="scenes_versus_scripts.html" />
+    <link rel="prev" title="Áp dụng nguyên tắc hướng đối tượng trong Godot" href="what_are_godot_classes.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/best_practices/scene_organization" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Thực hành tốt nhất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_best_practices.html">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="what_are_godot_classes.html">Áp dụng nguyên tắc hướng đối tượng trong Godot</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tổ chức scene</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-build-relationships-effectively">Cách xây dựng quan hệ hiệu quả</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-node-tree-structure">Chọn cấu trúc cây node</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scenes_versus_scripts.html">Khi nào dùng scene, khi nào dùng script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoloads_versus_regular_nodes.html">Autoload so với node thông thường</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_alternatives.html">Khi nào và làm thế nào để tránh dùng node cho mọi thứ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_interfaces.html">Giao tiếp giữa các đối tượng trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_notifications.html">Notification trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preferences.html">Lựa chọn cấu trúc dữ liệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic_preferences.html">Lựa chọn về logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_organization.html">Tổ chức dự án</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version_control_systems.html">Hệ thống quản lý phiên bản</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Thực hành tốt nhất</a></li>
+      <li class="breadcrumb-item active">Tổ chức scene</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="scene-organization">
+<span id="doc-scene-organization"></span><h1>Tổ chức scene<a class="headerlink" href="#scene-organization" title="Link to this heading"></a></h1>
+<p>Bài viết này đề cập đến các chủ đề liên quan đến việc tổ chức nội dung scene hiệu quả. Nên dùng node nào? Nên đặt chúng ở đâu? Chúng nên tương tác với nhau thế nào?</p>
+<section id="how-to-build-relationships-effectively">
+<h2>Cách xây dựng quan hệ hiệu quả<a class="headerlink" href="#how-to-build-relationships-effectively" title="Link to this heading"></a></h2>
+<p>Khi người dùng Godot bắt đầu tự xây dựng scene, họ thường gặp phải vấn đề sau:</p>
+<p>Họ tạo scene đầu tiên và lấp đầy nó bằng nội dung, rồi cuối cùng lại tách các nhánh của scene thành những scene riêng khi cảm giác day dứt rằng nên chia nhỏ mọi thứ ngày càng lớn dần. Tuy nhiên, sau đó họ nhận ra rằng những tham chiếu cứng mà trước đây họ có thể dựa vào giờ không còn dùng được nữa. Tái sử dụng scene ở nhiều nơi gây ra vấn đề vì các node path không tìm thấy đích của chúng và các kết nối signal được thiết lập trong trình chỉnh sửa bị hỏng.</p>
+<p>Để khắc phục những vấn đề này, bạn phải tạo instance các scene con mà không bắt chúng phải biết chi tiết về môi trường xung quanh. Bạn cần tin tưởng rằng scene con sẽ tự tạo ra chính nó mà không kén chọn cách nó được sử dụng.</p>
+<p>Một trong những điều quan trọng nhất cần cân nhắc trong <a class="reference external" href="https://en.wikipedia.org/wiki/Object-oriented_programming">Lập trình hướng đối tượng (OOP)</a> là duy trì các lớp tập trung, chỉ phục vụ một mục đích duy nhất, với <a class="reference external" href="https://en.wikipedia.org/wiki/Loose_coupling">liên kết lỏng</a> tới các phần khác của mã nguồn. Điều này giữ cho kích thước đối tượng nhỏ (dễ bảo trì) và tăng khả năng tái sử dụng.</p>
+<p>Những thực hành tốt nhất về OOP này có <em>nhiều</em> hệ quả đối với các thực hành tốt nhất trong cấu trúc scene và cách dùng script.</p>
+<p><strong>Nếu có thể, bạn nên thiết kế scene sao cho không có phụ thuộc nào.</strong> Nghĩa là bạn nên tạo các scene chứa sẵn mọi thứ chúng cần bên trong chính mình.</p>
+<p>Nếu một scene buộc phải tương tác với ngữ cảnh bên ngoài, các nhà phát triển giàu kinh nghiệm khuyên dùng <a class="reference external" href="https://en.wikipedia.org/wiki/Dependency_injection">Dependency Injection</a>. Kỹ thuật này để một API cấp cao cung cấp các phụ thuộc cho API cấp thấp. Tại sao lại làm vậy? Vì các lớp phụ thuộc vào môi trường bên ngoài có thể vô tình gây ra lỗi và hành vi không mong muốn.</p>
+<p>Để làm điều này, bạn phải công khai dữ liệu rồi dựa vào ngữ cảnh cha để khởi tạo nó:</p>
+<ol class="arabic">
+<li><p>Kết nối tới một signal. Cực kỳ an toàn, nhưng chỉ nên dùng để &quot;phản hồi&quot; hành vi, không dùng để khởi động hành vi. Theo quy ước, tên signal thường là động từ ở thì quá khứ như &quot;entered&quot;, &quot;skill_activated&quot; hoặc &quot;item_collected&quot;.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-0-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parent</span>
+<span class="sx">$Child</span><span class="o">.</span><span class="vi">signal_name</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">method_on_the_object</span><span class="p">)</span>
+
+<span class="c1"># Child</span>
+<span class="n">signal_name</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span><span class="w"> </span><span class="c1"># Triggers parent-specified behavior.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">).</span><span class="n">Connect</span><span class="p">(</span><span class="s">&quot;SignalName&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">ObjectWithMethod</span><span class="p">.</span><span class="n">MethodOnTheObject</span><span class="p">));</span>
+
+<span class="c1">// Child</span>
+<span class="n">EmitSignal</span><span class="p">(</span><span class="s">&quot;SignalName&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Triggers parent-specified behavior.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Note that get_node may return a nullptr, which would make calling the connect method crash the engine if &quot;Child&quot; does not exist!</span>
+<span class="w">    </span><span class="c1">// So unless you are 1000% sure get_node will never return a nullptr, it&#39;s a good idea to always do a nullptr check.</span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;signal_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ObjectWithMethod</span><span class="o">::</span><span class="n">method_on_the_object</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// Child</span>
+<span class="n">emit_signal</span><span class="p">(</span><span class="s">&quot;signal_name&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Triggers parent-specified behavior.</span>
+</pre></div>
+</div>
+</div></div>
+</li>
+<li><p>Gọi một phương thức. Dùng để khởi động hành vi.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-1-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parent</span>
+<span class="sx">$Child</span><span class="o">.</span><span class="vi">method_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;do&quot;</span>
+
+<span class="c1"># Child, assuming it has String property &#39;method_name&#39; and method &#39;do&#39;.</span>
+<span class="nf">call</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span><span class="w"> </span><span class="c1"># Call parent-specified method (which child must own).</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">).</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;MethodName&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Do&quot;</span><span class="p">);</span>
+
+<span class="c1">// Child</span>
+<span class="n">Call</span><span class="p">(</span><span class="n">MethodName</span><span class="p">);</span><span class="w"> </span><span class="c1">// Call parent-specified method (which child must own).</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;method_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;do&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Child</span>
+<span class="n">call</span><span class="p">(</span><span class="n">method_name</span><span class="p">);</span><span class="w"> </span><span class="c1">// Call parent-specified method (which child must own).</span>
+</pre></div>
+</div>
+</div></div>
+</li>
+<li><p>Khởi tạo một thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_callable.html" title="Class reference (English)"><span class="xref std std-ref">Callable</span></a>. An toàn hơn phương thức vì không cần sở hữu phương thức đó. Dùng để khởi động hành vi.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-2-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parent</span>
+<span class="sx">$Child</span><span class="o">.</span><span class="vi">func_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">object_with_method</span><span class="o">.</span><span class="vi">method_on_the_object</span>
+
+<span class="c1"># Child</span>
+<span class="n">func_property</span><span class="o">.</span><span class="nf">call</span><span class="p">()</span><span class="w"> </span><span class="c1"># Call parent-specified method (can come from anywhere).</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">).</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;FuncProperty&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">ObjectWithMethod</span><span class="p">.</span><span class="n">MethodOnTheObject</span><span class="p">));</span>
+
+<span class="c1">// Child</span>
+<span class="n">FuncProperty</span><span class="p">.</span><span class="n">Call</span><span class="p">();</span><span class="w"> </span><span class="c1">// Call parent-specified method (can come from anywhere).</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;func_property&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Callable</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ObjectWithMethod</span><span class="o">::</span><span class="n">method_on_the_object</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// Child</span>
+<span class="n">func_property</span><span class="p">.</span><span class="n">call</span><span class="p">();</span><span class="w"> </span><span class="c1">// Call parent-specified method (can come from anywhere).</span>
+</pre></div>
+</div>
+</div></div>
+</li>
+<li><p>Khởi tạo một tham chiếu tới Node hoặc Object khác.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-3-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parent</span>
+<span class="sx">$Child</span><span class="o">.</span><span class="vi">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span>
+
+<span class="c1"># Child</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="w"> </span><span class="c1"># Use parent-specified node.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">).</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;Target&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span>
+
+<span class="c1">// Child</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">Target</span><span class="p">);</span><span class="w"> </span><span class="c1">// Use parent-specified node.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;target&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Child</span>
+<span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">target</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+</li>
+<li><p>Khởi tạo một NodePath.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-4-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parent</span>
+<span class="sx">$Child</span><span class="o">.</span><span class="vi">target_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;..&quot;</span>
+
+<span class="c1"># Child</span>
+<span class="nf">get_node</span><span class="p">(</span><span class="n">target_path</span><span class="p">)</span><span class="w"> </span><span class="c1"># Use parent-specified NodePath.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">).</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;TargetPath&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NodePath</span><span class="p">(</span><span class="s">&quot;..&quot;</span><span class="p">));</span>
+
+<span class="c1">// Child</span>
+<span class="n">GetNode</span><span class="p">(</span><span class="n">TargetPath</span><span class="p">);</span><span class="w"> </span><span class="c1">// Use parent-specified NodePath.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Child&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;target_path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NodePath</span><span class="p">(</span><span class="s">&quot;..&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// Child</span>
+<span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="n">target_path</span><span class="p">);</span><span class="w"> </span><span class="c1">// Use parent-specified NodePath.</span>
+</pre></div>
+</div>
+</div></div>
+</li>
+</ol>
+<p>Các lựa chọn này ẩn các điểm truy cập khỏi node con. Nhờ đó node con được <strong>liên kết lỏng</strong> với môi trường của nó. Bạn có thể tái sử dụng nó trong ngữ cảnh khác mà không cần thay đổi gì thêm ở API.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Mặc dù các ví dụ trên minh họa quan hệ cha-con, những nguyên tắc tương tự áp dụng cho mọi quan hệ giữa các đối tượng. Các node anh em chỉ nên biết về hệ phân cấp của riêng chúng, trong khi một node tổ tiên làm trung gian cho việc giao tiếp và tham chiếu giữa chúng.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-5-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parent</span>
+<span class="sx">$Left</span><span class="o">.</span><span class="vi">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Right</span><span class="o">.</span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;Receiver&quot;</span><span class="p">)</span>
+
+<span class="c1"># Left</span>
+<span class="k">var</span><span class="w"> </span><span class="n">target</span><span class="p">:</span><span class="w"> </span><span class="nb">Node</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">execute</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Do something with &#39;target&#39;.</span>
+
+<span class="c1"># Right</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_init</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">receiver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Receiver</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Left</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Left&quot;</span><span class="p">).</span><span class="n">Target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Right/Receiver&quot;</span><span class="p">);</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Left</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Do something with &#39;Target&#39;.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Right</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">Receiver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">Right</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Receiver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceLoader</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">Script</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Receiver.cs&quot;</span><span class="p">).</span><span class="n">New</span><span class="p">();</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">Receiver</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Parent</span>
+<span class="n">get_node</span><span class="o">&lt;</span><span class="n">Left</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Left&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_node</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Right/Receiver&quot;</span><span class="p">);</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Left</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">Left</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="o">:</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<span class="w">        </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">Left</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">execute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Do something with &#39;target&#39;.</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Right</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">Right</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="o">:</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<span class="w">        </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">receiver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">Right</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">receiver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">memnew</span><span class="p">(</span><span class="n">Node</span><span class="p">);</span>
+<span class="w">            </span><span class="n">add_child</span><span class="p">(</span><span class="n">receiver</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></div>
+<p>Những nguyên tắc này cũng áp dụng cho các đối tượng không phải Node có phụ thuộc vào đối tượng khác. Đối tượng nào sở hữu các đối tượng khác thì nên quản lý quan hệ giữa chúng.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Tuy vậy, bạn nên ưu tiên giữ dữ liệu ở bên trong (nội bộ scene), vì đặt phụ thuộc vào ngữ cảnh bên ngoài, kể cả khi liên kết lỏng, vẫn có nghĩa là node sẽ mong đợi một điều gì đó trong môi trường của nó là đúng. Triết lý thiết kế của dự án nên ngăn điều này xảy ra. Nếu không, những rủi ro vốn có của mã sẽ buộc lập trình viên phải dùng tài liệu để theo dõi quan hệ giữa các đối tượng ở mức vi mô; tình trạng này còn được gọi là &quot;địa ngục phát triển&quot;. Viết mã mà phải dựa vào tài liệu bên ngoài mới dùng được an toàn thì mặc nhiên dễ sinh lỗi.</p>
+<p>Để tránh phải tạo và duy trì loại tài liệu như vậy, bạn chuyển node phụ thuộc (&quot;node con&quot; ở trên) thành một tool script triển khai <code class="docutils literal notranslate"><span class="pre">_get_configuration_warnings()</span></code>. Khi hàm này trả về một PackedStringArray không rỗng, Scene dock sẽ hiển thị một biểu tượng cảnh báo cạnh node, với (các) chuỗi đó làm tooltip. Đây cũng là biểu tượng xuất hiện với các node như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_area2d.html" title="Class reference (English)"><span class="xref std std-ref">Area2D</span></a> khi nó không có node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape2d.html" title="Class reference (English)"><span class="xref std std-ref">CollisionShape2D</span></a> nào. Khi đó trình chỉnh sửa tự mô tả scene thông qua mã script. Không cần lặp lại nội dung trong tài liệu.</p>
+<p>Một <a class="reference external" href="https://en.wikipedia.org/wiki/Graphical_user_interface">giao diện người dùng đồ họa (GUI)</a> như thế này có thể thông báo tốt hơn cho người dùng dự án những thông tin quan trọng về một Node. Nó có phụ thuộc bên ngoài không? Các phụ thuộc đó đã được đáp ứng chưa? Các lập trình viên khác, đặc biệt là nhà thiết kế và người viết nội dung, sẽ cần hướng dẫn rõ ràng trong các thông báo cho biết họ phải làm gì để cấu hình nó.</p>
+</div>
+<p>Vậy tại sao toàn bộ màn hoán đổi phức tạp này lại hiệu quả? Bởi vì scene hoạt động tốt nhất khi hoạt động độc lập. Nếu không thể hoạt động độc lập, thì làm việc với các phần khác một cách ẩn danh (với tối thiểu phụ thuộc cứng, tức là liên kết lỏng) là lựa chọn tốt nhì. Sớm muộn gì bạn cũng cần thay đổi một lớp, và nếu những thay đổi đó khiến nó tương tác với các scene khác theo cách không lường trước, mọi thứ sẽ bắt đầu đổ vỡ. Mục đích của toàn bộ sự gián tiếp này là tránh rơi vào tình huống thay đổi một lớp lại gây ảnh hưởng xấu đến các lớp khác phụ thuộc vào nó.</p>
+<p>Script và scene, với tư cách là phần mở rộng của các lớp engine, nên tuân thủ <em>tất cả</em> các nguyên tắc OOP. Ví dụ gồm...</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/SOLID">SOLID:</a></p>
+<ul>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Single-responsibility_principle">Đơn trách nhiệm</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle">Mở để mở rộng, đóng để sửa đổi</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Liskov_substitution_principle">Thay thế Liskov</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Interface_segregation_principle">Phân tách interface</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Dependency_inversion_principle">Đảo ngược phụ thuộc</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY: Don't Repeat Yourself (Đừng lặp lại chính mình)</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/KISS_principle">KISS: Keep It Simple Stupid (Giữ mọi thứ thật đơn giản)</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it">YAGNI: You Aren't Gonna Need It (Bạn sẽ không cần đến nó)</a></p></li>
+</ul>
+</section>
+<section id="choosing-a-node-tree-structure">
+<h2>Chọn cấu trúc cây node<a class="headerlink" href="#choosing-a-node-tree-structure" title="Link to this heading"></a></h2>
+<p>Bạn có thể bắt đầu làm một game nhưng bị choáng ngợp trước vô vàn khả năng trước mắt. Bạn có thể biết mình muốn làm gì, muốn có những hệ thống nào, nhưng đặt tất cả chúng <em>ở đâu</em>? Cách bạn làm game luôn là do bạn quyết định. Bạn có thể xây dựng cây node theo vô số cách. Nếu chưa chắc chắn, hướng dẫn này có thể đưa ra một mẫu cấu trúc khá ổn để bắt đầu.</p>
+<p>Một game luôn nên có một &quot;điểm vào&quot;; một nơi bạn có thể xác định chắc chắn mọi thứ bắt đầu từ đâu để theo dõi logic khi nó tiếp diễn ở những nơi khác. Nó cũng đóng vai trò như góc nhìn toàn cảnh về mọi dữ liệu và logic khác trong chương trình. Với các ứng dụng truyền thống, đây thường là hàm &quot;main&quot;. Trong Godot, đó là một node Main.</p>
+<ul class="simple">
+<li><p>Node &quot;Main&quot; (main.gd)</p></li>
+</ul>
+<p>Script <code class="docutils literal notranslate"><span class="pre">main.gd</span></code> sẽ đóng vai trò bộ điều khiển chính của game.</p>
+<p>Tiếp theo bạn có một &quot;World&quot; trong game (2D hoặc 3D). Nó có thể là con của Main. Ngoài ra, bạn sẽ cần một GUI chính cho game để quản lý các menu và widget mà dự án cần.</p>
+<ul class="simple">
+<li><p>Node &quot;Main&quot; (main.gd)</p>
+<ul>
+<li><p>Node2D/Node3D &quot;World&quot; (game_world.gd)</p></li>
+<li><p>Control &quot;GUI&quot; (gui.gd)</p></li>
+</ul>
+</li>
+</ul>
+<p>Khi chuyển màn chơi, bạn có thể thay thế các node con của node &quot;World&quot;. <a class="reference internal" href="../scripting/change_scenes_manually.html#doc-change-scenes-manually"><span class="std std-ref">Chuyển scene thủ công</span></a> cho bạn toàn quyền kiểm soát cách thế giới game chuyển tiếp.</p>
+<p>Bước tiếp theo là xem xét dự án của bạn cần những hệ thống gameplay nào. Nếu bạn có một hệ thống...</p>
+<ol class="arabic simple">
+<li><p>theo dõi toàn bộ dữ liệu của nó ở bên trong</p></li>
+<li><p>cần truy cập được ở phạm vi toàn cục</p></li>
+<li><p>cần tồn tại độc lập</p></li>
+</ol>
+<p>... thì bạn nên tạo một <a class="reference internal" href="../scripting/singletons_autoload.html#doc-singletons-autoload"><span class="std std-ref">node autoload 'singleton'</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Với các game nhỏ hơn, một phương án đơn giản hơn nhưng ít kiểm soát hơn là dùng một singleton &quot;Game&quot; chỉ đơn giản gọi phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html#class-scenetree-method-change-scene-to-file" title="Class reference (English)"><span class="xref std std-ref">SceneTree.change_scene_to_file()</span></a> để thay nội dung của scene chính. Cấu trúc này ít nhiều giữ &quot;World&quot; làm node game chính.</p>
+<p>Mọi GUI cũng cần là một singleton, một phần tạm thời của &quot;World&quot;, hoặc được thêm thủ công làm con trực tiếp của root. Nếu không, các node GUI cũng sẽ tự xóa khi chuyển scene.</p>
+</div>
+<p>Nếu bạn có các hệ thống sửa đổi dữ liệu của hệ thống khác, bạn nên định nghĩa chúng thành script hoặc scene riêng thay vì autoload. Để biết thêm, xem <a class="reference internal" href="autoloads_versus_regular_nodes.html#doc-autoloads-versus-regular-nodes"><span class="std std-ref">Autoload so với node thông thường</span></a>.</p>
+<p>Mỗi hệ thống con trong game nên có phần riêng trong SceneTree. Bạn chỉ nên dùng quan hệ cha-con trong trường hợp các node thực sự là thành phần của node cha. Việc xóa node cha có hợp lý dẫn đến việc các node con cũng nên bị xóa không? Nếu không, node đó nên có vị trí riêng trong hệ phân cấp, như một node anh em hoặc một quan hệ khác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong một số trường hợp, bạn cần các node tách biệt này <em>cũng</em> định vị tương đối với nhau. Bạn có thể dùng các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_remotetransform2d.html" title="Class reference (English)"><span class="xref std std-ref">RemoteTransform2D</span></a> / <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_remotetransform3d.html" title="Class reference (English)"><span class="xref std std-ref">RemoteTransform3D</span></a> cho mục đích này. Chúng cho phép một node đích kế thừa có điều kiện các thành phần transform được chọn từ node Remote*. Để gán <code class="docutils literal notranslate"><span class="pre">target</span></code> <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_nodepath.html" title="Class reference (English)"><span class="xref std std-ref">NodePath</span></a>, hãy dùng một trong các cách sau:</p>
+<ol class="arabic simple">
+<li><p>Một bên thứ ba đáng tin cậy, thường là node cha, làm trung gian cho việc gán.</p></li>
+<li><p>Một group, để lấy tham chiếu tới node mong muốn (giả sử chỉ luôn có một node đích).</p></li>
+</ol>
+<p>Khi nào nên làm điều này là tùy quan điểm. Vấn đề nảy sinh khi bạn phải quản lý chi li thời điểm một node cần di chuyển trong SceneTree để bảo toàn chính nó. Ví dụ...</p>
+<ul>
+<li><p>Thêm một node &quot;player&quot; vào một &quot;room&quot;.</p></li>
+<li><p>Cần đổi phòng, nên bạn phải xóa phòng hiện tại.</p></li>
+<li><p>Trước khi phòng bị xóa, bạn phải bảo toàn và/hoặc di chuyển player.</p>
+<p>Nếu bộ nhớ không phải là vấn đề, bạn có thể...</p>
+<ul class="simple">
+<li><p>Tạo phòng mới.</p></li>
+<li><p>Di chuyển player sang phòng mới.</p></li>
+<li><p>Xóa phòng cũ.</p></li>
+</ul>
+<p>Nếu bộ nhớ là vấn đề, bạn sẽ cần...</p>
+<ul class="simple">
+<li><p>Di chuyển player sang chỗ khác trong cây.</p></li>
+<li><p>Xóa phòng.</p></li>
+<li><p>Tạo instance và thêm phòng mới.</p></li>
+<li><p>Thêm lại player vào phòng mới.</p></li>
+</ul>
+</li>
+</ul>
+<p>Vấn đề là player ở đây là một &quot;trường hợp đặc biệt&quot; mà các lập trình viên phải <em>biết</em> rằng họ cần xử lý player theo cách này trong dự án. Cách duy nhất để chia sẻ thông tin này một cách đáng tin cậy trong nhóm là <em>ghi tài liệu</em> cho nó. Lưu chi tiết triển khai trong tài liệu là nguy hiểm. Nó là gánh nặng bảo trì, làm giảm khả năng đọc mã và làm phình to không cần thiết khối kiến thức của dự án.</p>
+<p>Trong một game phức tạp hơn với asset lớn hơn, có thể tốt hơn nếu giữ player ở hẳn một chỗ khác trong SceneTree. Điều này mang lại:</p>
+<ol class="arabic simple">
+<li><p>Nhất quán hơn.</p></li>
+<li><p>Không có &quot;trường hợp đặc biệt&quot; nào phải ghi tài liệu và duy trì ở đâu đó.</p></li>
+<li><p>Không có cơ hội phát sinh lỗi do bỏ sót những chi tiết này.</p></li>
+</ol>
+<p>Ngược lại, nếu bạn cần một node con <em>không</em> kế thừa transform của node cha, bạn có các lựa chọn sau:</p>
+<ol class="arabic simple">
+<li><p>Giải pháp <strong>khai báo</strong>: đặt một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html" title="Class reference (English)"><span class="xref std std-ref">Node</span></a> vào giữa chúng. Vì nó không có transform, chúng sẽ không truyền thông tin này cho các node con của nó.</p></li>
+<li><p>Giải pháp <strong>mệnh lệnh</strong>: dùng thuộc tính <code class="docutils literal notranslate"><span class="pre">top_level</span></code> của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-property-top-level" title="Class reference (English)"><span class="xref std std-ref">CanvasItem</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html#class-node3d-property-top-level" title="Class reference (English)"><span class="xref std std-ref">Node3D</span></a>. Điều này khiến node bỏ qua transform được kế thừa.</p></li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu làm game mạng, hãy lưu ý node và hệ thống gameplay nào liên quan đến tất cả người chơi, và cái nào chỉ liên quan đến server có thẩm quyền. Ví dụ, không phải người dùng nào cũng cần một bản sao logic &quot;PlayerController&quot; của mọi người chơi - họ chỉ cần của chính mình. Giữ chúng ở một nhánh tách biệt khỏi &quot;world&quot; có thể giúp đơn giản hóa việc quản lý kết nối game và những thứ tương tự.</p>
+</div>
+<p>Chìa khóa để tổ chức scene là xem xét SceneTree theo quan hệ thay vì theo không gian. Các node có phụ thuộc vào sự tồn tại của node cha không? Nếu không, chúng có thể tự hoạt động tốt ở một nơi khác. Nếu có, thì hợp lý là chúng nên là con của node cha đó (và có lẽ là một phần của scene của node cha nếu chưa phải).</p>
+<p>Điều này có nghĩa bản thân các node là component không? Hoàn toàn không. Cây node của Godot tạo thành quan hệ kết tập (aggregation), không phải quan hệ hợp thành (composition). Nhưng dù bạn vẫn có sự linh hoạt để di chuyển node, tốt nhất là mặc định không cần phải di chuyển như vậy.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="what_are_godot_classes.html" class="btn btn-neutral float-left" title="Áp dụng nguyên tắc hướng đối tượng trong Godot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="scenes_versus_scripts.html" class="btn btn-neutral float-right" title="Khi nào dùng scene, khi nào dùng script" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

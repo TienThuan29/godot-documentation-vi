@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tạo nguyên mẫu level bằng CSG" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/csg_tools.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="CSG là viết tắt của Constructive Solid Geometry, một công cụ để kết hợp các hình cơ bản hoặc mesh tùy chỉnh nhằm tạo ra các hình phức tạp hơn. Trong phần mềm dựng hình 3D, CSG thường được biết đến ..." />
+<meta name="description" content="CSG là viết tắt của Constructive Solid Geometry, một công cụ để kết hợp các hình cơ bản hoặc mesh tùy chỉnh nhằm tạo ra các hình phức tạp hơn. Trong phần mềm dựng hình 3D, CSG thường được biết đến ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tạo nguyên mẫu level bằng CSG &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng GridMap" href="using_gridmaps.html" />
+    <link rel="prev" title="Variable rate shading" href="variable_rate_shading.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/csg_tools" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#tools">Công cụ</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tạo nguyên mẫu level bằng CSG</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction-to-csg-nodes">Giới thiệu về các node CSG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#prototyping-a-level">Tạo nguyên mẫu một level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-prototype-textures">Dùng texture nguyên mẫu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#converting-to-meshinstance3d">Chuyển đổi sang MeshInstance3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-as-gltf">Xuất sang glTF</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="using_gridmaps.html">Sử dụng GridMap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spring_arm.html">Camera góc nhìn thứ ba với spring arm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Tạo nguyên mẫu level bằng CSG</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="prototyping-levels-with-csg">
+<span id="doc-csg-tools"></span><h1>Tạo nguyên mẫu level bằng CSG<a class="headerlink" href="#prototyping-levels-with-csg" title="Link to this heading"></a></h1>
+<p>CSG là viết tắt của <strong>Constructive Solid Geometry</strong>, một công cụ để kết hợp các hình cơ bản hoặc mesh tùy chỉnh nhằm tạo ra các hình phức tạp hơn. Trong phần mềm dựng hình 3D, CSG thường được biết đến với tên &quot;Boolean Operators&quot;.</p>
+<p>Tạo nguyên mẫu level là một trong những công dụng chính của CSG trong Godot. Kỹ thuật này cho phép người dùng tạo các hình phổ biến nhất bằng cách kết hợp các hình nguyên thủy (primitive). Có thể tạo môi trường nội thất bằng cách dùng các primitive bị đảo ngược.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các node CSG trong Godot chủ yếu dành cho việc tạo nguyên mẫu. Không có hỗ trợ tích hợp cho UV mapping hay chỉnh sửa đa giác 3D (dù có thể dùng đa giác 2D được đùn với node CSGPolygon3D).</p>
+<p>Nếu bạn đang tìm một công cụ thiết kế level dễ dùng cho dự án, bạn có thể muốn dùng <a class="reference external" href="https://github.com/func-godot/func_godot_plugin">FuncGodot</a> hoặc <a class="reference external" href="https://github.com/blackears/cyclopsLevelBuilder">Cyclops Level Builder</a> thay thế.</p>
+</div>
+<div  class="sphinx-contrib-video-container align-default"><video autoplay="True" controls="True" loop="True" muted="True" preload="auto"><source src="../../_images/csg_tools.webm" type="video/webm">CSG being used to subtract a torus shape from a box</video></div><div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem cách dùng các node CSG để dựng nhiều hình khác nhau (như cầu thang hoặc đường) qua <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/csg">dự án demo Constructive Solid Geometry</a>.</p>
+</div>
+<section id="introduction-to-csg-nodes">
+<h2>Giới thiệu về các node CSG<a class="headerlink" href="#introduction-to-csg-nodes" title="Link to this heading"></a></h2>
+<p>Giống như các tính năng khác của Godot, CSG được hỗ trợ dưới dạng node. Các node CSG gồm:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgbox3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGBox3D</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgcylinder3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGCylinder3D</span></a> (cũng hỗ trợ hình nón)</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgsphere3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGSphere3D</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgtorus3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGTorus3D</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgpolygon3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGPolygon3D</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgmesh3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGMesh3D</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgcombiner3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGCombiner3D</span></a></p></li>
+</ul>
+<img alt="../../_images/csg_nodes.png" src="../../_images/csg_nodes.png" />
+<img alt="../../_images/csg_mesh.png" src="../../_images/csg_mesh.png" />
+<section id="csg-tools-features">
+<h3>Tính năng của công cụ CSG<a class="headerlink" href="#csg-tools-features" title="Link to this heading"></a></h3>
+<p>Mọi node CSG đều hỗ trợ 3 loại phép toán boolean:</p>
+<ul class="simple">
+<li><p><strong>Union:</strong> Hình học của cả hai primitive được hợp nhất, phần hình học giao nhau bị loại bỏ.</p></li>
+<li><p><strong>Intersection:</strong> Chỉ phần hình học giao nhau được giữ lại, phần còn lại bị loại bỏ.</p></li>
+<li><p><strong>Subtraction:</strong> Hình thứ hai bị trừ khỏi hình thứ nhất, để lại một vết lõm có hình dạng của nó.</p></li>
+</ul>
+<img alt="../../_images/csg_operation_menu.png" src="../../_images/csg_operation_menu.png" />
+<img alt="../../_images/csg_operation.png" src="../../_images/csg_operation.png" />
+</section>
+<section id="csgpolygon">
+<h3>CSGPolygon<a class="headerlink" href="#csgpolygon" title="Link to this heading"></a></h3>
+<p>Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgpolygon3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGPolygon3D</span></a> đùn một Polygon được vẽ trong 2D (theo tọa độ X, Y) theo các cách sau:</p>
+<ul class="simple">
+<li><p><strong>Depth:</strong> Đùn về phía sau một khoảng cho trước.</p></li>
+<li><p><strong>Spin:</strong> Đùn trong khi xoay quanh gốc của nó.</p></li>
+<li><p><strong>Path:</strong> Đùn dọc theo một node Path. Thao tác này thường được gọi là lofting.</p></li>
+</ul>
+<img alt="../../_images/csg_poly_mode.png" src="../../_images/csg_poly_mode.png" />
+<img alt="../../_images/csg_poly.png" src="../../_images/csg_poly.png" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chế độ <strong>Path</strong> phải được cung cấp một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_path3d.html" title="Class reference (English)"><span class="xref std std-ref">Path3D</span></a> để hoạt động. Trong node Path, hãy vẽ đường đi và đa giác trong CSGPolygon3D sẽ được đùn dọc theo đường đi đó.</p>
+</div>
+</section>
+<section id="custom-meshes">
+<h3>Mesh tùy chỉnh<a class="headerlink" href="#custom-meshes" title="Link to this heading"></a></h3>
+<p>Có thể dùng mesh tùy chỉnh cho <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgmesh3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGMesh3D</span></a> miễn là mesh đó <em>manifold</em>. Mesh có thể được dựng trong phần mềm khác và import vào Godot. Hỗ trợ nhiều material.</p>
+<p>Để một mesh được dùng làm CSG mesh, nó cần:</p>
+<ul class="simple">
+<li><p>khép kín</p></li>
+<li><p>mỗi cạnh chỉ nối với đúng hai mặt</p></li>
+<li><p>có thể tích</p></li>
+</ul>
+<p>Và nên tránh:</p>
+<ul class="simple">
+<li><p>thể tích âm</p></li>
+<li><p>tự giao nhau</p></li>
+<li><p>mặt bên trong</p></li>
+</ul>
+<p>Godot dùng thư viện <a class="reference external" href="https://github.com/elalish/manifold">manifold</a> để triển khai CSG mesh. Định nghĩa kỹ thuật về &quot;manifold&quot; mà Godot sử dụng như sau, được điều chỉnh từ <a class="reference external" href="https://github.com/elalish/manifold/wiki/Manifold-Library#manifoldness-definition">định nghĩa &quot;manifold&quot;</a> của thư viện đó:</p>
+<blockquote>
+<div><p>Mỗi cạnh của mỗi tam giác phải chứa cùng hai đỉnh (theo chỉ số) như đúng một cạnh tam giác khác, và đỉnh đầu và đỉnh cuối phải đổi chỗ cho nhau giữa hai cạnh này. Các đỉnh tam giác phải xuất hiện theo thứ tự chiều kim đồng hồ khi nhìn từ bên ngoài mesh manifold của Godot Engine.</p>
+</div></blockquote>
+<img alt="../../_images/csg_custom_mesh.png" src="../../_images/csg_custom_mesh.png" />
+<section id="making-an-existing-mesh-manifold-with-blender">
+<h4>Biến một mesh có sẵn thành manifold bằng Blender<a class="headerlink" href="#making-an-existing-mesh-manifold-with-blender" title="Link to this heading"></a></h4>
+<p>Nếu bạn có một mesh có sẵn chưa phải là manifold, bạn có thể biến nó thành manifold bằng Blender.</p>
+<p>Trong Blender, cài đặt và bật addon <a class="reference external" href="https://extensions.blender.org/add-ons/print3d-toolbox/">3D Print Toolbox</a>.</p>
+<p>Chọn mesh bạn muốn biến thành manifold. Mở thanh bên bằng cách nhấn vào mũi tên:</p>
+<img alt="../../_images/csg_manifold_step_1.webp" src="../../_images/csg_manifold_step_1.webp" />
+<p>Trong tab <strong>3D Print</strong>, dưới mục <strong>Clean Up</strong>, nhấn nút <strong>Make Manifold</strong>:</p>
+<img alt="../../_images/csg_manifold_step_2.webp" src="../../_images/csg_manifold_step_2.webp" />
+<p>Lúc này mesh đã là manifold và có thể được dùng làm mesh tùy chỉnh.</p>
+</section>
+</section>
+<section id="csgcombiner3d">
+<h3>CSGCombiner3D<a class="headerlink" href="#csgcombiner3d" title="Link to this heading"></a></h3>
+<p>Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_csgcombiner3d.html" title="Class reference (English)"><span class="xref std std-ref">CSGCombiner3D</span></a> là một hình rỗng dùng để tổ chức. Nó chỉ kết hợp các node con.</p>
+</section>
+<section id="processing-order">
+<h3>Thứ tự xử lý<a class="headerlink" href="#processing-order" title="Link to this heading"></a></h3>
+<p>Mỗi node CSG trước tiên sẽ xử lý các node con của nó cùng các phép toán của chúng: union, intersection hoặc subtraction, theo thứ tự cây, và lần lượt áp dụng chúng lên chính nó.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vì hiệu năng, hãy đảm bảo hình học CSG tương đối đơn giản, vì các mesh phức tạp có thể mất khá lâu để xử lý. Nếu ghép các đối tượng lại với nhau (chẳng hạn bàn và phòng), hãy tạo chúng thành các cây CSG riêng biệt. Nhồi quá nhiều đối tượng vào một cây cuối cùng sẽ bắt đầu ảnh hưởng tới hiệu năng. Chỉ dùng các phép toán nhị phân ở nơi thực sự cần.</p>
+</div>
+</section>
+</section>
+<section id="prototyping-a-level">
+<h2>Tạo nguyên mẫu một level<a class="headerlink" href="#prototyping-a-level" title="Link to this heading"></a></h2>
+<p>Chúng ta sẽ tạo nguyên mẫu một căn phòng để thực hành cách dùng công cụ CSG.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Làm việc ở phép chiếu <strong>Orthogonal</strong> cho góc nhìn tốt hơn khi kết hợp các hình CSG.</p>
+</div>
+<p>Level của chúng ta sẽ chứa các đối tượng sau:</p>
+<ul class="simple">
+<li><p>một căn phòng,</p></li>
+<li><p>một chiếc giường,</p></li>
+<li><p>một chiếc đèn,</p></li>
+<li><p>một chiếc bàn,</p></li>
+<li><p>một giá sách.</p></li>
+</ul>
+<p>Tạo một scene với node Node3D làm node gốc.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Chiếu sáng mặc định của môi trường không cho tô bóng rõ ràng ở một số góc. Hãy đổi chế độ hiển thị bằng <strong>Display Overdraw</strong> trong menu viewport 3D, hoặc thêm một node DirectionalLight để giúp bạn nhìn rõ hơn.</p>
+</div>
+<img alt="../../_images/csg_overdraw.png" src="../../_images/csg_overdraw.png" />
+<p>Tạo một CSGBox3D và đặt tên là <code class="docutils literal notranslate"><span class="pre">room</span></code>, bật <strong>Invert Faces</strong> và thay đổi kích thước căn phòng.</p>
+<img alt="../../_images/csg_room.png" src="../../_images/csg_room.png" />
+<img alt="../../_images/csg_room_invert.png" src="../../_images/csg_room_invert.png" />
+<p>Tiếp theo, tạo một CSGCombiner3D và đặt tên là <code class="docutils literal notranslate"><span class="pre">desk</span></code>.</p>
+<p>Một chiếc bàn có một mặt bàn và 4 chân:</p>
+<ul class="simple">
+<li><p>Tạo 1 node con CSGBox3D ở chế độ <strong>Union</strong> cho mặt bàn và điều chỉnh kích thước.</p></li>
+<li><p>Tạo 4 node con CSGBox3D ở chế độ <strong>Union</strong> cho các chân bàn và điều chỉnh kích thước.</p></li>
+</ul>
+<p>Điều chỉnh vị trí của chúng để trông giống một chiếc bàn.</p>
+<img alt="../../_images/csg_desk.png" src="../../_images/csg_desk.png" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các node CSG bên trong một CSGCombiner3D sẽ chỉ xử lý phép toán của chúng trong phạm vi combiner đó. Vì vậy, CSGCombiner3D được dùng để tổ chức các node CSG.</p>
+</div>
+<p>Tạo một CSGCombiner3D và đặt tên là <code class="docutils literal notranslate"><span class="pre">bed</span></code>.</p>
+<p>Chiếc giường của chúng ta gồm 3 phần: khung giường, nệm và gối. Tạo một CSGBox3D và điều chỉnh kích thước cho khung giường. Tạo thêm một CSGBox3D khác và điều chỉnh kích thước cho nệm.</p>
+<img alt="../../_images/csg_bed_mat.png" src="../../_images/csg_bed_mat.png" />
+<p>Chúng ta sẽ tạo thêm một CSGCombiner3D tên <code class="docutils literal notranslate"><span class="pre">pillow</span></code> làm node con của <code class="docutils literal notranslate"><span class="pre">bed</span></code>. Cây scene sẽ trông như sau:</p>
+<img alt="../../_images/csg_bed_tree.png" src="../../_images/csg_bed_tree.png" />
+<p>Chúng ta sẽ kết hợp 3 node CSGSphere3D ở chế độ <strong>Union</strong> để tạo thành chiếc gối. Co giãn trục Y của các khối cầu và bật <strong>Smooth Faces</strong>.</p>
+<img alt="../../_images/csg_pillow_smooth.png" src="../../_images/csg_pillow_smooth.png" />
+<p>Chọn node <code class="docutils literal notranslate"><span class="pre">pillow</span></code> và chuyển chế độ sang <strong>Subtraction</strong>; các khối cầu kết hợp sẽ khoét một lỗ vào nệm.</p>
+<img alt="../../_images/csg_pillow_hole.png" src="../../_images/csg_pillow_hole.png" />
+<p>Thử đổi node cha của node <code class="docutils literal notranslate"><span class="pre">pillow</span></code> thành node gốc <code class="docutils literal notranslate"><span class="pre">Node3D</span></code>; cái lỗ sẽ biến mất.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Điều này minh họa tác động của thứ tự xử lý CSG. Vì node gốc không phải là node CSG, các node CSGCombiner3D là điểm kết thúc của các phép toán; điều này cho thấy công dụng của CSGCombiner3D trong việc tổ chức scene CSG.</p>
+</div>
+<p>Hoàn tác việc đổi node cha sau khi quan sát tác động. Chiếc giường bạn đã dựng sẽ trông như sau:</p>
+<img alt="../../_images/csg_bed.png" src="../../_images/csg_bed.png" />
+<p>Tạo một CSGCombiner3D và đặt tên là <code class="docutils literal notranslate"><span class="pre">lamp</span></code>.</p>
+<p>Một chiếc đèn gồm 3 phần: đế, thân và chao đèn. Tạo một CSGCylinder3D, bật tùy chọn <strong>Cone</strong> và dùng nó làm đế. Tạo thêm một CSGCylinder3D khác và điều chỉnh kích thước để dùng làm thân đèn.</p>
+<img alt="../../_images/csg_lamp_pole_stand.png" src="../../_images/csg_lamp_pole_stand.png" />
+<p>Chúng ta sẽ dùng một CSGPolygon3D cho chao đèn. Dùng chế độ <strong>Spin</strong> cho CSGPolygon3D và vẽ một <a class="reference external" href="https://en.wikipedia.org/wiki/Trapezoid">hình thang</a> khi đang ở <strong>Front View</strong> (phím số 1 trên bàn phím số); hình này sẽ được đùn quanh gốc và tạo thành chao đèn.</p>
+<img alt="../../_images/csg_lamp_spin.png" src="../../_images/csg_lamp_spin.png" />
+<img alt="../../_images/csg_lamp_polygon.png" src="../../_images/csg_lamp_polygon.png" />
+<img alt="../../_images/csg_lamp_extrude.png" src="../../_images/csg_lamp_extrude.png" />
+<p>Điều chỉnh vị trí của 3 phần để trông giống một chiếc đèn.</p>
+<img alt="../../_images/csg_lamp.png" src="../../_images/csg_lamp.png" />
+<p>Tạo một CSGCombiner3D và đặt tên là <code class="docutils literal notranslate"><span class="pre">bookshelf</span></code>.</p>
+<p>Chúng ta sẽ dùng 3 node CSGBox3D cho giá sách. Tạo một CSGBox3D và điều chỉnh kích thước; đây sẽ là kích thước của giá sách.</p>
+<img alt="../../_images/csg_shelf_big.png" src="../../_images/csg_shelf_big.png" />
+<p>Nhân bản CSGBox3D, rút ngắn kích thước trên mỗi trục và đổi chế độ sang <strong>Subtraction</strong>.</p>
+<img alt="../../_images/csg_shelf_subtract.png" src="../../_images/csg_shelf_subtract.png" />
+<img alt="../../_images/csg_shelf_subtract_menu.png" src="../../_images/csg_shelf_subtract_menu.png" />
+<p>Bạn gần như đã dựng xong một chiếc giá. Tạo thêm một CSGBox3D để chia giá thành hai tầng.</p>
+<img alt="../../_images/csg_shelf.png" src="../../_images/csg_shelf.png" />
+<p>Sắp xếp đồ đạc trong phòng theo ý bạn và scene của bạn sẽ trông như sau:</p>
+<img alt="../../_images/csg_room_result.png" src="../../_images/csg_room_result.png" />
+<p>Bạn đã tạo nguyên mẫu thành công một level căn phòng bằng công cụ CSG trong Godot. Công cụ CSG có thể dùng để thiết kế đủ loại level, chẳng hạn mê cung hay thành phố; hãy khám phá các giới hạn của nó khi thiết kế game.</p>
+</section>
+<section id="using-prototype-textures">
+<h2>Dùng texture nguyên mẫu<a class="headerlink" href="#using-prototype-textures" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="standard_material_3d.html#doc-standard-material-3d"><span class="std std-ref">Standard Material 3D và ORM Material 3D</span></a> của Godot hỗ trợ <em>triplanar mapping</em>, có thể dùng để tự động áp dụng texture lên các đối tượng bất kỳ mà không bị biến dạng. Điều này rất tiện khi dùng CSG vì Godot chưa hỗ trợ chỉnh sửa UV map trên các node CSG. Triplanar mapping tương đối chậm, nên thường chỉ được dùng cho các bề mặt hữu cơ như địa hình. Dù vậy, khi tạo nguyên mẫu, nó có thể dùng để nhanh chóng áp dụng texture cho các level dựng bằng CSG.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn cần một số texture để tạo nguyên mẫu, Kenney đã làm một <a class="reference external" href="https://kenney.nl/assets/prototype-textures">bộ texture nguyên mẫu theo giấy phép CC0</a>.</p>
+</div>
+<p>Có hai cách để áp dụng material cho một node CSG:</p>
+<ul class="simple">
+<li><p>Áp dụng nó cho node CSGCombiner3D dưới dạng material override (<strong>Geometry &gt; Material Override</strong> trong Inspector). Cách này sẽ tự động ảnh hưởng tới các node con, nhưng sẽ khiến bạn không thể thay đổi material ở từng node con riêng lẻ.</p></li>
+<li><p>Áp dụng material cho từng node riêng lẻ (<strong>Material</strong> trong Inspector). Bằng cách này, mỗi node CSG có thể có giao diện riêng. Các node CSG dạng trừ sẽ áp dụng material của chúng lên các node mà chúng đang &quot;khoét&quot; vào.</p></li>
+</ul>
+<p>Để áp dụng triplanar mapping cho một node CSG, hãy chọn nó, vào Inspector, nhấn vào chữ <strong>[empty]</strong> bên cạnh <strong>Material Override</strong> (hoặc <strong>Material</strong> với từng node CSG riêng lẻ). Chọn <strong>New StandardMaterial3D</strong>. Nhấn vào biểu tượng của material vừa tạo để chỉnh sửa. Mở rộng mục <strong>Albedo</strong> và nạp một texture vào thuộc tính <strong>Texture</strong>. Bây giờ, mở rộng mục <strong>Uv1</strong> và đánh dấu <strong>Triplanar</strong>. Bạn có thể thay đổi độ lệch và tỷ lệ texture trên từng trục bằng cách điều chỉnh các thuộc tính <strong>Scale</strong> và <strong>Offset</strong> ngay phía trên. Giá trị cao hơn ở thuộc tính <strong>Scale</strong> sẽ khiến texture lặp lại thường xuyên hơn.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Bạn có thể sao chép một StandardMaterial3D để tái sử dụng nó cho các node CSG. Để làm vậy, nhấn vào mũi tên thả xuống cạnh thuộc tính material trong Inspector và chọn <strong>Copy</strong>. Để dán, chọn node bạn muốn áp dụng material, nhấn vào mũi tên thả xuống cạnh thuộc tính material của nó rồi chọn <strong>Paste</strong>.</p>
+</div>
+</section>
+<section id="converting-to-meshinstance3d">
+<span id="doc-csg-tools-converting-to-mesh-instance-3d"></span><h2>Chuyển đổi sang MeshInstance3D<a class="headerlink" href="#converting-to-meshinstance3d" title="Link to this heading"></a></h2>
+<p>Kể từ Godot 4.4, bạn có thể chuyển đổi một node CSG và các node con của nó thành một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshInstance3D</span></a>.</p>
+<p>Việc này có một số lợi ích:</p>
+<ul class="simple">
+<li><p>Bake lightmap, vì UV2 có thể được tạo trên MeshInstance3D.</p></li>
+<li><p>Bake occlusion culling, vì quá trình bake occlusion culling chỉ tính đến MeshInstance3D.</p></li>
+<li><p>Thời gian tải nhanh hơn, vì CSG mesh không còn cần dựng lại khi scene được tải.</p></li>
+<li><p>Hiệu năng tốt hơn khi cập nhật transform của node nếu dùng mesh bên trong một node CSG khác.</p></li>
+</ul>
+<p>Để chuyển đổi một node CSG thành node MeshInstance3D, hãy chọn nó, sau đó chọn <strong>CSG &gt; Bake Mesh Instance</strong> trên thanh công cụ. Node MeshInstance3D sẽ được tạo ở cùng cấp (sibling). Lưu ý rằng node CSG dùng để bake <strong>không</strong> tự động bị ẩn, vì vậy hãy nhớ ẩn nó để tránh hình học của nó chồng lên MeshInstance3D vừa tạo.</p>
+<p>Bạn cũng có thể tạo một collision shape dạng trimesh bằng <strong>CSG &gt; Bake Collision Shape</strong>. Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_CollisionShape3D</span></a> được tạo ra phải là node con của một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_StaticBody3D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animatablebody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_AnimatableBody3D</span></a> thì mới có tác dụng.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Hãy nhớ giữ node CSG gốc trong cây scene để bạn có thể thay đổi hình học sau này nếu cần. Để thay đổi hình học, hãy xóa node MeshInstance3D và cho node CSG gốc hiển thị trở lại.</p>
+</div>
+</section>
+<section id="exporting-as-gltf">
+<h2>Xuất sang glTF<a class="headerlink" href="#exporting-as-gltf" title="Link to this heading"></a></h2>
+<p>Việc phác thảo (block out) một level bằng CSG rồi xuất nó thành mô hình 3D để import vào phần mềm dựng hình 3D có thể rất hữu ích. Bạn có thể làm điều này bằng cách chọn <strong>Scene &gt; Export As... &gt; glTF 2.0 Scene</strong>.</p>
+<img alt="../../_images/export_as_gltf.webp" src="../../_images/export_as_gltf.webp" />
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="variable_rate_shading.html" class="btn btn-neutral float-left" title="Variable rate shading" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="using_gridmaps.html" class="btn btn-neutral float-right" title="Sử dụng GridMap" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

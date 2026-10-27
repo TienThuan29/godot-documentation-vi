@@ -1,0 +1,597 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Đa độ phân giải" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/rendering/multiple_resolutions.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Vấn đề đa độ phân giải: Các nhà phát triển thường gặp khó khăn trong việc hiểu cách hỗ trợ tốt nhất nhiều độ phân giải trong game. Với game trên desktop và console, việc này ít nhiều khá đơn giản, ..." />
+<meta name="description" content="Vấn đề đa độ phân giải: Các nhà phát triển thường gặp khó khăn trong việc hiểu cách hỗ trợ tốt nhất nhiều độ phân giải trong game. Với game trên desktop và console, việc này ít nhiều khá đơn giản, ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Đa độ phân giải &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Khắc phục jitter, stutter và độ trễ input" href="jitter_stutter.html" />
+    <link rel="prev" title="Sử dụng Viewport" href="viewports.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/rendering/multiple_resolutions" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kết xuất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="renderers.html">Tổng quan về các trình kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="viewports.html">Sử dụng Viewport</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Đa độ phân giải</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-problem-of-multiple-resolutions">Vấn đề đa độ phân giải</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#one-size-fits-all">Một kích thước cho tất cả</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#base-size">Kích thước cơ sở</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resizing">Thay đổi kích thước</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stretch-settings">Cài đặt kéo giãn</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#stretch-mode">Stretch Mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stretch-aspect">Stretch Aspect</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stretch-scale">Stretch Scale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stretch-scale-mode">Stretch Scale Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#common-use-case-scenarios">Các tình huống sử dụng phổ biến</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#desktop-game">Game desktop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mobile-game-in-landscape-mode">Game di động ở chế độ ngang</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mobile-game-in-portrait-mode">Game di động ở chế độ dọc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#non-game-application">Ứng dụng không phải game</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hidpi-support">Hỗ trợ hiDPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#font-and-image-oversampling">Oversampling phông chữ và hình ảnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reducing-aliasing-on-downsampling">Giảm răng cưa khi downsampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#handling-aspect-ratios">Xử lý tỷ lệ khung hình</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#field-of-view-scaling">Co giãn trường nhìn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling-2d-and-3d-elements-differently">Co giãn phần tử 2D và 3D khác nhau</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jitter_stutter.html">Khắc phục jitter, stutter và độ trễ input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compositor.html">Compositor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drawable_textures.html">Sử dụng DrawableTexture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdr_output.html">Đầu ra HDR</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kết xuất</a></li>
+      <li class="breadcrumb-item active">Đa độ phân giải</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="multiple-resolutions">
+<span id="doc-multiple-resolutions"></span><h1>Đa độ phân giải<a class="headerlink" href="#multiple-resolutions" title="Link to this heading"></a></h1>
+<section id="the-problem-of-multiple-resolutions">
+<h2>Vấn đề đa độ phân giải<a class="headerlink" href="#the-problem-of-multiple-resolutions" title="Link to this heading"></a></h2>
+<p>Các nhà phát triển thường gặp khó khăn trong việc hiểu cách hỗ trợ tốt nhất nhiều độ phân giải trong game. Với game trên desktop và console, việc này ít nhiều khá đơn giản, vì hầu hết màn hình có tỷ lệ khung hình 16:9 và độ phân giải tiêu chuẩn (720p, 1080p, 1440p, 4K, …).</p>
+<p>Với game di động, ban đầu việc này rất dễ. Trong nhiều năm, iPhone và iPad dùng cùng một độ phân giải. Khi <em>Retina</em> ra đời, họ chỉ đơn giản nhân đôi mật độ điểm ảnh; hầu hết nhà phát triển phải cung cấp tài nguyên ở độ phân giải mặc định và gấp đôi.</p>
+<p>Ngày nay, điều đó không còn đúng nữa, vì có rất nhiều kích thước, mật độ và tỷ lệ khung hình màn hình khác nhau. Các kích thước khác thường cũng ngày càng phổ biến, chẳng hạn như màn hình siêu rộng (ultrawide).</p>
+<p>Với kết xuất 3D, không cần hỗ trợ nhiều độ phân giải lắm. Nhờ bản chất dựa trên vector, hình học 3D sẽ tự lấp đầy màn hình dựa trên kích thước viewport. Với 2D và UI của game thì khác, vì hình ảnh cần được tạo với kích thước pixel cụ thể trong phần mềm như Photoshop, GIMP hoặc Krita.</p>
+<p>Vì bố cục, tỷ lệ khung hình, độ phân giải và mật độ điểm ảnh có thể thay đổi rất nhiều, không còn cách nào thiết kế UI cho từng màn hình cụ thể. Cần dùng một phương pháp khác.</p>
+</section>
+<section id="one-size-fits-all">
+<h2>Một kích thước cho tất cả<a class="headerlink" href="#one-size-fits-all" title="Link to this heading"></a></h2>
+<p>Cách tiếp cận phổ biến nhất là dùng một độ phân giải <em>cơ sở</em> duy nhất rồi điều chỉnh cho vừa với mọi thứ khác. Độ phân giải này là độ phân giải mà hầu hết người chơi dự kiến sẽ dùng để chơi game (tùy theo phần cứng của họ). Với di động, Google có <a class="reference external" href="https://developer.android.com/about/dashboards">số liệu thống kê</a> hữu ích trực tuyến, và với desktop, Steam <a class="reference external" href="https://store.steampowered.com/hwsurvey/">cũng có</a>.</p>
+<p>Ví dụ, Steam cho thấy <em>độ phân giải màn hình chính</em> phổ biến nhất là 1920×1080, vì vậy một cách tiếp cận hợp lý là phát triển game cho độ phân giải này, rồi xử lý việc co giãn cho các kích thước và tỷ lệ khung hình khác.</p>
+<p>Godot cung cấp một số công cụ hữu ích để làm việc này dễ dàng.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem cách Godot hỗ trợ đa độ phân giải hoạt động thực tế bằng <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/gui/multiple_resolutions">dự án demo Multiple Resolutions and Aspect Ratios</a>.</p>
+</div>
+</section>
+<section id="base-size">
+<h2>Kích thước cơ sở<a class="headerlink" href="#base-size" title="Link to this heading"></a></h2>
+<p>Kích thước cơ sở của cửa sổ có thể được chỉ định trong Project Settings tại <strong>Display → Window</strong>.</p>
+<img alt="../../_images/screenres.webp" src="../../_images/screenres.webp" />
+<p>Tuy nhiên, tác dụng của nó không hoàn toàn rõ ràng; engine sẽ <em>không</em> cố chuyển màn hình sang độ phân giải này. Thay vào đó, hãy coi cài đặt này là &quot;kích thước thiết kế&quot;, tức là kích thước vùng mà bạn làm việc trong trình chỉnh sửa. Cài đặt này tương ứng trực tiếp với kích thước của hình chữ nhật màu xanh trong trình chỉnh sửa 2D.</p>
+<p>Thường có nhu cầu hỗ trợ các thiết bị có kích thước màn hình và cửa sổ khác với kích thước cơ sở này. Godot cung cấp nhiều cách để kiểm soát việc viewport được thay đổi kích thước và kéo giãn cho các kích thước màn hình khác nhau.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trên trang này, <em>cửa sổ</em> (window) là vùng màn hình mà hệ thống cấp cho game của bạn, còn <em>viewport</em> là đối tượng gốc (truy cập được từ <code class="docutils literal notranslate"><span class="pre">get_tree().root</span></code>) mà game điều khiển để lấp đầy vùng màn hình này. Viewport này là một instance của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html" title="Class reference (English)"><span class="xref std std-ref">Window</span></a>. Như đã nói trong <a class="reference internal" href="viewports.html#doc-viewports"><span class="std std-ref">phần giới thiệu</span></a>, <em>mọi</em> đối tượng Window đều là viewport.</p>
+</div>
+<p>Để cấu hình kích thước cơ sở kéo giãn lúc runtime từ script, hãy dùng thuộc tính <code class="docutils literal notranslate"><span class="pre">get_tree().root.content_scale_size</span></code> (xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html#class-window-property-content-scale-size" title="Class reference (English)"><span class="xref std std-ref">Window.content_scale_size</span></a>). Thay đổi giá trị này có thể gián tiếp thay đổi kích thước các phần tử 2D. Tuy nhiên, để cung cấp tùy chọn co giãn cho người dùng, nên dùng <a class="reference internal" href="#doc-multiple-resolutions-stretch-scale"><span class="std std-ref">Stretch Scale</span></a> vì nó dễ điều chỉnh hơn.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot theo cách tiếp cận hiện đại với đa độ phân giải. Engine sẽ không bao giờ tự thay đổi độ phân giải của màn hình. Mặc dù thay đổi độ phân giải màn hình là cách hiệu quả nhất, nó cũng là cách kém tin cậy nhất vì có thể khiến màn hình bị kẹt ở độ phân giải thấp nếu game bị crash. Điều này đặc biệt phổ biến trên macOS hoặc Linux, vốn không xử lý việc thay đổi độ phân giải tốt như Windows.</p>
+<p>Thay đổi độ phân giải màn hình cũng khiến nhà phát triển game mất toàn quyền kiểm soát việc lọc và kéo giãn tỷ lệ khung hình, điều có thể quan trọng để đảm bảo hiển thị đúng cho game pixel art.</p>
+<p>Hơn nữa, thay đổi độ phân giải màn hình khiến việc alt-tab vào và ra khỏi game chậm hơn nhiều, vì màn hình phải thay đổi độ phân giải mỗi lần làm vậy.</p>
+</div>
+</section>
+<section id="resizing">
+<h2>Thay đổi kích thước<a class="headerlink" href="#resizing" title="Link to this heading"></a></h2>
+<p>Có nhiều loại thiết bị với nhiều loại màn hình, và chúng lại có mật độ điểm ảnh và độ phân giải khác nhau. Xử lý tất cả có thể rất tốn công, vì vậy Godot cố gắng giúp cuộc sống của nhà phát triển dễ dàng hơn một chút. Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a> có một số hàm để xử lý việc thay đổi kích thước, và node gốc của cây scene luôn là một viewport (các scene được tải sẽ được tạo instance làm con của nó, và luôn có thể truy cập nó bằng cách gọi <code class="docutils literal notranslate"><span class="pre">get_tree().root</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">get_node(&quot;/root&quot;)</span></code>).</p>
+<p>Dù sao đi nữa, mặc dù thay đổi các tham số của Viewport gốc có lẽ là cách linh hoạt nhất để xử lý vấn đề, nó có thể đòi hỏi nhiều công sức, code và phỏng đoán, vì vậy Godot cung cấp một bộ tham số trong cài đặt dự án để xử lý đa độ phân giải.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để kết xuất 3D ở độ phân giải thấp hơn các phần tử 2D (mà không cần viewport riêng), bạn có thể dùng tính năng <a class="reference internal" href="../3d/resolution_scaling.html#doc-resolution-scaling"><span class="std std-ref">co giãn độ phân giải</span></a> của Godot. Đây là cách tốt để cải thiện đáng kể hiệu năng trong các tình huống bị nghẽn GPU. Cách này hoạt động với mọi tổ hợp stretch mode và stretch aspect.</p>
+</div>
+</section>
+<section id="stretch-settings">
+<h2>Cài đặt kéo giãn<a class="headerlink" href="#stretch-settings" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi thử nghiệm các stretch mode và cài đặt stretch aspect khác nhau, hãy đảm bảo <a class="reference internal" href="../editor/game_embedding.html#doc-game-embedding"><span class="std std-ref">nhúng game</span></a> được cấu hình để dùng tùy chọn co giãn <span class="role-ui">Stretch to Fit</span>:</p>
+<figure class="align-center">
+<img alt="../../_images/multiple_resolutions_game_embedding_size_dropdown.webp" src="../../_images/multiple_resolutions_game_embedding_size_dropdown.webp" />
+</figure>
+<p>Điều này đảm bảo kích thước viewport luôn khớp với kích thước cửa sổ, giống như khi tắt nhúng game.</p>
+</div>
+<p>Các cài đặt kéo giãn nằm trong cài đặt dự án và cung cấp một số tùy chọn:</p>
+<img alt="../../_images/stretchsettings.webp" src="../../_images/stretchsettings.webp" />
+<section id="stretch-mode">
+<h3>Stretch Mode<a class="headerlink" href="#stretch-mode" title="Link to this heading"></a></h3>
+<p>Cài đặt <strong>Stretch Mode</strong> xác định cách kích thước cơ sở được kéo giãn để vừa với độ phân giải của cửa sổ hoặc màn hình. Các hoạt ảnh dưới đây dùng &quot;kích thước cơ sở&quot; chỉ 16×9 pixel để minh họa tác dụng của các stretch mode khác nhau. Một sprite duy nhất, cũng có kích thước 16×9 pixel, phủ toàn bộ viewport, và một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_line2d.html" title="Class reference (English)"><span class="xref std std-ref">Line2D</span></a> chéo được thêm lên trên:</p>
+<img alt="../../_images/stretch_demo_scene.png" src="../../_images/stretch_demo_scene.png" />
+<ul>
+<li><p><strong>Stretch Mode = Disabled</strong> (mặc định): Không có kéo giãn nào xảy ra. Một đơn vị trong scene tương ứng với một pixel trên màn hình. Ở chế độ này, cài đặt <strong>Stretch Aspect</strong> không có tác dụng.</p>
+<img alt="../../_images/stretch_disabled_expand.gif" src="../../_images/stretch_disabled_expand.gif" />
+</li>
+<li><p><strong>Stretch Mode = Canvas Items</strong>: Ở chế độ này, kích thước cơ sở được chỉ định bằng chiều rộng và chiều cao trong cài đặt dự án sẽ được kéo giãn để phủ toàn bộ màn hình (có tính đến cài đặt <strong>Stretch Aspect</strong>). Điều này có nghĩa là mọi thứ được kết xuất trực tiếp ở độ phân giải đích. 3D không bị ảnh hưởng, còn với 2D, không còn sự tương ứng 1:1 giữa pixel của sprite và pixel màn hình, điều này có thể gây ra lỗi hình ảnh do co giãn (scaling artifacts).</p>
+<img alt="../../_images/stretch_2d_expand.gif" src="../../_images/stretch_2d_expand.gif" />
+</li>
+<li><p><strong>Stretch Mode = Viewport</strong>: Co giãn viewport có nghĩa là kích thước của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a> gốc được đặt chính xác bằng kích thước cơ sở chỉ định trong mục <strong>Display</strong> của Project Settings. Scene được kết xuất vào viewport này trước. Cuối cùng, viewport này được co giãn để vừa với màn hình (có tính đến cài đặt <strong>Stretch Aspect</strong>).</p>
+<img alt="../../_images/stretch_viewport_expand.gif" src="../../_images/stretch_viewport_expand.gif" />
+</li>
+</ul>
+<p>Để cấu hình stretch mode lúc runtime từ script, hãy dùng thuộc tính <code class="docutils literal notranslate"><span class="pre">get_tree().root.content_scale_mode</span></code> (xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html#class-window-property-content-scale-mode" title="Class reference (English)"><span class="xref std std-ref">Window.content_scale_mode</span></a> và enum <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html#enum-window-contentscalemode" title="Class reference (English)"><span class="xref std std-ref">ContentScaleMode</span></a>).</p>
+</section>
+<section id="stretch-aspect">
+<h3>Stretch Aspect<a class="headerlink" href="#stretch-aspect" title="Link to this heading"></a></h3>
+<p>Cài đặt thứ hai là stretch aspect. Lưu ý rằng cài đặt này chỉ có tác dụng nếu <strong>Stretch Mode</strong> được đặt khác <strong>Disabled</strong>.</p>
+<p>Trong các hoạt ảnh dưới đây, bạn sẽ thấy các vùng màu xám và màu đen. Các vùng màu đen do engine thêm vào và không thể vẽ lên. Các vùng màu xám là một phần của scene và có thể vẽ lên. Các vùng màu xám tương ứng với khu vực bên ngoài khung màu xanh mà bạn thấy trong trình chỉnh sửa 2D.</p>
+<ul>
+<li><p><strong>Stretch Aspect = Ignore</strong>: Bỏ qua tỷ lệ khung hình khi kéo giãn màn hình. Điều này có nghĩa là độ phân giải gốc sẽ được kéo giãn để lấp đầy chính xác màn hình, ngay cả khi màn hình rộng hơn hoặc hẹp hơn. Điều này có thể gây kéo giãn không đồng đều: mọi thứ trông rộng hơn hoặc cao hơn so với thiết kế.</p>
+<img alt="../../_images/stretch_viewport_ignore.gif" src="../../_images/stretch_viewport_ignore.gif" />
+</li>
+<li><p><strong>Stretch Aspect = Keep</strong>: Giữ tỷ lệ khung hình khi kéo giãn màn hình. Điều này có nghĩa là viewport giữ nguyên kích thước gốc bất kể độ phân giải màn hình, và các dải đen sẽ được thêm vào phía trên/dưới màn hình (&quot;letterboxing&quot;) hoặc hai bên (&quot;pillarboxing&quot;).</p>
+<p>Đây là lựa chọn tốt nếu bạn biết trước tỷ lệ khung hình của các thiết bị mục tiêu, hoặc nếu bạn không muốn xử lý các tỷ lệ khung hình khác nhau.</p>
+<img alt="../../_images/stretch_viewport_keep.gif" src="../../_images/stretch_viewport_keep.gif" />
+</li>
+<li><p><strong>Stretch Aspect = Keep Width</strong>: Giữ tỷ lệ khung hình khi kéo giãn màn hình. Nếu màn hình rộng hơn kích thước cơ sở, các dải đen sẽ được thêm vào bên trái và bên phải (pillarboxing). Nhưng nếu màn hình cao hơn độ phân giải cơ sở, viewport sẽ được mở rộng theo chiều dọc (và nhiều nội dung hơn sẽ hiển thị ở phía dưới). Bạn cũng có thể coi đây là &quot;Mở rộng theo chiều dọc&quot;.</p>
+<p>Đây thường là lựa chọn tốt nhất để tạo GUI hoặc HUD có thể co giãn, nhờ đó một số control có thể được neo vào phía dưới (<a class="reference internal" href="../ui/size_and_anchors.html#doc-size-and-anchors"><span class="std std-ref">Kích thước và anchor</span></a>).</p>
+<img alt="../../_images/stretch_viewport_keep_width.gif" src="../../_images/stretch_viewport_keep_width.gif" />
+</li>
+<li><p><strong>Stretch Aspect = Keep Height</strong>: Giữ tỷ lệ khung hình khi kéo giãn màn hình. Nếu màn hình cao hơn kích thước cơ sở, các dải đen sẽ được thêm vào phía trên và phía dưới (letterboxing). Nhưng nếu màn hình rộng hơn độ phân giải cơ sở, viewport sẽ được mở rộng theo chiều ngang (và nhiều nội dung hơn sẽ hiển thị ở bên phải). Bạn cũng có thể coi đây là &quot;Mở rộng theo chiều ngang&quot;.</p>
+<p>Đây thường là lựa chọn tốt nhất cho game 2D cuộn ngang (như game chạy vô tận hoặc game đi cảnh).</p>
+<img alt="../../_images/stretch_viewport_keep_height.gif" src="../../_images/stretch_viewport_keep_height.gif" />
+</li>
+<li><p><strong>Stretch Aspect = Expand</strong>: Giữ tỷ lệ khung hình khi kéo giãn màn hình, nhưng không giữ cả chiều rộng lẫn chiều cao cơ sở. Tùy vào tỷ lệ khung hình của màn hình, viewport sẽ lớn hơn theo chiều ngang (nếu màn hình rộng hơn kích thước cơ sở) hoặc theo chiều dọc (nếu màn hình cao hơn kích thước gốc).</p>
+<img alt="../../_images/stretch_viewport_expand.gif" src="../../_images/stretch_viewport_expand.gif" />
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để hỗ trợ cả chế độ dọc và ngang với hệ số co giãn tự động tương tự nhau, hãy đặt độ phân giải cơ sở của dự án là một <em>hình vuông</em> (tỷ lệ khung hình 1:1) thay vì hình chữ nhật. Ví dụ, nếu bạn muốn thiết kế với độ phân giải cơ sở 1280×720 nhưng muốn hỗ trợ cả chế độ dọc và ngang, hãy dùng 720×720 làm kích thước cửa sổ cơ sở của dự án trong Project Settings.</p>
+<p>Để cho phép người dùng chọn hướng màn hình ưa thích lúc runtime, hãy nhớ đặt <strong>Display &gt; Window &gt; Handheld &gt; Orientation</strong> thành <code class="docutils literal notranslate"><span class="pre">sensor</span></code>.</p>
+</div>
+<p>Để cấu hình stretch aspect lúc runtime từ script, hãy dùng thuộc tính <code class="docutils literal notranslate"><span class="pre">get_tree().root.content_scale_aspect</span></code> (xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html#class-window-property-content-scale-aspect" title="Class reference (English)"><span class="xref std std-ref">Window.content_scale_aspect</span></a> và enum <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html#enum-window-contentscaleaspect" title="Class reference (English)"><span class="xref std std-ref">ContentScaleAspect</span></a>).</p>
+</section>
+<section id="stretch-scale">
+<span id="doc-multiple-resolutions-stretch-scale"></span><h3>Stretch Scale<a class="headerlink" href="#stretch-scale" title="Link to this heading"></a></h3>
+<p>Cài đặt <strong>Scale</strong> cho phép bạn thêm một hệ số co giãn bổ sung ngoài những gì các tùy chọn <strong>Stretch</strong> ở trên đã cung cấp. Giá trị mặc định <code class="docutils literal notranslate"><span class="pre">1.0</span></code> nghĩa là không có co giãn bổ sung nào.</p>
+<p>Ví dụ, nếu bạn đặt <strong>Scale</strong> thành <code class="docutils literal notranslate"><span class="pre">2.0</span></code> và để <strong>Stretch Mode</strong> ở <strong>Disabled</strong>, mỗi đơn vị trong scene sẽ tương ứng với 2×2 pixel trên màn hình. Đây là cách tốt để cung cấp tùy chọn co giãn cho các ứng dụng không phải game.</p>
+<p>Nếu <strong>Stretch Mode</strong> được đặt thành <strong>canvas_items</strong>, các phần tử 2D sẽ được co giãn tương đối theo kích thước cửa sổ cơ sở, rồi nhân với cài đặt <strong>Scale</strong>. Bạn có thể cung cấp tùy chọn này cho người chơi để họ điều chỉnh tỷ lệ tự động theo ý thích, giúp tăng khả năng tiếp cận.</p>
+<p>Nếu <strong>Stretch Mode</strong> được đặt thành <strong>viewport</strong>, độ phân giải của viewport sẽ được chia cho <strong>Scale</strong>. Điều này khiến các pixel trông lớn hơn và giảm độ phân giải kết xuất (với một kích thước cửa sổ nhất định), có thể giúp cải thiện hiệu năng.</p>
+<p>Để cấu hình stretch scale lúc runtime từ script, hãy dùng thuộc tính <code class="docutils literal notranslate"><span class="pre">get_tree().root.content_scale_factor</span></code> (xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html#class-window-property-content-scale-factor" title="Class reference (English)"><span class="xref std std-ref">Window.content_scale_factor</span></a>).</p>
+<p>Bạn cũng có thể điều chỉnh tỷ lệ tạo theme mặc định của dự án bằng cài đặt dự án <strong>GUI &gt; Theme &gt; Default Theme Scale</strong>. Cài đặt này có thể dùng để tạo UI có kích thước hợp lý hơn ở các độ phân giải cơ sở cao hơn hoặc thấp hơn đáng kể so với mặc định. Tuy nhiên, cài đặt dự án này không thể thay đổi lúc runtime, vì giá trị của nó chỉ được đọc một lần khi dự án khởi động.</p>
+</section>
+<section id="stretch-scale-mode">
+<span id="doc-multiple-resolutions-stretch-scale-mode"></span><h3>Stretch Scale Mode<a class="headerlink" href="#stretch-scale-mode" title="Link to this heading"></a></h3>
+<p>Kể từ Godot 4.2, cài đặt <strong>Stretch Scale Mode</strong> cho phép bạn giới hạn hệ số co giãn tự động (cũng như cài đặt <strong>Stretch Scale</strong> chỉ định thủ công) ở các giá trị nguyên. Theo mặc định, cài đặt này là <code class="docutils literal notranslate"><span class="pre">fractional</span></code>, cho phép áp dụng bất kỳ hệ số co giãn nào (kể cả giá trị thập phân như <code class="docutils literal notranslate"><span class="pre">2.5</span></code>). Khi đặt thành <code class="docutils literal notranslate"><span class="pre">integer</span></code>, giá trị được làm tròn xuống số nguyên gần nhất. Ví dụ, thay vì dùng hệ số co giãn <code class="docutils literal notranslate"><span class="pre">2.5</span></code>, nó sẽ được làm tròn xuống <code class="docutils literal notranslate"><span class="pre">2.0</span></code>. Điều này hữu ích để tránh méo hình khi hiển thị pixel art.</p>
+<p>Hãy so sánh hình pixel art này, được hiển thị với stretch mode <code class="docutils literal notranslate"><span class="pre">viewport</span></code> và stretch scale mode đặt thành <code class="docutils literal notranslate"><span class="pre">fractional</span></code>:</p>
+<figure class="align-center" id="id1">
+<img alt="Ví dụ co giãn thập phân (pixel art hiển thị sai)" src="../../_images/multiple_resolutions_pixel_art_fractional_scaling.webp" />
+<figcaption>
+<p><span class="caption-text">Bàn cờ trông không &quot;đều&quot;. Độ rộng nét trong logo và chữ chênh lệch rất nhiều.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Hình pixel art này cũng được hiển thị với stretch mode <code class="docutils literal notranslate"><span class="pre">viewport</span></code>, nhưng lần này stretch scale mode được đặt thành <code class="docutils literal notranslate"><span class="pre">integer</span></code>:</p>
+<figure class="align-center" id="id2">
+<img alt="Ví dụ co giãn số nguyên (pixel art hiển thị đúng)" src="../../_images/multiple_resolutions_pixel_art_integer_scaling.webp" />
+<figcaption>
+<p><span class="caption-text">Bàn cờ trông hoàn toàn đều. Độ rộng nét nhất quán.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Ví dụ, nếu kích thước cơ sở của viewport là 640×360 và kích thước cửa sổ là 1366×768:</p>
+<ul class="simple">
+<li><p>Khi dùng <code class="docutils literal notranslate"><span class="pre">fractional</span></code>, viewport được hiển thị ở độ phân giải 1366×768 (hệ số co giãn khoảng 2.133×). Toàn bộ không gian cửa sổ được sử dụng. Mỗi pixel trong viewport tương ứng với 2.133×2.133 pixel trong vùng hiển thị. Tuy nhiên, vì màn hình chỉ có thể hiển thị pixel &quot;nguyên&quot;, điều này sẽ dẫn đến co giãn pixel không đều, khiến pixel art hiển thị sai.</p></li>
+<li><p>Khi dùng <code class="docutils literal notranslate"><span class="pre">integer</span></code>, viewport được hiển thị ở độ phân giải 1280×720 (hệ số co giãn là 2×). Phần không gian còn lại được lấp bằng các dải đen ở cả bốn cạnh, để mỗi pixel trong viewport tương ứng với 2×2 pixel trong vùng hiển thị.</p></li>
+</ul>
+<p>Cài đặt này có tác dụng với mọi stretch mode. Tuy nhiên, khi dùng stretch mode <code class="docutils literal notranslate"><span class="pre">disabled</span></code>, nó chỉ ảnh hưởng đến cài đặt <strong>Stretch Scale</strong> bằng cách làm tròn <em>xuống</em> số nguyên gần nhất. Điều này có thể dùng cho game 3D có UI pixel art, để vùng hiển thị trong viewport 3D không bị thu nhỏ (điều xảy ra khi dùng stretch mode <code class="docutils literal notranslate"><span class="pre">canvas_items</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">viewport</span></code> với scale mode <code class="docutils literal notranslate"><span class="pre">integer</span></code>).</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Game nên dùng chế độ cửa sổ <strong>Exclusive Fullscreen</strong> thay vì <strong>Fullscreen</strong>, vốn được thiết kế để ngăn Windows tự động xem cửa sổ như thể nó là toàn màn hình độc quyền.</p>
+<p><strong>Fullscreen</strong> dành cho các ứng dụng GUI muốn dùng độ trong suốt theo từng pixel mà không có nguy cơ bị hệ điều hành tắt đi. Nó làm được điều này bằng cách chừa lại một dòng 1 pixel ở cạnh dưới màn hình. Ngược lại, <strong>Exclusive Fullscreen</strong> dùng kích thước màn hình thực tế và cho phép Windows giảm jitter và độ trễ input cho game toàn màn hình.</p>
+<p>Khi dùng co giãn số nguyên, điều này đặc biệt quan trọng vì việc giảm 1 pixel chiều cao của chế độ <strong>Fullscreen</strong> có thể khiến co giãn số nguyên dùng hệ số nhỏ hơn dự kiến.</p>
+</div>
+</section>
+</section>
+<section id="common-use-case-scenarios">
+<h2>Các tình huống sử dụng phổ biến<a class="headerlink" href="#common-use-case-scenarios" title="Link to this heading"></a></h2>
+<p>Các cài đặt sau được khuyến nghị để hỗ trợ tốt nhiều độ phân giải và tỷ lệ khung hình.</p>
+<section id="desktop-game">
+<h3>Game desktop<a class="headerlink" href="#desktop-game" title="Link to this heading"></a></h3>
+<p><strong>Không phải pixel art:</strong></p>
+<ul class="simple">
+<li><p>Đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">1920</span></code> và chiều cao cửa sổ là <code class="docutils literal notranslate"><span class="pre">1080</span></code>. Nếu màn hình của bạn nhỏ hơn 1920×1080, hãy đặt <strong>Window Width Override</strong> và <strong>Window Height Override</strong> thành giá trị thấp hơn để cửa sổ nhỏ hơn khi dự án khởi động.</p></li>
+<li><p>Ngoài ra, nếu bạn chủ yếu nhắm đến thiết bị cao cấp, hãy đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">3840</span></code> và chiều cao cửa sổ là <code class="docutils literal notranslate"><span class="pre">2160</span></code>. Điều này cho phép bạn cung cấp tài nguyên 2D có độ phân giải cao hơn, mang lại hình ảnh sắc nét hơn, đổi lại tốn nhiều bộ nhớ và dung lượng file hơn. Bạn cũng nên tăng <strong>GUI &gt; Theme &gt; Default Theme Scale</strong> lên giá trị từ <code class="docutils literal notranslate"><span class="pre">2.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">3.0</span></code> để đảm bảo các phần tử UI vẫn dễ đọc.</p>
+<ul>
+<li><p>Lưu ý rằng điều này sẽ khiến các texture không có mipmap bị lổn nhổn trên thiết bị độ phân giải thấp, vì vậy hãy làm theo hướng dẫn trong <a class="reference internal" href="#doc-multiple-resolutions-reducing-aliasing-on-downsampling"><span class="std std-ref">Giảm răng cưa khi downsampling</span></a>.</p></li>
+</ul>
+</li>
+<li><p>Đặt stretch mode thành <code class="docutils literal notranslate"><span class="pre">canvas_items</span></code>.</p></li>
+<li><p>Đặt stretch aspect thành <code class="docutils literal notranslate"><span class="pre">expand</span></code>. Điều này cho phép hỗ trợ nhiều tỷ lệ khung hình và tận dụng tốt hơn màn hình điện thoại thông minh dạng cao (chẳng hạn tỷ lệ 18:9 hoặc 19:9).</p></li>
+<li><p>Cấu hình anchor của các node Control để bám vào đúng góc bằng menu <strong>Layout</strong>.</p></li>
+<li><p>Với game 3D, hãy cân nhắc đưa <a class="reference internal" href="../3d/resolution_scaling.html#doc-resolution-scaling"><span class="std std-ref">Co giãn độ phân giải</span></a> vào menu tùy chọn của game để người chơi có thể điều chỉnh độ phân giải kết xuất 3D riêng biệt với các phần tử UI. Điều này hữu ích cho việc tinh chỉnh hiệu năng, đặc biệt trên phần cứng cấp thấp.</p></li>
+</ul>
+<p><strong>Pixel art:</strong></p>
+<ul class="simple">
+<li><p>Đặt kích thước cửa sổ cơ sở bằng kích thước viewport bạn định dùng. Hầu hết game pixel art dùng kích thước viewport từ 256×224 đến 640×480. 640×360 là mức cơ sở tốt, vì nó co giãn lên 1280×720, 1920×1080, 2560×1440 và 3840×2160 mà không có dải đen nào khi dùng co giãn số nguyên. Kích thước viewport lớn hơn sẽ đòi hỏi hình ảnh có độ phân giải cao hơn, trừ khi bạn định hiển thị nhiều phần thế giới game hơn cùng một lúc.</p></li>
+<li><p>Đặt stretch mode thành <code class="docutils literal notranslate"><span class="pre">viewport</span></code>.</p></li>
+<li><p>Đặt stretch aspect thành <code class="docutils literal notranslate"><span class="pre">keep</span></code> để buộc dùng một tỷ lệ khung hình duy nhất (có dải đen). Hoặc, bạn có thể đặt stretch aspect thành <code class="docutils literal notranslate"><span class="pre">expand</span></code> để hỗ trợ nhiều tỷ lệ khung hình.</p></li>
+<li><p>Nếu dùng stretch aspect <code class="docutils literal notranslate"><span class="pre">expand</span></code>, hãy cấu hình anchor của các node Control để bám vào đúng góc bằng menu <strong>Layout</strong>.</p></li>
+<li><p>Đặt stretch scale mode thành <code class="docutils literal notranslate"><span class="pre">integer</span></code>. Điều này ngăn việc co giãn pixel không đều, vốn khiến pixel art không hiển thị như mong muốn.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Stretch mode <code class="docutils literal notranslate"><span class="pre">viewport</span></code> cung cấp kết xuất ở độ phân giải thấp rồi kéo giãn lên kích thước cửa sổ cuối cùng. Nếu bạn chấp nhận việc sprite có thể di chuyển hoặc xoay ở vị trí &quot;sub-pixel&quot;, hoặc muốn có viewport 3D độ phân giải cao, bạn nên dùng stretch mode <code class="docutils literal notranslate"><span class="pre">canvas_items</span></code> thay vì stretch mode <code class="docutils literal notranslate"><span class="pre">viewport</span></code>.</p>
+</div>
+</section>
+<section id="mobile-game-in-landscape-mode">
+<h3>Game di động ở chế độ ngang<a class="headerlink" href="#mobile-game-in-landscape-mode" title="Link to this heading"></a></h3>
+<p>Godot được cấu hình để dùng chế độ ngang theo mặc định. Điều này có nghĩa là bạn không cần thay đổi cài đặt dự án về hướng hiển thị.</p>
+<ul class="simple">
+<li><p>Đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">1280</span></code> và chiều cao cửa sổ là <code class="docutils literal notranslate"><span class="pre">720</span></code>.</p></li>
+<li><p>Ngoài ra, nếu bạn chủ yếu nhắm đến thiết bị cao cấp, hãy đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">1920</span></code> và chiều cao cửa sổ là <code class="docutils literal notranslate"><span class="pre">1080</span></code>. Điều này cho phép bạn cung cấp tài nguyên 2D có độ phân giải cao hơn, mang lại hình ảnh sắc nét hơn, đổi lại tốn nhiều bộ nhớ và dung lượng file hơn. Nhiều thiết bị có màn hình độ phân giải còn cao hơn (1440p), nhưng khác biệt so với 1080p hầu như không thấy được do màn hình điện thoại thông minh có kích thước nhỏ. Bạn cũng nên tăng <strong>GUI &gt; Theme &gt; Default Theme Scale</strong> lên giá trị từ <code class="docutils literal notranslate"><span class="pre">1.5</span></code> đến <code class="docutils literal notranslate"><span class="pre">2.0</span></code> để đảm bảo các phần tử UI vẫn dễ đọc.</p>
+<ul>
+<li><p>Lưu ý rằng điều này sẽ khiến các texture không có mipmap bị lổn nhổn trên thiết bị độ phân giải thấp, vì vậy hãy làm theo hướng dẫn trong <a class="reference internal" href="#doc-multiple-resolutions-reducing-aliasing-on-downsampling"><span class="std std-ref">Giảm răng cưa khi downsampling</span></a>.</p></li>
+</ul>
+</li>
+<li><p>Đặt stretch mode thành <code class="docutils literal notranslate"><span class="pre">canvas_items</span></code>.</p></li>
+<li><p>Đặt stretch aspect thành <code class="docutils literal notranslate"><span class="pre">expand</span></code>. Điều này cho phép hỗ trợ nhiều tỷ lệ khung hình và tận dụng tốt hơn màn hình điện thoại thông minh dạng cao (chẳng hạn tỷ lệ 18:9 hoặc 19:9).</p></li>
+<li><p>Cấu hình anchor của các node Control để bám vào đúng góc bằng menu <strong>Layout</strong>.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để hỗ trợ tốt hơn máy tính bảng và điện thoại gập (thường có màn hình với tỷ lệ khung hình gần 4:3), hãy cân nhắc dùng độ phân giải cơ sở có tỷ lệ khung hình 4:3 trong khi vẫn làm theo phần còn lại của hướng dẫn ở đây. Ví dụ, bạn có thể đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">1280</span></code> và chiều cao cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">960</span></code>.</p>
+</div>
+</section>
+<section id="mobile-game-in-portrait-mode">
+<h3>Game di động ở chế độ dọc<a class="headerlink" href="#mobile-game-in-portrait-mode" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">720</span></code> và chiều cao cửa sổ là <code class="docutils literal notranslate"><span class="pre">1280</span></code>.</p></li>
+<li><p>Ngoài ra, nếu bạn chủ yếu nhắm đến thiết bị cao cấp, hãy đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">1080</span></code> và chiều cao cửa sổ là <code class="docutils literal notranslate"><span class="pre">1920</span></code>. Điều này cho phép bạn cung cấp tài nguyên 2D có độ phân giải cao hơn, mang lại hình ảnh sắc nét hơn, đổi lại tốn nhiều bộ nhớ và dung lượng file hơn. Nhiều thiết bị có màn hình độ phân giải còn cao hơn (1440p), nhưng khác biệt so với 1080p hầu như không thấy được do màn hình điện thoại thông minh có kích thước nhỏ. Bạn cũng nên tăng <strong>GUI &gt; Theme &gt; Default Theme Scale</strong> lên giá trị từ <code class="docutils literal notranslate"><span class="pre">1.5</span></code> đến <code class="docutils literal notranslate"><span class="pre">2.0</span></code> để đảm bảo các phần tử UI vẫn dễ đọc.</p>
+<ul>
+<li><p>Lưu ý rằng điều này sẽ khiến các texture không có mipmap bị lổn nhổn trên thiết bị độ phân giải thấp, vì vậy hãy làm theo hướng dẫn trong <a class="reference internal" href="#doc-multiple-resolutions-reducing-aliasing-on-downsampling"><span class="std std-ref">Giảm răng cưa khi downsampling</span></a>.</p></li>
+</ul>
+</li>
+<li><p>Đặt <strong>Display &gt; Window &gt; Handheld &gt; Orientation</strong> thành <code class="docutils literal notranslate"><span class="pre">portrait</span></code>.</p></li>
+<li><p>Đặt stretch mode thành <code class="docutils literal notranslate"><span class="pre">canvas_items</span></code>.</p></li>
+<li><p>Đặt stretch aspect thành <code class="docutils literal notranslate"><span class="pre">expand</span></code>. Điều này cho phép hỗ trợ nhiều tỷ lệ khung hình và tận dụng tốt hơn màn hình điện thoại thông minh dạng cao (chẳng hạn tỷ lệ 18:9 hoặc 19:9).</p></li>
+<li><p>Cấu hình anchor của các node Control để bám vào đúng góc bằng menu <strong>Layout</strong>.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để hỗ trợ tốt hơn máy tính bảng và điện thoại gập (thường có màn hình với tỷ lệ khung hình gần 4:3), hãy cân nhắc dùng độ phân giải cơ sở có tỷ lệ khung hình 3:4 trong khi vẫn làm theo phần còn lại của hướng dẫn ở đây. Ví dụ, bạn có thể đặt chiều rộng cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">960</span></code> và chiều cao cửa sổ cơ sở là <code class="docutils literal notranslate"><span class="pre">1280</span></code>.</p>
+</div>
+</section>
+<section id="non-game-application">
+<span id="doc-multiple-resolutions-non-game-application"></span><h3>Ứng dụng không phải game<a class="headerlink" href="#non-game-application" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Đặt chiều rộng và chiều cao cửa sổ cơ sở bằng kích thước cửa sổ nhỏ nhất mà bạn định hỗ trợ. Việc này không bắt buộc, nhưng giúp đảm bảo bạn thiết kế UI có tính đến kích thước cửa sổ nhỏ.</p></li>
+<li><p>Giữ stretch mode ở giá trị mặc định, <code class="docutils literal notranslate"><span class="pre">disabled</span></code>.</p></li>
+<li><p>Giữ stretch aspect ở giá trị mặc định, <code class="docutils literal notranslate"><span class="pre">keep</span></code> (giá trị này sẽ không được dùng vì stretch mode là <code class="docutils literal notranslate"><span class="pre">disabled</span></code>).</p></li>
+<li><p>Bạn có thể xác định kích thước cửa sổ tối thiểu bằng cách đặt <code class="docutils literal notranslate"><span class="pre">get_window().min_size</span></code> trong hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> của một script. Điều này ngăn người dùng thu nhỏ ứng dụng dưới một kích thước nhất định, vốn có thể làm hỏng bố cục UI.</p></li>
+<li><p>Thêm một tùy chọn trong phần cài đặt của ứng dụng để thay đổi <a class="reference internal" href="#doc-multiple-resolutions-stretch-scale"><span class="std std-ref">stretch scale</span></a> của viewport gốc, để UI có thể được phóng to cho màn hình hiDPI. Xem thêm phần hỗ trợ hiDPI bên dưới.</p></li>
+</ul>
+</section>
+</section>
+<section id="hidpi-support">
+<h2>Hỗ trợ hiDPI<a class="headerlink" href="#hidpi-support" title="Link to this heading"></a></h2>
+<p>Theo mặc định, các dự án Godot được hệ điều hành coi là có nhận biết DPI (DPI-aware). Điều này được kiểm soát bởi cài đặt dự án <strong>Display &gt; Window &gt; DPI &gt; Allow hiDPI</strong>, vốn nên để bật bất cứ khi nào có thể. Tắt nhận biết DPI có thể làm hỏng hành vi toàn màn hình trên Windows.</p>
+<p>Vì các dự án Godot có nhận biết DPI, chúng có thể hiển thị với kích thước cửa sổ rất nhỏ khi khởi chạy trên màn hình hiDPI (tỷ lệ với độ phân giải màn hình). Với game, cách phổ biến nhất để khắc phục vấn đề này là cho chạy toàn màn hình theo mặc định. Hoặc, bạn có thể đặt kích thước cửa sổ trong hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> của một <a class="reference internal" href="../scripting/singletons_autoload.html#doc-singletons-autoload"><span class="std std-ref">autoload</span></a> theo kích thước màn hình.</p>
+<p>Để đảm bảo các phần tử 2D không hiển thị quá nhỏ trên màn hình hiDPI:</p>
+<ul class="simple">
+<li><p>Với game, hãy dùng stretch mode <code class="docutils literal notranslate"><span class="pre">canvas_items</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">viewport</span></code> để các phần tử 2D được tự động thay đổi kích thước theo kích thước cửa sổ hiện tại.</p></li>
+<li><p>Với ứng dụng không phải game, hãy dùng stretch mode <code class="docutils literal notranslate"><span class="pre">disabled</span></code> và đặt stretch scale thành giá trị tương ứng với hệ số tỷ lệ hiển thị trong hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> của một <a class="reference internal" href="../scripting/singletons_autoload.html#doc-singletons-autoload"><span class="std std-ref">autoload</span></a>. Hệ số tỷ lệ hiển thị được đặt trong cài đặt của hệ điều hành và có thể truy vấn bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_displayserver.html#class-displayserver-method-screen-get-scale" title="Class reference (English)"><span class="xref std std-ref">screen_get_scale</span></a>. Phương thức này hiện được triển khai trên Android, iOS, Linux (chỉ Wayland), macOS và Web. Trên các nền tảng khác, bạn sẽ phải tự triển khai một phương thức để ước đoán hệ số tỷ lệ hiển thị dựa trên độ phân giải màn hình (kèm một tùy chọn để người dùng ghi đè nếu cần). Đây là cách tiếp cận mà trình chỉnh sửa Godot hiện đang dùng.</p></li>
+</ul>
+<p>Cài đặt <strong>Allow hiDPI</strong> chỉ có tác dụng trên Windows và macOS. Nó bị bỏ qua trên tất cả các nền tảng khác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bản thân trình chỉnh sửa Godot luôn được đánh dấu là có nhận biết DPI. Chạy dự án từ trình chỉnh sửa sẽ chỉ có nhận biết DPI nếu <strong>Allow hiDPI</strong> được bật trong Project Settings.</p>
+</div>
+</section>
+<section id="font-and-image-oversampling">
+<span id="doc-multiple-resolutions-font-and-image-oversampling"></span><h2>Oversampling phông chữ và hình ảnh<a class="headerlink" href="#font-and-image-oversampling" title="Link to this heading"></a></h2>
+<p>Godot hỗ trợ một quá trình gọi là <em>oversampling</em>, tức là tự động kết xuất lại texture từ nguồn vector gốc khi hệ số co giãn của viewport thay đổi. Điều này đảm bảo texture phông chữ và hình ảnh luôn sắc nét ở mọi độ phân giải.</p>
+<p>Oversampling phông chữ được bật theo mặc định, nhưng có thể tắt bằng cách bỏ chọn <strong>GUI &gt; Fonts &gt; Dynamic Fonts &gt; Use Oversampling</strong> trong Project Settings.</p>
+<p>Oversampling hình ảnh bị tắt theo mặc định, và có thể bật cho từng hình ảnh định dạng SVG bằng cách đổi kiểu import của chúng thành <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_dpitexture.html" title="Class reference (English)"><span class="xref std std-ref">class_DPITexture</span></a> trong dock Import. Các định dạng hình ảnh khác không hỗ trợ oversampling, vì chúng lưu dữ liệu bitmap thay vì vector.</p>
+<p>Trình chỉnh sửa tự động thực hiện oversampling khi phóng to trong trình chỉnh sửa 2D, cho phép bạn xem trước oversampling trông như thế nào ở các hệ số co giãn cụ thể. Có thể tắt điều này bằng cách bỏ chọn <strong>View &gt; Auto Resample CanvasItems</strong> ở phía trên viewport của trình chỉnh sửa 2D.</p>
+<p>Oversampling cũng có thể được áp dụng theo thuộc tính Scale của Node2D hoặc Control. Hành vi <em>oversampling theo scale</em> này bị tắt theo mặc định, nhưng có thể bật bằng cách đặt <strong>Oversampling with Scale</strong> trong inspector thành <strong>Enabled</strong> trên node mong muốn. Điều này hữu ích cho các node có thể bị thay đổi scale lúc runtime, chẳng hạn hệ số co giãn tùy chỉnh cho một số phần tử UI như tâm ngắm. Tuy nhiên, hãy lưu ý việc này có thể tốn nhiều CPU nếu scale thay đổi thường xuyên, vì texture phải được kết xuất lại mỗi lần.</p>
+<p>Để có kết quả tốt nhất, node nên dùng co giãn đồng đều. Co giãn không đồng đều vẫn hoạt động, nhưng có thể gây răng cưa (aliasing) trên trục ngắn hơn vì oversampling luôn được áp dụng đồng đều.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-property-offset-transform-enabled" title="Class reference (English)"><span class="xref std std-ref">offset_transform_enabled</span></a> của Control được tính đến trong oversampling theo scale, nhưng chỉ khi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-property-offset-transform-visual-only" title="Class reference (English)"><span class="xref std std-ref">offset_transform_visual_only</span></a> bị <em>tắt</em>. Khi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html#class-control-property-offset-transform-visual-only" title="Class reference (English)"><span class="xref std std-ref">offset_transform_visual_only</span></a> được bật, nó không ảnh hưởng đến scale thực tế của node (dùng cho tọa độ input), mà chỉ ảnh hưởng đến hình ảnh hiển thị. Do đó, nó bị oversampling bỏ qua.</p>
+</div>
+</section>
+<section id="reducing-aliasing-on-downsampling">
+<span id="doc-multiple-resolutions-reducing-aliasing-on-downsampling"></span><h2>Giảm răng cưa khi downsampling<a class="headerlink" href="#reducing-aliasing-on-downsampling" title="Link to this heading"></a></h2>
+<p>Nếu game có độ phân giải cơ sở rất cao (ví dụ 3840×2160), hiện tượng răng cưa có thể xuất hiện khi downsampling xuống mức thấp hơn đáng kể như 1280×720.</p>
+<p>Để giải quyết điều này, bạn có thể <a class="reference internal" href="../assets_pipeline/importing_images.html#doc-importing-images-mipmaps"><span class="std std-ref">bật mipmap</span></a> cho tất cả texture 2D. Tuy nhiên, bật mipmap sẽ làm tăng mức sử dụng bộ nhớ, điều có thể là vấn đề trên thiết bị di động cấp thấp.</p>
+<p>Với hình ảnh SVG, bạn cũng có thể đổi kiểu import của chúng thành <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_dpitexture.html" title="Class reference (English)"><span class="xref std std-ref">class_DPITexture</span></a> trong dock Import để tận dụng oversampling tự động như mô tả ở trên. Cách này tránh răng cưa bằng cách raster hóa lại texture khi hệ số co giãn thay đổi.</p>
+</section>
+<section id="handling-aspect-ratios">
+<h2>Xử lý tỷ lệ khung hình<a class="headerlink" href="#handling-aspect-ratios" title="Link to this heading"></a></h2>
+<p>Sau khi đã tính đến việc co giãn cho các độ phân giải khác nhau, hãy đảm bảo <em>giao diện người dùng</em> của bạn cũng co giãn theo các tỷ lệ khung hình khác nhau. Việc này có thể thực hiện bằng <a class="reference internal" href="../ui/size_and_anchors.html#doc-size-and-anchors"><span class="std std-ref">anchor</span></a> và/hoặc <a class="reference internal" href="../ui/gui_containers.html#doc-gui-containers"><span class="std std-ref">container</span></a>.</p>
+</section>
+<section id="field-of-view-scaling">
+<h2>Co giãn trường nhìn<a class="headerlink" href="#field-of-view-scaling" title="Link to this heading"></a></h2>
+<p>Thuộc tính <strong>Keep Aspect</strong> của node Camera 3D mặc định dùng chế độ co giãn <strong>Keep Height</strong> (còn gọi là <em>Hor+</em>). Đây thường là giá trị tốt nhất cho game desktop và game di động ở chế độ ngang, vì màn hình rộng sẽ tự động dùng trường nhìn rộng hơn.</p>
+<p>Tuy nhiên, nếu game 3D của bạn được thiết kế để chơi ở chế độ dọc, có thể hợp lý hơn khi dùng <strong>Keep Width</strong> (còn gọi là <em>Vert-</em>). Bằng cách này, điện thoại thông minh có tỷ lệ khung hình cao hơn 16:9 (ví dụ 19:9) sẽ dùng trường nhìn <em>cao hơn</em>, điều hợp lý hơn trong trường hợp này.</p>
+</section>
+<section id="scaling-2d-and-3d-elements-differently">
+<h2>Co giãn phần tử 2D và 3D khác nhau<a class="headerlink" href="#scaling-2d-and-3d-elements-differently" title="Link to this heading"></a></h2>
+<p>Để kết xuất 3D ở độ phân giải khác với các phần tử 2D (như UI), hãy dùng tính năng <a class="reference internal" href="../3d/resolution_scaling.html#doc-resolution-scaling"><span class="std std-ref">co giãn độ phân giải</span></a> của Godot. Tính năng này cho phép bạn kiểm soát hệ số co giãn độ phân giải dùng cho 3D mà không cần dùng node Viewport riêng. Có thể dùng nó để cải thiện hiệu năng bằng cách kết xuất 3D ở độ phân giải thấp hơn, hoặc cải thiện chất lượng nhờ supersampling.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="viewports.html" class="btn btn-neutral float-left" title="Sử dụng Viewport" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="jitter_stutter.html" class="btn btn-neutral float-right" title="Khắc phục jitter, stutter và độ trễ input" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng CharacterBody2D/3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/physics/using_character_body_2d.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Godot cung cấp nhiều collision object để hỗ trợ cả phát hiện va chạm lẫn phản hồi va chạm. Việc chọn dùng loại nào cho dự án có thể gây bối rối. Bạn có thể tránh được vấn đề và đơn giản..." />
+<meta name="description" content="Giới thiệu: Godot cung cấp nhiều collision object để hỗ trợ cả phát hiện va chạm lẫn phản hồi va chạm. Việc chọn dùng loại nào cho dự án có thể gây bối rối. Bạn có thể tránh được vấn đề và đơn giản..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng CharacterBody2D/3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Ray-casting" href="ray-casting.html" />
+    <link rel="prev" title="Sử dụng Area2D" href="using_area_2d.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/physics/using_character_body_2d" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Vật lý</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="physics_introduction.html">Giới thiệu về vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_jolt_physics.html">Sử dụng Jolt Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigid_body.html">Sử dụng RigidBody</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_area_2d.html">Sử dụng Area2D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng CharacterBody2D/3D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-a-character-body">Character body là gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#movement-and-collision">Chuyển động và va chạm</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#move-and-collide">move_and_collide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#move-and-slide">move_and_slide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#detecting-collisions">Phát hiện va chạm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#which-movement-method-to-use">Nên dùng phương thức di chuyển nào?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Ví dụ</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#movement-and-walls">Chuyển động và tường</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bouncing-reflecting">Nảy bật/phản xạ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#platformer-movement">Chuyển động kiểu platformer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ray-casting.html">Ray-casting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ragdoll_system.html">Hệ thống ragdoll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematic_character_2d.html">Nhân vật kinematic (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="soft_body.html">Sử dụng SoftBody3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_2d.html">Hình dạng va chạm (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_3d.html">Hình dạng va chạm (3D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="large_world_coordinates.html">Tọa độ thế giới lớn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation/index.html">Nội suy vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_physics_issues.html">Khắc phục sự cố vật lý</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Vật lý</a></li>
+      <li class="breadcrumb-item active">Sử dụng CharacterBody2D/3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-characterbody2d-3d">
+<span id="doc-using-character-body-2d"></span><h1>Sử dụng CharacterBody2D/3D<a class="headerlink" href="#using-characterbody2d-3d" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Godot cung cấp nhiều collision object để hỗ trợ cả phát hiện va chạm lẫn phản hồi va chạm. Việc chọn dùng loại nào cho dự án có thể gây bối rối. Bạn có thể tránh được vấn đề và đơn giản hóa việc phát triển nếu hiểu cách mỗi loại hoạt động cũng như ưu nhược điểm của chúng. Trong bài hướng dẫn này, chúng ta sẽ xem xét node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody2d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody2D</span></a> và đưa ra một số ví dụ về cách sử dụng nó.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dù tài liệu này dùng <code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code> trong các ví dụ, các khái niệm tương tự cũng áp dụng cho 3D.</p>
+</div>
+</section>
+<section id="what-is-a-character-body">
+<h2>Character body là gì?<a class="headerlink" href="#what-is-a-character-body" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code> dùng để hiện thực các body được điều khiển bằng code. Character body phát hiện va chạm với các body khác khi di chuyển, nhưng không bị ảnh hưởng bởi các thuộc tính vật lý của engine như trọng lực hay ma sát. Điều này nghĩa là bạn phải viết một ít code để tạo hành vi cho chúng, nhưng đồng thời bạn cũng kiểm soát chính xác hơn cách chúng di chuyển và phản ứng.</p>
+<p>Dù có tên là <code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code>, nó cũng có thể dùng cho các đối tượng vật lý khác cần logic di chuyển thủ công chính xác và thông tin va chạm chi tiết, như platform di động hoặc các loại đạn phức tạp.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tài liệu này giả định bạn đã quen với các loại physics body của Godot. Vui lòng đọc <a class="reference internal" href="physics_introduction.html#doc-physics-introduction"><span class="std std-ref">Giới thiệu về vật lý</span></a> trước để có cái nhìn tổng quan về các tùy chọn vật lý.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Một <cite>CharacterBody2D</cite> có thể chịu ảnh hưởng của trọng lực và các lực khác, nhưng bạn phải tự tính chuyển động trong code. Engine vật lý sẽ không di chuyển một <cite>CharacterBody2D</cite>.</p>
+</div>
+</section>
+<section id="movement-and-collision">
+<h2>Chuyển động và va chạm<a class="headerlink" href="#movement-and-collision" title="Link to this heading"></a></h2>
+<p>Khi di chuyển một <code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code>, bạn không nên đặt trực tiếp thuộc tính <code class="docutils literal notranslate"><span class="pre">position</span></code> của nó. Thay vào đó, hãy dùng phương thức <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code>. Các phương thức này di chuyển body theo một vector cho trước và phát hiện va chạm.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Bạn nên xử lý chuyển động của physics body trong callback <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>.</p>
+</div>
+<p>Hai phương thức di chuyển phục vụ các mục đích khác nhau, và ở phần sau của bài hướng dẫn này, bạn sẽ thấy các ví dụ về cách chúng hoạt động.</p>
+<section id="move-and-collide">
+<h3>move_and_collide<a class="headerlink" href="#move-and-collide" title="Link to this heading"></a></h3>
+<p>Phương thức này nhận một tham số bắt buộc: một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">Vector2</span></a> chỉ chuyển động tương đối của body. Thông thường, đây là vector vận tốc của bạn nhân với bước thời gian của frame (<code class="docutils literal notranslate"><span class="pre">delta</span></code>). Nếu engine phát hiện va chạm ở bất kỳ đâu dọc theo vector này, body sẽ dừng di chuyển ngay lập tức. Khi đó, phương thức sẽ trả về một đối tượng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_kinematiccollision2d.html" title="Class reference (English)"><span class="xref std std-ref">KinematicCollision2D</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">KinematicCollision2D</span></code> là một đối tượng chứa dữ liệu về va chạm và đối tượng bị va chạm. Dùng dữ liệu này, bạn có thể tính toán phản hồi va chạm của mình.</p>
+<p><code class="docutils literal notranslate"><span class="pre">move_and_collide</span></code> hữu ích nhất khi bạn chỉ muốn di chuyển body và phát hiện va chạm, nhưng không cần phản hồi va chạm tự động. Ví dụ, nếu bạn cần một viên đạn nảy bật khỏi tường, bạn có thể trực tiếp thay đổi góc của vận tốc khi phát hiện va chạm. Xem ví dụ bên dưới.</p>
+</section>
+<section id="move-and-slide">
+<h3>move_and_slide<a class="headerlink" href="#move-and-slide" title="Link to this heading"></a></h3>
+<p>Phương thức <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> nhằm đơn giản hóa phản hồi va chạm trong trường hợp phổ biến khi bạn muốn một body trượt dọc theo body kia. Nó đặc biệt hữu ích trong game platformer hoặc game góc nhìn từ trên xuống chẳng hạn.</p>
+<p>Khi gọi <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code>, hàm này dùng một số thuộc tính của node để tính toán hành vi trượt. Các thuộc tính này có thể tìm thấy trong Inspector hoặc đặt trong code.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">velocity</span></code> - <em>giá trị mặc định:</em> <code class="docutils literal notranslate"><span class="pre">Vector2(</span> <span class="pre">0,</span> <span class="pre">0</span> <span class="pre">)</span></code></p>
+<blockquote>
+<div><p>Thuộc tính này biểu diễn vector vận tốc của body tính bằng pixel mỗi giây. <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> sẽ tự động thay đổi giá trị này khi va chạm.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">motion_mode</span></code> - <em>giá trị mặc định:</em> <code class="docutils literal notranslate"><span class="pre">MOTION_MODE_GROUNDED</span></code></p>
+<blockquote>
+<div><p>Thuộc tính này thường được dùng để phân biệt giữa chuyển động cuộn ngang và chuyển động góc nhìn từ trên xuống. Khi dùng giá trị mặc định, bạn có thể dùng các phương thức <code class="docutils literal notranslate"><span class="pre">is_on_floor()</span></code>, <code class="docutils literal notranslate"><span class="pre">is_on_wall()</span></code> và <code class="docutils literal notranslate"><span class="pre">is_on_ceiling()</span></code> để phát hiện body đang tiếp xúc với loại bề mặt nào, và body sẽ tương tác với dốc. Khi dùng <code class="docutils literal notranslate"><span class="pre">MOTION_MODE_FLOATING</span></code>, mọi va chạm đều được coi là &quot;tường&quot;.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_direction</span></code> - <em>giá trị mặc định:</em> <code class="docutils literal notranslate"><span class="pre">Vector2(</span> <span class="pre">0,</span> <span class="pre">-1</span> <span class="pre">)</span></code></p>
+<blockquote>
+<div><p>Thuộc tính này cho phép bạn định nghĩa những bề mặt nào engine nên coi là sàn. Giá trị của nó cho phép bạn dùng các phương thức <code class="docutils literal notranslate"><span class="pre">is_on_floor()</span></code>, <code class="docutils literal notranslate"><span class="pre">is_on_wall()</span></code> và <code class="docutils literal notranslate"><span class="pre">is_on_ceiling()</span></code> để phát hiện body đang tiếp xúc với loại bề mặt nào. Giá trị mặc định nghĩa là mặt trên của các bề mặt nằm ngang sẽ được coi là &quot;mặt đất&quot;.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">floor_stop_on_slope</span></code> - <em>giá trị mặc định:</em> <code class="docutils literal notranslate"><span class="pre">true</span></code></p>
+<blockquote>
+<div><p>Thuộc tính này ngăn body trượt xuống dốc khi đứng yên.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wall_min_slide_angle</span></code> - <em>giá trị mặc định:</em> <code class="docutils literal notranslate"><span class="pre">0.261799</span></code> (tính bằng radian, tương đương <code class="docutils literal notranslate"><span class="pre">15</span></code> độ)</p>
+<blockquote>
+<div><p>Thuộc tính này là góc tối thiểu mà body được phép trượt khi va vào dốc.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">floor_max_angle</span></code> - <em>giá trị mặc định:</em> <code class="docutils literal notranslate"><span class="pre">0.785398</span></code> (tính bằng radian, tương đương <code class="docutils literal notranslate"><span class="pre">45</span></code> độ)</p>
+<blockquote>
+<div><p>Thuộc tính này là góc tối đa trước khi một bề mặt không còn được coi là &quot;sàn&quot;.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>Có nhiều thuộc tính khác có thể dùng để thay đổi hành vi của body trong các tình huống cụ thể. Xem tài liệu <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody2d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody2D</span></a> để biết đầy đủ chi tiết.</p>
+</section>
+</section>
+<section id="detecting-collisions">
+<h2>Phát hiện va chạm<a class="headerlink" href="#detecting-collisions" title="Link to this heading"></a></h2>
+<p>Khi dùng <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code>, hàm trả về trực tiếp một <code class="docutils literal notranslate"><span class="pre">KinematicCollision2D</span></code>, và bạn có thể dùng nó trong code.</p>
+<p>Khi dùng <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code>, có thể xảy ra nhiều va chạm trong quá trình tính toán phản hồi trượt. Để xử lý các va chạm này, hãy dùng <code class="docutils literal notranslate"><span class="pre">get_slide_collision_count()</span></code> và <code class="docutils literal notranslate"><span class="pre">get_slide_collision()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using move_and_collide.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">move_and_collide</span><span class="p">(</span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">collision</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;I collided with &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span><span class="o">.</span><span class="vi">name</span><span class="p">)</span>
+
+<span class="c1"># Using move_and_slide.</span>
+<span class="nf">move_and_slide</span><span class="p">()</span>
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nf">get_slide_collision_count</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_slide_collision</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;I collided with &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span><span class="o">.</span><span class="vi">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Using MoveAndCollide.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MoveAndCollide</span><span class="p">(</span><span class="n">Velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">collision</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;I collided with &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="n">Node</span><span class="p">)</span><span class="n">collision</span><span class="p">.</span><span class="n">GetCollider</span><span class="p">()).</span><span class="n">Name</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Using MoveAndSlide.</span>
+<span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">GetSlideCollisionCount</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetSlideCollision</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;I collided with &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="n">Node</span><span class="p">)</span><span class="n">collision</span><span class="p">.</span><span class="n">GetCollider</span><span class="p">()).</span><span class="n">Name</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><cite>get_slide_collision_count()</cite> chỉ đếm số lần body đã va chạm và đổi hướng.</p>
+</div>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_kinematiccollision2d.html" title="Class reference (English)"><span class="xref std std-ref">KinematicCollision2D</span></a> để biết chi tiết về dữ liệu va chạm được trả về.</p>
+</section>
+<section id="which-movement-method-to-use">
+<h2>Nên dùng phương thức di chuyển nào?<a class="headerlink" href="#which-movement-method-to-use" title="Link to this heading"></a></h2>
+<p>Một câu hỏi phổ biến từ người mới dùng Godot là: &quot;Làm sao để quyết định dùng hàm di chuyển nào?&quot; Thường thì câu trả lời là dùng <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> vì nó có vẻ đơn giản hơn, nhưng điều này không hẳn đúng. Có thể nghĩ rằng <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> là một trường hợp đặc biệt, còn <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code> tổng quát hơn. Ví dụ, hai đoạn code sau cho ra cùng một phản hồi va chạm:</p>
+<img alt="../../_images/k2d_compare.gif" src="../../_images/k2d_compare.gif" />
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># using move_and_collide</span>
+<span class="k">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">move_and_collide</span><span class="p">(</span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">collision</span><span class="p">:</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">slide</span><span class="p">(</span><span class="n">collision</span><span class="o">.</span><span class="nf">get_normal</span><span class="p">())</span>
+
+<span class="c1"># using move_and_slide</span>
+<span class="nf">move_and_slide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// using MoveAndCollide</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MoveAndCollide</span><span class="p">(</span><span class="n">Velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">collision</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Velocity</span><span class="p">.</span><span class="n">Slide</span><span class="p">(</span><span class="n">collision</span><span class="p">.</span><span class="n">GetNormal</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// using MoveAndSlide</span>
+<span class="n">MoveAndSlide</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Mọi thứ bạn làm với <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> cũng có thể làm với <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code>, nhưng có thể cần thêm chút code. Tuy nhiên, như chúng ta sẽ thấy trong các ví dụ bên dưới, có những trường hợp <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> không cho ra phản hồi bạn muốn.</p>
+<p>Trong ví dụ trên, <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> tự động thay đổi biến <code class="docutils literal notranslate"><span class="pre">velocity</span></code>. Lý do là khi nhân vật va chạm với môi trường, hàm sẽ tính lại tốc độ bên trong để phản ánh sự chậm lại.</p>
+<p>Ví dụ, nếu nhân vật rơi xuống sàn, bạn không muốn nó tích lũy tốc độ theo phương thẳng đứng do tác dụng của trọng lực. Thay vào đó, bạn muốn tốc độ thẳng đứng của nó được đặt lại về không.</p>
+<p><code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> cũng có thể tính lại vận tốc của kinematic body nhiều lần trong một vòng lặp, vì để tạo chuyển động mượt, theo mặc định nó di chuyển nhân vật và va chạm tối đa năm lần. Khi kết thúc quá trình, vận tốc mới của nhân vật sẵn sàng để dùng ở frame tiếp theo.</p>
+</section>
+<section id="examples">
+<h2>Ví dụ<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Để xem các ví dụ này hoạt động, hãy tải dự án mẫu: <a class="reference external" href="https://github.com/godotengine/godot-docs-project-starters/releases/download/latest-4.x/character_body_2d_starter.zip">character_body_2d_starter.zip</a></p>
+<section id="movement-and-walls">
+<h3>Chuyển động và tường<a class="headerlink" href="#movement-and-walls" title="Link to this heading"></a></h3>
+<p>Nếu bạn đã tải dự án mẫu, ví dụ này nằm trong &quot;basic_movement.tscn&quot;.</p>
+<p>Với ví dụ này, hãy thêm một <code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code> có hai node con: một <code class="docutils literal notranslate"><span class="pre">Sprite2D</span></code> và một <code class="docutils literal notranslate"><span class="pre">CollisionShape2D</span></code>. Dùng &quot;icon.svg&quot; của Godot làm texture cho Sprite2D (kéo nó từ FileSystem dock vào thuộc tính <em>Texture</em> của <code class="docutils literal notranslate"><span class="pre">Sprite2D</span></code>). Trong thuộc tính <em>Shape</em> của <code class="docutils literal notranslate"><span class="pre">CollisionShape2D</span></code>, chọn &quot;New RectangleShape2D&quot; và chỉnh kích thước hình chữ nhật cho vừa khít với hình ảnh sprite.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Xem <a class="reference internal" href="../2d/2d_movement.html#doc-2d-movement"><span class="std std-ref">Tổng quan về chuyển động 2D</span></a> để có các ví dụ hiện thực những kiểu di chuyển 2D.</p>
+</div>
+<p>Gắn một script vào CharacterBody2D và thêm đoạn code sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_input</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">input_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">get_vector</span><span class="p">(</span><span class="s2">&quot;ui_left&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ui_right&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ui_up&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ui_down&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input_dir</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">get_input</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">move_and_collide</span><span class="p">(</span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyCharacterBody2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">GetInput</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Vector2</span><span class="w"> </span><span class="n">inputDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">.</span><span class="n">GetVector</span><span class="p">(</span><span class="s">&quot;ui_left&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ui_right&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ui_up&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ui_down&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inputDir</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GetInput</span><span class="p">();</span>
+<span class="w">        </span><span class="n">MoveAndCollide</span><span class="p">(</span><span class="n">Velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chạy scene này và bạn sẽ thấy <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code> hoạt động như mong đợi, di chuyển body theo vector vận tốc. Giờ hãy xem điều gì xảy ra khi bạn thêm vài chướng ngại vật. Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody2d.html" title="Class reference (English)"><span class="xref std std-ref">StaticBody2D</span></a> với collision shape hình chữ nhật. Để dễ nhìn thấy, bạn có thể dùng Sprite2D, Polygon2D, hoặc bật &quot;Visible Collision Shapes&quot; từ menu &quot;Debug&quot;.</p>
+<p>Chạy lại scene và thử di chuyển vào chướng ngại vật. Bạn sẽ thấy <code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code> không thể xuyên qua chướng ngại vật. Tuy nhiên, hãy thử di chuyển vào chướng ngại vật theo một góc nghiêng và bạn sẽ thấy chướng ngại vật hoạt động như keo dính - có cảm giác body bị kẹt lại.</p>
+<p>Điều này xảy ra vì không có <em>phản hồi va chạm</em>. <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code> dừng chuyển động của body khi xảy ra va chạm. Chúng ta cần tự viết code cho bất kỳ phản hồi nào mong muốn từ va chạm.</p>
+<p>Hãy thử đổi hàm thành <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> và chạy lại.</p>
+<p><code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> cung cấp phản hồi va chạm mặc định là cho body trượt dọc theo đối tượng va chạm. Điều này hữu ích cho rất nhiều thể loại game, và có thể là tất cả những gì bạn cần để có hành vi mong muốn.</p>
+</section>
+<section id="bouncing-reflecting">
+<h3>Nảy bật/phản xạ<a class="headerlink" href="#bouncing-reflecting" title="Link to this heading"></a></h3>
+<p>Nếu bạn không muốn phản hồi va chạm kiểu trượt thì sao? Trong ví dụ này (&quot;bounce_and_collide.tscn&quot; trong dự án mẫu), chúng ta có một nhân vật bắn đạn và muốn đạn nảy bật khỏi tường.</p>
+<p>Ví dụ này dùng ba scene. Scene chính chứa Player và Walls. Bullet và Wall là các scene riêng để có thể tạo instance.</p>
+<p>Player được điều khiển bằng phím <code class="docutils literal notranslate"><span class="pre">w</span></code> và <code class="docutils literal notranslate"><span class="pre">s</span></code> để tiến và lùi. Ngắm bắn dùng con trỏ chuột. Đây là code cho Player, dùng <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="nc">Bullet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;res://bullet.tscn&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_input</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Add these actions in Project Settings -&gt; Input Map.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">input_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">get_axis</span><span class="p">(</span><span class="s2">&quot;backward&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;forward&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">input_dir</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_just_pressed</span><span class="p">(</span><span class="s2">&quot;shoot&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="nf">shoot</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">shoot</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># &quot;Muzzle&quot; is a Marker2D placed at the barrel of the gun.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Bullet</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+<span class="w">    </span><span class="n">b</span><span class="o">.</span><span class="nf">start</span><span class="p">(</span><span class="sx">$Muzzle</span><span class="o">.</span><span class="vi">global_position</span><span class="p">,</span><span class="w"> </span><span class="n">rotation</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">get_input</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_global_mouse_position</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">global_position</span>
+<span class="w">    </span><span class="c1"># Don&#39;t move if too close to the mouse pointer.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">dir</span><span class="o">.</span><span class="nf">length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="p">:</span>
+<span class="w">        </span><span class="n">rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dir</span><span class="o">.</span><span class="nf">angle</span><span class="p">()</span>
+<span class="w">        </span><span class="nf">move_and_slide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyCharacterBody2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">_bullet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">PackedScene</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://Bullet.tscn&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">GetInput</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Add these actions in Project Settings -&gt; Input Map.</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">inputDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">.</span><span class="n">GetAxis</span><span class="p">(</span><span class="s">&quot;backward&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;forward&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">inputDir</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;shoot&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Shoot</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Shoot</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// &quot;Muzzle&quot; is a Marker2D placed at the barrel of the gun.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Bullet</span><span class="p">)</span><span class="n">_bullet</span><span class="p">.</span><span class="n">Instantiate</span><span class="p">();</span>
+<span class="w">        </span><span class="n">b</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Node2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Muzzle&quot;</span><span class="p">).</span><span class="n">GlobalPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Rotation</span><span class="p">);</span>
+<span class="w">        </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GetInput</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetGlobalMousePosition</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">GlobalPosition</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Don&#39;t move if too close to the mouse pointer.</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dir</span><span class="p">.</span><span class="n">Length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dir</span><span class="p">.</span><span class="n">Angle</span><span class="p">();</span>
+<span class="w">            </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và code cho Bullet:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">750</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">start</span><span class="p">(</span><span class="n">_position</span><span class="p">,</span><span class="w"> </span><span class="n">_direction</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_direction</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_position</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">move_and_collide</span><span class="p">(</span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">collision</span><span class="p">:</span>
+<span class="w">        </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">bounce</span><span class="p">(</span><span class="n">collision</span><span class="o">.</span><span class="nf">get_normal</span><span class="p">())</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span><span class="o">.</span><span class="nf">has_method</span><span class="p">(</span><span class="s2">&quot;hit&quot;</span><span class="p">):</span>
+<span class="w">            </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span><span class="o">.</span><span class="nf">hit</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_VisibilityNotifier2D_screen_exited</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Deletes the bullet when it exits the screen.</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Bullet</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">750</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">(</span><span class="n">Vector2</span><span class="w"> </span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">direction</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Rotation</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MoveAndCollide</span><span class="p">(</span><span class="n">Velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">collision</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Velocity</span><span class="p">.</span><span class="n">Bounce</span><span class="p">(</span><span class="n">collision</span><span class="p">.</span><span class="n">GetNormal</span><span class="p">());</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">collision</span><span class="p">.</span><span class="n">GetCollider</span><span class="p">().</span><span class="n">HasMethod</span><span class="p">(</span><span class="s">&quot;Hit&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">collision</span><span class="p">.</span><span class="n">GetCollider</span><span class="p">().</span><span class="n">Call</span><span class="p">(</span><span class="s">&quot;Hit&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnVisibilityNotifier2DScreenExited</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Deletes the bullet when it exits the screen.</span>
+<span class="w">        </span><span class="n">QueueFree</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hành động diễn ra trong <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>. Sau khi dùng <code class="docutils literal notranslate"><span class="pre">move_and_collide()</span></code>, nếu xảy ra va chạm, một đối tượng <code class="docutils literal notranslate"><span class="pre">KinematicCollision2D</span></code> sẽ được trả về (nếu không, giá trị trả về là <code class="docutils literal notranslate"><span class="pre">null</span></code>).</p>
+<p>Nếu có va chạm được trả về, chúng ta dùng <code class="docutils literal notranslate"><span class="pre">normal</span></code> của va chạm để phản xạ <code class="docutils literal notranslate"><span class="pre">velocity</span></code> của viên đạn bằng phương thức <code class="docutils literal notranslate"><span class="pre">Vector2.bounce()</span></code>.</p>
+<p>Nếu đối tượng bị va chạm (<code class="docutils literal notranslate"><span class="pre">collider</span></code>) có phương thức <code class="docutils literal notranslate"><span class="pre">hit</span></code>, chúng ta cũng gọi nó. Trong dự án ví dụ, chúng ta đã thêm hiệu ứng nhấp nháy màu cho Wall để minh họa điều này.</p>
+<img alt="../../_images/k2d_bullet_bounce.gif" src="../../_images/k2d_bullet_bounce.gif" />
+</section>
+<section id="platformer-movement">
+<h3>Chuyển động kiểu platformer<a class="headerlink" href="#platformer-movement" title="Link to this heading"></a></h3>
+<p>Hãy thử thêm một ví dụ phổ biến nữa: game platformer 2D. <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> rất lý tưởng để nhanh chóng có một bộ điều khiển nhân vật hoạt động được. Nếu bạn đã tải dự án mẫu, bạn có thể tìm thấy ví dụ này trong &quot;platformer.tscn&quot;.</p>
+<p>Với ví dụ này, chúng ta giả định bạn có một màn chơi gồm một hoặc nhiều đối tượng <code class="docutils literal notranslate"><span class="pre">StaticBody2D</span></code>. Chúng có thể có hình dạng và kích thước bất kỳ. Trong dự án mẫu, chúng ta dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_polygon2d.html" title="Class reference (English)"><span class="xref std std-ref">Polygon2D</span></a> để tạo hình dạng các platform.</p>
+<p>Đây là code cho body của người chơi:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300.0</span>
+<span class="k">var</span><span class="w"> </span><span class="n">jump_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">400.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Add the gravity.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nf">get_gravity</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+
+<span class="w">    </span><span class="c1"># Handle Jump.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_just_pressed</span><span class="p">(</span><span class="s2">&quot;jump&quot;</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">is_on_floor</span><span class="p">():</span>
+<span class="w">        </span><span class="n">velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jump_speed</span>
+
+<span class="w">    </span><span class="c1"># Get the input direction.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">get_axis</span><span class="p">(</span><span class="s2">&quot;ui_left&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ui_right&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyCharacterBody2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_jumpSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">400.0f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Get the gravity from the project settings so you can sync with rigid body nodes.</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Vector2</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Velocity</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Add the gravity.</span>
+<span class="w">        </span><span class="n">velocity</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">GetGravity</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Handle jump.</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionJustPressed</span><span class="p">(</span><span class="s">&quot;jump&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">IsOnFloor</span><span class="p">())</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">velocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_jumpSpeed</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Get the input direction.</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">.</span><span class="n">GetAxis</span><span class="p">(</span><span class="s">&quot;ui_left&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ui_right&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">velocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="p">;</span>
+<span class="w">        </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<img alt="../../_images/k2d_platform.gif" src="../../_images/k2d_platform.gif" />
+<p>Trong code này, chúng ta dùng <code class="docutils literal notranslate"><span class="pre">move_and_slide()</span></code> như đã mô tả ở trên - để di chuyển body theo vector vận tốc của nó, trượt dọc theo mọi bề mặt va chạm như mặt đất hay platform. Chúng ta cũng dùng <code class="docutils literal notranslate"><span class="pre">is_on_floor()</span></code> để kiểm tra có cho phép nhảy hay không. Nếu không có nó, bạn sẽ có thể &quot;nhảy&quot; giữa không trung; rất tốt nếu bạn làm Flappy Bird, nhưng không hợp với game platformer.</p>
+<p>Một nhân vật platformer hoàn chỉnh còn cần nhiều thứ hơn nữa: gia tốc, nhảy đôi, coyote-time, và nhiều thứ khác. Đoạn code trên chỉ là điểm khởi đầu. Bạn có thể dùng nó làm nền tảng để mở rộng thành bất kỳ hành vi di chuyển nào cần cho dự án của mình.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_area_2d.html" class="btn btn-neutral float-left" title="Sử dụng Area2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="ray-casting.html" class="btn btn-neutral float-right" title="Ray-casting" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

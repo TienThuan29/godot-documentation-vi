@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Đèn và bóng đổ 3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/lights_and_shadows.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Nguồn sáng phát ra ánh sáng hòa trộn với material và tạo ra kết quả nhìn thấy được. Ánh sáng trong một scene có thể đến từ nhiều loại nguồn: Từ chính material, dưới dạng màu phát sáng (..." />
+<meta name="description" content="Giới thiệu: Nguồn sáng phát ra ánh sáng hòa trộn với material và tạo ra kết quả nhìn thấy được. Ánh sáng trong một scene có thể đến từ nhiều loại nguồn: Từ chính material, dưới dạng màu phát sáng (..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Đèn và bóng đổ 3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng decal" href="using_decals.html" />
+    <link rel="prev" title="Standard Material 3D và ORM Material 3D" href="standard_material_3d.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/lights_and_shadows" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Đèn và bóng đổ 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#light-nodes">Các node đèn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#light-number-limits">Giới hạn số lượng đèn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shadow-mapping">Shadow mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#directional-light">Đèn định hướng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#omni-light">Đèn omni</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spot-light">Đèn spot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#area-light">Đèn vùng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shadow-atlas">Shadow atlas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#balancing-performance-and-quality">Cân bằng giữa hiệu năng và chất lượng</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="global_illumination/index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Đèn và bóng đổ 3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="d-lights-and-shadows">
+<span id="doc-lights-and-shadows"></span><h1>Đèn và bóng đổ 3D<a class="headerlink" href="#d-lights-and-shadows" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Nguồn sáng phát ra ánh sáng hòa trộn với material và tạo ra kết quả nhìn thấy được. Ánh sáng trong một scene có thể đến từ nhiều loại nguồn:</p>
+<ul class="simple">
+<li><p>Từ chính material, dưới dạng màu phát sáng (emission) (dù nó không ảnh hưởng đến các vật thể lân cận trừ khi được bake hoặc bật chiếu sáng gián tiếp screen-space).</p></li>
+<li><p>Các node đèn: DirectionalLight3D, OmniLight3D, SpotLight3D và AreaLight3D.</p></li>
+<li><p>Ánh sáng môi trường trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_environment.html" title="Class reference (English)"><span class="xref std std-ref">Environment</span></a> hoặc <a class="reference internal" href="global_illumination/reflection_probes.html#doc-reflection-probes"><span class="std std-ref">Reflection probe</span></a>.</p></li>
+<li><p>Chiếu sáng toàn cục (<a class="reference internal" href="global_illumination/using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">LightmapGI</span></a>, <a class="reference internal" href="global_illumination/using_voxel_gi.html#doc-using-voxel-gi"><span class="std std-ref">VoxelGI</span></a> hoặc <a class="reference internal" href="global_illumination/using_sdfgi.html#doc-using-sdfgi"><span class="std std-ref">SDFGI</span></a>).</p></li>
+</ul>
+<p>Màu phát sáng là một thuộc tính của material. Bạn có thể đọc thêm về nó trong bài hướng dẫn <a class="reference internal" href="standard_material_3d.html#doc-standard-material-3d"><span class="std std-ref">Standard Material 3D và ORM Material 3D</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể so sánh các loại đèn khác nhau khi hoạt động bằng <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/lights_and_shadows">dự án demo 3D Lights and Shadows</a>.</p>
+</div>
+</section>
+<section id="light-nodes">
+<h2>Các node đèn<a class="headerlink" href="#light-nodes" title="Link to this heading"></a></h2>
+<p>Có bốn loại node đèn: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_directionallight3d.html" title="Class reference (English)"><span class="xref std std-ref">class_DirectionalLight3D</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_omnilight3d.html" title="Class reference (English)"><span class="xref std std-ref">class_OmniLight3D</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_spotlight3d.html" title="Class reference (English)"><span class="xref std std-ref">class_SpotLight3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_arealight3d.html" title="Class reference (English)"><span class="xref std std-ref">class_AreaLight3D</span></a>. Hãy cùng xem các tham số chung của đèn:</p>
+<img alt="../../_images/light_params.png" src="../../_images/light_params.png" />
+<p>Mỗi thuộc tính có một chức năng cụ thể:</p>
+<ul class="simple">
+<li><p><strong>Color:</strong> Màu cơ sở của ánh sáng phát ra.</p></li>
+<li><p><strong>Energy:</strong> Hệ số nhân năng lượng. Hữu ích để làm đèn bão hòa hoặc khi làm việc với <a class="reference internal" href="high_dynamic_range.html#doc-high-dynamic-range"><span class="std std-ref">Chiếu sáng dải tương phản động cao (HDR)</span></a>.</p></li>
+<li><p><strong>Indirect Energy:</strong> Hệ số nhân phụ dùng cho ánh sáng gián tiếp (ánh sáng nảy lại). Thuộc tính này hoạt động với <a class="reference internal" href="global_illumination/using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">Dùng chiếu sáng toàn cục bằng lightmap</span></a>, VoxelGI hoặc SDFGI.</p></li>
+<li><p><strong>Volumetric Fog Energy:</strong> Hệ số nhân phụ dùng cho sương mù thể tích. Chỉ có tác dụng khi sương mù thể tích được bật.</p></li>
+<li><p><strong>Negative:</strong> Ánh sáng trở thành trừ đi thay vì cộng thêm. Đôi khi hữu ích để bù thủ công cho một số góc tối.</p></li>
+<li><p><strong>Specular:</strong> Ảnh hưởng đến cường độ của đốm phản xạ specular trên các vật thể chịu tác động của đèn này. Ở giá trị 0, đèn này trở thành đèn khuếch tán thuần túy.</p></li>
+<li><p><strong>Bake Mode:</strong> Đặt chế độ bake cho đèn. Xem <a class="reference internal" href="global_illumination/using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">Dùng chiếu sáng toàn cục bằng lightmap</span></a>.</p></li>
+<li><p><strong>Cull Mask:</strong> Các vật thể nằm trong các layer được chọn bên dưới sẽ chịu tác động của đèn này. Lưu ý rằng các vật thể bị loại trừ qua cull mask này vẫn đổ bóng. Nếu bạn không muốn các vật thể bị loại trừ đổ bóng, hãy điều chỉnh thuộc tính <strong>Cast Shadow</strong> trên GeometryInstance3D thành giá trị mong muốn.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="physical_light_and_camera_units.html#doc-physical-light-and-camera-units"><span class="std std-ref">Đơn vị vật lý cho ánh sáng và camera</span></a> nếu bạn muốn dùng đơn vị thực tế để cấu hình cường độ và nhiệt độ màu của đèn.</p>
+</div>
+</section>
+<section id="light-number-limits">
+<h2>Giới hạn số lượng đèn<a class="headerlink" href="#light-number-limits" title="Link to this heading"></a></h2>
+<p>Khi dùng renderer Forward+, Godot dùng phương pháp <em>clustering</em> cho chiếu sáng thời gian thực. Có thể thêm bao nhiêu đèn tùy ý (miễn là hiệu năng cho phép). Tuy nhiên, vẫn có giới hạn mặc định là 512 <em>phần tử cluster</em> có thể xuất hiện trong khung nhìn camera hiện tại. Một phần tử cluster là một omni light, spot light, area light, <a class="reference internal" href="using_decals.html#doc-using-decals"><span class="std std-ref">decal</span></a> hoặc <a class="reference internal" href="global_illumination/reflection_probes.html#doc-reflection-probes"><span class="std std-ref">reflection probe</span></a>. Có thể tăng giới hạn này bằng cách điều chỉnh <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-limits-cluster-builder-max-clustered-elements" title="Class reference (English)"><span class="xref std std-ref">Max Clustered Elements</span></a> trong <strong>Project Settings &gt; Rendering &gt; Limits &gt; Cluster Builder</strong>.</p>
+<p>Khi dùng renderer Mobile, có giới hạn 8 OmniLight + 8 SpotLight cho mỗi resource mesh. Ngoài ra còn có giới hạn 256 OmniLight + 256 SpotLight có thể được kết xuất trong khung nhìn camera hiện tại. Hiện chưa thể thay đổi các giới hạn này.</p>
+<p>Khi dùng renderer Compatibility, có thể kết xuất tối đa 8 OmniLight + 8 SpotLight cho mỗi resource mesh. Có thể tăng giới hạn này trong Project Settings nâng cao bằng cách điều chỉnh <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-limits-opengl-max-renderable-elements" title="Class reference (English)"><span class="xref std std-ref">Max Renderable Elements</span></a> và/hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-limits-opengl-max-lights-per-object" title="Class reference (English)"><span class="xref std std-ref">Max Lights per Object</span></a> trong <strong>Rendering &gt; Limits &gt; OpenGL</strong>, đổi lại hiệu năng giảm và thời gian biên dịch shader lâu hơn. Cũng có thể giảm giới hạn này để rút ngắn thời gian biên dịch shader và cải thiện hiệu năng đôi chút.</p>
+<p>Với mọi phương pháp kết xuất, có thể hiển thị tối đa 8 DirectionalLight cùng lúc. Tuy nhiên, mỗi DirectionalLight bổ sung có bật bóng đổ sẽ làm giảm độ phân giải bóng đổ hiệu dụng của từng DirectionalLight. Đó là vì atlas bóng đổ định hướng được dùng chung giữa tất cả các đèn.</p>
+<p>Nếu vượt quá giới hạn kết xuất, đèn sẽ bắt đầu lúc hiện lúc mất khi camera di chuyển, điều này có thể gây mất tập trung. Bật <strong>Distance Fade</strong> trên các node đèn có thể giúp giảm vấn đề này đồng thời cải thiện hiệu năng. Chia mesh thành các phần nhỏ hơn cũng có thể giúp ích, đặc biệt với hình học màn chơi (điều này cũng cải thiện hiệu quả culling).</p>
+<p>Nếu bạn cần kết xuất nhiều đèn hơn mức một renderer cho phép, hãy cân nhắc dùng <a class="reference internal" href="global_illumination/using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">lightmap được bake</span></a> với chế độ bake của đèn đặt thành <strong>Static</strong>. Điều này cho phép đèn được bake hoàn toàn, giúp chúng kết xuất nhanh hơn nhiều. Bạn cũng có thể dùng material phát sáng với bất kỳ kỹ thuật <a class="reference internal" href="global_illumination/introduction_to_global_illumination.html#doc-introduction-to-global-illumination"><span class="std std-ref">chiếu sáng toàn cục</span></a> nào để thay thế cho các node đèn phát sáng trên một vùng rộng.</p>
+</section>
+<section id="shadow-mapping">
+<h2>Shadow mapping<a class="headerlink" href="#shadow-mapping" title="Link to this heading"></a></h2>
+<p>Đèn có thể tùy chọn đổ bóng. Điều này giúp chúng chân thực hơn (ánh sáng không chiếu tới các vùng bị che khuất), nhưng có thể tốn hiệu năng hơn. Có một danh sách các tham số bóng đổ chung, mỗi tham số cũng có một chức năng cụ thể:</p>
+<ul class="simple">
+<li><p><strong>Enabled:</strong> Đánh dấu để bật shadow mapping cho đèn này.</p></li>
+<li><p><strong>Opacity:</strong> Các vùng bị che khuất được làm tối theo hệ số độ đục này. Theo mặc định, bóng đổ hoàn toàn đục, nhưng có thể thay đổi để bóng đổ của một đèn cụ thể trở nên trong mờ.</p></li>
+<li><p><strong>Bias:</strong> Khi tham số này quá thấp, hiện tượng tự đổ bóng sẽ xảy ra. Khi quá cao, bóng đổ sẽ tách rời khỏi vật đổ bóng. Hãy tinh chỉnh cho phù hợp nhất với bạn.</p></li>
+<li><p><strong>Normal Bias:</strong> Khi tham số này quá thấp, hiện tượng tự đổ bóng sẽ xảy ra. Khi quá cao, bóng đổ sẽ trông lệch khỏi vật đổ bóng. Hãy tinh chỉnh cho phù hợp nhất với bạn.</p></li>
+<li><p><strong>Transmittance Bias:</strong> Khi tham số này quá thấp, hiện tượng tự đổ bóng sẽ xảy ra trên các material có bật transmittance. Khi quá cao, bóng đổ sẽ không ảnh hưởng nhất quán đến các material có bật transmittance. Hãy tinh chỉnh cho phù hợp nhất với bạn.</p></li>
+<li><p><strong>Reverse Cull Face:</strong> Một số scene hoạt động tốt hơn khi shadow mapping được kết xuất với face culling bị đảo ngược.</p></li>
+<li><p><strong>Blur:</strong> Nhân bán kính làm mờ bóng đổ của đèn này. Thuộc tính này hoạt động với cả shadow mapping truyền thống lẫn bóng đổ contact-hardening (các đèn có <strong>Angular Distance</strong> hoặc <strong>Size</strong> lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>). Giá trị cao hơn cho bóng đổ mềm hơn, đồng thời trông ổn định hơn theo thời gian với các vật thể chuyển động. Nhược điểm của việc tăng độ mờ bóng đổ là nó khiến họa tiết hạt dùng để lọc trở nên dễ thấy hơn. Xem thêm <a class="reference internal" href="#doc-lights-and-shadows-shadow-filter-mode"><span class="std std-ref">Chế độ lọc bóng</span></a>.</p></li>
+<li><p><strong>Caster Mask:</strong> Chỉ các vật thể trong các layer này mới đổ bóng. Lưu ý rằng mask này không ảnh hưởng đến việc bóng đổ được đổ <em>lên</em> những vật thể nào.</p></li>
+</ul>
+<img alt="../../_images/lights_and_shadows_blur.webp" src="../../_images/lights_and_shadows_blur.webp" />
+<section id="tweaking-shadow-bias">
+<h3>Tinh chỉnh shadow bias<a class="headerlink" href="#tweaking-shadow-bias" title="Link to this heading"></a></h3>
+<p>Dưới đây là hình ảnh minh họa việc tinh chỉnh bias. Giá trị mặc định phù hợp với hầu hết trường hợp, nhưng nhìn chung, nó phụ thuộc vào kích thước và độ phức tạp của hình học.</p>
+<p>Nếu <strong>Shadow Bias</strong> hoặc <strong>Shadow Normal Bias</strong> của một đèn được đặt quá thấp, bóng đổ sẽ bị &quot;nhòe&quot; lên các vật thể. Điều này khiến vẻ ngoài mong muốn của đèn bị tối đi, và được gọi là <em>shadow acne</em>:</p>
+<img alt="../../_images/lights_and_shadows_acne.webp" src="../../_images/lights_and_shadows_acne.webp" />
+<p>Mặt khác, nếu <strong>Shadow Bias</strong> hoặc <strong>Shadow Normal Bias</strong> của một đèn được đặt quá cao, bóng đổ có thể trông bị tách rời khỏi vật thể. Hiện tượng này được gọi là <em>peter-panning</em>:</p>
+<img alt="../../_images/lights_and_shadows_peter_panning.webp" src="../../_images/lights_and_shadows_peter_panning.webp" />
+<p>Nói chung, nên ưu tiên tăng <strong>Shadow Normal Bias</strong> hơn là tăng <strong>Shadow Bias</strong>. Tăng <strong>Shadow Normal Bias</strong> không gây peter-panning nhiều như tăng <strong>Shadow Bias</strong>, nhưng vẫn có thể giải quyết hiệu quả hầu hết các vấn đề shadow acne. Nhược điểm của việc tăng <strong>Shadow Normal Bias</strong> là nó có thể khiến bóng đổ trông mỏng hơn đối với một số vật thể.</p>
+<p>Mọi vấn đề về bias đều có thể khắc phục bằng cách <a class="reference internal" href="#doc-lights-and-shadows-balancing-performance-and-quality"><span class="std std-ref">tăng độ phân giải shadow map</span></a>, đổi lại hiệu năng giảm.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tinh chỉnh cài đặt shadow mapping là cả một nghệ thuật – không có cài đặt nào &quot;phù hợp với mọi trường hợp&quot;. Để đạt hình ảnh đẹp nhất, bạn có thể cần dùng các giá trị shadow bias khác nhau cho từng đèn.</p>
+</div>
+<p><strong>Lưu ý về thay đổi vẻ ngoài</strong>: Khi bật bóng đổ cho một đèn, hãy lưu ý rằng vẻ ngoài của đèn có thể thay đổi so với khi nó được kết xuất không có bóng đổ trong renderer Compatibility. Do hạn chế của các thiết bị di động đời cũ, bóng đổ được triển khai bằng phương pháp kết xuất nhiều lượt (multi-pass), nên các đèn có bóng đổ được kết xuất trong không gian sRGB thay vì không gian tuyến tính. Sự thay đổi không gian kết xuất này đôi khi có thể làm thay đổi đáng kể vẻ ngoài của đèn. Để đạt vẻ ngoài tương tự một đèn không có bóng đổ, bạn có thể cần điều chỉnh cài đặt năng lượng của đèn.</p>
+</section>
+</section>
+<section id="directional-light">
+<span id="doc-lights-and-shadows-directional-light"></span><h2>Đèn định hướng<a class="headerlink" href="#directional-light" title="Link to this heading"></a></h2>
+<p>Đây là loại đèn phổ biến nhất và đại diện cho một nguồn sáng ở rất xa (chẳng hạn như mặt trời). Đây cũng là loại đèn tốn ít chi phí tính toán nhất và nên được dùng bất cứ khi nào có thể (dù nó không phải là loại có shadow map rẻ nhất để tính toán, nhưng sẽ nói thêm về điều này sau).</p>
+<p>Đèn định hướng (directional light) mô phỏng vô số tia sáng song song bao phủ toàn bộ scene. Node đèn định hướng được biểu diễn bằng một mũi tên lớn chỉ hướng của các tia sáng. Tuy nhiên, vị trí của node hoàn toàn không ảnh hưởng đến chiếu sáng và có thể đặt ở bất kỳ đâu.</p>
+<img alt="../../_images/light_directional.png" src="../../_images/light_directional.png" />
+<p>Mọi mặt có mặt trước bị tia sáng chiếu vào sẽ được chiếu sáng, còn các mặt khác vẫn tối. Không giống hầu hết các loại đèn khác, đèn định hướng không có tham số riêng nào.</p>
+<p>Đèn định hướng cũng cung cấp thuộc tính <strong>Angular Distance</strong>, xác định kích thước góc của nguồn sáng tính bằng độ. Tăng giá trị này lên trên <code class="docutils literal notranslate"><span class="pre">0.0</span></code> sẽ làm bóng mềm hơn ở khoảng cách xa hơn so với vật thể đổ bóng, đồng thời cũng ảnh hưởng đến hình dạng mặt trời trong các material bầu trời thủ tục (procedural sky). Đây được gọi là bóng <em>contact-hardening</em> (còn được biết đến là PCSS).</p>
+<p>Để tham khảo, khoảng cách góc của Mặt Trời nhìn từ Trái Đất xấp xỉ <code class="docutils literal notranslate"><span class="pre">0.5</span></code>. Loại bóng này tốn kém, vì vậy hãy xem các khuyến nghị trong <a class="reference internal" href="#doc-lights-and-shadows-pcss-recommendations"><span class="std std-ref">Khuyến nghị về PCSS</span></a> nếu đặt giá trị này trên <code class="docutils literal notranslate"><span class="pre">0.0</span></code> cho các đèn có bật bóng.</p>
+<section id="directional-shadow-mapping">
+<h3>Shadow mapping cho đèn định hướng<a class="headerlink" href="#directional-shadow-mapping" title="Link to this heading"></a></h3>
+<p>Để tính shadow map, scene được kết xuất (chỉ độ sâu) từ một góc nhìn trực giao bao phủ toàn bộ scene (hoặc tới khoảng cách tối đa). Tuy nhiên, cách tiếp cận này có một vấn đề: các vật thể ở gần camera nhận bóng có độ phân giải thấp và có thể trông bị vỡ khối.</p>
+<p>Để khắc phục điều này, một kỹ thuật có tên <em>Parallel Split Shadow Maps</em> (PSSM) được sử dụng. Kỹ thuật này chia view frustum thành 2 hoặc 4 vùng. Mỗi vùng có shadow map riêng. Điều này cho phép các vùng nhỏ gần người xem có cùng độ phân giải bóng như một vùng rộng lớn ở xa. Khi bật bóng cho DirectionalLight3D, chế độ bóng mặc định là PSSM với 4 phần chia. Trong trường hợp một vật thể đủ lớn để xuất hiện trong cả bốn phần chia, số draw call sẽ tăng lên. Cụ thể, vật thể đó sẽ được kết xuất tổng cộng năm lần: một lần cho mỗi phần chia trong bốn phần chia bóng và một lần cho lần kết xuất scene cuối cùng. Điều này có thể ảnh hưởng đến hiệu năng; hiểu hành vi này là quan trọng để tối ưu scene và kiểm soát kỳ vọng về hiệu năng.</p>
+<img alt="../../_images/lights_and_shadows_pssm_explained.webp" src="../../_images/lights_and_shadows_pssm_explained.webp" />
+<p>Nhờ vậy, bóng trở nên chi tiết hơn:</p>
+<img alt="../../_images/lights_and_shadows_directional_mode.webp" src="../../_images/lights_and_shadows_directional_mode.webp" />
+<p>Để điều khiển PSSM, một số tham số được cung cấp:</p>
+<img alt="../../_images/lights_and_shadows_directional_shadow_params.webp" src="../../_images/lights_and_shadows_directional_shadow_params.webp" />
+<p>Mỗi khoảng cách chia được điều khiển tương đối so với mặt phẳng xa của camera (hoặc <strong>Max Distance</strong> của bóng nếu lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>). <code class="docutils literal notranslate"><span class="pre">0.0</span></code> là vị trí mắt và <code class="docutils literal notranslate"><span class="pre">1.0</span></code> là nơi bóng kết thúc ở khoảng cách xa. Các phần chia nằm ở giữa. Giá trị mặc định thường hoạt động tốt, nhưng việc tinh chỉnh một chút phần chia đầu tiên là phổ biến để tăng chi tiết cho các vật thể ở gần (như nhân vật trong game góc nhìn thứ ba).</p>
+<p>Luôn đảm bảo đặt <strong>Max Distance</strong> của bóng theo nhu cầu của scene. Khoảng cách tối đa thấp hơn sẽ cho bóng đẹp hơn và hiệu năng tốt hơn, vì sẽ có ít vật thể cần được đưa vào quá trình kết xuất bóng hơn. Bạn cũng có thể điều chỉnh <strong>Fade Start</strong> để kiểm soát mức độ mờ dần của bóng ở khoảng cách xa. Với các scene mà <strong>Max Distance</strong> bao phủ hoàn toàn scene ở mọi vị trí camera, bạn có thể tăng <strong>Fade Start</strong> lên <code class="docutils literal notranslate"><span class="pre">1.0</span></code> để ngăn bóng mờ dần ở khoảng cách xa. Không nên làm điều này trong các scene mà <strong>Max Distance</strong> không bao phủ hoàn toàn scene, vì bóng sẽ trông như bị cắt đột ngột ở khoảng cách xa.</p>
+<p>Đôi khi, phần chuyển tiếp giữa một phần chia và phần tiếp theo có thể trông không đẹp. Để khắc phục, có thể bật tùy chọn <strong>Blend Splits</strong>, tùy chọn này hy sinh chi tiết và hiệu năng để đổi lấy chuyển tiếp mượt hơn:</p>
+<img alt="../../_images/blend_splits.png" src="../../_images/blend_splits.png" />
+<p>Tham số <strong>Shadow &gt; Normal Bias</strong> có thể được dùng để khắc phục các trường hợp đặc biệt của hiện tượng tự đổ bóng khi vật thể vuông góc với ánh sáng. Nhược điểm duy nhất là nó làm bóng mỏng đi một chút. Trong hầu hết các tình huống, hãy cân nhắc tăng <strong>Shadow &gt; Normal Bias</strong> trước khi tăng <strong>Shadow &gt; Bias</strong>.</p>
+<p>Cuối cùng, <strong>Pancake Size</strong> là một thuộc tính có thể điều chỉnh để khắc phục tình trạng mất bóng khi dùng các vật thể lớn có mesh không được chia nhỏ. Chỉ thay đổi giá trị này nếu bạn nhận thấy bóng bị mất mà không liên quan đến các vấn đề về shadow bias.</p>
+</section>
+</section>
+<section id="omni-light">
+<span id="doc-lights-and-shadows-omni-light"></span><h2>Đèn omni<a class="headerlink" href="#omni-light" title="Link to this heading"></a></h2>
+<p>Đèn omni là một nguồn sáng điểm phát sáng theo hình cầu ra mọi hướng trong một bán kính nhất định.</p>
+<img alt="../../_images/light_omni.png" src="../../_images/light_omni.png" />
+<p>Trong thực tế, độ suy giảm ánh sáng là một hàm nghịch đảo, nghĩa là đèn omni không có bán kính. Đây là một vấn đề vì nó có nghĩa là việc tính toán nhiều đèn omni sẽ trở nên rất nặng.</p>
+<p>Để giải quyết vấn đề này, tham số <strong>Range</strong> được đưa vào cùng với một hàm suy giảm.</p>
+<img alt="../../_images/light_omni_params.png" src="../../_images/light_omni_params.png" />
+<p>Hai tham số này cho phép tinh chỉnh cách hoạt động về mặt hình ảnh để đạt được kết quả đẹp mắt.</p>
+<img alt="../../_images/light_attenuation.png" src="../../_images/light_attenuation.png" />
+<p>OmniLight3D cũng có tham số <strong>Size</strong>. Tăng giá trị này sẽ khiến ánh sáng mờ dần chậm hơn và bóng trông mờ hơn khi ở xa vật thể đổ bóng. Điều này có thể dùng để mô phỏng đèn vùng ở một mức độ nào đó. Đây được gọi là bóng <em>contact-hardening</em> (còn được biết đến là PCSS). Loại bóng này tốn kém, vì vậy hãy xem các khuyến nghị trong <a class="reference internal" href="#doc-lights-and-shadows-pcss-recommendations"><span class="std std-ref">Khuyến nghị về PCSS</span></a> nếu đặt giá trị này trên <code class="docutils literal notranslate"><span class="pre">0.0</span></code> cho các đèn có bật bóng.</p>
+<img alt="../../_images/lights_and_shadows_pcss.webp" src="../../_images/lights_and_shadows_pcss.webp" />
+<section id="omni-shadow-mapping">
+<h3>Shadow mapping cho đèn omni<a class="headerlink" href="#omni-shadow-mapping" title="Link to this heading"></a></h3>
+<p>Shadow mapping cho đèn omni tương đối đơn giản. Vấn đề chính cần cân nhắc là thuật toán dùng để kết xuất nó.</p>
+<p>Bóng omni có thể được kết xuất bằng ánh xạ <strong>Dual Paraboloid</strong> hoặc <strong>Cube</strong>. <strong>Dual Paraboloid</strong> kết xuất nhanh nhưng có thể gây biến dạng, còn <strong>Cube</strong> chính xác hơn nhưng chậm hơn. Mặc định là <strong>Cube</strong>, nhưng hãy cân nhắc đổi sang <strong>Dual Paraboloid</strong> cho những đèn mà sự khác biệt về hình ảnh không đáng kể.</p>
+<img alt="../../_images/lights_and_shadows_dual_parabolid_vs_cubemap.webp" src="../../_images/lights_and_shadows_dual_parabolid_vs_cubemap.webp" />
+<p>Nếu các vật thể được kết xuất phần lớn có hình dạng bất thường và được chia nhỏ, Dual Paraboloid thường là đủ. Dù sao đi nữa, vì các bóng này được lưu đệm trong một shadow atlas (sẽ nói thêm ở cuối), nó có thể không tạo ra khác biệt về hiệu năng trong hầu hết các scene.</p>
+<p>Đèn omni có bật bóng có thể sử dụng projector. Texture projector sẽ <em>nhân</em> màu của ánh sáng với màu tại một điểm nhất định trên texture. Do đó, đèn thường sẽ trông tối hơn khi đã gán texture projector; bạn có thể tăng <strong>Energy</strong> để bù lại.</p>
+<p>Texture projector của đèn omni yêu cầu ánh xạ toàn cảnh 360° đặc biệt, tương tự như texture của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_panoramaskymaterial.html" title="Class reference (English)"><span class="xref std std-ref">class_PanoramaSkyMaterial</span></a>.</p>
+<p>Với texture projector bên dưới, ta thu được kết quả sau:</p>
+<img alt="../../_images/lights_and_shadows_omni_projector_example.webp" src="../../_images/lights_and_shadows_omni_projector_example.webp" />
+<img alt="../../_images/lights_and_shadows_omni_projector.webp" src="../../_images/lights_and_shadows_omni_projector.webp" />
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn có projector omni ở dạng ảnh cubemap, bạn có thể dùng <a class="reference external" href="https://danilw.github.io/GLSL-howto/cubemap_to_panorama_js/cubemap_to_panorama.html">công cụ chuyển đổi trên web này</a> để chuyển chúng thành một ảnh toàn cảnh duy nhất.</p>
+</div>
+</section>
+</section>
+<section id="spot-light">
+<span id="doc-lights-and-shadows-spot-light"></span><h2>Đèn spot<a class="headerlink" href="#spot-light" title="Link to this heading"></a></h2>
+<p>Đèn spot tương tự như đèn omni, ngoại trừ việc chúng chỉ phát sáng trong một hình nón (hay &quot;cutoff&quot;). Chúng hữu ích để mô phỏng đèn pin, đèn xe hơi, đèn phản quang, đèn rọi, v.v. Loại đèn này cũng bị suy giảm về phía hướng ngược lại với hướng nó chiếu.</p>
+<p>Đèn spot có chung các tham số <strong>Range</strong>, <strong>Attenuation</strong> và <strong>Size</strong> như OmniLight3D, và bổ sung thêm hai tham số:</p>
+<ul class="simple">
+<li><p><strong>Angle:</strong> Góc mở của đèn.</p></li>
+<li><p><strong>Angle Attenuation:</strong> Độ suy giảm của hình nón, giúp làm mềm viền hình nón.</p></li>
+</ul>
+<section id="spot-shadow-mapping">
+<h3>Shadow mapping cho đèn spot<a class="headerlink" href="#spot-shadow-mapping" title="Link to this heading"></a></h3>
+<p>Đèn spot có cùng các tham số shadow mapping như đèn omni. Kết xuất shadow map của đèn spot nhanh hơn đáng kể so với đèn omni, vì chỉ cần kết xuất một texture bóng (thay vì kết xuất 6 mặt, hoặc 2 mặt ở chế độ dual paraboloid).</p>
+<p>Đèn spot có bật bóng có thể sử dụng projector. Texture projector sẽ <em>nhân</em> màu của ánh sáng với màu tại một điểm nhất định trên texture. Do đó, đèn thường sẽ trông tối hơn khi đã gán texture projector; bạn có thể tăng <strong>Energy</strong> để bù lại.</p>
+<p>Không giống projector của đèn omni, texture projector của đèn spot không cần tuân theo định dạng đặc biệt nào để hiển thị đúng. Nó sẽ được ánh xạ theo cách tương tự như một <a class="reference internal" href="using_decals.html#doc-using-decals"><span class="std std-ref">decal</span></a>.</p>
+<p>Với texture projector bên dưới, ta thu được kết quả sau:</p>
+<img alt="../../_images/lights_and_shadows_spot_projector_example.webp" src="../../_images/lights_and_shadows_spot_projector_example.webp" />
+<img alt="../../_images/lights_and_shadows_spot_projector.webp" src="../../_images/lights_and_shadows_spot_projector.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đèn spot có góc rộng sẽ có bóng chất lượng thấp hơn so với đèn spot có góc hẹp, vì shadow map bị trải ra trên một bề mặt lớn hơn. Ở góc rộng hơn 89 độ, bóng của đèn spot sẽ ngừng hoạt động hoàn toàn. Nếu bạn cần bóng cho đèn có góc rộng hơn, hãy dùng đèn omni thay thế.</p>
+</div>
+</section>
+</section>
+<section id="area-light">
+<span id="doc-lights-and-shadows-area-light"></span><h2>Đèn vùng<a class="headerlink" href="#area-light" title="Link to this heading"></a></h2>
+<p>Đôi khi, bạn muốn ánh sáng phát ra từ một vùng lớn thay vì một điểm duy nhất. Đèn vùng (area light) hữu ích để mô phỏng ánh sáng khuếch tán mềm, chẳng hạn như ánh sáng chiếu vào từ cửa sổ hoặc từ một bảng quảng cáo được chiếu sáng.</p>
+<p>Godot cung cấp node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_arealight3d.html" title="Class reference (English)"><span class="xref std std-ref">class_AreaLight3D</span></a> cho mục đích này, node này phát sáng từ một vùng hình chữ nhật. Node chỉ phát sáng và không có biểu diễn hình ảnh nào khác trong scene. Các ảnh chụp màn hình bên dưới dùng một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sprite3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Sprite3D</span></a> làm node con của đèn vùng để minh họa.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Loại đèn này tốn kém nhất để kết xuất theo thời gian thực. Nên dùng nó một cách tiết kiệm, đặc biệt khi bật bóng. Hãy cân nhắc chỉ dùng chúng cho các cảnh cinematic hoặc khi nhắm tới các thiết bị cao cấp.</p>
+<p>Trong Forward+, ngay khi có một đèn vùng hiển thị trong view frustum, nó sẽ gây thêm chi phí hiệu năng cho <strong>tất cả</strong> các vật thể được kết xuất trong scene, kể cả những vật thể không được đèn vùng chiếu tới. Sự đánh đổi này cho phép kết xuất số lượng đèn vùng lớn hơn (clustered lighting).</p>
+<p>Trong Mobile và Compatibility, chỉ những vật thể được đèn vùng chiếu tới mới chịu thêm chi phí hiệu năng.</p>
+</div>
+<p>Đèn vùng cũng có thể đổ bóng, với vùng bán dạ (penumbra) thay đổi được mô phỏng bằng <a class="reference internal" href="#doc-lights-and-shadows-pcss-recommendations"><span class="std std-ref">PCSS</span></a> theo mặc định. Kích thước vùng bán dạ này có thể được điều khiển bằng thuộc tính <strong>Size</strong> của Light3D. Hiệu ứng này có thể khá nặng, vì vậy có thể tắt nó bằng cách đặt <strong>Size</strong> thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bóng do đèn vùng đổ ra có thể trông không chính xác nếu vật thể đổ bóng không được chia nhỏ đủ và ở rất gần đèn vùng. Đây cũng là hạn chế tương tự như chế độ bóng Dual Paraboloid của đèn omni.</p>
+</div>
+<img alt="../../_images/lights_and_shadows_area_example.webp" src="../../_images/lights_and_shadows_area_example.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vì đèn vùng khó mô phỏng trong một bộ kết xuất raster hóa theo thời gian thực, chúng đi kèm một số hạn chế.</p>
+<p>Với các nguồn sáng nhỏ, bạn có thể sẽ đạt kết quả tốt hơn khi dùng đèn điểm. Bóng từ đèn vùng là những phép xấp xỉ thô, vì chúng được tính như thể là đèn điểm, và có thể trông bị méo ở các cạnh. Để có kết quả tốt hơn, hãy đảm bảo các mesh trong phạm vi của đèn được chia nhỏ đầy đủ.</p>
+<p>Đèn vùng gặp hiện tượng rò rỉ ánh sáng ở mặt sau của hình học nằm sát phía trước chúng ở các góc tới xiên, vì vậy hãy cẩn thận khi chọn vị trí đặt chúng.</p>
+<p>Cuối cùng, không phải mọi tính năng của material đều được hỗ trợ đầy đủ; đèn vùng thực tế chỉ giới hạn ở shading khuếch tán Lambertian và phản chiếu GGX, còn các material dị hướng sẽ trông như đẳng hướng. Vertex shading cũng chưa được triển khai cho đèn vùng.</p>
+</div>
+<p>Đèn vùng phát sáng trong một vùng hình chữ nhật được xác định bởi thuộc tính <strong>Area &gt; Size</strong> (đừng nhầm với thuộc tính <strong>Size</strong> chung của Light3D). Để có kết quả chính xác về mặt vật lý, bạn nên đổi kích thước vùng này cho khớp với kích thước của nguồn sáng ngoài đời thực mà bạn đang cố mô phỏng. Ví dụ, nếu bạn mô phỏng một ống đèn neon dài 1 mét và rộng 10 centimet, hãy đặt kích thước vùng là <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">0.1)</span></code> và điều chỉnh năng lượng cho phù hợp.</p>
+<p>Theo mặc định, năng lượng của đèn được chuẩn hóa: vùng càng lớn, ánh sáng càng yếu. Điều này cho phép bạn thay đổi kích thước vùng mà không cần điều chỉnh năng lượng để bù lại, rất hữu ích cho hoạt ảnh. Bạn có thể tắt hành vi này bằng cách bỏ chọn <strong>Area &gt; Normalize Energy</strong> nếu muốn năng lượng không phụ thuộc vào kích thước vùng.</p>
+<p>Vùng hình chữ nhật có thể được gán texture tùy chọn. Điều này có thể được dùng hiệu quả để thay đổi hình dạng của ánh sáng thành bất kỳ hình 2D nào, hoặc nhuộm nó bằng các màu khác nhau. Kênh alpha của texture được xem như màu đen (không có ánh sáng đi qua). Texture của đèn vùng sẽ hiển thị trong các phản chiếu tùy theo độ nhám của bề mặt. Hành vi này khác với projector của đèn omni/spot, vì nó không chiếu texture trực tiếp lên toàn bộ ánh sáng khuếch tán.</p>
+<p>Khi dùng texture trong suốt hoặc đen dần về phía các cạnh, bạn có thể muốn chừa một khoảng trống vài pixel để đảm bảo texture được làm mờ mượt mà.</p>
+<img alt="../../_images/lights_and_shadows_area_texture.webp" src="../../_images/lights_and_shadows_area_texture.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Thay đổi texture của đèn vùng khi đang chạy có thể tốn kém, đặc biệt nếu texture lớn.</p>
+<p>Để giảm tác động hiệu năng khi chuyển texture lúc đang chạy, hãy đảm bảo mỗi chiều của texture vùng là bội số của 128 pixel hoặc là lũy thừa của hai. Điều này loại bỏ nhu cầu về một lượt co giãn, vốn làm chậm việc thay đổi texture. Texture không nhất thiết phải vuông để đạt tối ưu. Ví dụ về các kích thước texture tối ưu gồm 32×64, 128×128 và 256×384.</p>
+<p>Đèn vùng có texture không được hỗ trợ trong bộ kết xuất Compatibility.</p>
+</div>
+</section>
+<section id="shadow-atlas">
+<span id="doc-lights-and-shadows-shadow-atlas"></span><h2>Shadow atlas<a class="headerlink" href="#shadow-atlas" title="Link to this heading"></a></h2>
+<p>Không giống đèn định hướng vốn có texture bóng riêng, đèn omni, spot và đèn vùng được gán vào các ô của một shadow atlas. Atlas này có thể được cấu hình trong phần Project Settings nâng cao (<strong>Rendering &gt; Lights And Shadows &gt; Positional Shadow</strong>).</p>
+<p>Độ phân giải áp dụng cho toàn bộ shadow atlas. Atlas này được chia thành bốn góc phần tư:</p>
+<img alt="../../_images/lights_and_shadows_shadow_quadrants.webp" src="../../_images/lights_and_shadows_shadow_quadrants.webp" />
+<p>Mỗi góc phần tư có thể được chia nhỏ để cấp phát số lượng shadow map bất kỳ; sau đây là cách chia mặc định:</p>
+<img alt="../../_images/lights_and_shadows_shadow_quadrants2.webp" src="../../_images/lights_and_shadows_shadow_quadrants2.webp" />
+<p>Shadow atlas cấp phát không gian như sau:</p>
+<ul class="simple">
+<li><p>Kích thước shadow map lớn nhất (khi không chia nhỏ) đại diện cho một đèn có kích thước bằng màn hình (hoặc lớn hơn).</p></li>
+<li><p>Các phần chia nhỏ (map nhỏ hơn) đại diện cho bóng của những đèn ở xa tầm nhìn hơn và nhỏ hơn tương ứng.</p></li>
+</ul>
+<p>Mỗi frame, quy trình sau được thực hiện cho tất cả các đèn:</p>
+<ol class="arabic simple">
+<li><p>Kiểm tra xem đèn có nằm ở ô có kích thước phù hợp không. Nếu không, kết xuất lại nó và chuyển nó sang ô lớn hơn/nhỏ hơn.</p></li>
+<li><p>Kiểm tra xem có vật thể nào ảnh hưởng đến shadow map đã thay đổi không. Nếu có, kết xuất lại đèn.</p></li>
+<li><p>Nếu không có điều nào ở trên xảy ra, không làm gì cả và bóng được giữ nguyên.</p></li>
+</ol>
+<p>Nếu các ô trong một góc phần tư đã đầy, các đèn sẽ bị đẩy xuống các ô nhỏ hơn, tùy theo kích thước và khoảng cách. Nếu tất cả các ô trong mọi góc phần tư đều đầy, một số đèn sẽ không thể kết xuất bóng ngay cả khi đã bật bóng cho chúng.</p>
+<p>Chiến lược cấp phát bóng mặc định cho phép kết xuất tối đa 88 đèn có bật bóng trong camera frustum (4 + 4 + 16 + 64):</p>
+<ol class="arabic simple">
+<li><p>Góc phần tư thứ nhất và chi tiết nhất có thể chứa 4 bóng.</p></li>
+<li><p>Góc phần tư thứ hai có thể chứa 4 bóng khác.</p></li>
+<li><p>Góc phần tư thứ ba có thể chứa 16 bóng, với ít chi tiết hơn.</p></li>
+<li><p>Góc phần tư thứ tư và ít chi tiết nhất có thể chứa 64 bóng, với chi tiết còn ít hơn nữa.</p></li>
+</ol>
+<p>Dùng số lượng bóng lớn hơn cho mỗi góc phần tư cho phép hỗ trợ tổng số đèn có bật bóng nhiều hơn, đồng thời cải thiện hiệu năng (vì bóng sẽ được kết xuất ở độ phân giải thấp hơn cho mỗi đèn). Tuy nhiên, tăng số bóng mỗi góc phần tư sẽ phải trả giá bằng chất lượng bóng thấp hơn.</p>
+<p>Trong một số trường hợp, bạn có thể muốn dùng một chiến lược cấp phát khác. Ví dụ, trong một game góc nhìn từ trên xuống mà mọi đèn có kích thước gần như nhau, bạn có thể muốn đặt tất cả các góc phần tư có cùng cách chia để mọi đèn có bóng với mức chất lượng tương đương.</p>
+</section>
+<section id="balancing-performance-and-quality">
+<span id="doc-lights-and-shadows-balancing-performance-and-quality"></span><h2>Cân bằng giữa hiệu năng và chất lượng<a class="headerlink" href="#balancing-performance-and-quality" title="Link to this heading"></a></h2>
+<p>Kết xuất bóng là một chủ đề then chốt trong hiệu năng kết xuất 3D. Điều quan trọng là đưa ra lựa chọn đúng ở đây để tránh tạo ra các điểm nghẽn.</p>
+<p>Các cài đặt chất lượng bóng định hướng có thể được thay đổi khi đang chạy bằng cách gọi các phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html" title="Class reference (English)"><span class="xref std std-ref">class_RenderingServer</span></a> phù hợp.</p>
+<p>Các cài đặt chất lượng bóng theo vị trí (omni/spot/vùng) có thể được thay đổi khi đang chạy trên <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">class_Viewport</span></a> gốc.</p>
+<section id="shadow-map-size">
+<h3>Kích thước shadow map<a class="headerlink" href="#shadow-map-size" title="Link to this heading"></a></h3>
+<p>Độ phân giải bóng cao cho bóng sắc nét hơn, nhưng với chi phí hiệu năng đáng kể. Cũng cần lưu ý rằng <em>bóng sắc nét hơn không phải lúc nào cũng chân thực hơn</em>. Trong hầu hết các trường hợp, nên giữ giá trị này ở mặc định <code class="docutils literal notranslate"><span class="pre">4096</span></code> hoặc giảm xuống <code class="docutils literal notranslate"><span class="pre">2048</span></code> cho các GPU cấp thấp.</p>
+<p>Nếu bóng theo vị trí trở nên quá mờ sau khi giảm kích thước shadow map, bạn có thể bù lại bằng cách điều chỉnh các góc phần tư của <a class="reference internal" href="#doc-lights-and-shadows-shadow-atlas"><span class="std std-ref">shadow atlas</span></a> để chứa ít bóng hơn. Điều này cho phép mỗi bóng được kết xuất ở độ phân giải cao hơn.</p>
+</section>
+<section id="shadow-filter-mode">
+<span id="doc-lights-and-shadows-shadow-filter-mode"></span><h3>Chế độ lọc bóng<a class="headerlink" href="#shadow-filter-mode" title="Link to this heading"></a></h3>
+<p>Bạn có thể chọn một số cài đặt chất lượng shadow map ở đây. Giá trị mặc định <strong>Soft Low</strong> là sự cân bằng tốt giữa hiệu năng và chất lượng cho các scene có texture chi tiết, vì chi tiết texture sẽ giúp mẫu dithering ít bị chú ý hơn.</p>
+<p>Tuy nhiên, trong các dự án có texture ít chi tiết hơn, mẫu dithering của bóng có thể dễ thấy hơn. Để che mẫu này, bạn có thể bật <a class="reference internal" href="3d_antialiasing.html#doc-3d-antialiasing-taa"><span class="std std-ref">Khử răng cưa theo thời gian (TAA)</span></a>, <a class="reference internal" href="3d_antialiasing.html#doc-3d-antialiasing-fsr2"><span class="std std-ref">AMD FidelityFX Super Resolution 2.2 (FSR2)</span></a>, <a class="reference internal" href="3d_antialiasing.html#doc-3d-antialiasing-fxaa"><span class="std std-ref">Khử răng cưa xấp xỉ nhanh (FXAA)</span></a>, hoặc tăng chất lượng lọc bóng lên <strong>Soft Medium</strong> hoặc cao hơn.</p>
+<p>Cài đặt <strong>Soft Very Low</strong> sẽ tự động giảm độ mờ của bóng để làm các lỗi hình ảnh do số mẫu thấp ít bị nhận thấy hơn. Ngược lại, các cài đặt <strong>Soft High</strong> và <strong>Soft Ultra</strong> sẽ tự động tăng độ mờ của bóng để tận dụng tốt hơn số mẫu tăng thêm.</p>
+<img alt="../../_images/lights_and_shadows_filter_quality.webp" src="../../_images/lights_and_shadows_filter_quality.webp" />
+</section>
+<section id="bits-versus-32-bit">
+<h3>16-bit so với 32-bit<a class="headerlink" href="#bits-versus-32-bit" title="Link to this heading"></a></h3>
+<p>Theo mặc định, Godot dùng texture độ sâu 16-bit để kết xuất shadow map. Điều này được khuyến nghị trong hầu hết các trường hợp vì nó cho hiệu năng tốt hơn mà không có khác biệt đáng kể về chất lượng.</p>
+<p>Nếu tắt <strong>16 Bits</strong>, texture độ sâu 32-bit sẽ được dùng thay thế. Điều này có thể giảm lỗi hình ảnh trong các scene lớn và với các đèn lớn có bật bóng. Tuy nhiên, khác biệt thường gần như không thấy được, nhưng lại có thể gây chi phí hiệu năng đáng kể.</p>
+</section>
+<section id="light-shadow-distance-fade">
+<h3>Mờ dần đèn/bóng theo khoảng cách<a class="headerlink" href="#light-shadow-distance-fade" title="Link to this heading"></a></h3>
+<p>OmniLight3D, SpotLight3D và AreaLight3D cung cấp một số thuộc tính để ẩn các đèn ở xa. Điều này có thể cải thiện hiệu năng đáng kể trong các scene lớn có hàng chục đèn trở lên.</p>
+<ul class="simple">
+<li><p><strong>Enabled:</strong> Điều khiển việc có bật mờ dần theo khoảng cách (một dạng <abbr title="Level of Detail">LOD</abbr>) hay không. Đèn sẽ mờ dần trong khoảng <strong>Begin + Length</strong>, sau đó nó sẽ bị loại bỏ (cull) và hoàn toàn không được gửi tới shader. Hãy dùng tính năng này để giảm số đèn đang hoạt động trong scene và nhờ đó cải thiện hiệu năng.</p></li>
+<li><p><strong>Begin:</strong> Khoảng cách từ camera mà tại đó đèn bắt đầu mờ dần (tính bằng đơn vị 3D).</p></li>
+<li><p><strong>Shadow:</strong> Khoảng cách từ camera mà tại đó bóng bắt đầu mờ dần (tính bằng đơn vị 3D). Có thể dùng để làm bóng mờ dần sớm hơn so với đèn, giúp cải thiện hiệu năng hơn nữa. Chỉ khả dụng nếu đèn có bật bóng.</p></li>
+<li><p><strong>Length:</strong> Quãng khoảng cách mà trong đó đèn và bóng mờ dần (tính bằng đơn vị 3D). Đèn sẽ dần trở nên trong suốt hơn trong quãng này và hoàn toàn vô hình ở cuối. Giá trị cao hơn cho chuyển tiếp mờ dần mượt hơn, phù hợp hơn khi camera di chuyển nhanh.</p></li>
+</ul>
+</section>
+<section id="pcss-recommendations">
+<span id="doc-lights-and-shadows-pcss-recommendations"></span><h3>Khuyến nghị về PCSS<a class="headerlink" href="#pcss-recommendations" title="Link to this heading"></a></h3>
+<p>Percentage-closer soft shadows (PCSS) mang lại diện mạo shadow mapping chân thực hơn, với kích thước vùng bán dạ thay đổi tùy theo khoảng cách giữa vật thể đổ bóng và bề mặt nhận bóng. Điều này đi kèm chi phí hiệu năng cao, đặc biệt với đèn định hướng.</p>
+<p>Để tránh các vấn đề về hiệu năng, bạn nên:</p>
+<ul class="simple">
+<li><p>Chỉ dùng một vài đèn có bật bóng PCSS tại một thời điểm. Hiệu ứng thường dễ thấy nhất trên các đèn lớn và sáng. Các nguồn sáng phụ mờ hơn thường không được lợi nhiều từ việc dùng bóng PCSS.</p></li>
+<li><p>Cung cấp một cài đặt để người dùng tắt bóng PCSS. Với đèn định hướng, có thể làm điều này bằng cách đặt thuộc tính <code class="docutils literal notranslate"><span class="pre">light_angular_distance</span></code> của DirectionalLight3D thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code> trong script. Với đèn theo vị trí, có thể làm điều này bằng cách đặt thuộc tính <code class="docutils literal notranslate"><span class="pre">light_size</span></code> của OmniLight3D hoặc SpotLight3D thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code> trong script.</p></li>
+</ul>
+</section>
+<section id="projector-filter-mode">
+<h3>Chế độ lọc projector<a class="headerlink" href="#projector-filter-mode" title="Link to this heading"></a></h3>
+<p>Cách kết xuất projector cũng ảnh hưởng đến hiệu năng. Cài đặt dự án nâng cao <strong>Rendering &gt; Textures &gt; Light Projectors &gt; Filter</strong> cho phép bạn điều khiển cách lọc texture projector. <strong>Nearest/Linear</strong> không dùng mipmap, giúp kết xuất nhanh hơn. Tuy nhiên, projector sẽ trông bị lấm tấm ở khoảng cách xa. <strong>Nearest/Linear Mipmaps</strong> sẽ trông mượt hơn ở khoảng cách xa, nhưng projector sẽ trông mờ khi nhìn từ góc xiên. Có thể khắc phục điều này bằng <strong>Nearest/Linear Mipmaps Anisotropic</strong>, chế độ có chất lượng cao nhất nhưng cũng tốn kém nhất.</p>
+<p>Nếu dự án của bạn có phong cách pixel art, hãy cân nhắc đặt bộ lọc thành một trong các giá trị <strong>Nearest</strong> để projector dùng lọc nearest-neighbor. Nếu không, hãy dùng <strong>Linear</strong>.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="standard_material_3d.html" class="btn btn-neutral float-left" title="Standard Material 3D và ORM Material 3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="using_decals.html" class="btn btn-neutral float-right" title="Sử dụng decal" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

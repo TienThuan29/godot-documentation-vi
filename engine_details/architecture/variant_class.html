@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Lớp Variant" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/architecture/variant_class.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Variant là kiểu dữ liệu quan trọng nhất trong Godot. Một Variant chỉ chiếm 24 byte trên nền tảng 64-bit (20 byte trên nền tảng 32-bit) và có thể lưu hầu hết mọi kiểu dữ liệu của engine ..." />
+<meta name="description" content="Giới thiệu: Variant là kiểu dữ liệu quan trọng nhất trong Godot. Một Variant chỉ chiếm 24 byte trên nền tảng 64-bit (20 byte trên nền tảng 32-bit) và có thể lưu hầu hết mọi kiểu dữ liệu của engine ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Lớp Variant &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Lớp Object" href="object_class.html" />
+    <link rel="prev" title="Các kiểu cốt lõi" href="core_types.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/architecture/variant_class" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kiến trúc engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="godot_architecture_diagram.html">Tổng quan kiến trúc của Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_engine_methods_and_macros.html">Các phương thức và macro thông dụng của engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_types.html">Các kiểu cốt lõi</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Lớp Variant</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#about">Giới thiệu</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#references">Tham khảo</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#list-of-variant-types">Danh sách các kiểu variant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#containers-array-and-dictionary">Container: Array và Dictionary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Tham khảo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="object_class.html">Lớp Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inheritance_class_tree.html">Cây kế thừa lớp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_rendering_architecture.html">Kiến trúc kết xuất nội bộ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_coordinate_systems.html">Hệ tọa độ 2D và phép biến đổi 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html">Unit test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kiến trúc engine</a></li>
+      <li class="breadcrumb-item active">Lớp Variant</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="variant-class">
+<span id="doc-variant-class"></span><h1>Lớp Variant<a class="headerlink" href="#variant-class" title="Link to this heading"></a></h1>
+<section id="about">
+<h2>Giới thiệu<a class="headerlink" href="#about" title="Link to this heading"></a></h2>
+<p>Variant là kiểu dữ liệu quan trọng nhất trong Godot. Một Variant chỉ chiếm 24 byte trên nền tảng 64-bit (20 byte trên nền tảng 32-bit) và có thể lưu hầu hết mọi kiểu dữ liệu của engine bên trong nó. Variant hiếm khi được dùng để giữ thông tin trong thời gian dài, thay vào đó chúng chủ yếu được dùng cho giao tiếp, chỉnh sửa, serialization và nói chung là di chuyển dữ liệu.</p>
+<p>Một Variant có thể:</p>
+<ul class="simple">
+<li><p>Lưu hầu hết mọi kiểu dữ liệu.</p></li>
+<li><p>Thực hiện phép toán giữa nhiều variant (GDScript dùng Variant làm kiểu dữ liệu nguyên tử/gốc của nó).</p></li>
+<li><p>Được băm (hash), nên có thể so sánh nhanh với các variant khác.</p></li>
+<li><p>Được dùng để chuyển đổi an toàn giữa các kiểu dữ liệu.</p></li>
+<li><p>Được dùng để trừu tượng hóa việc gọi phương thức và đối số của chúng (Godot xuất tất cả các hàm của nó thông qua variant).</p></li>
+<li><p>Được dùng để trì hoãn lời gọi hoặc di chuyển dữ liệu giữa các luồng.</p></li>
+<li><p>Được serialize dưới dạng nhị phân và lưu xuống đĩa, hoặc truyền qua mạng.</p></li>
+<li><p>Được serialize thành văn bản và dùng để in giá trị cũng như cho các cài đặt có thể chỉnh sửa.</p></li>
+<li><p>Hoạt động như một thuộc tính được export, để trình chỉnh sửa có thể chỉnh sửa nó một cách thống nhất.</p></li>
+<li><p>Được dùng cho dictionary, array, parser, v.v.</p></li>
+</ul>
+<p>Về cơ bản, nhờ có lớp Variant, việc viết chính Godot trở nên dễ dàng hơn rất, rất nhiều, vì nó cho phép tạo ra các cấu trúc có tính động cao, vốn không phổ biến trong C++, mà không tốn nhiều công sức. Hãy làm bạn với Variant ngay hôm nay.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tất cả các kiểu trong Variant ngoại trừ Nil và Object đều <strong>không thể</strong> là <code class="docutils literal notranslate"><span class="pre">null</span></code> và phải luôn lưu một giá trị hợp lệ. Vì vậy, các kiểu này trong Variant được gọi là kiểu <em>non-nullable</em>.</p>
+<p>Một trong các kiểu Variant là <em>Nil</em>, chỉ có thể lưu giá trị <code class="docutils literal notranslate"><span class="pre">null</span></code>. Do đó, một Variant có thể chứa giá trị <code class="docutils literal notranslate"><span class="pre">null</span></code>, mặc dù tất cả các kiểu Variant ngoại trừ Nil và Object đều là non-nullable.</p>
+</div>
+<section id="references">
+<h3>Tham khảo<a class="headerlink" href="#references" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/variant/variant.h">core/variant/variant.h</a></p></li>
+</ul>
+</section>
+</section>
+<section id="list-of-variant-types">
+<h2>Danh sách các kiểu variant<a class="headerlink" href="#list-of-variant-types" title="Link to this heading"></a></h2>
+<p>Các kiểu sau có sẵn trong Variant:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Ghi chú</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Nil (chỉ có thể lưu <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+<td><p>Kiểu nullable</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_bool.html" title="Class reference (English)"><span class="xref std std-ref">class_bool</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_int.html" title="Class reference (English)"><span class="xref std std-ref">class_int</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_float.html" title="Class reference (English)"><span class="xref std std-ref">class_float</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_string.html" title="Class reference (English)"><span class="xref std std-ref">class_string</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">class_vector2</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2i.html" title="Class reference (English)"><span class="xref std std-ref">class_vector2i</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rect2.html" title="Class reference (English)"><span class="xref std std-ref">class_rect2</span></a></p></td>
+<td><p>Phiên bản 2D tương ứng của AABB</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rect2i.html" title="Class reference (English)"><span class="xref std std-ref">class_rect2i</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">class_vector3</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3i.html" title="Class reference (English)"><span class="xref std std-ref">class_vector3i</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">class_transform2d</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html" title="Class reference (English)"><span class="xref std std-ref">class_vector4</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4i.html" title="Class reference (English)"><span class="xref std std-ref">class_vector4i</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_plane.html" title="Class reference (English)"><span class="xref std std-ref">class_plane</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_quaternion.html" title="Class reference (English)"><span class="xref std std-ref">class_quaternion</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_aabb.html" title="Class reference (English)"><span class="xref std std-ref">class_aabb</span></a></p></td>
+<td><p>Phiên bản 3D tương ứng của Rect2</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">class_basis</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html" title="Class reference (English)"><span class="xref std std-ref">class_transform3d</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projection.html" title="Class reference (English)"><span class="xref std std-ref">class_projection</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html" title="Class reference (English)"><span class="xref std std-ref">class_color</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_stringname.html" title="Class reference (English)"><span class="xref std std-ref">class_stringname</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_nodepath.html" title="Class reference (English)"><span class="xref std std-ref">class_nodepath</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">class_rid</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html" title="Class reference (English)"><span class="xref std std-ref">class_object</span></a></p></td>
+<td><p>Kiểu nullable</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_callable.html" title="Class reference (English)"><span class="xref std std-ref">class_callable</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_signal.html" title="Class reference (English)"><span class="xref std std-ref">class_signal</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_dictionary.html" title="Class reference (English)"><span class="xref std std-ref">class_dictionary</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_array.html" title="Class reference (English)"><span class="xref std std-ref">class_array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedbytearray.html" title="Class reference (English)"><span class="xref std std-ref">class_packedbytearray</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedint32array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedint32array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedint64array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedint64array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedfloat32array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedfloat32array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedfloat64array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedfloat64array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedstringarray.html" title="Class reference (English)"><span class="xref std std-ref">class_packedstringarray</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedvector2array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedvector2array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedvector3array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedvector3array</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedcolorarray.html" title="Class reference (English)"><span class="xref std std-ref">class_packedcolorarray</span></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedvector4array.html" title="Class reference (English)"><span class="xref std std-ref">class_packedvector4array</span></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="containers-array-and-dictionary">
+<h2>Container: Array và Dictionary<a class="headerlink" href="#containers-array-and-dictionary" title="Link to this heading"></a></h2>
+<p>Cả <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_array.html" title="Class reference (English)"><span class="xref std std-ref">class_array</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_dictionary.html" title="Class reference (English)"><span class="xref std std-ref">class_dictionary</span></a> đều được cài đặt bằng variant. Một Dictionary có thể ánh xạ bất kỳ kiểu dữ liệu nào được dùng làm khóa tới bất kỳ kiểu dữ liệu nào khác. Một Array chỉ đơn giản giữ một mảng các Variant. Tất nhiên, một Variant cũng có thể chứa một Dictionary hoặc một Array bên trong, khiến nó càng linh hoạt hơn.</p>
+<p>Việc sửa đổi một container sẽ sửa đổi tất cả các tham chiếu tới nó. Nên tạo một <a class="reference internal" href="core_types.html#doc-core-concurrency-types"><span class="std std-ref">Mutex</span></a> để khóa nó nếu muốn <a class="reference internal" href="../../tutorials/performance/using_multiple_threads.html#doc-using-multiple-threads"><span class="std std-ref">truy cập đa luồng</span></a>.</p>
+<section id="id1">
+<h3>Tham khảo<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/variant/dictionary.h">core/variant/dictionary.h</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/variant/array.h">core/variant/array.h</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="core_types.html" class="btn btn-neutral float-left" title="Các kiểu cốt lõi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="object_class.html" class="btn btn-neutral float-right" title="Lớp Object" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

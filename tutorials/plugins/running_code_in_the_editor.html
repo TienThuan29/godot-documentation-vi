@@ -1,0 +1,933 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Chạy code trong trình chỉnh sửa" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/plugins/running_code_in_the_editor.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="@tool là gì?:@tool là một dòng code mạnh mẽ, khi được thêm vào đầu script sẽ khiến script chạy trong trình chỉnh sửa. Bạn cũng có thể quyết định phần nào của script chạy trong trình chỉnh sửa, phần..." />
+<meta name="description" content="@tool là gì?:@tool là một dòng code mạnh mẽ, khi được thêm vào đầu script sẽ khiến script chạy trong trình chỉnh sửa. Bạn cũng có thể quyết định phần nào của script chạy trong trình chỉnh sửa, phần..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Chạy code trong trình chỉnh sửa &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Kết xuất" href="../rendering/index.html" />
+    <link rel="prev" title="Quốc tế hóa plugin" href="editor/internationalizing_plugins.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/plugins/running_code_in_the_editor" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Plugin</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="editor/index.html">Plugin của trình chỉnh sửa</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Chạy code trong trình chỉnh sửa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-tool"><code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> là gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use-tool">Cách dùng <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#important-information">Thông tin quan trọng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging">Debug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#try-tool-out">Thử dùng <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#editing-variables">Chỉnh sửa biến</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-notified-when-arrays-or-dictionaries-change">Nhận thông báo khi mảng hoặc dictionary thay đổi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-notified-when-resources-change">Nhận thông báo khi resource thay đổi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-node-configuration-warnings">Báo cáo cảnh báo cấu hình node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-one-off-scripts-using-editorscript">Chạy script một lần bằng EditorScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instancing-scenes">Tạo instance scene</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Plugin</a></li>
+      <li class="breadcrumb-item active">Chạy code trong trình chỉnh sửa</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="running-code-in-the-editor">
+<span id="doc-running-code-in-the-editor"></span><h1>Chạy code trong trình chỉnh sửa<a class="headerlink" href="#running-code-in-the-editor" title="Link to this heading"></a></h1>
+<section id="what-is-tool">
+<h2><code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> là gì?<a class="headerlink" href="#what-is-tool" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> là một dòng code mạnh mẽ, khi được thêm vào đầu script sẽ khiến script chạy trong trình chỉnh sửa. Bạn cũng có thể quyết định phần nào của script chạy trong trình chỉnh sửa, phần nào chạy trong game, và phần nào chạy ở cả hai.</p>
+<p>Bạn có thể dùng nó cho nhiều việc, nhưng nó hữu ích nhất trong thiết kế màn chơi để trực quan hóa những thứ khó tự dự đoán. Dưới đây là một số trường hợp sử dụng:</p>
+<ul class="simple">
+<li><p>Nếu bạn có một khẩu pháo bắn ra đạn chịu tác động vật lý (trọng lực), bạn có thể vẽ quỹ đạo của viên đạn trong trình chỉnh sửa, giúp thiết kế màn chơi dễ hơn nhiều.</p></li>
+<li><p>Nếu bạn có các bệ nhảy với độ cao nhảy khác nhau, bạn có thể vẽ độ cao nhảy tối đa mà người chơi đạt được nếu nhảy lên đó, cũng giúp thiết kế màn chơi dễ hơn.</p></li>
+<li><p>Nếu nhân vật người chơi không dùng sprite mà tự vẽ bằng code, bạn có thể cho code vẽ đó chạy trong trình chỉnh sửa để thấy nhân vật.</p></li>
+</ul>
+<div class="admonition danger">
+<p class="admonition-title">Nguy hiểm</p>
+<p>Script <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> chạy bên trong trình chỉnh sửa và cho phép bạn truy cập cây scene của scene đang được chỉnh sửa. Đây là một tính năng mạnh mẽ nhưng cũng đi kèm rủi ro, vì trình chỉnh sửa không có cơ chế bảo vệ trước việc lạm dụng script <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>. Hãy <strong>cực kỳ</strong> cẩn thận khi thao tác với cây scene, đặc biệt qua <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-queue-free" title="Class reference (English)"><span class="xref std std-ref">Node.queue_free</span></a>, vì nó có thể gây crash nếu bạn giải phóng một node trong khi trình chỉnh sửa đang chạy logic liên quan đến node đó.</p>
+</div>
+</section>
+<section id="how-to-use-tool">
+<h2>Cách dùng <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code><a class="headerlink" href="#how-to-use-tool" title="Link to this heading"></a></h2>
+<p>Để biến một script thành tool, hãy thêm annotation <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> vào đầu code.</p>
+<p>Để kiểm tra xem bạn có đang ở trong trình chỉnh sửa hay không, dùng: <code class="docutils literal notranslate"><span class="pre">Engine.is_editor_hint()</span></code>.</p>
+<p>Ví dụ, nếu bạn muốn chỉ chạy một đoạn code trong trình chỉnh sửa, dùng:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">is_editor_hint</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Code to execute when in editor.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Engine</span><span class="p">.</span><span class="n">IsEditorHint</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Code to execute when in editor.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ngược lại, nếu bạn muốn chỉ chạy code trong game, chỉ cần phủ định cùng câu lệnh đó:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">is_editor_hint</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Code to execute when in game.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Engine</span><span class="p">.</span><span class="n">IsEditorHint</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Code to execute when in game.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Các đoạn code không có điều kiện nào trong 2 điều kiện trên sẽ chạy cả trong trình chỉnh sửa lẫn trong game.</p>
+<p>Một hàm <code class="docutils literal notranslate"><span class="pre">_process()</span></code> của bạn có thể trông như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">is_editor_hint</span><span class="p">():</span>
+<span class="w">        </span><span class="c1"># Code to execute in editor.</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">is_editor_hint</span><span class="p">():</span>
+<span class="w">        </span><span class="c1"># Code to execute in game.</span>
+
+<span class="w">    </span><span class="c1"># Code to execute both in editor and in game.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Engine</span><span class="p">.</span><span class="n">IsEditorHint</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Code to execute in editor.</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Engine</span><span class="p">.</span><span class="n">IsEditorHint</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Code to execute in game.</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Code to execute both in editor and in game.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="important-information">
+<span id="doc-running-code-in-the-editor-important-information"></span><h2>Thông tin quan trọng<a class="headerlink" href="#important-information" title="Link to this heading"></a></h2>
+<p>Quy tắc chung là <strong>mọi GDScript khác mà tool script của bạn sử dụng cũng *phải* là tool</strong>. Trình chỉnh sửa không thể tạo instance từ các file GDScript không có <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>, nghĩa là bạn không thể gọi phương thức hay tham chiếu biến thành viên từ chúng. Tuy nhiên, vì phương thức tĩnh, hằng số và enum có thể dùng mà không cần tạo instance, bạn có thể gọi hoặc tham chiếu chúng từ một script <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> sang các script không phải tool. Một ngoại lệ là <a class="reference internal" href="../scripting/gdscript/gdscript_basics.html#doc-gdscript-basics-static-variables"><span class="std std-ref">biến tĩnh</span></a>. Nếu bạn đọc giá trị của một biến tĩnh trong script không có <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>, nó sẽ luôn trả về <code class="docutils literal notranslate"><span class="pre">null</span></code> mà không in ra cảnh báo hay lỗi nào. Hạn chế này không áp dụng cho phương thức tĩnh, vốn có thể được gọi bất kể script đích có ở chế độ tool hay không.</p>
+<p>Việc kế thừa một script <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> không tự động biến script kế thừa thành <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>. Bỏ <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> khỏi script kế thừa sẽ vô hiệu hóa hành vi tool của lớp cha. Vì vậy, script kế thừa cũng nên khai báo annotation <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>.</p>
+<p>Các thay đổi trong trình chỉnh sửa là vĩnh viễn, không thể undo/redo. Ví dụ, ở phần tiếp theo khi chúng ta gỡ script, node vẫn giữ nguyên góc xoay. Hãy cẩn thận để tránh tạo ra thay đổi ngoài ý muốn. Hãy cân nhắc thiết lập <a class="reference internal" href="../best_practices/version_control_systems.html#doc-version-control-systems"><span class="std std-ref">quản lý phiên bản</span></a> để tránh mất công sức nếu bạn mắc lỗi.</p>
+</section>
+<section id="debugging">
+<h2>Debug<a class="headerlink" href="#debugging" title="Link to this heading"></a></h2>
+<p>Dù không thể dùng trực tiếp debugger và breakpoint với tool script, bạn có thể khởi chạy một instance mới của trình chỉnh sửa và debug từ đó. Để làm vậy, vào <strong>Debug &gt; Customize Run Instances...</strong> và chỉ định <cite>--editor</cite> trong <strong>Main Run Args</strong>.</p>
+<p>Xem <a class="reference internal" href="../scripting/debug/overview_of_debugging_tools.html#doc-overview-of-debugging-tools"><span class="std std-ref">Tổng quan về các công cụ gỡ lỗi</span></a> để biết thêm thông tin.</p>
+<p>Ngoài ra, bạn có thể dùng các câu lệnh print để hiển thị nội dung biến.</p>
+</section>
+<section id="try-tool-out">
+<h2>Thử dùng <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code><a class="headerlink" href="#try-tool-out" title="Link to this heading"></a></h2>
+<p>Thêm một node <code class="docutils literal notranslate"><span class="pre">Sprite2D</span></code> vào scene và đặt texture là biểu tượng Godot. Gắn và mở một script, rồi sửa nó thành như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Sprite2D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MySprite</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Sprite2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu script và quay lại trình chỉnh sửa. Giờ bạn sẽ thấy đối tượng xoay. Nếu chạy game, nó cũng sẽ xoay.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Bạn có thể cần khởi động lại trình chỉnh sửa. Đây là một lỗi đã biết có trong mọi phiên bản Godot 4: <a class="reference external" href="https://github.com/godotengine/godot/issues/66381">GH-66381</a>.</p>
+</div>
+<img alt="../../_images/rotating_in_editor.gif" src="../../_images/rotating_in_editor.gif" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu không thấy thay đổi, hãy tải lại scene (đóng rồi mở lại).</p>
+</div>
+<p>Giờ hãy chọn code nào chạy khi nào. Sửa hàm <code class="docutils literal notranslate"><span class="pre">_process()</span></code> thành như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">is_editor_hint</span><span class="p">():</span>
+<span class="w">        </span><span class="n">rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="n">rotation</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Engine</span><span class="p">.</span><span class="n">IsEditorHint</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu script. Giờ đối tượng sẽ xoay theo chiều kim đồng hồ trong trình chỉnh sửa, nhưng nếu chạy game, nó sẽ xoay ngược chiều kim đồng hồ.</p>
+</section>
+<section id="editing-variables">
+<h2>Chỉnh sửa biến<a class="headerlink" href="#editing-variables" title="Link to this heading"></a></h2>
+<p>Thêm và export một biến speed vào script. Để cập nhật tốc độ và đồng thời đặt lại góc xoay, hãy thêm một setter <code class="docutils literal notranslate"><span class="pre">set(new_speed)</span></code> được thực thi với đầu vào từ inspector. Sửa <code class="docutils literal notranslate"><span class="pre">_process()</span></code> để dùng tốc độ xoay.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Sprite2D</span>
+
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Update speed and reset the rotation.</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_speed</span><span class="p">):</span>
+<span class="w">        </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_speed</span>
+<span class="w">        </span><span class="n">rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MySprite</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Sprite2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">Speed</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Update speed and reset the rotation.</span>
+<span class="w">            </span><span class="n">_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="n">Rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rotation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_speed</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Code từ các node khác không chạy trong trình chỉnh sửa. Quyền truy cập của bạn vào các node khác bị giới hạn. Bạn có thể truy cập cây và các node, cùng các thuộc tính mặc định của chúng, nhưng không thể truy cập biến do người dùng định nghĩa. Nếu muốn, các node khác cũng phải chạy trong trình chỉnh sửa.</p>
+</div>
+</section>
+<section id="getting-notified-when-arrays-or-dictionaries-change">
+<h2>Nhận thông báo khi mảng hoặc dictionary thay đổi<a class="headerlink" href="#getting-notified-when-arrays-or-dictionaries-change" title="Link to this heading"></a></h2>
+<p>Bạn có thể dùng Array hoặc Dictionary làm biến <code class="docutils literal notranslate"><span class="pre">&#64;export</span></code>. Trong script <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>, bạn có thể phản ứng với mọi thay đổi của collection đó bằng một setter. Thông thường, khi chạy, setter như vậy chỉ được gọi khi bạn gán giá trị cho biến, nhưng khi bạn chỉnh sửa Array hoặc Dictionary trong inspector, setter cũng sẽ được gọi.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">MyTool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">my_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_array</span><span class="p">):</span>
+<span class="w">        </span><span class="n">my_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_array</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;My array just changed!&quot;</span><span class="p">)</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">my_dictionary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_dictionary</span><span class="p">):</span>
+<span class="w">        </span><span class="n">my_dictionary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_dictionary</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;My dictionary just changed!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Array</span><span class="w"> </span><span class="n">_myArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Dictionary</span><span class="w"> </span><span class="n">_myDictionary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Array</span><span class="w"> </span><span class="n">MyArray</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_myArray</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_myArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;My array just changed!&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Dictionary</span><span class="w"> </span><span class="n">MyDictionary</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_myDictionary</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_myDictionary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;My dictionary just changed!&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="getting-notified-when-resources-change">
+<h2>Nhận thông báo khi resource thay đổi<a class="headerlink" href="#getting-notified-when-resources-change" title="Link to this heading"></a></h2>
+<p>Đôi khi bạn muốn tool của mình dùng một resource. Tuy nhiên, khi bạn thay đổi một thuộc tính của resource đó trong trình chỉnh sửa, phương thức <code class="docutils literal notranslate"><span class="pre">set()</span></code> của tool sẽ không được gọi.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">MyTool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">resource</span><span class="p">:</span><span class="w"> </span><span class="nc">MyResource</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_resource</span><span class="p">):</span>
+<span class="w">        </span><span class="n">resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_resource</span>
+<span class="w">        </span><span class="nf">_on_resource_set</span><span class="p">()</span>
+
+<span class="c1"># This will only be called when you create, delete, or paste a resource.</span>
+<span class="c1"># You will not get an update when tweaking properties of it.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_resource_set</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;My resource was set!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">MyResource</span><span class="w"> </span><span class="n">_resource</span><span class="p">;</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">MyResource</span><span class="w"> </span><span class="n">Resource</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_resource</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="n">OnResourceSet</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// This will only be called when you create, delete, or paste a resource.</span>
+<span class="w">    </span><span class="c1">// You will not get an update when tweaking properties of it.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnResourceSet</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;My resource was set!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để khắc phục vấn đề này, trước tiên bạn phải biến resource thành tool và cho nó phát signal <code class="docutils literal notranslate"><span class="pre">changed</span></code> mỗi khi một thuộc tính được đặt:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make Your Resource a tool.</span>
+<span class="nd">@tool</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">MyResource</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Resource</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_setting</span><span class="p">):</span>
+<span class="w">        </span><span class="n">property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_setting</span>
+<span class="w">        </span><span class="c1"># Emit a signal when the property is changed.</span>
+<span class="w">        </span><span class="n">changed</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyResource</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Resource</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">Property</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_property</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="c1">// Emit a signal when the property is changed.</span>
+<span class="w">            </span><span class="n">EmitChanged</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Sau đó bạn kết nối signal khi một resource mới được đặt:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">MyTool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">resource</span><span class="p">:</span><span class="w"> </span><span class="nc">MyResource</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_resource</span><span class="p">):</span>
+<span class="w">        </span><span class="n">resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_resource</span>
+<span class="w">        </span><span class="c1"># Connect the changed signal as soon as a new resource is being added.</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">resource</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">            </span><span class="n">resource</span><span class="o">.</span><span class="vi">changed</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_resource_changed</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_resource_changed</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;My resource just changed!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">MyResource</span><span class="w"> </span><span class="n">_resource</span><span class="p">;</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">MyResource</span><span class="w"> </span><span class="n">Resource</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_resource</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="c1">// Connect the changed signal as soon as a new resource is being added.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_resource</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">_resource</span><span class="p">.</span><span class="n">Changed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnResourceChanged</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnResourceChanged</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;My resource just changed!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cuối cùng, hãy nhớ ngắt kết nối signal, vì resource cũ được dùng và thay đổi ở nơi khác sẽ gây ra các lần cập nhật không cần thiết.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-10-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-10-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-10-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">resource</span><span class="p">:</span><span class="w"> </span><span class="nc">MyResource</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">new_resource</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Disconnect the signal if the previous resource was not null.</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">resource</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">            </span><span class="n">resource</span><span class="o">.</span><span class="vi">changed</span><span class="o">.</span><span class="nf">disconnect</span><span class="p">(</span><span class="n">_on_resource_changed</span><span class="p">)</span>
+<span class="w">        </span><span class="n">resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_resource</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">resource</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">            </span><span class="n">resource</span><span class="o">.</span><span class="vi">changed</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_resource_changed</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="na">[Export]</span>
+<span class="k">public</span><span class="w"> </span><span class="n">MyResource</span><span class="w"> </span><span class="n">Resource</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_resource</span><span class="p">;</span>
+<span class="w">    </span><span class="k">set</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Disconnect the signal if the previous resource was not null.</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_resource</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_resource</span><span class="p">.</span><span class="n">Changed</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">OnResourceChanged</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">_resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_resource</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_resource</span><span class="p">.</span><span class="n">Changed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnResourceChanged</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="reporting-node-configuration-warnings">
+<h2>Báo cáo cảnh báo cấu hình node<a class="headerlink" href="#reporting-node-configuration-warnings" title="Link to this heading"></a></h2>
+<p>Godot dùng hệ thống <em>cảnh báo cấu hình node</em> để cảnh báo người dùng về các node được cấu hình sai. Khi một node không được cấu hình đúng, một biểu tượng cảnh báo màu vàng sẽ xuất hiện cạnh tên node trong Scene dock. Khi bạn di chuột hoặc nhấn vào biểu tượng, một thông điệp cảnh báo sẽ hiện ra. Bạn có thể dùng tính năng này trong script để giúp bạn và nhóm tránh sai sót khi thiết lập scene.</p>
+<p>Khi dùng cảnh báo cấu hình node, mỗi khi bất kỳ giá trị nào ảnh hưởng đến hoặc làm mất cảnh báo thay đổi, bạn cần gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-update-configuration-warnings" title="Class reference (English)"><span class="xref std std-ref">update_configuration_warnings</span></a> . Theo mặc định, cảnh báo chỉ cập nhật khi đóng và mở lại scene.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-11-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button></div><div aria-labelledby="tab-11-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use setters to update the configuration warning automatically.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">p_title</span><span class="p">):</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">p_title</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">title</span><span class="p">:</span>
+<span class="w">            </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_title</span>
+<span class="w">            </span><span class="nf">update_configuration_warnings</span><span class="p">()</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">p_description</span><span class="p">):</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">p_description</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">description</span><span class="p">:</span>
+<span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_description</span>
+<span class="w">            </span><span class="nf">update_configuration_warnings</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_configuration_warnings</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">warnings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="n">warnings</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="s2">&quot;Please set `title` to a non-empty value.&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">description</span><span class="o">.</span><span class="nf">length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">100</span><span class="p">:</span>
+<span class="w">        </span><span class="n">warnings</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="s2">&quot;`description` should be less than 100 characters long.&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Returning an empty array means &quot;no warning&quot;.</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">warnings</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="running-one-off-scripts-using-editorscript">
+<span id="doc-running-code-in-the-editor-editorscript"></span><h2>Chạy script một lần bằng EditorScript<a class="headerlink" href="#running-one-off-scripts-using-editorscript" title="Link to this heading"></a></h2>
+<p>Đôi khi, bạn cần chạy code chỉ một lần để tự động hóa một tác vụ mà trình chỉnh sửa không có sẵn. Một số ví dụ:</p>
+<ul class="simple">
+<li><p>Dùng làm sân chơi để viết script GDScript hoặc C# mà không cần chạy dự án. Kết quả <code class="docutils literal notranslate"><span class="pre">print()</span></code> được hiển thị trong Output panel của trình chỉnh sửa.</p></li>
+<li><p>Điều chỉnh tỷ lệ tất cả các node đèn trong scene đang chỉnh sửa, khi bạn nhận ra màn chơi trông quá tối hoặc quá sáng sau khi đặt đèn ở vị trí mong muốn.</p></li>
+<li><p>Thay thế các node được sao chép-dán bằng instance của scene để dễ chỉnh sửa sau này.</p></li>
+</ul>
+<p>Bạn có thể làm điều này trong Godot bằng cách kế thừa <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorscript.html" title="Class reference (English)"><span class="xref std std-ref">class_EditorScript</span></a> trong một script. Đây là cách chạy từng script riêng lẻ trong trình chỉnh sửa mà không cần tạo plugin.</p>
+<p>Để tạo một EditorScript, nhấn chuột phải vào một thư mục hoặc vùng trống trong FileSystem dock rồi chọn <strong>New &gt; Script...</strong>. Trong hộp thoại tạo script, nhấn biểu tượng cây để chọn đối tượng cần kế thừa (hoặc nhập trực tiếp <code class="docutils literal notranslate"><span class="pre">EditorScript</span></code> vào ô bên trái, nhưng lưu ý phân biệt chữ hoa chữ thường):</p>
+<figure class="align-center" id="id1">
+<img alt="Tạo editor script trong hộp thoại tạo script của trình soạn thảo script" src="../../_images/running_code_in_the_editor_creating_editor_script.webp" />
+<figcaption>
+<p><span class="caption-text">Tạo editor script trong hộp thoại tạo script của trình soạn thảo script</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Thao tác này sẽ tự động chọn một mẫu script phù hợp cho EditorScript, với phương thức <code class="docutils literal notranslate"><span class="pre">_run()</span></code> đã được chèn sẵn:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-12-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-12-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-12-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">EditorScript</span>
+
+<span class="c1"># Called when the script is executed (using File -&gt; Run in Script Editor).</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_run</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyEditorScript</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EditorScript</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Called when the script is executed (right-click on Script -&gt; Run in FileSystem dock).</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Run</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Phương thức <code class="docutils literal notranslate"><span class="pre">_run()</span></code> này được thực thi khi bạn dùng bất kỳ cách nào trong 4 cách để chạy một EditorScript:</p>
+<ul class="simple">
+<li><p>Dùng <span class="role-menu role-ui">File &gt; Run</span> ở phía trên trình chỉnh sửa script khi EditorScript đang là tab hiện tại.</p></li>
+<li><p>Nhấn phím tắt <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">Shift</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">X</kbd></kbd> khi EditorScript đang là tab hiện tại. Phím tắt này chỉ có tác dụng khi trình chỉnh sửa script đang được focus.</p></li>
+<li><p>Nhấn chuột phải vào script trong FileSystem dock và chọn <span class="role-menu role-ui">Run</span>.</p></li>
+<li><p>Thêm <code class="docutils literal notranslate"><span class="pre">class_name</span> <span class="pre">&lt;name&gt;</span></code> vào đầu script, mở bảng lệnh bằng cách nhấn <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">Shift</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">P</kbd></kbd>, rồi nhập tên lớp để chạy nó. Mục này sẽ được đặt tên theo tên lớp, có tự động viết hoa.</p></li>
+</ul>
+<p>Script kế thừa EditorScript <strong>bắt buộc</strong> phải là script <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> mới hoạt động được.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>EditorScript chỉ có thể chạy từ trình chỉnh sửa script của Godot. Nếu bạn dùng trình soạn thảo bên ngoài, hãy dùng một trong hai cách cuối để chạy script.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Không thể chạy EditorScript C# từ trình chỉnh sửa script vì nó chỉ hỗ trợ GDScript. Vui lòng tham khảo các cách thay thế ở trên để chạy EditorScript C# tùy chỉnh.</p>
+<p>Lưu ý rằng tool script C# chỉ xuất hiện trong bảng lệnh khi được đánh dấu bằng attribute <a class="reference internal" href="../scripting/c_sharp/c_sharp_global_classes.html#doc-c-sharp-global-classes"><span class="std std-ref">GlobalClass</span></a>.</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Nguy hiểm</p>
+<p>EditorScript không có chức năng undo/redo, vì vậy <strong>hãy lưu scene trước khi chạy</strong> nếu script được thiết kế để sửa đổi dữ liệu.</p>
+</div>
+<p>Để truy cập các node trong scene đang chỉnh sửa, dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorinterface.html#class-editorinterface-method-get-edited-scene-root" title="Class reference (English)"><span class="xref std std-ref">EditorInterface.get_edited_scene_root()</span></a>, phương thức này trả về Node gốc của scene đang chỉnh sửa. Dưới đây là ví dụ lấy đệ quy tất cả node trong scene đang chỉnh sửa và nhân đôi phạm vi của tất cả node OmniLight3D:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-13-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-13-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-13-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="c1"># Thanks to the class name, we can run this script by bringing up</span>
+<span class="c1"># the command palette and searching &quot;Scale Omni Lights&quot;.</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">ScaleOmniLights</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">EditorScript</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_run</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">EditorInterface</span><span class="o">.</span><span class="nf">get_edited_scene_root</span><span class="p">()</span><span class="o">.</span><span class="nf">find_children</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;OmniLight3D&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Don&#39;t operate on instanced subscene children, as changes are lost</span>
+<span class="w">        </span><span class="c1"># when reloading the scene.</span>
+<span class="w">        </span><span class="c1"># See the &quot;Instancing scenes&quot; section below for a description of `owner`.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">is_instanced_subscene_child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nf">get_scene</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">node</span><span class="o">.</span><span class="vi">owner</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nf">get_scene</span><span class="p">()</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">is_instanced_subscene_child</span><span class="p">:</span>
+<span class="w">            </span><span class="n">node</span><span class="o">.</span><span class="vi">omni_range</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="w">            </span><span class="nb">EditorInterface</span><span class="o">.</span><span class="nf">mark_scene_as_unsaved</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[GlobalClass, Tool]</span>
+<span class="c1">// Thanks to the GlobalClass attribute, we can run this script by bringing up</span>
+<span class="c1">// the command palette and searching &quot;Scale Omni Lights&quot;.</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ScaleOmniLights</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EditorScript</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Run</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">sceneNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EditorInterface</span><span class="p">.</span><span class="n">Singleton</span><span class="p">.</span><span class="n">GetEditedSceneRoot</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="n">OmniLight3D</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sceneNode</span><span class="p">.</span><span class="n">FindChildren</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OmniLight3D&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Don&#39;t operate on instanced subscene children, as changes are lost</span>
+<span class="w">            </span><span class="c1">// when reloading the scene.</span>
+<span class="w">            </span><span class="c1">// See the &quot;Instancing scenes&quot; section below for a description of `owner`.</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">isInstancedSubsceneChild</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">sceneNode</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="n">Owner</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">sceneNode</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isInstancedSubsceneChild</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">node</span><span class="p">.</span><span class="n">OmniRange</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">;</span>
+<span class="w">                </span><span class="n">EditorInterface</span><span class="p">.</span><span class="n">Singleton</span><span class="p">.</span><span class="n">MarkSceneAsUnsaved</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Trong ví dụ trên, chúng ta cũng gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorinterface.html#class-editorinterface-method-mark-scene-as-unsaved" title="Class reference (English)"><span class="xref std std-ref">EditorScript.mark_scene_as_unsaved()</span></a> sau mỗi thay đổi ảnh hưởng đến trạng thái của scene. Điều này cho phép trình chỉnh sửa hiển thị scene là &quot;chưa lưu&quot; (tức là có dấu sao cạnh tên). Nhờ đó, bạn cũng nhận được hộp xác nhận khi cố đóng scene có thay đổi chưa lưu.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Bạn có thể đổi scene đang chỉnh sửa ở phía trên trình chỉnh sửa ngay cả khi chế độ xem Script đang mở. Điều này sẽ ảnh hưởng đến giá trị trả về của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorinterface.html#class-editorinterface-method-get-edited-scene-root" title="Class reference (English)"><span class="xref std std-ref">EditorInterface.get_edited_scene_root</span></a>, vì vậy hãy chắc chắn bạn đã chọn đúng scene muốn duyệt trước khi chạy script.</p>
+</div>
+</section>
+<section id="instancing-scenes">
+<h2>Tạo instance scene<a class="headerlink" href="#instancing-scenes" title="Link to this heading"></a></h2>
+<p>Bạn có thể tạo instance các packed scene như bình thường và thêm chúng vào scene đang mở trong trình chỉnh sửa. Theo mặc định, các node hoặc scene được thêm bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-add-child" title="Class reference (English)"><span class="xref std std-ref">Node.add_child(node)</span></a> sẽ <strong>không</strong> hiển thị trong Scene tree dock và <strong>không</strong> được lưu xuống đĩa. Nếu muốn node hoặc scene hiển thị trong Scene tree dock và được lưu xuống đĩa khi lưu scene, bạn cần đặt thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-property-owner" title="Class reference (English)"><span class="xref std std-ref">owner</span></a> của node con thành node gốc của scene đang chỉnh sửa.</p>
+<p>Nếu bạn đang dùng <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-14-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-14-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-14-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Node3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="c1"># Parent could be any node in the scene</span>
+
+<span class="w">    </span><span class="c1"># The line below is required to make the node visible in the Scene tree dock</span>
+<span class="w">    </span><span class="c1"># and persist changes made by the tool script to the saved scene file.</span>
+<span class="w">    </span><span class="n">node</span><span class="o">.</span><span class="vi">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">edited_scene_root</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Node3D</span><span class="p">();</span>
+<span class="w">    </span><span class="n">AddChild</span><span class="p">(</span><span class="n">node</span><span class="p">);</span><span class="w"> </span><span class="c1">// Parent could be any node in the scene</span>
+
+<span class="w">    </span><span class="c1">// The line below is required to make the node visible in the Scene tree dock</span>
+<span class="w">    </span><span class="c1">// and persist changes made by the tool script to the saved scene file.</span>
+<span class="w">    </span><span class="n">node</span><span class="p">.</span><span class="n">Owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetTree</span><span class="p">().</span><span class="n">EditedSceneRoot</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nếu bạn đang dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorscript.html" title="Class reference (English)"><span class="xref std std-ref">EditorScript</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-15-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-15-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-15-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_run</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># `parent` could be any node in the scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_scene</span><span class="p">()</span><span class="o">.</span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;Parent&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Node3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">parent</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># The line below is required to make the node visible in the Scene tree dock</span>
+<span class="w">    </span><span class="c1"># and persist changes made by the tool script to the saved scene file.</span>
+<span class="w">    </span><span class="n">node</span><span class="o">.</span><span class="vi">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_scene</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Run</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// `parent` could be any node in the scene.</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetScene</span><span class="p">().</span><span class="n">GetNode</span><span class="p">(</span><span class="s">&quot;Parent&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Node3D</span><span class="p">();</span>
+<span class="w">    </span><span class="n">parent</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// The line below is required to make the node visible in the Scene tree dock</span>
+<span class="w">    </span><span class="c1">// and persist changes made by the tool script to the saved scene file.</span>
+<span class="w">    </span><span class="n">node</span><span class="p">.</span><span class="n">Owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetScene</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các thay đổi do tool script và EditorScript tạo ra (như thêm node hoặc sửa thuộc tính) <strong>không</strong> tự động đánh dấu scene là chưa lưu. Để hiển thị dấu sao <code class="docutils literal notranslate"><span class="pre">(*)</span></code> và tránh vô tình mất dữ liệu, hãy gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorinterface.html#class-editorinterface-method-mark-scene-as-unsaved" title="Class reference (English)"><span class="xref std std-ref">EditorInterface.mark_scene_as_unsaved()</span></a> sau khi sửa đổi, hoặc dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorundoredomanager.html" title="Class reference (English)"><span class="xref std std-ref">EditorUndoRedoManager</span></a> để hỗ trợ undo.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Dùng <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> không đúng cách có thể gây ra nhiều lỗi. Bạn nên viết code như ý muốn trước, rồi mới thêm annotation <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> vào đầu. Ngoài ra, hãy tách biệt code chạy trong trình chỉnh sửa với code chạy trong game. Bằng cách này, bạn có thể tìm lỗi dễ dàng hơn.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="editor/internationalizing_plugins.html" class="btn btn-neutral float-left" title="Quốc tế hóa plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../rendering/index.html" class="btn btn-neutral float-right" title="Kết xuất" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

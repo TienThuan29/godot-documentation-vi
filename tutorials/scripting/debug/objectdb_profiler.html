@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng ObjectDB profiler" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/debug/objectdb_profiler.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Từ Godot 4.6, có một tab ObjectDB Profiler mới trong bảng Debugger phía dưới. Profiler này cho phép bạn chụp snapshot trạng thái hiện tại của ObjectDB, tức cơ sở dữ liệu chứa tất cả các lớp dẫn xuấ..." />
+<meta name="description" content="Từ Godot 4.6, có một tab ObjectDB Profiler mới trong bảng Debugger phía dưới. Profiler này cho phép bạn chụp snapshot trạng thái hiện tại của ObjectDB, tức cơ sở dữ liệu chứa tất cả các lớp dẫn xuấ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng ObjectDB profiler &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Monitor hiệu năng tùy chỉnh" href="custom_performance_monitors.html" />
+    <link rel="prev" title="Profiler" href="the_profiler.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/debug/objectdb_profiler" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../gdscript/index.html">GDScript</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/index.html">C++ (godot-cpp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#core-features">Tính năng cốt lõi</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../how_to_read_the_godot_api.html">Cách đọc API của Godot</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Gỡ lỗi</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview_of_debugging_tools.html">Tổng quan về các công cụ gỡ lỗi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="output_panel.html">Bảng Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="debugger_panel.html">Bảng Debugger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="the_profiler.html">Profiler</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Sử dụng ObjectDB profiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="custom_performance_monitors.html">Monitor hiệu năng tùy chỉnh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../idle_and_physics_processing.html">Xử lý idle và xử lý vật lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../groups.html">Nhóm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../nodes_and_scene_instances.html">Node và instance của scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../overridable_functions.html">Các hàm có thể override</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cross_language_scripting.html">Lập trình script đa ngôn ngữ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../creating_script_templates.html">Tạo script template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evaluating_expressions.html">Tính giá trị biểu thức</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../change_scenes_manually.html">Chuyển scene thủ công</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../instancing_with_signals.html">Tạo instance với signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pausing_games.html">Tạm dừng game và process mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../filesystem.html">Hệ thống tệp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../resources.html">Tài nguyên</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../singletons_autoload.html">Singleton (Autoload)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../scene_tree.html">Sử dụng SceneTree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../scene_unique_nodes.html">Node duy nhất trong scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logging.html">Ghi log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Lập trình script</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Gỡ lỗi</a></li>
+      <li class="breadcrumb-item active">Sử dụng ObjectDB profiler</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-the-objectdb-profiler">
+<span id="doc-objectdb-profiler"></span><h1>Sử dụng ObjectDB profiler<a class="headerlink" href="#using-the-objectdb-profiler" title="Link to this heading"></a></h1>
+<p>Từ Godot 4.6, có một tab <strong>ObjectDB Profiler</strong> mới trong bảng Debugger phía dưới. Profiler này cho phép bạn chụp snapshot trạng thái hiện tại của ObjectDB, tức cơ sở dữ liệu chứa tất cả các lớp dẫn xuất từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html" title="Class reference (English)"><span class="xref std std-ref">class_object</span></a> đang được cấp phát trong bộ nhớ. Điều này hữu ích để phát hiện rò rỉ bộ nhớ và hiểu mức sử dụng bộ nhớ của dự án.</p>
+<p>Ngoài ra, công cụ này có thể trực quan hóa sự khác biệt giữa hai snapshot. Điều này giúp xác định cải thiện hoặc suy giảm về mức sử dụng bộ nhớ sau khi bạn thay đổi dự án. Giảm mức sử dụng bộ nhớ có thể giúp hiệu năng tốt hơn, kể cả khi bộ nhớ không phải là điểm nghẽn. Khi giảm mức sử dụng bộ nhớ, bạn có thể thực hiện ít lần cấp phát hơn, vốn là thao tác tốn kém, đặc biệt nếu thực hiện với số lượng lớn trong lúc chơi.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="../../best_practices/node_alternatives.html#doc-node-alternatives"><span class="std std-ref">Khi nào và làm thế nào để tránh dùng node cho mọi thứ</span></a> để biết thông tin về các giải pháp thay thế nhẹ hơn cho node, giúp giảm mức sử dụng bộ nhớ trong dự án.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>ObjectDB profiler <strong>không</strong> theo dõi từng chút bộ nhớ mà engine hoặc các thư viện bên ngoài sử dụng. Các lớp gốc của engine không được expose ra scripting API sẽ không xuất hiện trong snapshot.</p>
+<p>Hãy cân nhắc dùng các công cụ profiling bộ nhớ bên ngoài nếu bạn cần những thông tin này.</p>
+</div>
+<section id="usage">
+<h2>Cách dùng<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>Mở tab ObjectDB Profiler trong bảng <span class="role-menu role-ui">Debugger</span> phía dưới. Bạn sẽ thấy trang tóm tắt khi chưa có snapshot nào.</p>
+<figure class="align-center" id="id1">
+<img alt="Tóm tắt ObjectDB profiler khi chưa chụp snapshot nào" src="../../../_images/objectdb_profiler_summary_no_snapshots.webp" />
+<figcaption>
+<p><span class="caption-text">Tóm tắt ObjectDB profiler khi chưa chụp snapshot nào</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Chạy dự án, rồi đến thời điểm bạn muốn chụp snapshot (ví dụ sau khi tải một màn chơi). Nhấp <span class="role-button role-ui">Take ObjectDB Snapshot</span> để chụp snapshot tại thời điểm hiện tại. Nếu nút bị mờ, hãy đảm bảo dự án đang chạy trước.</p>
+<figure class="align-center" id="id2">
+<img alt="Tóm tắt ObjectDB profiler sau khi chụp một snapshot" src="../../../_images/objectdb_profiler_summary_snapshot.webp" />
+<figcaption>
+<p><span class="caption-text">Tóm tắt ObjectDB profiler sau khi chụp một snapshot</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Bạn có thể chụp nhiều snapshot trong một lần chạy dự án. Ngoài ra, bạn có thể nhấp chuột phải vào một snapshot trong danh sách để đổi tên, hiển thị trong trình quản lý tệp hoặc xóa nó.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nên đổi tên snapshot sau khi chụp để chúng có tên mô tả rõ ràng (ví dụ <code class="docutils literal notranslate"><span class="pre">before_optimization</span></code>, <code class="docutils literal notranslate"><span class="pre">after_optimization</span></code>). Dù đặt tên gì, ngày chụp snapshot vẫn được lưu trong chính tệp snapshot.</p>
+<p>Tệp snapshot có phần mở rộng <code class="docutils literal notranslate"><span class="pre">.odb_snapshot</span></code> và nằm trong <code class="docutils literal notranslate"><span class="pre">user://objectdb_snapshots/</span></code> (xem chi tiết tại <a class="reference internal" href="../../io/data_paths.html#doc-data-paths-accessing-persistent-user-data"><span class="std std-ref">Đường dẫn dữ liệu</span></a>). Bạn có thể sao chép chúng giữa các thiết bị một cách an toàn vì chúng không phụ thuộc nền tảng.</p>
+</div>
+<section id="viewing-differences-between-snapshots">
+<h3>Xem sự khác biệt giữa các snapshot<a class="headerlink" href="#viewing-differences-between-snapshots" title="Link to this heading"></a></h3>
+<p>Sau khi chụp ít nhất hai snapshot, dropdown <span class="role-menu role-ui">Diff Against</span> sẽ khả dụng. Tại đây, bạn có thể chọn một snapshot khác để so sánh với snapshot đang được chọn.</p>
+<figure class="align-center" id="id3">
+<img alt="Dropdown Diff Against ở góc dưới bên trái của ObjectDB profiler" src="../../../_images/objectdb_profiler_summary_diff_against.webp" />
+<figcaption>
+<p><span class="caption-text">Dropdown Diff Against ở góc dưới bên trái của ObjectDB profiler</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi đó, trang tóm tắt sẽ hiển thị sự khác biệt giữa hai snapshot:</p>
+<figure class="align-center" id="id4">
+<img alt="Hai snapshot được so sánh trong tab Summary" src="../../../_images/objectdb_profiler_summary_snapshot_diff.webp" />
+<figcaption>
+<p><span class="caption-text">Hai snapshot được so sánh trong tab Summary</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Điều này cũng áp dụng cho mọi tab khác trong ObjectDB profiler, vốn sẽ hiển thị sự khác biệt giữa hai snapshot trong các cột bổ sung.</p>
+</section>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
+<p>Trong tab Classes, bạn có thể xem số instance của mỗi lớp đã được tạo tại thời điểm chụp snapshot:</p>
+<figure class="align-center" id="id5">
+<img alt="Một snapshot được xem trong tab Classes" src="../../../_images/objectdb_profiler_classes.webp" />
+<figcaption>
+<p><span class="caption-text">Một snapshot được xem trong tab Classes</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Ở chế độ diff, tab sẽ hiển thị số instance của lớp cho snapshot đang chọn (cột A) và snapshot đang được so sánh (cột B). Nó cũng hiển thị chênh lệch số instance trong cột Delta.</p>
+<figure class="align-center" id="id6">
+<img alt="Hai snapshot được so sánh trong tab Classes. Ở đây, cột A là ``second_session``, cột B là ``first_session``" src="../../../_images/objectdb_profiler_classes_diff.webp" />
+<figcaption>
+<p><span class="caption-text">Hai snapshot được so sánh trong tab Classes. Ở đây, cột A là <code class="docutils literal notranslate"><span class="pre">second_session</span></code>, cột B là <code class="docutils literal notranslate"><span class="pre">first_session</span></code></span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Bạn có thể nhấp vào một lớp trong danh sách bên phải để xem nó trong inspector.</p>
+<figure class="align-center" id="id7">
+<img alt="Một instance lớp được chọn đang hiển thị trong inspector" src="../../../_images/objectdb_profiler_classes_inspector.webp" />
+<figcaption>
+<p><span class="caption-text">Một instance lớp được chọn đang hiển thị trong inspector</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Việc xem trước instance trong inspector cũng có ở các tab khác (Nodes, Objects và RefCounted).</p>
+</div>
+</section>
+<section id="objects">
+<h3>Objects<a class="headerlink" href="#objects" title="Link to this heading"></a></h3>
+<p>Tab Objects tương tự nhưng khác ở cách trình bày dữ liệu. Ở đây, mọi instance được liệt kê tuần tự thay vì nhóm theo lớp. Khi chọn một đối tượng, bạn sẽ thấy danh sách các đối tượng khác mà nó tham chiếu ở bên phải (<span class="role-menu role-ui">Outbound References</span>), cũng như danh sách các đối tượng đang tham chiếu đến nó (<span class="role-menu role-ui">Inbound References</span>).</p>
+<p>Nhờ đó bạn có thể xem đối tượng theo kiểu &quot;từ trên xuống&quot; (xem một đối tượng tham chiếu đến những đối tượng nào) hoặc &quot;từ dưới lên&quot; (xem những đối tượng nào tham chiếu đến một đối tượng).</p>
+<figure class="align-center" id="id8">
+<img alt="Tab Objects được dùng để xem đối tượng theo kiểu &quot;từ trên xuống&quot;" src="../../../_images/objectdb_profiler_objects_top_down.webp" />
+<figcaption>
+<p><span class="caption-text">Tab Objects được dùng để xem đối tượng theo kiểu &quot;từ trên xuống&quot;</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Trong hình trên, nhấp vào đối tượng <code class="docutils literal notranslate"><span class="pre">default_font</span></code> trong danh sách sẽ chuyển chế độ xem sang góc nhìn của đối tượng đó. Đối tượng này cũng được rất nhiều đối tượng khác tham chiếu, nên thực chất nó chuyển sang góc nhìn &quot;từ dưới lên&quot;.</p>
+<figure class="align-center" id="id9">
+<img alt="Tab Objects được dùng để xem đối tượng theo kiểu &quot;từ dưới lên&quot;" src="../../../_images/objectdb_profiler_objects_bottom_up.webp" />
+<figcaption>
+<p><span class="caption-text">Tab Objects được dùng để xem đối tượng theo kiểu &quot;từ dưới lên&quot;</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="nodes">
+<h3>Node<a class="headerlink" href="#nodes" title="Link to this heading"></a></h3>
+<p>Tiếp theo, tab Nodes hiển thị scene tree tại thời điểm chụp snapshot.</p>
+<figure class="align-center" id="id10">
+<img alt="Tab Nodes được dùng để xem scene tree" src="../../../_images/objectdb_profiler_nodes.webp" />
+<figcaption>
+<p><span class="caption-text">Tab Nodes được dùng để xem scene tree</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Tab này đặc biệt thú vị ở chế độ diff, vì nó hỗ trợ hiển thị sự khác biệt giữa hai snapshot một cách trực quan hơn. Khi bỏ chọn <span class="role-button role-ui">Combined Diff</span>, bạn có thể xem sự khác biệt đặt cạnh nhau.</p>
+<figure class="align-center" id="id11">
+<img alt="Chế độ diff tách riêng trong tab Nodes" src="../../../_images/objectdb_profiler_nodes_diff_separate.webp" />
+<figcaption>
+<p><span class="caption-text">Chế độ diff tách riêng trong tab Nodes</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi chọn <span class="role-button role-ui">Combined Diff</span>, bạn có thể xem sự khác biệt được gộp vào một cây duy nhất, với node được thêm tô màu xanh lá và node bị xóa tô màu đỏ.</p>
+<figure class="align-center" id="id12">
+<img alt="Chế độ diff gộp trong tab Nodes" src="../../../_images/objectdb_profiler_nodes_diff_combined.webp" />
+<figcaption>
+<p><span class="caption-text">Chế độ diff gộp trong tab Nodes</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Ngoài ra, bạn có thể xem danh sách các orphan node (node không gắn vào gốc của scene tree) ở cuối chế độ xem dạng cây. Bạn có thể xem dễ hơn bằng cách thu gọn node gốc, vì chúng được liệt kê bên ngoài scene tree chính.</p>
+<figure class="align-center" id="id13">
+<img alt="Orphan node ở cuối cây node trong ObjectDB profiler" src="../../../_images/objectdb_profiler_nodes_orphan.webp" />
+<figcaption>
+<p><span class="caption-text">Orphan node ở cuối cây node trong ObjectDB profiler</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="refcounted">
+<h3>RefCounted<a class="headerlink" href="#refcounted" title="Link to this heading"></a></h3>
+<p>Tab cuối cùng là tab RefCounted. Tab này tương tự tab Objects nhưng hiển thị số lượng tham chiếu của các lớp dẫn xuất từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_refcounted.html" title="Class reference (English)"><span class="xref std std-ref">class_refcounted</span></a> ngay trong bảng. Bảng có bốn cột:</p>
+<ul class="simple">
+<li><p><strong>Native Refs:</strong> Số tham chiếu gốc của engine đến đối tượng.</p></li>
+<li><p><strong>ObjectDB Refs:</strong> Số tham chiếu ObjectDB đến đối tượng.</p></li>
+<li><p><strong>Total Refs:</strong> Tổng số tham chiếu gốc và tham chiếu ObjectDB.</p></li>
+<li><p><strong>ObjectDB Cycles:</strong> Số tham chiếu vòng được phát hiện.</p></li>
+</ul>
+<p>Ở chế độ diff, snapshot B luôn được liệt kê <em>phía trên</em> snapshot A nếu một instance RefCounted tồn tại trong cả hai snapshot.</p>
+<p>Danh sách bên phải hiển thị chi tiết về instance được chọn, bao gồm danh sách tham chiếu và việc chúng có bị trùng lặp hay không.</p>
+<figure class="align-center" id="id14">
+<img alt="Tab RefCounted được dùng để xem các instance RefCounted" src="../../../_images/objectdb_profiler_refcounted.webp" />
+<figcaption>
+<p><span class="caption-text">Tab RefCounted được dùng để xem các instance RefCounted</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tab RefCounted <strong>không</strong> liệt kê các đối tượng dẫn xuất trực tiếp từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html" title="Class reference (English)"><span class="xref std std-ref">class_object</span></a>, vì chúng không dùng cơ chế đếm tham chiếu.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="the_profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="custom_performance_monitors.html" class="btn btn-neutral float-right" title="Monitor hiệu năng tùy chỉnh" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Khắc phục jitter, stutter và độ trễ input" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/rendering/jitter_stutter.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Jitter, stutter và độ trễ input là gì?: Jitter(rung giật) và stutter(khựng hình) là hai kiểu biến dạng khác nhau đối với chuyển động hiển thị của các đối tượng trên màn hình, có thể ảnh hưởng đến g..." />
+<meta name="description" content="Jitter, stutter và độ trễ input là gì?: Jitter(rung giật) và stutter(khựng hình) là hai kiểu biến dạng khác nhau đối với chuyển động hiển thị của các đối tượng trên màn hình, có thể ảnh hưởng đến g..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Khắc phục jitter, stutter và độ trễ input &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Compositor" href="compositor.html" />
+    <link rel="prev" title="Đa độ phân giải" href="multiple_resolutions.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/rendering/jitter_stutter" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kết xuất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="renderers.html">Tổng quan về các trình kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="viewports.html">Sử dụng Viewport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_resolutions.html">Đa độ phân giải</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Khắc phục jitter, stutter và độ trễ input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-jitter-stutter-and-input-lag">Jitter, stutter và độ trễ input là gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#distinguishing-between-jitter-and-stutter">Phân biệt jitter và stutter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jitter">Jitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stutter">Stutter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos">macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#android">Android</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ios">iOS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-lag">Độ trễ input</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#project-configuration">Cấu hình dự án</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hardware-os-specific">Theo phần cứng/hệ điều hành</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-jitter-stutter-or-input-lag-problems">Báo cáo vấn đề jitter, stutter hoặc độ trễ input</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="compositor.html">Compositor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drawable_textures.html">Sử dụng DrawableTexture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdr_output.html">Đầu ra HDR</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kết xuất</a></li>
+      <li class="breadcrumb-item active">Khắc phục jitter, stutter và độ trễ input</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="fixing-jitter-stutter-and-input-lag">
+<span id="doc-jitter-stutter"></span><h1>Khắc phục jitter, stutter và độ trễ input<a class="headerlink" href="#fixing-jitter-stutter-and-input-lag" title="Link to this heading"></a></h1>
+<section id="what-is-jitter-stutter-and-input-lag">
+<h2>Jitter, stutter và độ trễ input là gì?<a class="headerlink" href="#what-is-jitter-stutter-and-input-lag" title="Link to this heading"></a></h2>
+<p><em>Jitter</em> (rung giật) và <em>stutter</em> (khựng hình) là hai kiểu biến dạng khác nhau đối với chuyển động hiển thị của các đối tượng trên màn hình, có thể ảnh hưởng đến game ngay cả khi game chạy ở tốc độ tối đa. Những hiệu ứng này dễ thấy nhất trong các game mà thế giới di chuyển với tốc độ không đổi theo một hướng cố định, như game chạy vô tận (runner) hoặc game đi cảnh (platformer).</p>
+<p><em>Độ trễ input</em> (input lag) không liên quan đến jitter và stutter, nhưng đôi khi được bàn đến cùng nhau. Độ trễ input là độ trễ có thể nhìn thấy trên màn hình khi thực hiện thao tác bằng chuột, bàn phím, tay cầm hoặc màn hình cảm ứng. Nó có thể liên quan đến code game, code engine hoặc các yếu tố bên ngoài (như phần cứng). Độ trễ input dễ nhận thấy nhất trong các game dùng chuột để ngắm, như game góc nhìn thứ nhất. Không thể loại bỏ hoàn toàn độ trễ input, nhưng có thể giảm nó theo nhiều cách.</p>
+</section>
+<section id="distinguishing-between-jitter-and-stutter">
+<h2>Phân biệt jitter và stutter<a class="headerlink" href="#distinguishing-between-jitter-and-stutter" title="Link to this heading"></a></h2>
+<p>Một game chạy ở framerate bình thường mà không có hiệu ứng nào sẽ trông mượt mà:</p>
+<img alt="../../_images/motion_normal.gif" src="../../_images/motion_normal.gif" />
+<p>Một game bị <em>jitter</em> sẽ rung liên tục một cách rất tinh tế:</p>
+<img alt="../../_images/motion_jitter.gif" src="../../_images/motion_jitter.gif" />
+<p>Cuối cùng, một game bị <em>stutter</em> sẽ trông mượt mà, nhưng cứ vài giây lại như bị <em>dừng lại</em> hoặc <em>lùi lại một frame</em>:</p>
+<img alt="../../_images/motion_stutter.gif" src="../../_images/motion_stutter.gif" />
+</section>
+<section id="jitter">
+<h2>Jitter<a class="headerlink" href="#jitter" title="Link to this heading"></a></h2>
+<p>Jitter có thể có nhiều nguyên nhân. Nguyên nhân điển hình nhất xảy ra khi <em>tần số vật lý</em> của game (thường là 60 Hz) chạy ở độ phân giải khác với tần số làm mới của màn hình. Hãy kiểm tra xem tần số làm mới màn hình của bạn có khác 60 Hz hay không.</p>
+<p>Đôi khi, chỉ một số đối tượng bị jitter (nhân vật hoặc nền). Điều này xảy ra khi chúng được xử lý theo các nguồn thời gian khác nhau (một đối tượng được xử lý ở bước vật lý, trong khi đối tượng khác được xử lý ở bước idle).</p>
+<p>Nguyên nhân jitter này có thể được giảm bớt bằng cách bật <a class="reference internal" href="../physics/interpolation/physics_interpolation_quick_start_guide.html#doc-physics-interpolation-quick-start-guide"><span class="std std-ref">nội suy vật lý</span></a> trong Project Settings. Nội suy vật lý sẽ làm mượt các cập nhật vật lý bằng cách nội suy transform của các đối tượng vật lý giữa các frame vật lý. Nhờ vậy, hình ảnh của các đối tượng vật lý sẽ luôn trông mượt mà bất kể framerate và tần số tick vật lý.</p>
+<p>Việc bật nội suy vật lý có một số lưu ý bạn nên biết. Ví dụ, cần cẩn thận khi dịch chuyển tức thời (teleport) đối tượng để chúng không bị nội suy một cách rõ ràng giữa vị trí cũ và vị trí mới khi không mong muốn. Xem tài liệu <a class="reference internal" href="../physics/interpolation/index.html#doc-physics-interpolation"><span class="std std-ref">Nội suy vật lý</span></a> để biết chi tiết.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bật nội suy vật lý sẽ làm tăng độ trễ input cho những hành vi phụ thuộc vào tick vật lý, chẳng hạn như chuyển động của người chơi. Trong hầu hết các game, điều này thường vẫn tốt hơn jitter, nhưng hãy cân nhắc kỹ với các game chạy ở framerate cố định (như game đối kháng hoặc game nhịp điệu). Mức tăng độ trễ input này có thể được bù lại bằng cách tăng tần số tick vật lý như mô tả trong phần <a class="reference internal" href="#doc-jitter-stutter-input-lag"><span class="std std-ref">Độ trễ input</span></a>.</p>
+</div>
+</section>
+<section id="stutter">
+<h2>Stutter<a class="headerlink" href="#stutter" title="Link to this heading"></a></h2>
+<p>Stutter có thể xảy ra do nhiều nguyên nhân khác nhau. Một nguyên nhân là game không thể duy trì framerate đầy đủ do nghẽn CPU hoặc GPU. Cách giải quyết tùy thuộc vào từng game và sẽ cần <a class="reference internal" href="../performance/general_optimization.html#doc-general-optimization"><span class="std std-ref">tối ưu hóa</span></a>.</p>
+<p>Một nguyên nhân phổ biến khác gây stutter là <em>stutter do biên dịch shader</em>. Hiện tượng này xảy ra khi cần biên dịch shader lúc một material hoặc hiệu ứng hạt mới xuất hiện lần đầu tiên trong game. Kiểu stutter này thường chỉ xảy ra ở lần chơi đầu tiên, hoặc sau khi cập nhật driver đồ họa khiến bộ nhớ đệm shader bị vô hiệu.</p>
+<p>Kể từ Godot 4.4, khi dùng trình kết xuất Forward+ hoặc Mobile, engine sẽ cố gắng tránh stutter do biên dịch shader bằng cách tiếp cận ubershader. Để cách tiếp cận này hiệu quả nhất, cần cẩn thận khi thiết kế scene và resource để Godot có thể thu thập càng nhiều thông tin càng tốt lúc scene/resource được tải, thay vì lúc nó được vẽ lần đầu tiên. Xem <a class="reference internal" href="../performance/pipeline_compilations.html#doc-pipeline-compilations"><span class="std std-ref">Giảm giật lag do biên dịch shader (pipeline)</span></a> để biết thêm thông tin.</p>
+<p>Tuy nhiên, khi dùng trình kết xuất Compatibility, không thể dùng cách tiếp cận ubershader này do giới hạn kỹ thuật của OpenGL. Vì vậy, để tránh stutter do biên dịch shader trong trình kết xuất Compatibility, bạn cần cho xuất hiện mọi mesh và hiệu ứng hình ảnh trước camera trong một frame duy nhất khi màn chơi đang tải. Điều này đảm bảo shader được biên dịch lúc tải màn chơi, thay vì trong lúc chơi. Việc này có thể thực hiện phía sau một lớp UI 2D đặc (chẳng hạn một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">class_ColorRect</span></a> toàn màn hình) để người chơi không nhìn thấy.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trên các nền tảng hỗ trợ tắt V-Sync, stutter có thể ít bị chú ý hơn bằng cách tắt V-Sync trong cài đặt dự án. Tuy nhiên, điều này sẽ gây ra hiện tượng xé hình (tearing), đặc biệt trên màn hình có tần số làm mới thấp. Nếu màn hình của bạn hỗ trợ, hãy cân nhắc bật tần số làm mới thay đổi (G-Sync/FreeSync) trong khi vẫn giữ V-Sync bật. Cách này giúp giảm bớt một số dạng stutter mà không gây xé hình. Tuy nhiên, nó sẽ không giúp được với các lần stutter lớn, chẳng hạn như do biên dịch shader.</p>
+<p>Buộc card đồ họa dùng cấu hình hiệu năng tối đa cũng có thể giúp giảm stutter, đổi lại GPU sẽ tiêu thụ nhiều điện năng hơn.</p>
+</div>
+<p>Ngoài ra, stutter có thể do chính hệ điều hành bên dưới gây ra. Dưới đây là một số thông tin về stutter trên các hệ điều hành khác nhau:</p>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h3>
+<p>Windows được biết là gây stutter cho game chạy ở chế độ cửa sổ. Điều này chủ yếu phụ thuộc vào phần cứng đã cài đặt, phiên bản driver và các tiến trình đang chạy song song (ví dụ: mở nhiều tab trình duyệt có thể gây stutter cho game đang chạy). Để tránh điều này, Godot nâng mức ưu tiên của game lên &quot;Above Normal&quot;. Cách này giúp ích đáng kể, nhưng có thể không loại bỏ hoàn toàn stutter.</p>
+<p>Để loại bỏ hoàn toàn cần cấp cho game toàn quyền để trở thành &quot;Time Critical&quot;, điều này không được khuyến khích. Một số game có thể làm vậy, nhưng bạn nên học cách chấp nhận vấn đề này, vì nó phổ biến với game trên Windows và hầu hết người dùng sẽ không chơi game ở chế độ cửa sổ (các game chơi trong cửa sổ, ví dụ game giải đố, thường cũng không gặp vấn đề này).</p>
+<p>Ở chế độ toàn màn hình, Windows dành mức ưu tiên đặc biệt cho game nên stutter không còn thấy được và rất hiếm. Đây là cách hầu hết các game được chơi.</p>
+<p>Khi dùng chuột có tần số polling từ 1.000 Hz trở lên, hãy cân nhắc dùng bản cài đặt Windows 11 được cập nhật đầy đủ, vốn đi kèm các bản sửa lỗi liên quan đến việc sử dụng CPU cao với chuột có tần số polling cao. Các bản sửa lỗi này không có trên Windows 10 và các phiên bản cũ hơn.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Game nên dùng chế độ cửa sổ <strong>Exclusive Fullscreen</strong> thay vì <strong>Fullscreen</strong>, vốn được thiết kế để ngăn Windows tự động xem cửa sổ như thể nó là toàn màn hình độc quyền.</p>
+<p><strong>Fullscreen</strong> dành cho các ứng dụng GUI muốn dùng độ trong suốt theo từng pixel mà không có nguy cơ bị hệ điều hành tắt đi. Nó làm được điều này bằng cách chừa lại một dòng 1 pixel ở cạnh dưới màn hình. Ngược lại, <strong>Exclusive Fullscreen</strong> dùng kích thước màn hình thực tế và cho phép Windows giảm jitter và độ trễ input cho game toàn màn hình.</p>
+</div>
+</section>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading"></a></h3>
+<p>Stutter có thể xuất hiện trên Linux desktop, nhưng điều này thường liên quan đến các driver video và compositor khác nhau. Một số compositor cũng có thể gây ra vấn đề này (ví dụ KWin), vì vậy bạn nên thử dùng compositor khác để loại trừ nguyên nhân. Một số trình quản lý cửa sổ như KWin và Xfwm cho phép bạn tắt compositing thủ công, việc này có thể cải thiện hiệu năng (đổi lại sẽ bị xé hình).</p>
+<p>Không có cách khắc phục stutter do driver hoặc compositor, ngoài việc báo cáo lỗi cho nhà phát triển driver hoặc compositor. Stutter có thể xuất hiện nhiều hơn khi chơi ở chế độ cửa sổ so với toàn màn hình, ngay cả khi đã tắt compositing.</p>
+<p><a class="reference external" href="https://github.com/FeralInteractive/gamemode">Feral GameMode</a> có thể được dùng để tự động áp dụng các tối ưu hóa (chẳng hạn buộc GPU dùng cấu hình hiệu năng) khi chạy các tiến trình cụ thể.</p>
+</section>
+<section id="macos">
+<h3>macOS<a class="headerlink" href="#macos" title="Link to this heading"></a></h3>
+<p>Nhìn chung, macOS không bị stutter, mặc dù gần đây có một số lỗi được báo cáo khi chạy toàn màn hình (đây là lỗi của macOS). Nếu máy của bạn gặp hiện tượng này, hãy cho chúng tôi biết.</p>
+</section>
+<section id="android">
+<h3>Android<a class="headerlink" href="#android" title="Link to this heading"></a></h3>
+<p>Nhìn chung, Android không bị stutter và jitter vì activity đang chạy được ưu tiên hoàn toàn. Tuy vậy, vẫn có thể có những thiết bị gặp vấn đề (Kindle Fire đời cũ là một ví dụ đã biết). Nếu bạn gặp vấn đề này trên Android, hãy cho chúng tôi biết.</p>
+</section>
+<section id="ios">
+<h3>iOS<a class="headerlink" href="#ios" title="Link to this heading"></a></h3>
+<p>Thiết bị iOS nhìn chung không bị stutter, nhưng các thiết bị cũ chạy phiên bản hệ điều hành mới hơn có thể gặp vấn đề. Điều này thường không thể tránh khỏi.</p>
+</section>
+</section>
+<section id="input-lag">
+<span id="doc-jitter-stutter-input-lag"></span><h2>Độ trễ input<a class="headerlink" href="#input-lag" title="Link to this heading"></a></h2>
+<section id="project-configuration">
+<h3>Cấu hình dự án<a class="headerlink" href="#project-configuration" title="Link to this heading"></a></h3>
+<p>Trên các nền tảng hỗ trợ tắt V-Sync, độ trễ input có thể ít bị chú ý hơn bằng cách tắt V-Sync trong cài đặt dự án. Tuy nhiên, điều này sẽ gây ra hiện tượng xé hình, đặc biệt trên màn hình có tần số làm mới thấp. Bạn nên cung cấp V-Sync như một tùy chọn để người chơi bật/tắt.</p>
+<p>Khi dùng phương thức kết xuất Forward+ hoặc Mobile, một cách khác để giảm độ trễ hình ảnh khi bật V-Sync là dùng V-Sync bộ đệm đôi (double-buffered) thay vì V-Sync bộ đệm ba (triple-buffered) mặc định. Kể từ Godot 4.3, bạn có thể làm điều này bằng cách giảm cài đặt dự án <strong>Display &gt; Window &gt; V-Sync &gt; Swapchain Image Count</strong> xuống <code class="docutils literal notranslate"><span class="pre">2</span></code>.  Nhược điểm của bộ đệm đôi là framerate sẽ kém ổn định hơn nếu không đạt được tần số làm mới của màn hình do nghẽn CPU hoặc GPU. Ví dụ, trên màn hình 60 Hz, nếu framerate thường giảm xuống 55 FPS trong lúc chơi với bộ đệm ba, thì với bộ đệm đôi nó sẽ phải tạm thời giảm xuống 30 FPS (rồi quay lại 60 FPS khi có thể). Do đó, V-Sync bộ đệm đôi chỉ được khuyến nghị nếu bạn có thể <em>liên tục</em> đạt tần số làm mới của màn hình trên phần cứng mục tiêu.</p>
+<p>Tăng số lần lặp vật lý mỗi giây cũng có thể giảm độ trễ input do vật lý gây ra. Điều này đặc biệt rõ khi dùng nội suy vật lý (giúp mượt hơn nhưng tăng độ trễ). Để làm vậy, hãy đặt <strong>Physics &gt; Common &gt; Physics Ticks Per Second</strong> thành giá trị cao hơn mặc định <code class="docutils literal notranslate"><span class="pre">60</span></code>, hoặc đặt <code class="docutils literal notranslate"><span class="pre">Engine.physics_ticks_per_second</span></code> lúc runtime trong script. Các giá trị là bội số của tần số làm mới màn hình (thường là <code class="docutils literal notranslate"><span class="pre">60</span></code>) hoạt động tốt nhất khi tắt nội suy vật lý, vì chúng sẽ tránh được jitter. Điều này có nghĩa là các giá trị như <code class="docutils literal notranslate"><span class="pre">120</span></code>, <code class="docutils literal notranslate"><span class="pre">180</span></code> và <code class="docutils literal notranslate"><span class="pre">240</span></code> là điểm khởi đầu tốt. Thêm vào đó, FPS vật lý cao hơn giúp giảm khả năng xảy ra hiện tượng xuyên vật thể (tunneling) và mất ổn định vật lý.</p>
+<p>Nhược điểm của việc tăng FPS vật lý là mức sử dụng CPU sẽ tăng, có thể gây nghẽn hiệu năng trong các game có code mô phỏng vật lý nặng. Có thể giảm bớt điều này bằng cách chỉ tăng FPS vật lý trong những tình huống mà độ trễ thấp là quan trọng, hoặc cho phép người chơi điều chỉnh FPS vật lý cho phù hợp với phần cứng của họ. Tuy nhiên, FPS vật lý khác nhau sẽ dẫn đến kết quả mô phỏng vật lý khác nhau, ngay cả khi <code class="docutils literal notranslate"><span class="pre">delta</span></code> được dùng nhất quán trong logic game. Điều này có thể khiến một số người chơi có lợi thế hơn người khác. Vì vậy, nên tránh cho phép người chơi tự thay đổi FPS vật lý trong các game nhiều người chơi mang tính cạnh tranh.</p>
+<p>Cuối cùng, bạn có thể tắt việc gom đệm input theo từng frame được kết xuất bằng cách gọi <code class="docutils literal notranslate"><span class="pre">Input.set_use_accumulated_input(false)</span></code> trong script. Khi đó, các hàm <code class="docutils literal notranslate"><span class="pre">_input()</span></code> và <code class="docutils literal notranslate"><span class="pre">_unhandled_input()</span></code> trong script của bạn sẽ được gọi ở mọi input, thay vì gom các input lại và chờ một frame được kết xuất. Tắt việc gom input sẽ làm tăng mức sử dụng CPU, vì vậy cần thận trọng khi làm điều này.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Trên bất kỳ dự án Godot nào, bạn có thể dùng <a class="reference internal" href="../editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> <code class="docutils literal notranslate"><span class="pre">--disable-vsync</span></code> để buộc tắt V-Sync. Kể từ Godot 4.2, <code class="docutils literal notranslate"><span class="pre">--max-fps</span> <span class="pre">&lt;fps&gt;</span></code> cũng có thể được dùng để đặt giới hạn FPS (<code class="docutils literal notranslate"><span class="pre">0</span></code> là không giới hạn). Có thể dùng đồng thời các tham số này.</p>
+</div>
+</section>
+<section id="hardware-os-specific">
+<h3>Theo phần cứng/hệ điều hành<a class="headerlink" href="#hardware-os-specific" title="Link to this heading"></a></h3>
+<p>Nếu màn hình của bạn hỗ trợ, hãy cân nhắc bật tần số làm mới thay đổi (G-Sync/FreeSync) trong khi vẫn giữ V-Sync bật, sau đó giới hạn framerate trong cài đặt dự án ở mức thấp hơn một chút so với tần số làm mới tối đa của màn hình, theo <a class="reference external" href="https://blurbusters.com/howto-low-lag-vsync-on/">trang này</a>.</p>
+<p>Thoạt đầu điều này có vẻ phản trực giác, nhưng giới hạn FPS dưới dải tần số làm mới tối đa đảm bảo hệ điều hành không bao giờ phải chờ khoảng trống dọc (vertical blanking) kết thúc. Điều này cho độ trễ input <em>tương tự</em> như khi tắt V-Sync với cùng giới hạn framerate (thường chỉ cao hơn chưa tới 1 ms), nhưng không hề bị xé hình.</p>
+<p>Công thức dùng để xác định giới hạn framerate là <code class="docutils literal notranslate"><span class="pre">refresh</span> <span class="pre">-</span> <span class="pre">(refresh</span> <span class="pre">*</span> <span class="pre">refresh</span> <span class="pre">/</span> <span class="pre">3600.0)</span></code>, trong đó <code class="docutils literal notranslate"><span class="pre">refresh</span></code> là tần số làm mới của màn hình tính bằng Hz. Bảng sau cho biết giới hạn framerate nên dùng cho các tần số làm mới phổ biến (giới hạn được làm tròn xuống số nguyên gần nhất):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tần số làm mới</p></th>
+<th class="head"><p>Giới hạn framerate</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>60 Hz</p></td>
+<td><p>58 FPS</p></td>
+</tr>
+<tr class="row-odd"><td><p>75 Hz</p></td>
+<td><p>73 FPS</p></td>
+</tr>
+<tr class="row-even"><td><p>120 Hz</p></td>
+<td><p>115 FPS</p></td>
+</tr>
+<tr class="row-odd"><td><p>144 Hz</p></td>
+<td><p>138 FPS</p></td>
+</tr>
+<tr class="row-even"><td><p>165 Hz</p></td>
+<td><p>157 FPS</p></td>
+</tr>
+<tr class="row-odd"><td><p>240 Hz</p></td>
+<td><p>224 FPS</p></td>
+</tr>
+<tr class="row-even"><td><p>360 Hz</p></td>
+<td><p>324 FPS</p></td>
+</tr>
+<tr class="row-odd"><td><p>480 Hz</p></td>
+<td><p>416 FPS</p></td>
+</tr>
+</tbody>
+</table>
+<p>Giới hạn framerate này có thể được đặt bằng cách thay đổi cài đặt dự án <strong>Application &gt; Run &gt; Max FPS</strong> hoặc gán <code class="docutils literal notranslate"><span class="pre">Engine.max_fps</span></code> lúc runtime trong script. Ở tần số làm mới cao hơn, cần giới hạn thấp hơn để đảm bảo sai số thời gian không khiến màn hình kích hoạt V-Sync (việc này sẽ làm tăng độ trễ input).</p>
+<p>Trên một số nền tảng, bạn cũng có thể bật chế độ độ trễ thấp trong tùy chọn driver đồ họa (chẳng hạn NVIDIA Control Panel trên Windows). Cài đặt <strong>Ultra</strong> sẽ cho độ trễ thấp nhất có thể, đổi lại framerate trung bình sẽ thấp hơn một chút. Buộc GPU dùng cấu hình hiệu năng tối đa cũng có thể giảm thêm độ trễ input, đổi lại sẽ tiêu thụ nhiều điện năng hơn (và kèm theo nhiệt/tiếng ồn quạt).</p>
+<p>Cuối cùng, hãy đảm bảo màn hình của bạn đang chạy ở tần số làm mới cao nhất có thể trong cài đặt hiển thị của hệ điều hành.</p>
+<p>Ngoài ra, hãy đảm bảo chuột của bạn được cấu hình để dùng tần số polling cao nhất (thường là 1.000 Hz với chuột gaming, đôi khi cao hơn). Tuy nhiên, tần số polling USB cao có thể khiến mức sử dụng CPU cao, vì vậy 500 Hz có thể là lựa chọn an toàn hơn với CPU cấu hình thấp. Nếu chuột của bạn có nhiều mức <abbr title="Dots Per Inch">DPI</abbr>, hãy cân nhắc <a class="reference external" href="https://www.youtube.com/watch?v=6AoRfv9W110">dùng mức cao nhất có thể và giảm độ nhạy trong game để giảm độ trễ chuột</a>.</p>
+<p>Trên Linux khi dùng X11, tắt compositing trong các trình quản lý cửa sổ cho phép điều đó (như KWin hoặc Xfwm) có thể giảm đáng kể độ trễ input.</p>
+</section>
+</section>
+<section id="reporting-jitter-stutter-or-input-lag-problems">
+<h2>Báo cáo vấn đề jitter, stutter hoặc độ trễ input<a class="headerlink" href="#reporting-jitter-stutter-or-input-lag-problems" title="Link to this heading"></a></h2>
+<p>Nếu bạn báo cáo vấn đề stutter hoặc jitter (mở issue) không do bất kỳ nguyên nhân nào ở trên gây ra, hãy nêu thật rõ mọi thông tin có thể về thiết bị, hệ điều hành, phiên bản driver, v.v. Điều này có thể giúp khắc phục sự cố tốt hơn.</p>
+<p>Nếu bạn báo cáo vấn đề độ trễ input, hãy kèm theo một đoạn ghi hình bằng camera tốc độ cao (chẳng hạn chế độ quay chậm trên điện thoại). Đoạn ghi hình <strong>phải</strong> thấy được cả màn hình và thiết bị input để có thể đếm số frame giữa một input và kết quả trên màn hình. Ngoài ra, hãy nhớ nêu tần số làm mới của màn hình và tần số polling của thiết bị input (đặc biệt là chuột).</p>
+<p>Ngoài ra, hãy dùng đúng thuật ngữ (jitter, stutter, độ trễ input) dựa trên hành vi quan sát được. Điều này sẽ giúp hiểu vấn đề của bạn nhanh hơn nhiều. Hãy cung cấp một dự án có thể dùng để tái hiện vấn đề, và nếu có thể, kèm theo một đoạn quay màn hình minh họa lỗi.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="multiple_resolutions.html" class="btn btn-neutral float-left" title="Đa độ phân giải" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="compositor.html" class="btn btn-neutral float-right" title="Compositor" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

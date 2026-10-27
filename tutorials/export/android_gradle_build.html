@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Build Gradle cho Android" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/export/android_gradle_build.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Godot cung cấp tùy chọn build bằng hệ thống build Gradle. Thay vì dùng template đã được build sẵn đi kèm Godot, một dự án Android Java sẽ được cài vào thư mục dự án của bạn. Sau đó Godot sẽ build n..." />
+<meta name="description" content="Godot cung cấp tùy chọn build bằng hệ thống build Gradle. Thay vì dùng template đã được build sẵn đi kèm Godot, một dự án Android Java sẽ được cài vào thư mục dự án của bạn. Sau đó Godot sẽ build n..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Build Gradle cho Android &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Triển khai một cú nhấp" href="one-click_deploy.html" />
+    <link rel="prev" title="Chạy ứng dụng Godot trên macOS" href="running_on_macos.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/export/android_gradle_build" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Xuất (export)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="exporting_projects.html">Xuất dự án</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_pcks.html">Xuất gói, bản vá và mod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_tags.html">Feature tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_windows.html">Xuất cho Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_linux.html">Xuất cho Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_macos.html">Xuất cho macOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_android.html">Xuất cho Android</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_ios.html">Xuất cho iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_visionos.html">Xuất cho visionOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_web.html">Xuất cho Web</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changing_application_icon_for_windows.html">Thay đổi thủ công biểu tượng ứng dụng cho Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_on_macos.html">Chạy ứng dụng Godot trên macOS</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Build Gradle cho Android</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-up-the-gradle-build-environment">Thiết lập môi trường Gradle build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performing-gradle-builds-from-the-android-editor">Thực hiện Gradle build từ trình chỉnh sửa Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-the-gradle-build-and-exporting">Bật Gradle build và xuất dự án</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="one-click_deploy.html">Triển khai một cú nhấp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_dedicated_servers.html">Xuất cho máy chủ chuyên dụng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Xuất (export)</a></li>
+      <li class="breadcrumb-item active">Build Gradle cho Android</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="gradle-builds-for-android">
+<span id="doc-android-gradle-build"></span><h1>Build Gradle cho Android<a class="headerlink" href="#gradle-builds-for-android" title="Link to this heading"></a></h1>
+<p>Godot cung cấp tùy chọn build bằng hệ thống build <a class="reference external" href="https://gradle.org/">Gradle</a>. Thay vì dùng template đã được build sẵn đi kèm Godot, một dự án Android Java sẽ được cài vào thư mục dự án của bạn. Sau đó Godot sẽ build nó và dùng nó làm export template mỗi khi bạn xuất dự án.</p>
+<p>Có một số lý do khiến bạn có thể muốn làm điều này:</p>
+<ul class="simple">
+<li><p>Xuất tệp AAB cho Google Play.</p></li>
+<li><p>Chỉnh sửa dự án trước khi được build.</p></li>
+<li><p>Thêm các SDK bên ngoài được build cùng dự án của bạn.</p></li>
+</ul>
+<p>Phần native của template (thư viện <code class="docutils literal notranslate"><span class="pre">.so</span></code> có trong APK) vẫn được biên dịch sẵn. Điều này có nghĩa là, không giống như <a class="reference internal" href="../../engine_details/development/compiling/compiling_for_android.html#doc-compiling-for-android"><span class="std std-ref">biên dịch một export template Android tùy chỉnh</span></a>, bạn không cần cài đặt bộ công cụ C++ hay clone mã nguồn Godot.</p>
+<p>Cấu hình Gradle build là một quy trình khá đơn giản. Nhưng trước tiên, bạn cần làm theo các bước trong <a class="reference internal" href="exporting_for_android.html#doc-exporting-for-android"><span class="std std-ref">xuất cho Android</span></a> cho đến phần <strong>Thiết lập trong Godot</strong>. Sau đó, hãy làm theo các bước bên dưới.</p>
+<section id="set-up-the-gradle-build-environment">
+<h2>Thiết lập môi trường Gradle build<a class="headerlink" href="#set-up-the-gradle-build-environment" title="Link to this heading"></a></h2>
+<p>Vào menu Project và cài đặt template <em>Gradle Build</em>:</p>
+<img alt="../../_images/gradle_build_install_template.webp" src="../../_images/gradle_build_install_template.webp" />
+<p>Hãy đảm bảo export template đã được tải về. Nếu chưa, menu này sẽ giúp bạn tải chúng.</p>
+<p>Một dự án Android dựa trên Gradle sẽ được tạo trong <code class="docutils literal notranslate"><span class="pre">res://android/build</span></code>. Bạn không cần chỉnh sửa các tệp này trừ khi thực sự cần thay đổi dự án.</p>
+</section>
+<section id="performing-gradle-builds-from-the-android-editor">
+<h2>Thực hiện Gradle build từ trình chỉnh sửa Android<a class="headerlink" href="#performing-gradle-builds-from-the-android-editor" title="Link to this heading"></a></h2>
+<p>Kể từ Godot 4.6, có thể thực hiện Gradle build từ trình chỉnh sửa Android. Việc này yêu cầu cài đặt ứng dụng <a class="reference external" href="https://godotengine.org/download/android/#gabe">Godot Android Build Environment (GABE)</a> trên cùng thiết bị đang chạy trình chỉnh sửa.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Ứng dụng này <em>không</em> cần thiết khi xuất từ trình chỉnh sửa Android bằng template APK dựng sẵn, hoặc khi xuất sang các nền tảng khác.</p>
+</div>
+<p>Ứng dụng này cho phép bạn cài đặt mọi thứ cần thiết để build dự án Android bằng Gradle. Trình chỉnh sửa sẽ gọi nó để thực hiện Gradle build khi xuất sang Android.</p>
+<p>Để thiết lập môi trường build, hãy mở ứng dụng và làm theo các hướng dẫn sau:</p>
+<ul class="simple">
+<li><p>Đảm bảo bạn đang có kết nối Internet.</p></li>
+<li><p>Mở tab <span class="role-menu role-ui">Rootfs</span> từ thanh điều hướng phía dưới.</p></li>
+<li><p>Nhấp <span class="role-button role-ui">Install Rootfs</span>.</p></li>
+</ul>
+<p>Sau khi cài đặt xong, bạn có thể xuất dự án bằng Gradle build từ trình chỉnh sửa Godot.</p>
+</section>
+<section id="enabling-the-gradle-build-and-exporting">
+<h2>Bật Gradle build và xuất dự án<a class="headerlink" href="#enabling-the-gradle-build-and-exporting" title="Link to this heading"></a></h2>
+<p>Khi thiết lập dự án Android trong hộp thoại <strong>Project &gt; Export</strong>, cần bật <strong>Gradle Build</strong>:</p>
+<img alt="../../_images/gradle_build_enable.webp" src="../../_images/gradle_build_enable.webp" />
+<p>Từ giờ trở đi, mỗi khi xuất dự án hoặc dùng one-click deploy, hệ thống build Gradle sẽ được gọi để tạo template mới. Các template đã build sẽ tự động được dùng sau đó, nên không cần cấu hình thêm.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi dùng hệ thống build Gradle cho Android, các asset nằm trong một thư mục có tên bắt đầu bằng dấu gạch dưới sẽ không được đưa vào APK được tạo. Điều này không áp dụng cho các asset có tên <em>tệp</em> bắt đầu bằng dấu gạch dưới.</p>
+<p>Ví dụ, <code class="docutils literal notranslate"><span class="pre">_example/image.png</span></code> sẽ <strong>không</strong> được đưa vào dưới dạng asset, nhưng <code class="docutils literal notranslate"><span class="pre">_image.png</span></code> thì có.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="running_on_macos.html" class="btn btn-neutral float-left" title="Chạy ứng dụng Godot trên macOS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="one-click_deploy.html" class="btn btn-neutral float-right" title="Triển khai một cú nhấp" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Render model trong OpenXR" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/xr/openxr_render_models.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Một nền tảng cốt lõi trong thiết kế API của OpenXR là độc lập với nền tảng càng nhiều càng tốt. Một ví dụ điển hình là hệ thống action map của OpenXR, trong đó các XR runtime phải hỗ trợ các core i..." />
+<meta name="description" content="Một nền tảng cốt lõi trong thiết kế API của OpenXR là độc lập với nền tảng càng nhiều càng tốt. Một ví dụ điển hình là hệ thống action map của OpenXR, trong đó các XR runtime phải hỗ trợ các core i..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Render model trong OpenXR &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Spatial entities trong OpenXR" href="openxr_spatial_entities.html" />
+    <link rel="prev" title="Theo dõi cơ thể (body tracking) trong OpenXR" href="openxr_body_tracking.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/xr/openxr_render_models" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XR</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xr_terminology.html">Thuật ngữ XR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Bắt đầu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#xr-interfaces">Các XR interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#openxr">OpenXR</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="a_better_xr_start_script.html">Một script khởi động XR tốt hơn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploying_to_android.html">Triển khai lên Android</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_settings.html">Cài đặt OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xr_action_map.html">XR action map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_composition_layers.html">Composition layer trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_hand_tracking.html">Theo dõi bàn tay (hand tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_body_tracking.html">Theo dõi cơ thể (body tracking) trong OpenXR</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Render model trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_spatial_entities.html">Spatial entities trong OpenXR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#webxr">WebXR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#others">Khác</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#godot-xr-tools">Godot XR Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Chủ đề nâng cao</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">XR</a></li>
+      <li class="breadcrumb-item active">Render model trong OpenXR</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="openxr-render-models">
+<span id="doc-openxr-render-models"></span><h1>Render model trong OpenXR<a class="headerlink" href="#openxr-render-models" title="Link to this heading"></a></h1>
+<p>Một nền tảng cốt lõi trong thiết kế API của OpenXR là độc lập với nền tảng càng nhiều càng tốt. Một ví dụ điển hình là hệ thống action map của OpenXR, trong đó các XR runtime phải hỗ trợ các core interaction profile để dự phòng nếu không có interaction profile nào cho phần cứng đang dùng. Điều này đảm bảo ứng dụng OpenXR vẫn tiếp tục hoạt động ngay cả khi chạy trên phần cứng chưa tồn tại lúc ứng dụng được phát hành, hoặc phần cứng mà nhà phát triển ứng dụng không có điều kiện tiếp cận.</p>
+<p>Hệ quả của điều này là nhà phát triển ứng dụng không thể biết chắc chắn phần cứng nào đang được sử dụng, vì XR runtime có thể đang mô phỏng phần cứng khác. Do đó, nhà phát triển ứng dụng không thể hiển thị bất cứ thứ gì gắn với phần cứng thực tế đang dùng, mà trường hợp phổ biến nhất là hiển thị các controller người dùng đang cầm.</p>
+<p>Hiển thị đúng model controller và đặt các model này vào đúng vị trí là điều quan trọng để tạo cảm giác nhập vai thực sự.</p>
+<p>Đây là lúc <a class="reference external" href="https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html#XR_EXT_render_models">render models API</a> của OpenXR phát huy tác dụng. API này cho phép chúng ta truy vấn XR runtime để lấy các asset 3D đúng với phần cứng vật lý đang được sử dụng. API cũng cho phép truy vấn vị trí của phần cứng này trong vùng theo dõi (tracking volume) và vị trí chính xác của các thành phần con của phần cứng.</p>
+<p>Chẳng hạn, chúng ta có thể đặt đúng vị trí và tạo hoạt ảnh cho cò, hoặc hiển thị các nút đang được bấm.</p>
+<p>Với những runtime hỗ trợ <a class="reference external" href="https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html#XR_EXT_hand_tracking_data_source">controller data source for hand tracking</a> , chúng ta cũng có thể đặt đúng vị trí các ngón tay và bàn tay của người dùng theo hình dạng của controller. Lưu ý rằng tính năng này hoạt động kết hợp với <a class="reference external" href="https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html#XR_EXT_hand_joints_motion_range">hand joints motion range extension</a> để tránh các ngón tay bị xuyên qua controller.</p>
+<section id="openxr-render-models-node">
+<h2>Node render model của OpenXR<a class="headerlink" href="#openxr-render-models-node" title="Link to this heading"></a></h2>
+<p>Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrrendermodelmanager.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRRenderModelManager</span></a> có thể được dùng để tự động hóa phần lớn chức năng render model. Node này theo dõi các render model đang hoạt động mà XR runtime hiện cung cấp.</p>
+<p>Nó sẽ tạo node con cho mỗi render model đang hoạt động, nhờ đó render model đó được hiển thị.</p>
+<p>Node này phải có một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a> làm tổ tiên.</p>
+<p>Nếu <code class="docutils literal notranslate"><span class="pre">tracker</span></code> được đặt thành <code class="docutils literal notranslate"><span class="pre">Any</span></code>, node của chúng ta sẽ hiển thị tất cả render model đang được theo dõi. Trong trường hợp này, node phải là con trực tiếp của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a>.</p>
+<p>Nếu <code class="docutils literal notranslate"><span class="pre">tracker</span></code> được đặt thành <code class="docutils literal notranslate"><span class="pre">None</span> <span class="pre">set</span></code>, node của chúng ta sẽ chỉ hiển thị các render model chưa được xác định tracker. Trong trường hợp này, node cũng phải là con trực tiếp của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a>.</p>
+<p>Nếu <code class="docutils literal notranslate"><span class="pre">tracker</span></code> được đặt thành <code class="docutils literal notranslate"><span class="pre">Left</span> <span class="pre">Hand</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">Right</span> <span class="pre">Hand</span></code>, node của chúng ta sẽ chỉ hiển thị các render model liên quan đến tay trái hoặc tay phải tương ứng. Trong trường hợp này, node có thể được đặt sâu hơn trong cây scene.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Với hầu hết XR runtime, điều này có nghĩa là render model đại diện cho một controller mà người dùng đang thực sự cầm, nhưng điều này không được đảm bảo. Một số XR runtime sẽ luôn đặt tracker thành tay trái hoặc tay phải ngay cả khi controller hiện không được cầm nhưng vẫn đang được theo dõi. Bạn nên luôn kiểm tra điều này vì nó sẽ dẫn đến hành vi không mong muốn.</p>
+</div>
+<p>Trong trường hợp này, chúng ta cũng có thể chỉ định một action cho pose trong action map bằng cách đặt thuộc tính <code class="docutils literal notranslate"><span class="pre">make_local_to_pose</span></code> thành pose action đó. Kết hợp điều này với một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrcontroller3d.html" title="Class reference (English)"><span class="xref std std-ref">XRController3D</span></a> dùng cùng pose, giờ đây bạn có thể thêm một lớp cho phép lệch khỏi vị trí được theo dõi của cả controller lẫn render model liên quan (xem ví dụ bên dưới).</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kết hợp những điều trên với theo dõi bàn tay sẽ nảy sinh vấn đề là theo dõi bàn tay hoàn toàn độc lập với hệ thống action map. Bạn sẽ cần kết hợp các pose từ theo dõi bàn tay và theo dõi controller để bù trừ (offset) render model cho đúng.</p>
+<p>Điều này nằm ngoài phạm vi của tài liệu này.</p>
+</div>
+<section id="render-model-manager-example">
+<h3>Ví dụ về render model manager<a class="headerlink" href="#render-model-manager-example" title="Link to this heading"></a></h3>
+<p>Bạn có thể tải <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/xr/openxr_render_models">demo render model của chúng tôi</a>, trong đó hiện thực thiết lập được mô tả bên dưới.</p>
+<img alt="../../_images/openxr_render_models_setup.webp" src="../../_images/openxr_render_models_setup.webp" />
+<p>Trong thiết lập này, có một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrrendermodelmanager.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRRenderModelManager</span></a> nằm ngay bên dưới node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a>. Trên node này, thuộc tính <code class="docutils literal notranslate"><span class="pre">target</span></code> được đặt thành <code class="docutils literal notranslate"><span class="pre">None</span> <span class="pre">set</span></code> và node sẽ đảm nhận hiển thị tất cả render model hiện không liên quan đến controller tay trái hoặc tay phải.</p>
+<p>Tiếp theo là thiết lập giống nhau cho tay trái và tay phải, nên chúng ta sẽ chỉ tập trung vào tay trái.</p>
+<p>Chúng ta có một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrcontroller3d.html" title="Class reference (English)"><span class="xref std std-ref">XRController3D</span></a> dùng để theo dõi vị trí của bàn tay.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Ví dụ này dùng pose <code class="docutils literal notranslate"><span class="pre">grip</span></code>. Pose <code class="docutils literal notranslate"><span class="pre">palm</span></code> có thể nói là phù hợp và dễ dự đoán hơn, tuy nhiên không phải XR runtime nào cũng hỗ trợ. Xem dự án demo theo dõi bàn tay để biết giải pháp chuyển đổi giữa các pose này tùy theo khả năng hỗ trợ.</p>
+</div>
+<p>Là con của node này, chúng ta có một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animatablebody3d.html" title="Class reference (English)"><span class="xref std std-ref">AnimatableBody3D</span></a> đi theo vị trí được theo dõi của bàn tay <strong>nhưng</strong> sẽ tương tác với các đối tượng vật lý để ngăn tay người chơi xuyên qua tường, v.v. Node này có một collision shape bao quanh bàn tay.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Điều quan trọng là đặt độ ưu tiên vật lý (physics priority) sao cho logic này chạy sau mọi logic vật lý di chuyển node XROrigin3D, nếu không bàn tay sẽ bị trễ một frame.</p>
+</div>
+<p>Script bên dưới trình bày một cách hiện thực cơ bản mà bạn có thể phát triển thêm.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="n">CollisionHands3D</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">AnimatableBody3D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Make sure these are set correctly.</span>
+<span class="w">    </span><span class="n">top_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="w">    </span><span class="n">sync_to_physics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+<span class="w">    </span><span class="n">process_physics_priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">90</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Follow our parent node around.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">dest_transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_parent</span><span class="p">()</span><span class="o">.</span><span class="vi">global_transform</span>
+
+<span class="w">    </span><span class="c1"># We just apply rotation for this example.</span>
+<span class="w">    </span><span class="n">global_basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dest_transform</span><span class="o">.</span><span class="vi">basis</span>
+
+<span class="w">    </span><span class="c1"># Attempt to move to where our tracked hand is.</span>
+<span class="w">    </span><span class="nf">move_and_collide</span><span class="p">(</span><span class="n">dest_transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">global_position</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Cuối cùng, chúng ta có thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrrendermodelmanager.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRRenderModelManager</span></a> khác, lần này với <code class="docutils literal notranslate"><span class="pre">target</span></code> được đặt thành bàn tay tương ứng và <code class="docutils literal notranslate"><span class="pre">make_local_to_pose</span></code> được đặt thành pose phù hợp. Điều này đảm bảo các render model liên quan đến bàn tay này được hiển thị đúng và được bù trừ nếu trình xử lý va chạm đã thay đổi vị trí.</p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
+    <iframe src="https://www.youtube-nocookie.com/embed/_gNOd7wQ62M" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+</div></section>
+</section>
+<section id="render-model-node">
+<h2>Node render model<a class="headerlink" href="#render-model-node" title="Link to this heading"></a></h2>
+<p>Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrrendermodel.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRRenderModel</span></a> hiện thực toàn bộ logic để hiển thị và định vị một render model do render models API cung cấp.</p>
+<p>Các instance của node này được thêm bởi node render model manager mà chúng ta đã dùng ở trên, nhưng bạn cũng có thể tương tác trực tiếp với chúng nếu muốn.</p>
+<p>Mỗi khi Godot nhận được thông tin về một render model mới, một RID sẽ được tạo để tham chiếu đến render model đó.</p>
+<p>Bằng cách gán RID đó cho thuộc tính <code class="docutils literal notranslate"><span class="pre">render_model</span></code> trên node này, node sẽ bắt đầu hiển thị render model, đồng thời quản lý cả transform đặt render model vào đúng vị trí và tạo hoạt ảnh cho tất cả các đối tượng con.</p>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">get_top_level_path</span></code> sẽ trả về top level path gắn với render model này. Path này sẽ trỏ tới tay trái hoặc tay phải. Vì top level path có thể được đặt hoặc xóa tùy theo việc người dùng cầm lên hay đặt controller xuống, bạn có thể kết nối với signal <code class="docutils literal notranslate"><span class="pre">render_model_top_level_path_changes</span></code> để phản hồi những thay đổi này.</p>
+<p>Tùy theo cách bạn thiết lập các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrrendermodelmanager.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRRenderModelManager</span></a>, render model sẽ bị xóa hoặc được thêm khi top level path của chúng thay đổi.</p>
+</section>
+<section id="backend-access">
+<h2>Truy cập backend<a class="headerlink" href="#backend-access" title="Link to this heading"></a></h2>
+<p>Các node đã trình bày ở trên xử lý toàn bộ logic hiển thị cho chúng ta, nhưng bạn vẫn có thể tương tác trực tiếp với dữ liệu điều khiển chúng và tự tạo cách hiện thực của riêng mình.</p>
+<p>Để làm vậy, bạn có thể truy cập singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_openxrrendermodelextension.html" title="Class reference (English)"><span class="xref std std-ref">OpenXRRenderModelExtension</span></a>.</p>
+<p>Đối tượng này cũng cho phép bạn truy vấn xem render model có được hỗ trợ và bật trên thiết bị đang dùng hay không bằng cách gọi hàm <code class="docutils literal notranslate"><span class="pre">is_active</span></code> trên đối tượng này.</p>
+<p>Logic tích hợp sẵn hiện thực <a class="reference external" href="https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html#XR_EXT_interaction_render_model">interaction render model API</a>, API này liệt kê tất cả render model liên quan đến controller và các thiết bị tương tự có mặt trong action map. Nó sẽ tự động tạo và xóa các thực thể render model được cung cấp qua API này.</p>
+<p>Khi có thêm các extension khác, chúng có thể được hiện thực trong một plugin GDExtension. Plugin như vậy có thể gọi <code class="docutils literal notranslate"><span class="pre">render_model_create</span></code> và <code class="docutils literal notranslate"><span class="pre">render_model_destroy</span></code> để tạo đối tượng cung cấp quyền truy cập render model đó thông qua render models API cốt lõi.</p>
+<p>Bạn không nên hủy một render model bên ngoài logic này.</p>
+<p>Bạn có thể kết nối với các signal <code class="docutils literal notranslate"><span class="pre">render_model_added</span></code> và <code class="docutils literal notranslate"><span class="pre">render_model_removed</span></code> để được thông báo khi có render model mới được thêm hoặc bị xóa.</p>
+<p>Các phương thức cốt lõi để làm việc với API này được liệt kê dưới đây:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Các hàm của render model extension</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hàm</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>render_model_get_all</p></td>
+<td><p>Trả về một mảng RID của tất cả render model đang được theo dõi.</p></td>
+</tr>
+<tr class="row-odd"><td><p>render_model_new_scene_instance</p></td>
+<td><p>Trả về một scene mới chứa tất cả mesh cần thiết để hiển thị render model.</p></td>
+</tr>
+<tr class="row-even"><td><p>render_model_get_subaction_paths</p></td>
+<td><p>Trả về danh sách các subaction path từ action map của bạn liên quan đến render model này.</p></td>
+</tr>
+<tr class="row-odd"><td><p>render_model_get_top_level_path</p></td>
+<td><p>Trả về top level path gắn với render model này (nếu có). Dùng signal <code class="docutils literal notranslate"><span class="pre">render_model_top_level_path_changed</span></code> để phản hồi khi giá trị này thay đổi.</p></td>
+</tr>
+<tr class="row-even"><td><p>render_model_get_confidence</p></td>
+<td><p>Trả về độ tin cậy (confidence) của dữ liệu theo dõi cho render model này.</p></td>
+</tr>
+<tr class="row-odd"><td><p>render_model_get_root_transform</p></td>
+<td><p>Trả về root transform của render model này trong reference space hiện tại. Có thể dùng giá trị này để đặt render model vào không gian.</p></td>
+</tr>
+<tr class="row-even"><td><p>render_model_get_animatable_node_count</p></td>
+<td><p>Trả về số lượng node trong scene render model có thể tạo hoạt ảnh</p></td>
+</tr>
+<tr class="row-odd"><td><p>render_model_get_animatable_node_name</p></td>
+<td><p>Trả về tên của node có thể tạo hoạt ảnh. Lưu ý rằng node này có thể nằm ở bất kỳ độ sâu nào trong scene.</p></td>
+</tr>
+<tr class="row-even"><td><p>render_model_is_animatable_node_visible</p></td>
+<td><p>Trả về true nếu node có thể tạo hoạt ảnh này cần được hiển thị</p></td>
+</tr>
+<tr class="row-odd"><td><p>render_model_get_animatable_node_transform</p></td>
+<td><p>Trả về transform của node có thể tạo hoạt ảnh này. Đây là transform cục bộ có thể áp dụng trực tiếp.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="openxr_body_tracking.html" class="btn btn-neutral float-left" title="Theo dõi cơ thể (body tracking) trong OpenXR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="openxr_spatial_entities.html" class="btn btn-neutral float-right" title="Spatial entities trong OpenXR" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

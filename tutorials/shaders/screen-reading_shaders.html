@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Shader đọc màn hình" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/screen-reading_shaders.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Người ta thường muốn tạo một shader đọc từ chính màn hình mà nó đang ghi vào. Các API 3D như OpenGL hay DirectX khiến việc này rất khó do những hạn chế phần cứng bên trong. GPU có tính ..." />
+<meta name="description" content="Giới thiệu: Người ta thường muốn tạo một shader đọc từ chính màn hình mà nó đang ghi vào. Các API 3D như OpenGL hay DirectX khiến việc này rất khó do những hạn chế phần cứng bên trong. GPU có tính ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Shader đọc màn hình &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Chuyển đổi GLSL sang shader Godot" href="converting_glsl_to_godot_shaders.html" />
+    <link rel="prev" title="Sử dụng compute shader" href="compute_shaders.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/screen-reading_shaders" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shader_reference/index.html">Tham chiếu shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visual_shaders.html">Sử dụng VisualShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute_shaders.html">Sử dụng compute shader</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Shader đọc màn hình</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#screen-texture">Screen texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#screen-texture-example">Ví dụ về screen texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#behind-the-scenes">Đằng sau hậu trường</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#back-buffer-logic">Logic back-buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#depth-texture">Texture độ sâu (depth texture)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normal-roughness-texture">Texture normal-roughness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redefining-screen-textures">Định nghĩa lại screen texture</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_viewport_as_texture.html">Dùng SubViewport làm texture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_postprocessing.html">Hậu xử lý nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Shader</a></li>
+      <li class="breadcrumb-item active">Shader đọc màn hình</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="screen-reading-shaders">
+<span id="doc-screen-reading-shaders"></span><h1>Shader đọc màn hình<a class="headerlink" href="#screen-reading-shaders" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Người ta thường muốn tạo một shader đọc từ chính màn hình mà nó đang ghi vào. Các API 3D như OpenGL hay DirectX khiến việc này rất khó do những hạn chế phần cứng bên trong. GPU có tính song song cực cao, nên việc vừa đọc vừa ghi gây ra đủ loại vấn đề về cache và tính nhất quán. Do đó, ngay cả phần cứng hiện đại nhất cũng không hỗ trợ đúng cách việc này.</p>
+<p>Cách khắc phục là tạo một bản sao của màn hình, hoặc một phần màn hình, vào back-buffer rồi đọc từ đó khi vẽ. Godot cung cấp một vài công cụ giúp quá trình này trở nên dễ dàng.</p>
+</section>
+<section id="screen-texture">
+<h2>Screen texture<a class="headerlink" href="#screen-texture" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="shader_reference/shading_language.html#doc-shading-language"><span class="std std-ref">Ngôn ngữ shader</span></a> của Godot có một texture đặc biệt để truy cập nội dung màn hình đã được render. Nó được dùng bằng cách chỉ định một hint khi khai báo uniform <code class="docutils literal notranslate"><span class="pre">sampler2D</span></code>: <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code>. Một varying built-in đặc biệt là <code class="docutils literal notranslate"><span class="pre">SCREEN_UV</span></code> có thể được dùng để lấy UV tương đối so với màn hình cho fragment hiện tại. Do đó, fragment shader canvas_item này tạo ra một đối tượng vô hình, vì nó chỉ hiển thị những gì nằm phía sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">canvas_item</span><span class="p">;</span>
+
+<span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">screen_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_screen_texture</span><span class="p">,</span><span class="w"> </span><span class="n">repeat_disable</span><span class="p">,</span><span class="w"> </span><span class="n">filter_nearest</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureLod</span><span class="p">(</span><span class="n">screen_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Ở đây dùng <code class="docutils literal notranslate"><span class="pre">textureLod</span></code> vì chúng ta chỉ muốn đọc từ mipmap dưới cùng. Nếu muốn đọc từ phiên bản bị làm mờ của texture, bạn có thể tăng đối số thứ ba của <code class="docutils literal notranslate"><span class="pre">textureLod</span></code> và đổi hint <code class="docutils literal notranslate"><span class="pre">filter_nearest</span></code> thành <code class="docutils literal notranslate"><span class="pre">filter_nearest_mipmap</span></code> (hoặc bất kỳ filter nào khác có bật mipmap). Nếu dùng filter có mipmap, Godot sẽ tự động tính texture bị làm mờ cho bạn.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu filter mode không được đổi sang một filter mode có chứa <code class="docutils literal notranslate"><span class="pre">mipmap</span></code> trong tên, <code class="docutils literal notranslate"><span class="pre">textureLod</span></code> với tham số LOD lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code> sẽ cho hình ảnh giống như với tham số LOD <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</div>
+</section>
+<section id="screen-texture-example">
+<h2>Ví dụ về screen texture<a class="headerlink" href="#screen-texture-example" title="Link to this heading"></a></h2>
+<p>Screen texture có thể được dùng cho nhiều việc. Có một demo đặc biệt cho <em>Screen Space Shaders</em> mà bạn có thể tải về để xem và học hỏi. Một ví dụ là shader đơn giản để điều chỉnh độ sáng, độ tương phản và độ bão hòa:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">canvas_item</span><span class="p">;</span>
+
+<span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">screen_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_screen_texture</span><span class="p">,</span><span class="w"> </span><span class="n">repeat_disable</span><span class="p">,</span><span class="w"> </span><span class="n">filter_nearest</span><span class="p">;</span>
+
+<span class="k">uniform</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">brightness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="k">uniform</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">contrast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="k">uniform</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">saturation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">vec3</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureLod</span><span class="p">(</span><span class="n">screen_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span><span class="w"> </span><span class="n">brightness</span><span class="p">);</span>
+<span class="w">    </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span><span class="w"> </span><span class="n">contrast</span><span class="p">);</span>
+<span class="w">    </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="kt">vec3</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.33333</span><span class="p">),</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span><span class="w"> </span><span class="n">saturation</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">COLOR</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="behind-the-scenes">
+<h2>Đằng sau hậu trường<a class="headerlink" href="#behind-the-scenes" title="Link to this heading"></a></h2>
+<p>Dù trông có vẻ như phép màu, nhưng không phải vậy. Trong 2D, khi <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code> lần đầu được tìm thấy trong một node sắp được vẽ, Godot thực hiện sao chép toàn màn hình vào back-buffer. Các node tiếp theo dùng nó trong shader sẽ không được sao chép màn hình lại, vì làm vậy sẽ kém hiệu quả. Trong 3D, màn hình được sao chép sau lượt vẽ hình học đục nhưng trước lượt vẽ hình học trong suốt, nên các đối tượng trong suốt sẽ không được ghi lại trong screen texture.</p>
+<p>Do đó, trong 2D, nếu các shader dùng <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code> chồng lên nhau, shader thứ hai sẽ không dùng kết quả của shader thứ nhất, dẫn đến hình ảnh không như mong đợi:</p>
+<img alt="../../_images/texscreen_demo1.png" src="../../_images/texscreen_demo1.png" />
+<p>Trong hình trên, quả cầu thứ hai (trên cùng bên phải) dùng cùng một nguồn screen texture với quả cầu thứ nhất bên dưới, nên quả cầu thứ nhất &quot;biến mất&quot;, tức là không nhìn thấy được.</p>
+<p>Trong 2D, bạn có thể khắc phục điều này bằng node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_backbuffercopy.html" title="Class reference (English)"><span class="xref std std-ref">BackBufferCopy</span></a>, có thể được tạo instance giữa hai quả cầu. BackBufferCopy có thể hoạt động bằng cách chỉ định một vùng màn hình hoặc toàn bộ màn hình:</p>
+<img alt="../../_images/texscreen_bbc.png" src="../../_images/texscreen_bbc.png" />
+<p>Khi sao chép back-buffer đúng cách, hai quả cầu hòa trộn chính xác:</p>
+<img alt="../../_images/texscreen_demo2.png" src="../../_images/texscreen_demo2.png" />
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Trong 3D, các material dùng <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code> bản thân chúng được coi là trong suốt và sẽ không xuất hiện trong screen texture kết quả của các material khác. Nếu bạn định tạo instance một scene dùng material có <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code>, bạn sẽ cần dùng một node BackBufferCopy.</p>
+</div>
+<p>Trong 3D, việc giải quyết vấn đề này kém linh hoạt hơn vì screen texture chỉ được chụp một lần. Hãy cẩn thận khi dùng screen texture trong 3D vì nó sẽ không chụp các đối tượng trong suốt và có thể chụp một số đối tượng đục nằm phía trước đối tượng đang dùng screen texture.</p>
+<p>Bạn có thể tái tạo logic back-buffer trong 3D bằng cách tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a> với một camera ở cùng vị trí với đối tượng của bạn, rồi dùng texture của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">Viewport</span></a> thay cho screen texture.</p>
+</section>
+<section id="back-buffer-logic">
+<h2>Logic back-buffer<a class="headerlink" href="#back-buffer-logic" title="Link to this heading"></a></h2>
+<p>Để rõ ràng hơn, đây là cách logic sao chép backbuffer hoạt động trong 2D ở Godot:</p>
+<ul class="simple">
+<li><p>Nếu một node dùng <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code>, toàn bộ màn hình sẽ được sao chép vào back buffer trước khi vẽ node đó. Điều này chỉ xảy ra lần đầu tiên; các node tiếp theo không kích hoạt việc này.</p></li>
+<li><p>Nếu một node BackBufferCopy đã được xử lý trước tình huống ở mục trên (kể cả khi <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code> không được dùng), hành vi mô tả ở mục trên sẽ không xảy ra. Nói cách khác, việc tự động sao chép toàn bộ màn hình chỉ xảy ra nếu <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code> được dùng trong một node lần đầu tiên và không tìm thấy node BackBufferCopy nào (không bị tắt) trước đó theo thứ tự cây.</p></li>
+<li><p>BackBufferCopy có thể sao chép toàn bộ màn hình hoặc một vùng. Nếu chỉ đặt cho một vùng (không phải toàn màn hình) và shader của bạn dùng các pixel không nằm trong vùng được sao chép, kết quả của lần đọc đó là không xác định (rất có thể là dữ liệu rác từ các frame trước). Nói cách khác, bạn có thể dùng BackBufferCopy để sao chép lại một vùng của màn hình rồi đọc screen texture từ một vùng khác. Hãy tránh hành vi này!</p></li>
+</ul>
+</section>
+<section id="depth-texture">
+<h2>Texture độ sâu (depth texture)<a class="headerlink" href="#depth-texture" title="Link to this heading"></a></h2>
+<p>Với shader 3D, bạn cũng có thể truy cập depth buffer của màn hình. Để làm vậy, hãy dùng hint <code class="docutils literal notranslate"><span class="pre">hint_depth_texture</span></code>. Texture này không tuyến tính; nó phải được chuyển đổi bằng ma trận chiếu nghịch đảo.</p>
+<p>Đoạn code sau lấy vị trí 3D bên dưới pixel đang được vẽ:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">depth_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_depth_texture</span><span class="p">,</span><span class="w"> </span><span class="n">repeat_disable</span><span class="p">,</span><span class="w"> </span><span class="n">filter_nearest</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureLod</span><span class="p">(</span><span class="n">depth_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">).</span><span class="n">r</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">vec4</span><span class="w"> </span><span class="n">upos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INV_PROJECTION_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">SCREEN_UV</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">vec3</span><span class="w"> </span><span class="n">pixel_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upos</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">upos</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="normal-roughness-texture">
+<h2>Texture normal-roughness<a class="headerlink" href="#normal-roughness-texture" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Texture normal-roughness chỉ được hỗ trợ trong phương thức kết xuất Forward+, không có trong Mobile hay Compatibility.</p>
+</div>
+<p>Tương tự, texture normal-roughness có thể được dùng để đọc normal và độ nhám (roughness) của các đối tượng được kết xuất trong depth prepass. Normal được lưu trong các kênh <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> (ánh xạ về khoảng 0-1), còn roughness được lưu trong kênh <code class="docutils literal notranslate"><span class="pre">.w</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">normal_roughness_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_normal_roughness_texture</span><span class="p">,</span><span class="w"> </span><span class="n">repeat_disable</span><span class="p">,</span><span class="w"> </span><span class="n">filter_nearest</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">screen_roughness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">normal_roughness_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">vec3</span><span class="w"> </span><span class="n">screen_normal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">normal_roughness_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">xyz</span><span class="p">;</span>
+<span class="w">    </span><span class="n">screen_normal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">screen_normal</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="redefining-screen-textures">
+<h2>Định nghĩa lại screen texture<a class="headerlink" href="#redefining-screen-textures" title="Link to this heading"></a></h2>
+<p>Các hint screen texture (<code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code>, <code class="docutils literal notranslate"><span class="pre">hint_depth_texture</span></code> và <code class="docutils literal notranslate"><span class="pre">hint_normal_roughness_texture</span></code>) có thể được dùng với nhiều uniform. Ví dụ, bạn có thể muốn đọc từ texture nhiều lần với cờ lặp (repeat) hoặc cờ lọc (filter) khác nhau.</p>
+<p>Ví dụ sau minh họa một shader đọc normal trong không gian màn hình với bộ lọc tuyến tính, nhưng đọc roughness trong không gian màn hình bằng bộ lọc nearest neighbor.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">normal_roughness_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_normal_roughness_texture</span><span class="p">,</span><span class="w"> </span><span class="n">repeat_disable</span><span class="p">,</span><span class="w"> </span><span class="n">filter_nearest</span><span class="p">;</span>
+<span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">normal_roughness_texture2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_normal_roughness_texture</span><span class="p">,</span><span class="w"> </span><span class="n">repeat_enable</span><span class="p">,</span><span class="w"> </span><span class="n">filter_linear</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">screen_roughness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">normal_roughness_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">vec3</span><span class="w"> </span><span class="n">screen_normal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">normal_roughness_texture2</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">xyz</span><span class="p">;</span>
+<span class="w">    </span><span class="n">screen_normal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">screen_normal</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="compute_shaders.html" class="btn btn-neutral float-left" title="Sử dụng compute shader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="converting_glsl_to_godot_shaders.html" class="btn btn-neutral float-right" title="Chuyển đổi GLSL sang shader Godot" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

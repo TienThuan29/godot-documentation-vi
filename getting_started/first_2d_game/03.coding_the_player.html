@@ -1,0 +1,623 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Lập trình người chơi" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_2d_game/03.coding_the_player.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong bài này, chúng ta sẽ thêm chuyển động và hoạt ảnh cho người chơi, đồng thời thiết lập để nó phát hiện va chạm. Để làm vậy, chúng ta cần thêm một số chức năng mà node có sẵn không cung cấp, nê..." />
+<meta name="description" content="Trong bài này, chúng ta sẽ thêm chuyển động và hoạt ảnh cho người chơi, đồng thời thiết lập để nó phát hiện va chạm. Để làm vậy, chúng ta cần thêm một số chức năng mà node có sẵn không cung cấp, nê..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Lập trình người chơi &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo kẻ địch" href="04.creating_the_enemy.html" />
+    <link rel="prev" title="Tạo scene người chơi" href="02.player_scene.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_2d_game/03.coding_the_player" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 2D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#prerequisites">Yêu cầu trước</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.project_setup.html">Thiết lập dự án</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02.player_scene.html">Tạo scene người chơi</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Lập trình người chơi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#choosing-animations">Chọn hoạt ảnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preparing-for-collisions">Chuẩn bị cho va chạm</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="04.creating_the_enemy.html">Tạo kẻ địch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05.the_main_game_scene.html">Scene game chính</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06.heads_up_display.html">Giao diện HUD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07.finishing-up.html">Hoàn thiện</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 2D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Lập trình người chơi</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="coding-the-player">
+<span id="doc-your-first-2d-game-coding-the-player"></span><h1>Lập trình người chơi<a class="headerlink" href="#coding-the-player" title="Link to this heading"></a></h1>
+<p>Trong bài này, chúng ta sẽ thêm chuyển động và hoạt ảnh cho người chơi, đồng thời thiết lập để nó phát hiện va chạm.</p>
+<p>Để làm vậy, chúng ta cần thêm một số chức năng mà node có sẵn không cung cấp, nên chúng ta sẽ thêm script. Nhấp vào node <code class="docutils literal notranslate"><span class="pre">Player</span></code> rồi nhấp nút &quot;Attach Script&quot;:</p>
+<img alt="../../_images/add_script_button.webp" src="../../_images/add_script_button.webp" />
+<p>Trong cửa sổ cài đặt script, bạn có thể giữ nguyên các cài đặt mặc định. Chỉ cần nhấn &quot;Create&quot;:</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn tạo script C# hoặc ngôn ngữ khác, hãy chọn ngôn ngữ từ menu thả xuống <cite>language</cite> trước khi nhấn create.</p>
+</div>
+<img alt="../../_images/attach_node_window.webp" src="../../_images/attach_node_window.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu đây là lần đầu bạn tiếp xúc với GDScript, hãy đọc <a class="reference internal" href="../step_by_step/scripting_languages.html#doc-scripting"><span class="std std-ref">Ngôn ngữ script</span></a> trước khi tiếp tục.</p>
+</div>
+<p>Bắt đầu bằng việc khai báo các biến thành viên mà đối tượng này cần:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Area2D</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span><span class="w"> </span><span class="c1"># How fast the player will move (pixels/sec).</span>
+<span class="k">var</span><span class="w"> </span><span class="n">screen_size</span><span class="w"> </span><span class="c1"># Size of the game window.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Player</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Area2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Speed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span><span class="p">;</span><span class="w"> </span><span class="c1">// How fast the player will move (pixels/sec).</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">ScreenSize</span><span class="p">;</span><span class="w"> </span><span class="c1">// Size of the game window.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dùng từ khóa <code class="docutils literal notranslate"><span class="pre">export</span></code> cho biến đầu tiên <code class="docutils literal notranslate"><span class="pre">speed</span></code> cho phép chúng ta đặt giá trị của nó trong Inspector. Điều này tiện lợi cho những giá trị bạn muốn điều chỉnh được giống như các thuộc tính có sẵn của node. Nhấp vào node <code class="docutils literal notranslate"><span class="pre">Player</span></code> và bạn sẽ thấy thuộc tính giờ đã xuất hiện trong Inspector, ở một mục mới mang tên script. Hãy nhớ rằng, nếu bạn thay đổi giá trị ở đây, nó sẽ ghi đè giá trị mặc định được chỉ định trong script (script sẽ không bị sửa đổi).</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu bạn dùng C#, bạn cần build (lại) các assembly của dự án mỗi khi muốn thấy biến export hoặc signal mới. Bạn có thể kích hoạt build thủ công bằng cách nhấp nút <strong>Build</strong> ở góc trên bên phải trình chỉnh sửa.</p>
+<img alt="../../_images/build_dotnet.webp" src="../../_images/build_dotnet.webp" />
+</div>
+<img alt="../../_images/export_variable.webp" src="../../_images/export_variable.webp" />
+<p>Script <code class="docutils literal notranslate"><span class="pre">player.gd</span></code> của bạn hẳn đã có sẵn hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> và <code class="docutils literal notranslate"><span class="pre">_process()</span></code>. Nếu bạn không chọn template mặc định như trên, hãy tạo các hàm này trong khi làm theo bài học.</p>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> được gọi khi một node đi vào scene tree, đây là thời điểm thích hợp để lấy kích thước cửa sổ game:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">screen_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_viewport_rect</span><span class="p">()</span><span class="o">.</span><span class="vi">size</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ScreenSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewportRect</span><span class="p">().</span><span class="n">Size</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Giờ chúng ta có thể dùng hàm <code class="docutils literal notranslate"><span class="pre">_process()</span></code> để định nghĩa những gì người chơi sẽ làm. <code class="docutils literal notranslate"><span class="pre">_process()</span></code> được gọi mỗi frame, nên chúng ta sẽ dùng nó để cập nhật các thành phần của game mà chúng ta dự đoán sẽ thay đổi thường xuyên. Với người chơi, chúng ta cần làm những việc sau:</p>
+<ul class="simple">
+<li><p>Kiểm tra đầu vào.</p></li>
+<li><p>Di chuyển theo hướng đã cho.</p></li>
+<li><p>Phát hoạt ảnh phù hợp.</p></li>
+</ul>
+<p>Trước tiên, chúng ta cần kiểm tra đầu vào - người chơi có đang nhấn phím nào không? Trong game này, chúng ta có 4 đầu vào hướng cần kiểm tra. Các input action được định nghĩa trong Project Settings, mục &quot;Input Map&quot;. Tại đây, bạn có thể định nghĩa các sự kiện tùy chỉnh và gán cho chúng các phím, sự kiện chuột hoặc các đầu vào khác. Trong game này, chúng ta sẽ gán các phím mũi tên cho bốn hướng.</p>
+<p>Nhấn <em>Project -&gt; Project Settings</em> để mở cửa sổ cài đặt dự án và nhấn vào tab <em>Input Map</em> ở phía trên. Gõ &quot;move_right&quot; vào thanh trên cùng và nhấn nút &quot;Add&quot; để thêm action <code class="docutils literal notranslate"><span class="pre">move_right</span></code>.</p>
+<img alt="../../_images/input-mapping-add-action.webp" src="../../_images/input-mapping-add-action.webp" />
+<p>Chúng ta cần gán một phím cho action này. Nhấn biểu tượng &quot;+&quot; ở bên phải để mở cửa sổ quản lý sự kiện.</p>
+<img alt="../../_images/input-mapping-add-key.webp" src="../../_images/input-mapping-add-key.webp" />
+<p>Trường &quot;Listening for Input...&quot; sẽ được chọn tự động. Nhấn phím &quot;phải&quot; trên bàn phím, và menu lúc này sẽ trông như sau.</p>
+<img alt="../../_images/input-mapping-event-configuration.webp" src="../../_images/input-mapping-event-configuration.webp" />
+<p>Chọn nút &quot;ok&quot;. Phím &quot;phải&quot; giờ đã được gắn với action <code class="docutils literal notranslate"><span class="pre">move_right</span></code>.</p>
+<p>Lặp lại các bước này để thêm ba ánh xạ nữa:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">move_left</span></code> gán cho phím mũi tên trái.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">move_up</span></code> gán cho phím mũi tên lên.</p></li>
+<li><p>Và <code class="docutils literal notranslate"><span class="pre">move_down</span></code> gán cho phím mũi tên xuống.</p></li>
+</ol>
+<p>Tab input map của bạn sẽ trông như sau:</p>
+<img alt="../../_images/input-mapping-completed.webp" src="../../_images/input-mapping-completed.webp" />
+<p>Nhấn nút &quot;Close&quot; để đóng cài đặt dự án.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chúng ta chỉ gán một phím cho mỗi input action, nhưng bạn có thể gán nhiều phím, nút joystick hoặc nút chuột cho cùng một input action.</p>
+</div>
+<p>Bạn có thể kiểm tra một phím có đang được nhấn hay không bằng <code class="docutils literal notranslate"><span class="pre">Input.is_action_pressed()</span></code>, hàm này trả về <code class="docutils literal notranslate"><span class="pre">true</span></code> nếu phím được nhấn hoặc <code class="docutils literal notranslate"><span class="pre">false</span></code> nếu không.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="o">.</span><span class="vi">ZERO</span><span class="w"> </span><span class="c1"># The player&#39;s movement vector.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_right&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_left&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_down&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_up&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">        </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">        </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector2</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span><span class="w"> </span><span class="c1">// The player&#39;s movement vector.</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_right&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">velocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_left&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">velocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_down&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">velocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_up&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">velocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">animatedSprite2D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AnimatedSprite2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;AnimatedSprite2D&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">Length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="p">.</span><span class="n">Normalized</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+<span class="w">        </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">Play</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">Stop</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chúng ta bắt đầu bằng cách đặt <code class="docutils literal notranslate"><span class="pre">velocity</span></code> thành <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code> - theo mặc định, người chơi không được di chuyển. Sau đó, chúng ta kiểm tra từng đầu vào và cộng/trừ vào <code class="docutils literal notranslate"><span class="pre">velocity</span></code> để có được hướng tổng. Ví dụ, nếu bạn giữ <code class="docutils literal notranslate"><span class="pre">right</span></code> và <code class="docutils literal notranslate"><span class="pre">down</span></code> cùng lúc, vector <code class="docutils literal notranslate"><span class="pre">velocity</span></code> thu được sẽ là <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code>. Trong trường hợp này, vì chúng ta cộng cả chuyển động ngang và dọc, người chơi sẽ di chuyển chéo <em>nhanh hơn</em> so với khi chỉ di chuyển ngang.</p>
+<p>Chúng ta có thể ngăn điều đó nếu <em>chuẩn hóa</em> (normalize) vận tốc, nghĩa là đặt <em>độ dài</em> của nó thành <code class="docutils literal notranslate"><span class="pre">1</span></code>, rồi nhân với tốc độ mong muốn. Như vậy sẽ không còn di chuyển chéo nhanh hơn nữa.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn chưa từng dùng toán vector, hoặc cần ôn lại, bạn có thể xem giải thích về cách dùng vector trong Godot tại <a class="reference internal" href="../../tutorials/math/vector_math.html#doc-vector-math"><span class="std std-ref">Toán vector</span></a>. Kiến thức này nên biết nhưng không bắt buộc cho phần còn lại của bài hướng dẫn.</p>
+</div>
+<p>Chúng ta cũng kiểm tra người chơi có đang di chuyển hay không để gọi <code class="docutils literal notranslate"><span class="pre">play()</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">stop()</span></code> trên AnimatedSprite2D.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span></code> là cách viết tắt của <code class="docutils literal notranslate"><span class="pre">get_node()</span></code>. Vì vậy trong đoạn mã trên, <code class="docutils literal notranslate"><span class="pre">$AnimatedSprite2D.play()</span></code> tương đương với <code class="docutils literal notranslate"><span class="pre">get_node(&quot;AnimatedSprite2D&quot;).play()</span></code>.</p>
+<p>Trong GDScript, <code class="docutils literal notranslate"><span class="pre">$</span></code> trả về node tại đường dẫn tương đối tính từ node hiện tại, hoặc trả về <code class="docutils literal notranslate"><span class="pre">null</span></code> nếu không tìm thấy node. Vì AnimatedSprite2D là con của node hiện tại, chúng ta có thể dùng <code class="docutils literal notranslate"><span class="pre">$AnimatedSprite2D</span></code>.</p>
+</div>
+<p>Giờ đã có hướng di chuyển, chúng ta có thể cập nhật vị trí của người chơi. Chúng ta cũng có thể dùng <code class="docutils literal notranslate"><span class="pre">clamp()</span></code> để ngăn người chơi ra khỏi màn hình. <em>Kẹp</em> (clamp) một giá trị nghĩa là giới hạn nó trong một khoảng nhất định. Thêm đoạn sau vào cuối hàm <code class="docutils literal notranslate"><span class="pre">_process</span></code> (đảm bảo nó không bị thụt lề bên dưới <cite>else</cite>):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+<span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="o">.</span><span class="nf">clamp</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="o">.</span><span class="vi">ZERO</span><span class="p">,</span><span class="w"> </span><span class="n">screen_size</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Clamp</span><span class="p">(</span><span class="n">Position</span><span class="p">.</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">ScreenSize</span><span class="p">.</span><span class="n">X</span><span class="p">),</span>
+<span class="w">    </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Clamp</span><span class="p">(</span><span class="n">Position</span><span class="p">.</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">ScreenSize</span><span class="p">.</span><span class="n">Y</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Tham số <cite>delta</cite> trong hàm <cite>_process()</cite> là <em>độ dài frame</em> - khoảng thời gian mà frame trước đó cần để hoàn thành. Dùng giá trị này giúp chuyển động của bạn luôn nhất quán ngay cả khi tốc độ khung hình thay đổi.</p>
+</div>
+<p>Nhấn &quot;Run Current Scene&quot; (<kbd class="kbd docutils literal notranslate">F6</kbd>, <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">R</kbd></kbd> trên macOS) và xác nhận rằng bạn có thể di chuyển người chơi khắp màn hình theo mọi hướng.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu bạn gặp lỗi trong bảng &quot;Debugger&quot; với nội dung</p>
+<p><code class="docutils literal notranslate"><span class="pre">Attempt</span> <span class="pre">to</span> <span class="pre">call</span> <span class="pre">function</span> <span class="pre">'play'</span> <span class="pre">in</span> <span class="pre">base</span> <span class="pre">'null</span> <span class="pre">instance'</span> <span class="pre">on</span> <span class="pre">a</span> <span class="pre">null</span>
+<span class="pre">instance</span></code></p>
+<p>điều này có thể có nghĩa là bạn đã gõ sai tên node AnimatedSprite2D. Tên node phân biệt chữ hoa chữ thường và <code class="docutils literal notranslate"><span class="pre">$NodeName</span></code> phải khớp với tên bạn thấy trong cây scene.</p>
+</div>
+<section id="choosing-animations">
+<h2>Chọn hoạt ảnh<a class="headerlink" href="#choosing-animations" title="Link to this heading"></a></h2>
+<p>Giờ người chơi đã di chuyển được, chúng ta cần thay đổi hoạt ảnh mà AnimatedSprite2D đang phát dựa trên hướng di chuyển. Chúng ta có hoạt ảnh &quot;walk&quot;, thể hiện người chơi đi sang phải. Hoạt ảnh này nên được lật ngang bằng thuộc tính <code class="docutils literal notranslate"><span class="pre">flip_h</span></code> khi di chuyển sang trái. Chúng ta cũng có hoạt ảnh &quot;up&quot;, nên được lật dọc bằng <code class="docutils literal notranslate"><span class="pre">flip_v</span></code> khi di chuyển xuống. Hãy đặt đoạn mã này ở cuối hàm <code class="docutils literal notranslate"><span class="pre">_process()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">animation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;walk&quot;</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">flip_v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+<span class="w">    </span><span class="c1"># See the note below about the following boolean assignment.</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">flip_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span>
+<span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">animation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;up&quot;</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">flip_v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">Animation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;walk&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">FlipV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// See the note below about the following boolean assignment.</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">FlipH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">Animation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;up&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">FlipV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các phép gán boolean trong đoạn code trên là một cách viết tắt phổ biến của lập trình viên. Vì chúng ta vừa thực hiện phép so sánh (boolean) vừa <em>gán</em> một giá trị boolean, ta có thể làm cả hai cùng lúc. Hãy so sánh đoạn code này với phép gán boolean một dòng ở trên:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">flip_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="sx">$AnimatedSprite2D</span><span class="o">.</span><span class="vi">flip_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">FlipH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">animatedSprite2D</span><span class="p">.</span><span class="n">FlipH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</div>
+<p>Chạy lại scene và kiểm tra rằng hoạt ảnh hiển thị đúng ở mỗi hướng.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Một lỗi thường gặp ở đây là gõ sai tên hoạt ảnh. Tên hoạt ảnh trong bảng SpriteFrames phải khớp với những gì bạn gõ trong code. Nếu bạn đặt tên hoạt ảnh là <code class="docutils literal notranslate"><span class="pre">&quot;Walk&quot;</span></code>, bạn cũng phải dùng chữ &quot;W&quot; viết hoa trong code.</p>
+</div>
+<p>Khi bạn chắc chắn chuyển động đã hoạt động đúng, hãy thêm dòng này vào <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> để người chơi bị ẩn khi game bắt đầu:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nf">hide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Hide</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="preparing-for-collisions">
+<h2>Chuẩn bị cho va chạm<a class="headerlink" href="#preparing-for-collisions" title="Link to this heading"></a></h2>
+<p>Chúng ta muốn <code class="docutils literal notranslate"><span class="pre">Player</span></code> phát hiện khi bị kẻ địch đánh trúng, nhưng chúng ta chưa tạo kẻ địch nào cả! Không sao, vì chúng ta sẽ dùng chức năng <em>signal</em> của Godot để làm điều đó.</p>
+<p>Thêm đoạn sau vào đầu script. Nếu bạn dùng GDScript, hãy thêm sau <code class="docutils literal notranslate"><span class="pre">extends</span> <span class="pre">Area2D</span></code>. Nếu bạn dùng C#, hãy thêm sau <code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">partial</span> <span class="pre">class</span> <span class="pre">Player</span> <span class="pre">:</span> <span class="pre">Area2D</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">signal</span><span class="w"> </span><span class="n">hit</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Don&#39;t forget to rebuild the project so the editor knows about the new signal.</span>
+
+<span class="na">[Signal]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HitEventHandler</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Đoạn này định nghĩa một signal tùy chỉnh tên &quot;hit&quot; mà người chơi sẽ phát ra (emit) khi va chạm với kẻ địch. Chúng ta sẽ dùng <code class="docutils literal notranslate"><span class="pre">Area2D</span></code> để phát hiện va chạm. Chọn node <code class="docutils literal notranslate"><span class="pre">Player</span></code> và nhấp tab <span class="role-ui">Signals</span> bên cạnh tab Inspector để xem danh sách signal mà người chơi có thể phát ra:</p>
+<img alt="../../_images/player_signals.webp" src="../../_images/player_signals.webp" />
+<p>Hãy để ý signal tùy chỉnh &quot;hit&quot; của chúng ta cũng có ở đó! Vì kẻ địch sẽ là các node <code class="docutils literal notranslate"><span class="pre">RigidBody2D</span></code>, chúng ta cần signal <code class="docutils literal notranslate"><span class="pre">body_entered(body:</span> <span class="pre">Node2D)</span></code>. Signal này sẽ được phát ra khi một body chạm vào người chơi. Nhấp &quot;Connect..&quot; và cửa sổ &quot;Connect a Signal&quot; sẽ xuất hiện.</p>
+<p>Godot sẽ tạo trực tiếp một hàm với đúng tên đó trong script cho bạn. Hiện tại bạn không cần thay đổi cài đặt mặc định.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu bạn đang dùng trình soạn thảo văn bản bên ngoài (ví dụ Visual Studio Code), hiện có một lỗi khiến Godot không làm được điều này. Bạn sẽ được chuyển sang trình soạn thảo bên ngoài, nhưng hàm mới sẽ không có ở đó.</p>
+<p>Trong trường hợp này, bạn cần tự viết hàm đó vào file script của Player.</p>
+</div>
+<img alt="../../_images/player_signal_connection.webp" src="../../_images/player_signal_connection.webp" />
+<p>Hãy để ý biểu tượng màu xanh lá cho biết một signal đã được kết nối với hàm này; điều đó không có nghĩa là hàm đã tồn tại, mà chỉ là signal sẽ cố kết nối với một hàm có tên đó, vì vậy hãy kiểm tra kỹ rằng tên hàm được viết chính xác!</p>
+<p>Tiếp theo, thêm đoạn code này vào hàm:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_body_entered</span><span class="p">(</span><span class="n">_body</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">hide</span><span class="p">()</span><span class="w"> </span><span class="c1"># Player disappears after being hit.</span>
+<span class="w">    </span><span class="n">hit</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Must be deferred as we can&#39;t change physics properties on a physics callback.</span>
+<span class="w">    </span><span class="sx">$CollisionShape2D</span><span class="o">.</span><span class="nf">set_deferred</span><span class="p">(</span><span class="s2">&quot;disabled&quot;</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnBodyEntered</span><span class="p">(</span><span class="n">Node2D</span><span class="w"> </span><span class="n">body</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Hide</span><span class="p">();</span><span class="w"> </span><span class="c1">// Player disappears after being hit.</span>
+<span class="w">    </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">Hit</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Must be deferred as we can&#39;t change physics properties on a physics callback.</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">CollisionShape2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;CollisionShape2D&quot;</span><span class="p">).</span><span class="n">SetDeferred</span><span class="p">(</span><span class="n">CollisionShape2D</span><span class="p">.</span><span class="n">PropertyName</span><span class="p">.</span><span class="n">Disabled</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Mỗi lần kẻ địch đánh trúng người chơi, signal sẽ được phát ra. Chúng ta cần tắt va chạm của người chơi để không kích hoạt signal <code class="docutils literal notranslate"><span class="pre">hit</span></code> nhiều hơn một lần.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Việc tắt collision shape của area có thể gây lỗi nếu nó xảy ra giữa lúc engine đang xử lý va chạm. Dùng <code class="docutils literal notranslate"><span class="pre">set_deferred()</span></code> sẽ yêu cầu Godot chờ đến khi an toàn mới tắt shape.</p>
+</div>
+<p>Phần cuối cùng là thêm một hàm mà ta có thể gọi để đặt lại người chơi khi bắt đầu game mới.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">start</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span>
+<span class="w">    </span><span class="nf">show</span><span class="p">()</span>
+<span class="w">    </span><span class="sx">$CollisionShape2D</span><span class="o">.</span><span class="vi">disabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">(</span><span class="n">Vector2</span><span class="w"> </span><span class="n">position</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Show</span><span class="p">();</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">CollisionShape2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;CollisionShape2D&quot;</span><span class="p">).</span><span class="n">Disabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi người chơi đã hoạt động, chúng ta sẽ làm kẻ địch trong bài tiếp theo.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="02.player_scene.html" class="btn btn-neutral float-left" title="Tạo scene người chơi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="04.creating_the_enemy.html" class="btn btn-neutral float-right" title="Tạo kẻ địch" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

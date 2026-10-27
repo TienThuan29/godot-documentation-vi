@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Khử răng cưa 3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/3d_antialiasing.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Do độ phân giải có hạn, các scene được kết xuất 3D có thể xuất hiện hiện tượng răng cưa (aliasing). Các lỗi hình ảnh này thường biểu hiện dưới dạng hiệu ứng &quot;bậc thang&quot; trên c..." />
+<meta name="description" content="Giới thiệu: Do độ phân giải có hạn, các scene được kết xuất 3D có thể xuất hiện hiện tượng răng cưa (aliasing). Các lỗi hình ảnh này thường biểu hiện dưới dạng hiệu ứng &quot;bậc thang&quot; trên c..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Khử răng cưa 3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng MultiMeshInstance3D" href="using_multi_mesh_instance.html" />
+    <link rel="prev" title="Sương mù thể tích và fog volume" href="volumetric_fog.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/3d_antialiasing" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="global_illumination/index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Khử răng cưa 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multisample-antialiasing-msaa">Khử răng cưa đa mẫu (MSAA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#temporal-antialiasing-taa">Khử răng cưa theo thời gian (TAA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amd-fidelityfx-super-resolution-2-2-fsr2">AMD FidelityFX Super Resolution 2.2 (FSR2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-approximate-antialiasing-fxaa">Khử răng cưa xấp xỉ nhanh (FXAA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sub-pixel-morphological-antialiasing-smaa-1x">Khử răng cưa hình thái dưới mức pixel (SMAA 1x)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supersample-antialiasing-ssaa">Khử răng cưa siêu mẫu (SSAA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#screen-space-roughness-limiter">Bộ giới hạn độ nhám không gian màn hình</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#texture-roughness-limiter-on-import">Bộ giới hạn độ nhám texture khi import</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#which-antialiasing-technique-should-i-use">Nên dùng kỹ thuật khử răng cưa nào?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Khử răng cưa 3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="d-antialiasing">
+<span id="doc-3d-antialiasing"></span><h1>Khử răng cưa 3D<a class="headerlink" href="#d-antialiasing" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Godot cũng hỗ trợ khử răng cưa (antialiasing) trong kết xuất 2D. Nội dung này được trình bày ở trang <a class="reference internal" href="../2d/2d_antialiasing.html#doc-2d-antialiasing"><span class="std std-ref">Khử răng cưa 2D</span></a>.</p>
+</div>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Do độ phân giải có hạn, các scene được kết xuất 3D có thể xuất hiện hiện tượng răng cưa (aliasing). Các lỗi hình ảnh này thường biểu hiện dưới dạng hiệu ứng &quot;bậc thang&quot; trên cạnh bề mặt (răng cưa cạnh - edge aliasing) và dưới dạng nhấp nháy và/hoặc lấp lánh trên các bề mặt phản chiếu (răng cưa phản xạ - specular aliasing).</p>
+<p>Trong ví dụ bên dưới, bạn có thể thấy các cạnh trông lởm chởm như khối. Thảm thực vật cũng chập chờn lúc hiện lúc mất, và các đường mảnh trên đỉnh chiếc hộp gần như đã biến mất:</p>
+<figure class="align-center" id="id8">
+<img alt="Hình ảnh được phóng to 2× với bộ lọc nearest-neighbor để hiện tượng răng cưa dễ thấy hơn." src="../../_images/antialiasing_none_scaled1.webp" />
+<figcaption>
+<p><span class="caption-text">Hình ảnh được phóng to 2× với bộ lọc nearest-neighbor để hiện tượng răng cưa dễ thấy hơn.</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Để khắc phục điều này, có thể dùng nhiều kỹ thuật khử răng cưa khác nhau trong Godot. Chúng được trình bày chi tiết bên dưới.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể so sánh các thuật toán khử răng cưa khi hoạt động thực tế bằng <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/antialiasing">dự án demo 3D Antialiasing</a>.</p>
+</div>
+</section>
+<section id="multisample-antialiasing-msaa">
+<h2>Khử răng cưa đa mẫu (MSAA)<a class="headerlink" href="#multisample-antialiasing-msaa" title="Link to this heading"></a></h2>
+<p><em>Tính năng này có sẵn trong tất cả các renderer.</em></p>
+<p>Kỹ thuật này là cách &quot;truyền thống&quot; để xử lý răng cưa. MSAA rất hiệu quả trên các cạnh hình học (đặc biệt ở mức cao hơn). MSAA hoàn toàn không gây mờ.</p>
+<p>MSAA có 3 mức: 2×, 4×, 8×. Mức cao hơn khử răng cưa cạnh hiệu quả hơn, nhưng tốn tài nguyên hơn đáng kể. Trong các game có đồ họa hiện đại, bạn rất nên dùng MSAA 2× hoặc 4× vì MSAA 8× thường quá nặng.</p>
+<p>Nhược điểm của MSAA là nó chỉ hoạt động trên các cạnh. Lý do là MSAA tăng số mẫu <em>coverage</em> (độ phủ), nhưng không tăng số mẫu <em>color</em> (màu). Vì số mẫu màu không tăng, fragment shader vẫn chỉ chạy một lần cho mỗi pixel. Do đó, MSAA không giảm răng cưa trong suốt (transparency aliasing) cho các material dùng chế độ trong suốt <strong>Alpha Scissor</strong> (trong suốt 1-bit). MSAA cũng không hiệu quả với răng cưa phản xạ.</p>
+<p>Để giảm răng cưa trên các material alpha scissor, có thể bật <a class="reference internal" href="standard_material_3d.html#doc-standard-material-3d-alpha-antialiasing"><span class="std std-ref">alpha antialiasing</span></a> (còn gọi là <em>alpha to coverage</em>) trên từng material cụ thể trong các thuộc tính StandardMaterial3D hoặc ORMMaterial3D. Alpha to coverage có chi phí hiệu năng vừa phải, nhưng giảm răng cưa hiệu quả trên các material trong suốt mà không gây mờ.</p>
+<p>Để răng cưa phản xạ ít bị chú ý hơn, hãy dùng <a class="reference internal" href="#screen-space-roughness-limiter">Screen-space roughness limiter</a>, vốn được bật theo mặc định.</p>
+<p>Có thể bật MSAA trong Project Settings bằng cách thay đổi giá trị của cài đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-anti-aliasing-quality-msaa-3d" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Anti Aliasing &gt; Quality &gt; MSAA 3D</span></a>. Điều quan trọng là phải thay đổi giá trị của cài đặt <strong>MSAA 3D</strong> chứ không phải <strong>MSAA 2D</strong>, vì đây là hai cài đặt hoàn toàn riêng biệt.</p>
+<p>So sánh giữa không khử răng cưa (trái) và các mức MSAA khác nhau (phải). Lưu ý rằng alpha antialiasing không được dùng ở đây:</p>
+<img alt="../../_images/antialiasing_msaa_2x1.webp" src="../../_images/antialiasing_msaa_2x1.webp" />
+<img alt="../../_images/antialiasing_msaa_4x1.webp" src="../../_images/antialiasing_msaa_4x1.webp" />
+<img alt="../../_images/antialiasing_msaa_8x1.webp" src="../../_images/antialiasing_msaa_8x1.webp" />
+</section>
+<section id="temporal-antialiasing-taa">
+<span id="doc-3d-antialiasing-taa"></span><h2>Khử răng cưa theo thời gian (TAA)<a class="headerlink" href="#temporal-antialiasing-taa" title="Link to this heading"></a></h2>
+<p><em>Tính năng này chỉ có trong renderer Forward+, không có trong renderer Mobile hoặc Compatibility.</em></p>
+<p>Khử răng cưa theo thời gian (temporal antialiasing) hoạt động bằng cách <em>hội tụ</em> kết quả của các khung hình đã kết xuất trước đó thành một khung hình chất lượng cao duy nhất. Đây là một quá trình liên tục, hoạt động bằng cách làm dao động nhẹ (jitter) vị trí của tất cả đỉnh trong scene ở mỗi khung hình. Việc dao động này nhằm thu được chi tiết dưới mức pixel và sẽ không thể nhận ra, trừ trong những tình huống cực đoan.</p>
+<p>Kỹ thuật này thường được dùng trong các game hiện đại, vì nó mang lại hình thức khử răng cưa hiệu quả nhất đối với răng cưa phản xạ và các lỗi hình ảnh khác do shader gây ra. TAA cũng hỗ trợ đầy đủ khử răng cưa cho vùng trong suốt.</p>
+<p>TAA gây ra một chút mờ khi bật trong các cảnh tĩnh, nhưng hiệu ứng mờ này trở nên rõ hơn khi camera di chuyển. Một nhược điểm khác của TAA là nó có thể tạo ra lỗi <em>bóng ma</em> (ghosting) phía sau các đối tượng chuyển động. Kết xuất ở tốc độ khung hình cao hơn sẽ giúp TAA hội tụ nhanh hơn, từ đó làm các lỗi bóng ma ít thấy hơn.</p>
+<p>Có thể bật khử răng cưa theo thời gian trong Project Settings bằng cách thay đổi giá trị của cài đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-anti-aliasing-quality-use-taa" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Anti Aliasing &gt; Quality &gt; TAA</span></a>.</p>
+<p>So sánh giữa không khử răng cưa (trái) và TAA (phải):</p>
+<img alt="../../_images/antialiasing_taa.webp" src="../../_images/antialiasing_taa.webp" />
+</section>
+<section id="amd-fidelityfx-super-resolution-2-2-fsr2">
+<span id="doc-3d-antialiasing-fsr2"></span><h2>AMD FidelityFX Super Resolution 2.2 (FSR2)<a class="headerlink" href="#amd-fidelityfx-super-resolution-2-2-fsr2" title="Link to this heading"></a></h2>
+<p><em>Tính năng này chỉ có trong renderer Forward+, không có trong renderer Mobile hoặc Compatibility.</em></p>
+<p>Kể từ Godot 4.2, có hỗ trợ tích hợp sẵn cho <a class="reference external" href="https://www.amd.com/en/products/graphics/technologies/fidelityfx/super-resolution.html">AMD FidelityFX Super Resolution</a> 2.2. Đây là một <a class="reference internal" href="resolution_scaling.html#doc-resolution-scaling"><span class="std std-ref">phương pháp upscale</span></a> tương thích với tất cả GPU gần đây của mọi hãng. FSR2 thông thường được thiết kế để cải thiện hiệu năng bằng cách giảm độ phân giải kết xuất 3D nội bộ, rồi upscale lên độ phân giải đầu ra.</p>
+<p>Tuy nhiên, khác với FSR1, FSR2 cũng cung cấp khử răng cưa theo thời gian. Điều này nghĩa là FSR2 có thể được dùng ở độ phân giải gốc để khử răng cưa chất lượng cao, với độ phân giải đầu vào bằng độ phân giải đầu ra. Trong trường hợp này, bật FSR2 thực ra sẽ <em>giảm</em> hiệu năng, nhưng sẽ cải thiện đáng kể chất lượng kết xuất.</p>
+<p>Dùng FSR2 ở độ phân giải gốc tốn tài nguyên hơn dùng TAA ở độ phân giải gốc, vì vậy chỉ nên dùng khi GPU của bạn còn dư nhiều năng lực. Bù lại, FSR2 khử răng cưa tốt hơn và ít mờ hơn so với TAA, đặc biệt là khi chuyển động.</p>
+<p>So sánh giữa không khử răng cưa (trái) và FSR2 ở độ phân giải gốc (phải):</p>
+<img alt="../../_images/antialiasing_fsr2_native.webp" src="../../_images/antialiasing_fsr2_native.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Theo mặc định, cài đặt dự án <strong>FSR Sharpness</strong> được đặt là <code class="docutils literal notranslate"><span class="pre">0.2</span></code> (giá trị cao hơn cho độ sắc nét thấp hơn). Để phục vụ việc so sánh, độ sắc nét FSR đã được tắt bằng cách đặt nó thành <code class="docutils literal notranslate"><span class="pre">2.0</span></code> trong ảnh chụp màn hình ở trên.</p>
+</div>
+</section>
+<section id="fast-approximate-antialiasing-fxaa">
+<span id="doc-3d-antialiasing-fxaa"></span><h2>Khử răng cưa xấp xỉ nhanh (FXAA)<a class="headerlink" href="#fast-approximate-antialiasing-fxaa" title="Link to this heading"></a></h2>
+<p><em>Chỉ khả dụng với renderer Forward+ và Mobile, không có trong renderer Compatibility.</em></p>
+<p>Khử răng cưa xấp xỉ nhanh (fast approximate antialiasing) là một giải pháp khử răng cưa hậu kỳ (post-processing). Nó chạy nhanh hơn mọi kỹ thuật khử răng cưa khác và cũng hỗ trợ khử răng cưa cho vùng trong suốt. Tuy nhiên, vì thiếu thông tin theo thời gian, nó không giúp được nhiều đối với răng cưa phản xạ.</p>
+<p>Kỹ thuật này đôi khi vẫn được dùng trong game di động. Tuy nhiên, trên các nền tảng desktop, FXAA nhìn chung đã không còn được ưa chuộng, nhường chỗ cho khử răng cưa theo thời gian, vốn hiệu quả hơn nhiều đối với răng cưa phản xạ. Dù vậy, việc cung cấp FXAA như một tùy chọn trong game vẫn có thể đáng giá cho những người chơi có GPU cấu hình thấp.</p>
+<p>FXAA gây ra mức mờ vừa phải khi bật (nhiều hơn TAA khi đứng yên, nhưng ít hơn TAA khi camera di chuyển).</p>
+<p>Có thể bật FXAA trong Project Settings bằng cách thay đổi giá trị của cài đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-anti-aliasing-quality-screen-space-aa" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Anti Aliasing &gt; Quality &gt; Screen Space AA</span></a> thành <code class="docutils literal notranslate"><span class="pre">FXAA</span></code>.</p>
+<p>So sánh giữa không khử răng cưa (trái) và FXAA (phải):</p>
+<img alt="../../_images/antialiasing_fxaa.webp" src="../../_images/antialiasing_fxaa.webp" />
+</section>
+<section id="sub-pixel-morphological-antialiasing-smaa-1x">
+<h2>Khử răng cưa hình thái dưới mức pixel (SMAA 1x)<a class="headerlink" href="#sub-pixel-morphological-antialiasing-smaa-1x" title="Link to this heading"></a></h2>
+<p><em>Chỉ khả dụng với renderer Forward+ và Mobile, không có trong renderer Compatibility.</em></p>
+<p>Sub-pixel Morphological Antialiasing là một giải pháp khử răng cưa hậu xử lý. Nó chạy chậm hơn FXAA một chút nhưng ít gây mờ hơn. Điều này rất hữu ích khi độ phân giải màn hình từ 1080p trở xuống. Giống như FXAA, SMAA 1x không có thông tin theo thời gian nên sẽ không giúp được nhiều trước răng cưa phản xạ (specular aliasing).</p>
+<p>Hãy dùng SMAA 1x nếu bạn không đủ tài nguyên cho MSAA nhưng thấy FXAA quá mờ.</p>
+<p>Kết hợp nó với TAA, hoặc thậm chí FSR2, để tối đa hóa khả năng khử răng cưa, đổi lại tốn GPU hơn và mờ hơn một chút. Cách này có lợi nhất trong các cảnh chuyển động nhanh hoặc ngay sau khi chuyển camera, đặc biệt ở FPS thấp.</p>
+<p>Có thể bật SMAA 1x trong Project Settings bằng cách đổi giá trị của cài đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-anti-aliasing-quality-screen-space-aa" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Anti Aliasing &gt; Quality &gt; Screen Space AA</span></a> thành <code class="docutils literal notranslate"><span class="pre">SMAA</span></code>.</p>
+<p>So sánh giữa không khử răng cưa (trái) và SMAA 1x (phải):</p>
+<img alt="../../_images/antialiasing_smaa.webp" src="../../_images/antialiasing_smaa.webp" />
+</section>
+<section id="supersample-antialiasing-ssaa">
+<h2>Khử răng cưa siêu mẫu (SSAA)<a class="headerlink" href="#supersample-antialiasing-ssaa" title="Link to this heading"></a></h2>
+<p><em>Tính năng này có sẵn trong tất cả các renderer.</em></p>
+<p>Supersampling mang lại chất lượng khử răng cưa cao nhất có thể, nhưng cũng là phương pháp tốn kém nhất. Nó hoạt động bằng cách tô bóng (shading) mỗi pixel trong cảnh nhiều lần. Điều này cho phép SSAA khử răng cưa ở cạnh, độ trong suốt <em>và</em> răng cưa phản xạ cùng lúc mà không gây ra hiện tượng bóng ma (ghosting).</p>
+<p>Nhược điểm của SSAA là chi phí <em>cực kỳ</em> cao. Chi phí này thường khiến SSAA khó dùng cho mục đích chơi game, nhưng bạn vẫn có thể thấy supersampling hữu ích cho <a class="reference internal" href="../animation/creating_movies.html#doc-creating-movies"><span class="std std-ref">kết xuất offline</span></a>.</p>
+<p>Khử răng cưa supersample được thực hiện bằng cách tăng cài đặt dự án nâng cao <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-scaling-3d-scale" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Scaling 3D &gt; Scale</span></a> lên trên <code class="docutils literal notranslate"><span class="pre">1.0</span></code> đồng thời đảm bảo <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-scaling-3d-mode" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Scaling 3D &gt; Mode</span></a> được đặt là <code class="docutils literal notranslate"><span class="pre">Bilinear</span></code> (mặc định). Vì hệ số tỷ lệ được định nghĩa theo từng trục, hệ số <code class="docutils literal notranslate"><span class="pre">1.5</span></code> sẽ cho ra SSAA 2.25×, còn hệ số <code class="docutils literal notranslate"><span class="pre">2.0</span></code> sẽ cho ra SSAA 4×. Vì Godot dùng bộ lọc bilinear của chính phần cứng để giảm mẫu (downsampling), kết quả sẽ sắc nét hơn ở các hệ số tỷ lệ nguyên (cụ thể là <code class="docutils literal notranslate"><span class="pre">2.0</span></code>).</p>
+<p>So sánh giữa không khử răng cưa (trái) và các mức SSAA khác nhau (phải):</p>
+<img alt="../../_images/antialiasing_ssaa_2.25x.webp" src="../../_images/antialiasing_ssaa_2.25x.webp" />
+<img alt="../../_images/antialiasing_ssaa_4x.webp" src="../../_images/antialiasing_ssaa_4x.webp" />
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Supersampling cũng đòi hỏi nhiều video RAM, vì nó cần kết xuất ở độ phân giải mục tiêu rồi <em>thu nhỏ</em> về kích thước cửa sổ. Ví dụ, hiển thị một dự án ở 3840×2160 (độ phân giải 4K) với SSAA 4× sẽ yêu cầu kết xuất cảnh ở 7680×4320 (độ phân giải 8K), tức gấp 4 lần số pixel.</p>
+<p>Nếu bạn đang dùng kích thước cửa sổ lớn như 4K, bạn có thể thấy rằng việc tăng tỷ lệ độ phân giải vượt quá một giá trị nhất định sẽ gây chậm nghiêm trọng (hoặc thậm chí crash) do hết VRAM.</p>
+</div>
+</section>
+<section id="screen-space-roughness-limiter">
+<h2>Bộ giới hạn độ nhám không gian màn hình<a class="headerlink" href="#screen-space-roughness-limiter" title="Link to this heading"></a></h2>
+<p><em>Chỉ khả dụng với renderer Forward+ và Mobile, không có trong renderer Compatibility.</em></p>
+<p>Đây không phải là phương pháp khử răng cưa ở cạnh, nhưng là một cách giảm răng cưa phản xạ trong 3D.</p>
+<p>Bộ giới hạn độ nhám không gian màn hình hoạt động tốt nhất trên hình học chi tiết. Dù có tác động lên việc kết xuất roughness map, ảnh hưởng của nó ở đó khá hạn chế.</p>
+<p>Bộ giới hạn độ nhám không gian màn hình được bật mặc định; nó không cần thiết lập thủ công. Nó có ảnh hưởng nhỏ đến hiệu năng, vì vậy hãy cân nhắc tắt nó nếu dự án của bạn không bị răng cưa phản xạ ảnh hưởng nhiều. Bạn có thể tắt nó bằng cài đặt dự án <strong>Rendering &gt; Quality &gt; Screen Space Filters &gt; Screen Space Roughness Limiter</strong>.</p>
+</section>
+<section id="texture-roughness-limiter-on-import">
+<h2>Bộ giới hạn độ nhám texture khi import<a class="headerlink" href="#texture-roughness-limiter-on-import" title="Link to this heading"></a></h2>
+<p>Giống như bộ giới hạn độ nhám không gian màn hình, đây không phải là phương pháp khử răng cưa ở cạnh, nhưng là một cách giảm răng cưa phản xạ trong 3D.</p>
+<p>Giới hạn độ nhám khi import hoạt động bằng cách chỉ định một normal map làm hướng dẫn để giới hạn độ nhám. Việc này được thực hiện bằng cách chọn roughness map trong FileSystem dock, sau đó vào Import dock và đặt <strong>Roughness &gt; Mode</strong> thành kênh màu mà roughness map được lưu trong đó (thường là <strong>Green</strong>), rồi đặt đường dẫn tới normal map của material. Hãy nhớ nhấn <strong>Reimport</strong> ở cuối Import dock sau khi đặt đường dẫn tới normal map.</p>
+<p>Vì quá trình xử lý này chỉ diễn ra khi import, nó hoàn toàn không tốn chi phí hiệu năng. Tuy nhiên, tác động hình ảnh của nó có hạn. Giới hạn độ nhám khi import chỉ giúp giảm răng cưa phản xạ bên trong texture, chứ không giảm răng cưa xuất hiện ở các cạnh hình học trên các mesh chi tiết.</p>
+</section>
+<section id="which-antialiasing-technique-should-i-use">
+<h2>Nên dùng kỹ thuật khử răng cưa nào?<a class="headerlink" href="#which-antialiasing-technique-should-i-use" title="Link to this heading"></a></h2>
+<p><strong>Không có kỹ thuật khử răng cưa nào &quot;phù hợp cho mọi trường hợp&quot;.</strong> Vì khử răng cưa thường đòi hỏi nhiều ở GPU hoặc có thể gây mờ không mong muốn, bạn nên thêm một cài đặt cho phép người chơi tắt khử răng cưa.</p>
+<p>Với các dự án có định hướng nghệ thuật chân thực (photorealistic), TAA thường là lựa chọn phù hợp nhất. Dù TAA có thể gây hiện tượng bóng ma, không có kỹ thuật nào khác chống răng cưa phản xạ tốt bằng TAA. Bộ giới hạn độ nhám không gian màn hình giúp được một chút, nhưng nhìn chung kém hiệu quả hơn nhiều trước răng cưa phản xạ. Nếu còn dư sức mạnh GPU, bạn có thể dùng FSR2 ở độ phân giải gốc để có một dạng khử răng cưa theo thời gian đẹp hơn so với TAA tiêu chuẩn.</p>
+<p>Với các dự án có ít bề mặt phản chiếu (chẳng hạn phong cách hoạt hình), MSAA có thể hoạt động tốt. MSAA cũng là lựa chọn tốt nếu việc tránh mờ và lỗi theo thời gian là quan trọng, chẳng hạn trong các game đối kháng cạnh tranh.</p>
+<p>Khi nhắm tới các nền tảng cấu hình thấp như di động hoặc đồ họa tích hợp, FXAA thường là lựa chọn khả thi duy nhất. MSAA 2× có thể dùng được trong một số trường hợp, nhưng các mức MSAA cao hơn khó có thể chạy mượt trên GPU di động.</p>
+<p>Godot cho phép dùng nhiều kỹ thuật khử răng cưa cùng lúc. Điều này thường không cần thiết, nhưng có thể mang lại hình ảnh tốt hơn trên GPU cao cấp hoặc cho <a class="reference internal" href="../animation/creating_movies.html#doc-creating-movies"><span class="std std-ref">kết xuất không thời gian thực</span></a>. Ví dụ, để các cạnh chuyển động trông đẹp hơn khi bật TAA, bạn cũng có thể bật MSAA cùng lúc.</p>
+<section id="antialiasing-comparison">
+<h3>So sánh các kỹ thuật khử răng cưa<a class="headerlink" href="#antialiasing-comparison" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>MSAA</p></th>
+<th class="head"><p>TAA</p></th>
+<th class="head"><p>FSR2</p></th>
+<th class="head"><p>FXAA</p></th>
+<th class="head"><p>SMAA 1x</p></th>
+<th class="head"><p>SSAA</p></th>
+<th class="head"><p>SSRL</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Khử răng cưa ở cạnh</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🔴 Không</p></td>
+</tr>
+<tr class="row-odd"><td><p>Khử răng cưa phản xạ</p></td>
+<td><p>🟡 Một phần</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟡 Một phần</p></td>
+<td><p>🟡 Một phần</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+</tr>
+<tr class="row-even"><td><p>Khử răng cưa độ trong suốt</p></td>
+<td><p>🟡 Một phần <a class="footnote-reference brackets" href="#id5" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
+<td><p>🟢 Có <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></td>
+<td><p>🟢 Có <a class="footnote-reference brackets" href="#id6" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🟢 Có</p></td>
+<td><p>🔴 Không</p></td>
+</tr>
+<tr class="row-odd"><td><p>Độ mờ thêm vào</p></td>
+<td><p>🟢 Không có</p></td>
+<td><p>🟡 Một phần</p></td>
+<td><p>🟡 Một phần</p></td>
+<td><p>🟡 Một phần</p></td>
+<td><p>🟢 Thấp</p></td>
+<td><p>🟡 Một phần <a class="footnote-reference brackets" href="#id7" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p></td>
+<td><p>🟢 Không có</p></td>
+</tr>
+<tr class="row-even"><td><p>Hiện tượng bóng ma</p></td>
+<td><p>🟢 Không có</p></td>
+<td><p>🔴 Có</p></td>
+<td><p>🔴 Có</p></td>
+<td><p>🟢 Không có</p></td>
+<td><p>🟢 Không có</p></td>
+<td><p>🟢 Không có</p></td>
+<td><p>🟢 Không có</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chi phí hiệu năng</p></td>
+<td><p>🟡 Trung bình</p></td>
+<td><p>🟡 Trung bình</p></td>
+<td><p>🔴 Cao</p></td>
+<td><p>🟢 Rất thấp</p></td>
+<td><p>🟢 Thấp</p></td>
+<td><p>🔴 Rất cao</p></td>
+<td><p>🟢 Thấp</p></td>
+</tr>
+<tr class="row-even"><td><p>Forward+</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+</tr>
+<tr class="row-odd"><td><p>Di động</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>❌ Không</p></td>
+<td><p>❌ Không</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>✔️ Có</p></td>
+</tr>
+<tr class="row-even"><td><p>Compatibility</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>❌ Không</p></td>
+<td><p>❌ Không</p></td>
+<td><p>❌ Không</p></td>
+<td><p>❌ Không</p></td>
+<td><p>✔️ Có</p></td>
+<td><p>❌ Không</p></td>
+</tr>
+</tbody>
+</table>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>MSAA không hoạt động tốt với các material dùng Alpha Scissor (trong suốt 1-bit). Có thể giảm thiểu điều này bằng cách bật <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">antialiasing</span></code> trên material.</p>
+</aside>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>Khử răng cưa độ trong suốt của TAA/FSR2 hiệu quả nhất khi dùng Alpha Scissor.</p>
+</aside>
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p>SSAA có một chút mờ do thu nhỏ bilinear. Có thể giảm thiểu điều này bằng cách dùng hệ số tỷ lệ nguyên <code class="docutils literal notranslate"><span class="pre">2.0</span></code>.</p>
+</aside>
+</aside>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="volumetric_fog.html" class="btn btn-neutral float-left" title="Sương mù thể tích và fog volume" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="using_multi_mesh_instance.html" class="btn btn-neutral float-right" title="Sử dụng MultiMeshInstance3D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng compute shader" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/compute_shaders.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Bài hướng dẫn này sẽ hướng dẫn bạn từng bước tạo một compute shader tối giản. Nhưng trước tiên, hãy tìm hiểu đôi chút về compute shader và cách chúng hoạt động với Godot. Compute shader là một loại..." />
+<meta name="description" content="Bài hướng dẫn này sẽ hướng dẫn bạn từng bước tạo một compute shader tối giản. Nhưng trước tiên, hãy tìm hiểu đôi chút về compute shader và cách chúng hoạt động với Godot. Compute shader là một loại..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng compute shader &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Shader đọc màn hình" href="screen-reading_shaders.html" />
+    <link rel="prev" title="Sử dụng VisualShader" href="visual_shaders.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/compute_shaders" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shader_reference/index.html">Tham chiếu shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visual_shaders.html">Sử dụng VisualShader</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng compute shader</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-local-renderingdevice">Tạo một RenderingDevice cục bộ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#provide-input-data">Cung cấp dữ liệu đầu vào</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-a-compute-pipeline">Định nghĩa một compute pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execute-a-compute-shader">Thực thi compute shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieving-results">Lấy kết quả</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freeing-memory">Giải phóng bộ nhớ</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="screen-reading_shaders.html">Shader đọc màn hình</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_viewport_as_texture.html">Dùng SubViewport làm texture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_postprocessing.html">Hậu xử lý nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Shader</a></li>
+      <li class="breadcrumb-item active">Sử dụng compute shader</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-compute-shaders">
+<span id="doc-compute-shaders"></span><h1>Sử dụng compute shader<a class="headerlink" href="#using-compute-shaders" title="Link to this heading"></a></h1>
+<p>Bài hướng dẫn này sẽ hướng dẫn bạn từng bước tạo một compute shader tối giản. Nhưng trước tiên, hãy tìm hiểu đôi chút về compute shader và cách chúng hoạt động với Godot.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bài hướng dẫn này giả định bạn đã quen với shader nói chung. Nếu bạn mới làm quen với shader, hãy đọc <a class="reference internal" href="introduction_to_shaders.html#doc-introduction-to-shaders"><span class="std std-ref">Giới thiệu về shader</span></a> và <a class="reference internal" href="your_first_shader/index.html#toc-your-first-shader"><span class="std std-ref">shader đầu tiên của bạn</span></a> trước khi tiếp tục bài hướng dẫn này.</p>
+</div>
+<p>Compute shader là một loại chương trình shader đặc biệt hướng tới lập trình đa dụng. Nói cách khác, chúng linh hoạt hơn vertex shader và fragment shader vì không có mục đích cố định (như biến đổi vertex hay ghi màu vào ảnh). Không giống fragment shader và vertex shader, compute shader có rất ít thứ diễn ra ngầm phía sau. Mã bạn viết chính là thứ GPU chạy, và hầu như không có gì khác. Điều này khiến chúng trở thành công cụ rất hữu ích để chuyển các phép tính nặng sang GPU.</p>
+<p>Giờ hãy bắt đầu bằng việc tạo một compute shader ngắn.</p>
+<p>Đầu tiên, trong trình soạn thảo văn bản <strong>bên ngoài</strong> mà bạn chọn, hãy tạo một file mới tên là <code class="docutils literal notranslate"><span class="pre">compute_example.glsl</span></code> trong thư mục dự án. Khi viết compute shader trong Godot, bạn viết trực tiếp bằng GLSL. Ngôn ngữ shader của Godot dựa trên GLSL. Nếu bạn đã quen với shader thông thường trong Godot, cú pháp dưới đây sẽ trông khá quen thuộc.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Compute shader chỉ có thể dùng với các renderer dựa trên RenderingDevice (renderer Forward+ hoặc Mobile). Để làm theo bài hướng dẫn này, hãy đảm bảo bạn đang dùng renderer Forward+ hoặc Mobile. Cài đặt này nằm ở góc trên bên phải của trình chỉnh sửa.</p>
+<p>Lưu ý rằng việc hỗ trợ compute shader trên thiết bị di động nhìn chung kém (do lỗi driver), ngay cả khi về mặt kỹ thuật chúng được hỗ trợ.</p>
+</div>
+<p>Hãy cùng xem đoạn mã compute shader này:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#[compute]</span>
+<span class="cp">#version 450</span>
+
+<span class="c1">// Invocations in the (x, y, z) dimension</span>
+<span class="k">layout</span><span class="p">(</span><span class="n">local_size_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">local_size_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">local_size_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="p">;</span>
+
+<span class="c1">// A binding to the buffer we create in our script</span>
+<span class="k">layout</span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">,</span><span class="w"> </span><span class="n">std430</span><span class="p">)</span><span class="w"> </span><span class="k">restrict</span><span class="w"> </span><span class="k">buffer</span><span class="w"> </span><span class="n">MyDataBuffer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span>
+<span class="n">my_data_buffer</span><span class="p">;</span>
+
+<span class="c1">// The code we want to execute in each invocation</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups</span>
+<span class="w">    </span><span class="n">my_data_buffer</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="nb">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">x</span><span class="p">]</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Đoạn mã này nhận một mảng số thực, nhân mỗi phần tử với 2 và lưu kết quả trở lại mảng buffer. Giờ hãy xem xét từng dòng.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#[compute]</span>
+<span class="cp">#version 450</span>
+</pre></div>
+</div>
+<p>Hai dòng này truyền đạt hai điều:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Đoạn mã sau là một compute shader. Đây là gợi ý riêng của Godot, cần thiết để trình chỉnh sửa import file shader đúng cách.</p></li>
+<li><p>Đoạn mã dùng GLSL phiên bản 450.</p></li>
+</ol>
+</div></blockquote>
+<p>Bạn sẽ không bao giờ phải thay đổi hai dòng này cho các compute shader tùy chỉnh của mình.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">// Invocations in the (x, y, z) dimension</span>
+<span class="k">layout</span><span class="p">(</span><span class="n">local_size_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">local_size_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">local_size_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Tiếp theo, chúng ta chỉ định số lượng invocation dùng trong mỗi workgroup. Invocation là các instance của shader chạy trong cùng một workgroup. Khi khởi chạy một compute shader từ CPU, chúng ta cho nó biết cần chạy bao nhiêu workgroup. Các workgroup chạy song song với nhau. Khi đang chạy một workgroup, bạn không thể truy cập thông tin trong workgroup khác. Tuy nhiên, các invocation trong cùng một workgroup có thể truy cập hạn chế tới các invocation khác.</p>
+<p>Hãy hình dung workgroup và invocation như một vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code> lồng nhau khổng lồ.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">workgroup_size_x</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">workgroup_size_y</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">workgroup_size_z</span><span class="p">;</span><span class="w"> </span><span class="n">z</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Each workgroup runs independently and in parallel.</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">local_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">local_x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">invocation_size_x</span><span class="p">;</span><span class="w"> </span><span class="n">local_x</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">local_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">local_y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">invocation_size_y</span><span class="p">;</span><span class="w"> </span><span class="n">local_y</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">local_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">local_z</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">invocation_size_z</span><span class="p">;</span><span class="w"> </span><span class="n">local_z</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                 </span><span class="c1">// Compute shader runs here.</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">           </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Workgroup và invocation là một chủ đề nâng cao. Hiện tại, chỉ cần nhớ rằng chúng ta sẽ chạy hai invocation cho mỗi workgroup.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">// A binding to the buffer we create in our script</span>
+<span class="k">layout</span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">,</span><span class="w"> </span><span class="n">std430</span><span class="p">)</span><span class="w"> </span><span class="k">restrict</span><span class="w"> </span><span class="k">buffer</span><span class="w"> </span><span class="n">MyDataBuffer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span>
+<span class="n">my_data_buffer</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Ở đây chúng ta cung cấp thông tin về vùng bộ nhớ mà compute shader sẽ được truy cập. Thuộc tính <code class="docutils literal notranslate"><span class="pre">layout</span></code> cho phép chúng ta báo cho shader biết nơi tìm buffer; sau này chúng ta sẽ cần khớp các vị trí <code class="docutils literal notranslate"><span class="pre">set</span></code> và <code class="docutils literal notranslate"><span class="pre">binding</span></code> này từ phía CPU.</p>
+<p>Từ khóa <code class="docutils literal notranslate"><span class="pre">restrict</span></code> báo cho shader biết buffer này chỉ được truy cập từ một vị trí trong shader. Nói cách khác, chúng ta sẽ không bind buffer này ở một chỉ số <code class="docutils literal notranslate"><span class="pre">set</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">binding</span></code> khác. Điều này quan trọng vì nó cho phép trình biên dịch shader tối ưu mã shader. Hãy luôn dùng <code class="docutils literal notranslate"><span class="pre">restrict</span></code> khi có thể.</p>
+<p>Đây là một buffer <em>không định kích thước</em>, nghĩa là nó có thể có kích thước bất kỳ. Vì vậy chúng ta cần cẩn thận để không đọc ở chỉ số lớn hơn kích thước của buffer.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">// The code we want to execute in each invocation</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups</span>
+<span class="w">    </span><span class="n">my_data_buffer</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="nb">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">x</span><span class="p">]</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Cuối cùng, chúng ta viết hàm <code class="docutils literal notranslate"><span class="pre">main</span></code>, nơi toàn bộ logic diễn ra. Chúng ta truy cập một vị trí trong storage buffer bằng các biến built-in <code class="docutils literal notranslate"><span class="pre">gl_GlobalInvocationID</span></code>. <code class="docutils literal notranslate"><span class="pre">gl_GlobalInvocationID</span></code> cho bạn ID duy nhất toàn cục của invocation hiện tại.</p>
+<p>Để tiếp tục, hãy viết đoạn mã trên vào file <code class="docutils literal notranslate"><span class="pre">compute_example.glsl</span></code> bạn vừa tạo.</p>
+<section id="create-a-local-renderingdevice">
+<h2>Tạo một RenderingDevice cục bộ<a class="headerlink" href="#create-a-local-renderingdevice" title="Link to this heading"></a></h2>
+<p>Để tương tác và thực thi một compute shader, chúng ta cần một script. Hãy tạo một script mới bằng ngôn ngữ bạn chọn và gắn nó vào một Node bất kỳ trong scene.</p>
+<p>Giờ để thực thi shader, chúng ta cần một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingdevice.html" title="Class reference (English)"><span class="xref std std-ref">class_RenderingDevice</span></a> cục bộ, có thể được tạo bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html" title="Class reference (English)"><span class="xref std std-ref">class_RenderingServer</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a local rendering device.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">rd</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">create_local_rendering_device</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create a local rendering device.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">rd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CreateLocalRenderingDevice</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Sau đó, chúng ta có thể tải file shader vừa tạo <code class="docutils literal notranslate"><span class="pre">compute_example.glsl</span></code> và tạo một phiên bản biên dịch sẵn của nó như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load GLSL shader</span>
+<span class="k">var</span><span class="w"> </span><span class="n">shader_file</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">load</span><span class="p">(</span><span class="s2">&quot;res://compute_example.glsl&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">shader_spirv</span><span class="p">:</span><span class="w"> </span><span class="nb">RDShaderSPIRV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shader_file</span><span class="o">.</span><span class="nf">get_spirv</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">shader</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">shader_create_from_spirv</span><span class="p">(</span><span class="n">shader_spirv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Load GLSL shader</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">shaderFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">RDShaderFile</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://compute_example.glsl&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">shaderBytecode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderFile</span><span class="p">.</span><span class="n">GetSpirV</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="p">.</span><span class="n">ShaderCreateFromSpirV</span><span class="p">(</span><span class="n">shaderBytecode</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Không thể debug các RenderingDevice cục bộ bằng các công cụ như <a class="reference external" href="https://renderdoc.org/">RenderDoc</a>.</p>
+</div>
+</section>
+<section id="provide-input-data">
+<h2>Cung cấp dữ liệu đầu vào<a class="headerlink" href="#provide-input-data" title="Link to this heading"></a></h2>
+<p>Có thể bạn còn nhớ, chúng ta muốn truyền một mảng đầu vào cho shader, nhân mỗi phần tử với 2 và lấy kết quả.</p>
+<p>Chúng ta cần tạo một buffer để truyền giá trị cho compute shader. Vì đang làm việc với một mảng số thực, chúng ta sẽ dùng storage buffer cho ví dụ này. Storage buffer nhận một mảng byte và cho phép CPU truyền dữ liệu tới và từ GPU.</p>
+<p>Vậy hãy khởi tạo một mảng số thực và tạo một storage buffer:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare our data. We use floats in the shader, so we need 32 bit.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedFloat32Array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">])</span>
+<span class="k">var</span><span class="w"> </span><span class="n">input_bytes</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="nf">to_byte_array</span><span class="p">()</span>
+
+<span class="c1"># Create a storage buffer that can hold our float values.</span>
+<span class="c1"># Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes</span>
+<span class="k">var</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">storage_buffer_create</span><span class="p">(</span><span class="n">input_bytes</span><span class="o">.</span><span class="nf">size</span><span class="p">(),</span><span class="w"> </span><span class="n">input_bytes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Prepare our data. We use floats in the shader, so we need 32 bit.</span>
+<span class="kt">float</span><span class="p">[]</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">];</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">inputBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="p">[</span><span class="n">input</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)];</span>
+<span class="n">Buffer</span><span class="p">.</span><span class="n">BlockCopy</span><span class="p">(</span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">inputBytes</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">inputBytes</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+
+<span class="c1">// Create a storage buffer that can hold our float values.</span>
+<span class="c1">// Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="p">.</span><span class="n">StorageBufferCreate</span><span class="p">((</span><span class="kt">uint</span><span class="p">)</span><span class="n">inputBytes</span><span class="p">.</span><span class="n">Length</span><span class="p">,</span><span class="w"> </span><span class="n">inputBytes</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi đã có buffer, chúng ta cần báo cho rendering device dùng buffer này. Để làm vậy, chúng ta sẽ cần tạo một uniform (giống như trong shader thông thường) và gán nó vào một uniform set mà sau này có thể truyền cho shader.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a uniform to assign the buffer to the rendering device</span>
+<span class="k">var</span><span class="w"> </span><span class="n">uniform</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">RDUniform</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">uniform</span><span class="o">.</span><span class="vi">uniform_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingDevice</span><span class="o">.</span><span class="vi">UNIFORM_TYPE_STORAGE_BUFFER</span>
+<span class="n">uniform</span><span class="o">.</span><span class="vi">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c1"># this needs to match the &quot;binding&quot; in our shader file</span>
+<span class="n">uniform</span><span class="o">.</span><span class="nf">add_id</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">uniform_set</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">uniform_set_create</span><span class="p">([</span><span class="n">uniform</span><span class="p">],</span><span class="w"> </span><span class="n">shader</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c1"># the last parameter (the 0) needs to match the &quot;set&quot; in our shader file</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create a uniform to assign the buffer to the rendering device</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">uniform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RDUniform</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">UniformType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingDevice</span><span class="p">.</span><span class="n">UniformType</span><span class="p">.</span><span class="n">StorageBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="p">};</span>
+<span class="n">uniform</span><span class="p">.</span><span class="n">AddId</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">uniformSet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="p">.</span><span class="n">UniformSetCreate</span><span class="p">([</span><span class="n">uniform</span><span class="p">],</span><span class="w"> </span><span class="n">shader</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="defining-a-compute-pipeline">
+<h2>Định nghĩa một compute pipeline<a class="headerlink" href="#defining-a-compute-pipeline" title="Link to this heading"></a></h2>
+<p>Bước tiếp theo là tạo một tập lệnh mà GPU có thể thực thi. Để làm vậy, chúng ta cần một pipeline và một compute list.</p>
+<p>Các bước cần làm để tính kết quả là:</p>
+<ol class="arabic simple">
+<li><p>Tạo một pipeline mới.</p></li>
+<li><p>Bắt đầu một danh sách lệnh để GPU thực thi.</p></li>
+<li><p>Bind compute list vào pipeline</p></li>
+<li><p>Bind buffer uniform vào pipeline</p></li>
+<li><p>Chỉ định số workgroup cần dùng</p></li>
+<li><p>Kết thúc danh sách lệnh</p></li>
+</ol>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a compute pipeline</span>
+<span class="k">var</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_pipeline_create</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">compute_list</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_begin</span><span class="p">()</span>
+<span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_bind_compute_pipeline</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="n">pipeline</span><span class="p">)</span>
+<span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_bind_uniform_set</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="n">uniform_set</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_dispatch</span><span class="p">(</span><span class="n">compute_list</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="n">rd</span><span class="o">.</span><span class="nf">compute_list_end</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create a compute pipeline</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="p">.</span><span class="n">ComputePipelineCreate</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">computeList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="p">.</span><span class="n">ComputeListBegin</span><span class="p">();</span>
+<span class="n">rd</span><span class="p">.</span><span class="n">ComputeListBindComputePipeline</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">pipeline</span><span class="p">);</span>
+<span class="n">rd</span><span class="p">.</span><span class="n">ComputeListBindUniformSet</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">uniformSet</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="n">rd</span><span class="p">.</span><span class="n">ComputeListDispatch</span><span class="p">(</span><span class="n">computeList</span><span class="p">,</span><span class="w"> </span><span class="n">xGroups</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">yGroups</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">zGroups</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">rd</span><span class="p">.</span><span class="n">ComputeListEnd</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu ý rằng chúng ta đang dispatch compute shader với 5 workgroup trên trục X và một workgroup trên các trục còn lại. Vì có 2 invocation cục bộ trên trục X (được chỉ định trong shader), tổng cộng sẽ có 10 invocation compute shader được khởi chạy. Nếu bạn đọc hoặc ghi vào các chỉ số nằm ngoài phạm vi buffer, bạn có thể truy cập vùng bộ nhớ ngoài tầm kiểm soát của shader hoặc một phần của các biến khác, điều này có thể gây lỗi trên một số phần cứng.</p>
+</section>
+<section id="execute-a-compute-shader">
+<h2>Thực thi compute shader<a class="headerlink" href="#execute-a-compute-shader" title="Link to this heading"></a></h2>
+<p>Sau tất cả những bước này, chúng ta gần xong rồi, nhưng vẫn cần thực thi pipeline. Cho đến giờ chúng ta mới chỉ ghi lại những gì muốn GPU làm; chúng ta chưa thực sự chạy chương trình shader.</p>
+<p>Để thực thi compute shader, chúng ta cần submit pipeline tới GPU và chờ quá trình thực thi hoàn tất:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Submit to GPU and wait for sync</span>
+<span class="n">rd</span><span class="o">.</span><span class="nf">submit</span><span class="p">()</span>
+<span class="n">rd</span><span class="o">.</span><span class="nf">sync</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Submit to GPU and wait for sync</span>
+<span class="n">rd</span><span class="p">.</span><span class="n">Submit</span><span class="p">();</span>
+<span class="n">rd</span><span class="p">.</span><span class="n">Sync</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lý tưởng nhất, bạn không nên gọi <code class="docutils literal notranslate"><span class="pre">sync()</span></code> để đồng bộ RenderingDevice ngay lập tức vì nó sẽ khiến CPU phải chờ GPU làm xong. Trong ví dụ của chúng ta, chúng ta đồng bộ ngay vì muốn dữ liệu sẵn sàng để đọc ngay. Nói chung, bạn nên chờ <em>ít nhất</em> 2 hoặc 3 frame trước khi đồng bộ để GPU có thể chạy song song với CPU.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Các phép tính kéo dài có thể khiến driver đồ họa trên Windows bị &quot;crash&quot; do Windows kích hoạt <abbr title="Timeout Detection and Recovery">TDR</abbr>. Đây là một cơ chế khởi tạo lại driver đồ họa sau khi một khoảng thời gian nhất định trôi qua mà driver đồ họa không có hoạt động nào (thường từ 5 đến 10 giây).</p>
+<p>Tùy vào thời gian thực thi của compute shader, bạn có thể cần chia nó thành nhiều lần dispatch để giảm thời gian mỗi lần dispatch và giảm khả năng kích hoạt TDR. Vì TDR phụ thuộc vào thời gian, các GPU chậm hơn có thể dễ gặp TDR hơn khi chạy cùng một compute shader so với GPU nhanh hơn.</p>
+</div>
+</section>
+<section id="retrieving-results">
+<h2>Lấy kết quả<a class="headerlink" href="#retrieving-results" title="Link to this heading"></a></h2>
+<p>Có thể bạn đã nhận thấy rằng trong shader ví dụ, chúng ta đã sửa nội dung của storage buffer. Nói cách khác, shader đọc từ mảng và lưu dữ liệu trở lại chính mảng đó, nên kết quả đã nằm sẵn ở đó. Hãy lấy dữ liệu ra và in kết quả ra console.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read back the data from the buffer</span>
+<span class="k">var</span><span class="w"> </span><span class="n">output_bytes</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="o">.</span><span class="nf">buffer_get_data</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">output_bytes</span><span class="o">.</span><span class="nf">to_float32_array</span><span class="p">()</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Input: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="p">)</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Output: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Read back the data from the buffers</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">outputBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rd</span><span class="p">.</span><span class="n">BufferGetData</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">float</span><span class="p">[</span><span class="n">input</span><span class="p">.</span><span class="n">Length</span><span class="p">];</span>
+<span class="n">Buffer</span><span class="p">.</span><span class="n">BlockCopy</span><span class="p">(</span><span class="n">outputBytes</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">outputBytes</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Input: &quot;</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="p">));</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Output: &quot;</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="freeing-memory">
+<h2>Giải phóng bộ nhớ<a class="headerlink" href="#freeing-memory" title="Link to this heading"></a></h2>
+<p>Các biến <code class="docutils literal notranslate"><span class="pre">buffer</span></code>, <code class="docutils literal notranslate"><span class="pre">pipeline</span></code> và <code class="docutils literal notranslate"><span class="pre">uniform_set</span></code> mà chúng ta đã dùng đều là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">class_RID</span></a>. Vì RenderingDevice được thiết kế là một API cấp thấp hơn, các RID không được giải phóng tự động. Điều này có nghĩa là khi đã dùng xong <code class="docutils literal notranslate"><span class="pre">buffer</span></code> hoặc bất kỳ RID nào khác, bạn có trách nhiệm tự giải phóng bộ nhớ của nó bằng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingdevice.html#class-renderingdevice-method-free-rid" title="Class reference (English)"><span class="xref std std-ref">free_rid()</span></a> của RenderingDevice.</p>
+<p>Vậy là bạn đã có mọi thứ cần thiết để bắt đầu làm việc với compute shader.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Kho dự án demo có một <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/compute/heightmap">demo Compute Shader Heightmap</a> Dự án này tạo ảnh heightmap riêng biệt trên CPU và GPU, cho phép bạn so sánh cách một thuật toán tương tự có thể được triển khai theo hai cách khác nhau (trong đa số trường hợp, cách triển khai trên GPU nhanh hơn).</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visual_shaders.html" class="btn btn-neutral float-left" title="Sử dụng VisualShader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="screen-reading_shaders.html" class="btn btn-neutral float-right" title="Shader đọc màn hình" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sky shader" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/shader_reference/sky_shader.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Sky shader là loại shader đặc biệt dùng để vẽ nền bầu trời và cập nhật radiance cubemap dùng cho chiếu sáng dựa trên hình ảnh (IBL). Sky shader chỉ có một hàm xử lý, đó là hàm sky(). Sky shader đượ..." />
+<meta name="description" content="Sky shader là loại shader đặc biệt dùng để vẽ nền bầu trời và cập nhật radiance cubemap dùng cho chiếu sáng dựa trên hình ảnh (IBL). Sky shader chỉ có một hàm xử lý, đó là hàm sky(). Sky shader đượ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sky shader &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Fog shader" href="fog_shader.html" />
+    <link rel="prev" title="Particle shader" href="particle_shader.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/shader_reference/sky_shader" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Tham chiếu shading</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="shading_language.html">Ngôn ngữ shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shader_functions.html">Các hàm shader dựng sẵn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shader_preprocessor.html">Bộ tiền xử lý shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatial_shader.html">Spatial shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="canvas_item_shader.html">Shader CanvasItem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particle_shader.html">Particle shader</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sky shader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#render-modes">Render mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#built-ins">Biến dựng sẵn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global-built-ins">Biến dựng sẵn toàn cục</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sky-built-ins">Biến tích hợp của sky</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fog_shader.html">Fog shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="texture_blit_shader.html">Texture blit shader</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visual_shaders.html">Sử dụng VisualShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compute_shaders.html">Sử dụng compute shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../screen-reading_shaders.html">Shader đọc màn hình</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_viewport_as_texture.html">Dùng SubViewport làm texture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced_postprocessing.html">Hậu xử lý nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Shader</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tham chiếu shading</a></li>
+      <li class="breadcrumb-item active">Sky shader</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="sky-shaders">
+<span id="doc-sky-shader"></span><h1>Sky shader<a class="headerlink" href="#sky-shaders" title="Link to this heading"></a></h1>
+<p>Sky shader là loại shader đặc biệt dùng để vẽ nền bầu trời và cập nhật radiance cubemap dùng cho chiếu sáng dựa trên hình ảnh (IBL). Sky shader chỉ có một hàm xử lý, đó là hàm <code class="docutils literal notranslate"><span class="pre">sky()</span></code>.</p>
+<p>Sky shader được dùng ở ba nơi.</p>
+<ul class="simple">
+<li><p>Thứ nhất, sky shader được dùng để vẽ bầu trời khi bạn chọn dùng Sky làm nền trong scene.</p></li>
+<li><p>Thứ hai, sky shader được dùng để cập nhật radiance cubemap khi dùng Sky cho màu môi trường (ambient) hoặc phản xạ.</p></li>
+<li><p>Thứ ba, sky shader được dùng để vẽ các subpass độ phân giải thấp, có thể dùng trong pass nền hoặc pass cubemap độ phân giải cao.</p></li>
+</ul>
+<p>Tổng cộng, điều này có nghĩa là sky shader có thể chạy tới sáu lần mỗi frame, tuy nhiên trên thực tế sẽ ít hơn nhiều vì radiance cubemap không cần cập nhật mỗi frame, và không phải mọi subpass đều được dùng. Bạn có thể thay đổi hành vi của shader dựa trên nơi nó được gọi bằng cách kiểm tra các biến boolean <code class="docutils literal notranslate"><span class="pre">AT_*_PASS</span></code>. Ví dụ:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">sky</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">sky</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AT_CUBEMAP_PASS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Sets the radiance cubemap to a nice shade of blue instead of doing</span>
+<span class="w">        </span><span class="c1">// expensive sky calculations</span>
+<span class="w">        </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Do expensive sky calculations for background sky only</span>
+<span class="w">        </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_sky_color</span><span class="p">(</span><span class="n">EYEDIR</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Khi dùng sky shader để vẽ nền, shader sẽ được gọi cho mọi fragment không bị che khuất trên màn hình. Tuy nhiên, với các subpass của nền, shader sẽ được gọi cho mọi pixel của subpass.</p>
+<p>Khi dùng sky shader để cập nhật radiance cubemap, sky shader sẽ được gọi cho mọi pixel trong cubemap. Mặt khác, shader chỉ được gọi khi radiance cubemap cần được cập nhật. Radiance cubemap cần được cập nhật khi bất kỳ tham số nào của shader được cập nhật. Ví dụ, nếu <code class="docutils literal notranslate"><span class="pre">TIME</span></code> được dùng trong shader, radiance cubemap sẽ cập nhật mỗi frame. Danh sách các thay đổi sau buộc radiance cubemap phải cập nhật:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TIME</span></code> được sử dụng.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POSITION</span></code> được sử dụng và vị trí camera thay đổi.</p></li>
+<li><p>Nếu bất kỳ thuộc tính <code class="docutils literal notranslate"><span class="pre">LIGHTX_*</span></code> nào được dùng và bất kỳ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_directionallight3d.html" title="Class reference (English)"><span class="xref std std-ref">DirectionalLight3D</span></a> nào thay đổi.</p></li>
+<li><p>Nếu bất kỳ uniform nào trong shader bị thay đổi.</p></li>
+<li><p>Nếu màn hình bị thay đổi kích thước và có dùng một trong các subpass.</p></li>
+</ul>
+<p>Hãy cố tránh cập nhật radiance cubemap một cách không cần thiết. Nếu bạn thực sự cần cập nhật radiance cubemap mỗi frame, hãy đảm bảo <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sky.html#class-sky-property-process-mode" title="Class reference (English)"><span class="xref std std-ref">Sky process mode</span></a> được đặt thành <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sky.html#class-sky-constant-process-mode-realtime" title="Class reference (English)"><span class="xref std std-ref">PROCESS_MODE_REALTIME</span></a>.</p>
+<p>Lưu ý rằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sky.html#class-sky-property-process-mode" title="Class reference (English)"><span class="xref std std-ref">process mode</span></a> chỉ ảnh hưởng đến việc kết xuất radiance cubemap. Bầu trời hiển thị luôn được kết xuất bằng cách gọi fragment shader cho mọi pixel. Với fragment shader phức tạp, việc này có thể gây chi phí kết xuất cao. Nếu bầu trời là tĩnh (thỏa các điều kiện liệt kê ở trên) hoặc thay đổi chậm, không cần chạy toàn bộ fragment shader mỗi frame. Có thể tránh điều này bằng cách kết xuất toàn bộ bầu trời vào radiance cubemap, và đọc từ cubemap này khi kết xuất bầu trời hiển thị. Với bầu trời hoàn toàn tĩnh, điều này có nghĩa là nó chỉ cần được kết xuất một lần.</p>
+<p>Đoạn code sau kết xuất toàn bộ bầu trời vào radiance cubemap và đọc từ cubemap đó để hiển thị bầu trời:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">sky</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">sky</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AT_CUBEMAP_PASS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">vec3</span><span class="w"> </span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EYEDIR</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kt">vec4</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Complex color calculation</span>
+
+<span class="w">        </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">col</span><span class="p">.</span><span class="n">xyz</span><span class="p">;</span>
+<span class="w">        </span><span class="n">ALPHA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">RADIANCE</span><span class="p">,</span><span class="w"> </span><span class="n">EYEDIR</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Bằng cách này, các phép tính phức tạp chỉ diễn ra trong pass cubemap, và có thể được tối ưu bằng cách đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sky.html#class-sky-property-process-mode" title="Class reference (English)"><span class="xref std std-ref">process mode</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sky.html#class-sky-property-radiance-size" title="Class reference (English)"><span class="xref std std-ref">radiance size</span></a> của sky để đạt được sự cân bằng mong muốn giữa hiệu năng và độ trung thực hình ảnh.</p>
+<section id="render-modes">
+<h2>Render mode<a class="headerlink" href="#render-modes" title="Link to this heading"></a></h2>
+<p>Subpass cho phép bạn thực hiện các phép tính tốn kém hơn ở độ phân giải thấp hơn để tăng tốc shader. Ví dụ, đoạn code sau kết xuất mây ở độ phân giải thấp hơn phần còn lại của bầu trời:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">sky</span><span class="p">;</span>
+<span class="n">render_mode</span><span class="w"> </span><span class="n">use_half_res_pass</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">sky</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AT_HALF_RES_PASS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Run cloud calculation for 1/4 of the pixels</span>
+<span class="w">        </span><span class="kt">vec4</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_clouds</span><span class="p">(</span><span class="n">EYEDIR</span><span class="p">);</span>
+<span class="w">        </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">color</span><span class="p">.</span><span class="n">rgb</span><span class="p">;</span>
+<span class="w">        </span><span class="n">ALPHA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">color</span><span class="p">.</span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// At full resolution pass, blend sky and clouds together</span>
+<span class="w">        </span><span class="kt">vec3</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_sky</span><span class="p">(</span><span class="n">EYEDIR</span><span class="p">);</span>
+<span class="w">        </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">HALF_RES_COLOR</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">HALF_RES_COLOR</span><span class="p">.</span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Chế độ render</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>use_half_res_pass</strong></p></td>
+<td><p>Cho phép shader ghi vào và truy cập pass nửa độ phân giải.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>use_quarter_res_pass</strong></p></td>
+<td><p>Cho phép shader ghi vào và truy cập pass một phần tư độ phân giải.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>disable_fog</strong></p></td>
+<td><p>Nếu được dùng, sương mù sẽ không ảnh hưởng đến bầu trời.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="built-ins">
+<h2>Biến dựng sẵn<a class="headerlink" href="#built-ins" title="Link to this heading"></a></h2>
+<p>Các giá trị được đánh dấu <code class="docutils literal notranslate"><span class="pre">in</span></code> là chỉ đọc. Các giá trị được đánh dấu <code class="docutils literal notranslate"><span class="pre">out</span></code> có thể được ghi tùy ý và không nhất thiết chứa giá trị hợp lý. Sampler không thể được ghi nên chúng không được đánh dấu.</p>
+</section>
+<section id="global-built-ins">
+<h2>Biến dựng sẵn toàn cục<a class="headerlink" href="#global-built-ins" title="Link to this heading"></a></h2>
+<p>Biến dựng sẵn toàn cục có thể dùng ở mọi nơi, kể cả trong các hàm tùy chỉnh.</p>
+<p>Có 4 nguồn sáng <code class="docutils literal notranslate"><span class="pre">LIGHTX</span></code>, truy cập qua <code class="docutils literal notranslate"><span class="pre">LIGHT0</span></code>, <code class="docutils literal notranslate"><span class="pre">LIGHT1</span></code>, <code class="docutils literal notranslate"><span class="pre">LIGHT2</span></code> và <code class="docutils literal notranslate"><span class="pre">LIGHT3</span></code>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Biến dựng sẵn</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>in float <strong>TIME</strong></p></td>
+<td><p>Thời gian toàn cục kể từ khi engine khởi động, tính bằng giây. Nó lặp lại sau mỗi <code class="docutils literal notranslate"><span class="pre">3,600</span></code> giây (có thể thay đổi bằng cài đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-limits-time-time-rollover-secs" title="Class reference (English)"><span class="xref std std-ref">rollover</span></a>). Nó chịu ảnh hưởng của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_engine.html#class-engine-property-time-scale" title="Class reference (English)"><span class="xref std std-ref">time_scale</span></a> nhưng không bị ảnh hưởng khi tạm dừng. Nếu bạn cần một biến <code class="docutils literal notranslate"><span class="pre">TIME</span></code> không bị ảnh hưởng bởi time scale, hãy thêm <a class="reference internal" href="shading_language.html#doc-shading-language-global-uniforms"><span class="std std-ref">global shader uniform</span></a> của riêng bạn và cập nhật nó mỗi frame.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in vec3 <strong>POSITION</strong></p></td>
+<td><p>Vị trí camera, trong không gian thế giới.</p></td>
+</tr>
+<tr class="row-even"><td><p>samplerCube <strong>RADIANCE</strong></p></td>
+<td><p>Radiance cubemap. Chỉ có thể đọc trong pass nền. Hãy kiểm tra <code class="docutils literal notranslate"><span class="pre">!AT_CUBEMAP_PASS</span></code> trước khi dùng.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in bool <strong>AT_HALF_RES_PASS</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> khi đang kết xuất vào pass nửa độ phân giải.</p></td>
+</tr>
+<tr class="row-even"><td><p>in bool <strong>AT_QUARTER_RES_PASS</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> khi đang kết xuất vào pass một phần tư độ phân giải.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in bool <strong>AT_CUBEMAP_PASS</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> khi đang kết xuất vào radiance cubemap.</p></td>
+</tr>
+<tr class="row-even"><td><p>in bool <strong>LIGHTX_ENABLED</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> nếu <code class="docutils literal notranslate"><span class="pre">LIGHTX</span></code> hiển thị và có trong scene. Nếu là <code class="docutils literal notranslate"><span class="pre">false</span></code>, các thuộc tính ánh sáng khác có thể chứa giá trị rác.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in float <strong>LIGHTX_ENERGY</strong></p></td>
+<td><p>Hệ số nhân năng lượng của <code class="docutils literal notranslate"><span class="pre">LIGHTX</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>in vec3 <strong>LIGHTX_DIRECTION</strong></p></td>
+<td><p>Hướng mà <code class="docutils literal notranslate"><span class="pre">LIGHTX</span></code> đang chiếu tới.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in vec3 <strong>LIGHTX_COLOR</strong></p></td>
+<td><p>Màu của <code class="docutils literal notranslate"><span class="pre">LIGHTX</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>in float <strong>LIGHTX_SIZE</strong></p></td>
+<td><p>Đường kính góc của <code class="docutils literal notranslate"><span class="pre">LIGHTX</span></code> trên bầu trời, tính bằng radian. Để tham khảo, mặt trời nhìn từ trái đất có khoảng .0087 radian (0,5 độ).</p></td>
+</tr>
+<tr class="row-odd"><td><p>in float <strong>PI</strong></p></td>
+<td><p>Hằng số <code class="docutils literal notranslate"><span class="pre">PI</span></code> (<code class="docutils literal notranslate"><span class="pre">3.141592</span></code>). Tỉ số giữa chu vi và đường kính của hình tròn, đồng thời là số radian trong nửa vòng quay.</p></td>
+</tr>
+<tr class="row-even"><td><p>in float <strong>TAU</strong></p></td>
+<td><p>Hằng số <code class="docutils literal notranslate"><span class="pre">TAU</span></code> (<code class="docutils literal notranslate"><span class="pre">6.283185</span></code>). Tương đương <code class="docutils literal notranslate"><span class="pre">PI</span> <span class="pre">*</span> <span class="pre">2</span></code> và là số radian trong một vòng quay đầy đủ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in float <strong>E</strong></p></td>
+<td><p>Hằng số <code class="docutils literal notranslate"><span class="pre">E</span></code> (<code class="docutils literal notranslate"><span class="pre">2.718281</span></code>). Số Euler, cơ số của logarit tự nhiên.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sky-built-ins">
+<h2>Biến tích hợp của sky<a class="headerlink" href="#sky-built-ins" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Biến dựng sẵn</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>in vec3 <strong>EYEDIR</strong></p></td>
+<td><p>Hướng đã chuẩn hóa của pixel hiện tại. Hãy dùng làm hướng cơ sở cho các hiệu ứng thủ tục (procedural).</p></td>
+</tr>
+<tr class="row-odd"><td><p>in vec2 <strong>SCREEN_UV</strong></p></td>
+<td><p>Tọa độ UV màn hình của pixel hiện tại. Dùng để ánh xạ texture lên toàn màn hình.</p></td>
+</tr>
+<tr class="row-even"><td><p>in vec2 <strong>SKY_COORDS</strong></p></td>
+<td><p>UV hình cầu. Dùng để ánh xạ texture panorama lên bầu trời.</p></td>
+</tr>
+<tr class="row-odd"><td><p>in vec4 <strong>HALF_RES_COLOR</strong></p></td>
+<td><p>Giá trị màu của pixel tương ứng từ pass nửa độ phân giải. Dùng bộ lọc tuyến tính.</p></td>
+</tr>
+<tr class="row-even"><td><p>in vec4 <strong>QUARTER_RES_COLOR</strong></p></td>
+<td><p>Giá trị màu của pixel tương ứng từ pass một phần tư độ phân giải. Dùng bộ lọc tuyến tính.</p></td>
+</tr>
+<tr class="row-odd"><td><p>out vec3 <strong>COLOR</strong></p></td>
+<td><p>Màu đầu ra.</p></td>
+</tr>
+<tr class="row-even"><td><p>out float <strong>ALPHA</strong></p></td>
+<td><p>Giá trị alpha đầu ra, chỉ có thể dùng trong subpass.</p></td>
+</tr>
+<tr class="row-odd"><td><p>out vec4 <strong>FOG</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="particle_shader.html" class="btn btn-neutral float-left" title="Particle shader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="fog_shader.html" class="btn btn-neutral float-right" title="Fog shader" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

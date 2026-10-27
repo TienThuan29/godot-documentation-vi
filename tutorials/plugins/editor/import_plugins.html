@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Plugin import" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/plugins/editor/import_plugins.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Plugin import là một loại công cụ trình chỉnh sửa đặc biệt cho phép Godot import các resource tùy chỉnh và xử lý chúng như resource hạng nhất. Bản thân trình chỉnh sửa đã đi kèm rất nhi..." />
+<meta name="description" content="Giới thiệu: Plugin import là một loại công cụ trình chỉnh sửa đặc biệt cho phép Godot import các resource tùy chỉnh và xử lý chúng như resource hạng nhất. Bản thân trình chỉnh sửa đã đi kèm rất nhi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Plugin import &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Plugin gizmo 3D" href="3d_gizmos.html" />
+    <link rel="prev" title="Tạo plugin màn hình chính" href="making_main_screen_plugins.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/plugins/editor/import_plugins" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Plugin</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin của trình chỉnh sửa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="installing_plugins.html">Cài đặt plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="making_plugins.html">Tạo plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="making_main_screen_plugins.html">Tạo plugin màn hình chính</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Plugin import</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Cấu hình</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-editorimportplugin-class">Lớp EditorImportPlugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#options-and-presets">Tùy chọn và preset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-import-method">Phương thức <code class="docutils literal notranslate"><span class="pre">import</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#platform-variants-and-generated-files">Biến thể theo nền tảng và các tệp được tạo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trying-the-plugin">Thử plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="3d_gizmos.html">Plugin gizmo 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inspector_plugins.html">Plugin Inspector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visual_shader_plugins.html">Plugin Visual Shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="internationalizing_plugins.html">Quốc tế hóa plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../running_code_in_the_editor.html">Chạy code trong trình chỉnh sửa</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Plugin</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Plugin của trình chỉnh sửa</a></li>
+      <li class="breadcrumb-item active">Plugin import</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="import-plugins">
+<span id="doc-import-plugins"></span><h1>Plugin import<a class="headerlink" href="#import-plugins" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bài hướng dẫn này giả định rằng bạn đã biết cách tạo plugin thông thường. Nếu chưa chắc, hãy tham khảo trang <a class="reference internal" href="making_plugins.html#doc-making-plugins"><span class="std std-ref">Tạo plugin</span></a>. Bài này cũng giả định bạn đã quen với hệ thống import của Godot.</p>
+</div>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Plugin import là một loại công cụ trình chỉnh sửa đặc biệt cho phép Godot import các resource tùy chỉnh và xử lý chúng như resource hạng nhất. Bản thân trình chỉnh sửa đã đi kèm rất nhiều plugin import để xử lý các resource phổ biến như ảnh PNG, mô hình Collada và glTF, âm thanh Ogg Vorbis, và nhiều loại khác.</p>
+<p>Bài hướng dẫn này trình bày cách tạo một plugin import để tải một tệp văn bản tùy chỉnh thành một resource material. Tệp văn bản này sẽ chứa ba giá trị số phân tách bằng dấu phẩy, đại diện cho ba kênh của một màu, và màu thu được sẽ được dùng làm albedo (màu chính) của material được import. Trong ví dụ này, tệp chứa màu xanh lam thuần (không đỏ, không xanh lục và xanh lam tối đa):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0,0,255
+</pre></div>
+</div>
+</section>
+<section id="configuration">
+<h2>Cấu hình<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>Trước tiên, chúng ta cần một plugin thông thường để xử lý việc khởi tạo và hủy plugin import. Hãy thêm tệp <code class="docutils literal notranslate"><span class="pre">plugin.cfg</span></code> trước:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[plugin]</span>
+
+<span class="na">name</span><span class="o">=</span><span class="s">&quot;Silly Material Importer&quot;</span>
+<span class="na">description</span><span class="o">=</span><span class="s">&quot;Imports a 3D Material from an external text file.&quot;</span>
+<span class="na">author</span><span class="o">=</span><span class="s">&quot;Yours Truly&quot;</span>
+<span class="na">version</span><span class="o">=</span><span class="s">&quot;1.0&quot;</span>
+<span class="na">script</span><span class="o">=</span><span class="s">&quot;material_import.gd&quot;</span>
+</pre></div>
+</div>
+<p>Sau đó, chúng ta cần tệp <code class="docutils literal notranslate"><span class="pre">material_import.gd</span></code> để thêm và gỡ bỏ plugin import khi cần:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># material_import.gd</span>
+<span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">EditorPlugin</span>
+
+
+<span class="k">var</span><span class="w"> </span><span class="n">import_plugin</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_enter_tree</span><span class="p">():</span>
+<span class="w">    </span><span class="n">import_plugin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;import_plugin.gd&quot;</span><span class="p">)</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">add_import_plugin</span><span class="p">(</span><span class="n">import_plugin</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_exit_tree</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">remove_import_plugin</span><span class="p">(</span><span class="n">import_plugin</span><span class="p">)</span>
+<span class="w">    </span><span class="n">import_plugin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">null</span>
+</pre></div>
+</div>
+<p>Khi plugin này được kích hoạt, nó sẽ tạo một instance mới của plugin import (mà chúng ta sẽ viết ngay sau đây) và thêm nó vào trình chỉnh sửa bằng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorplugin.html#class-editorplugin-method-add-import-plugin" title="Class reference (English)"><span class="xref std std-ref">add_import_plugin()</span></a>. Chúng ta lưu tham chiếu đến nó trong thành viên lớp <code class="docutils literal notranslate"><span class="pre">import_plugin</span></code> để có thể dùng lại sau này khi gỡ bỏ. Phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorplugin.html#class-editorplugin-method-remove-import-plugin" title="Class reference (English)"><span class="xref std std-ref">remove_import_plugin()</span></a> được gọi khi plugin bị vô hiệu hóa để dọn dẹp bộ nhớ và cho trình chỉnh sửa biết plugin import không còn khả dụng nữa.</p>
+<p>Lưu ý rằng plugin import là một kiểu tham chiếu (reference type), vì vậy không cần giải phóng nó khỏi bộ nhớ một cách tường minh bằng hàm <code class="docutils literal notranslate"><span class="pre">free()</span></code>. Engine sẽ tự động giải phóng nó khi nó ra khỏi phạm vi.</p>
+</section>
+<section id="the-editorimportplugin-class">
+<h2>Lớp EditorImportPlugin<a class="headerlink" href="#the-editorimportplugin-class" title="Link to this heading"></a></h2>
+<p>Nhân vật chính ở đây là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html" title="Class reference (English)"><span class="xref std std-ref">lớp EditorImportPlugin</span></a>. Lớp này chịu trách nhiệm hiện thực các phương thức mà Godot gọi khi cần biết cách xử lý các tệp.</p>
+<p>Hãy bắt đầu viết mã cho plugin, lần lượt từng phương thức một:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># import_plugin.gd</span>
+<span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">EditorImportPlugin</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_importer_name</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;demos.sillymaterial&quot;</span>
+</pre></div>
+</div>
+<p>Phương thức đầu tiên là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-importer-name" title="Class reference (English)"><span class="xref std std-ref">_get_importer_name()</span></a>. Đây là tên duy nhất cho plugin của bạn, được Godot dùng để biết importer nào đã được dùng cho một tệp nhất định. Khi cần import lại các tệp, trình chỉnh sửa sẽ biết phải gọi plugin nào.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_visible_name</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;Silly Material&quot;</span>
+</pre></div>
+</div>
+<p>Phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-visible-name" title="Class reference (English)"><span class="xref std std-ref">_get_visible_name()</span></a> chịu trách nhiệm trả về tên của kiểu mà nó import, và tên này sẽ được hiển thị cho người dùng trong Import dock.</p>
+<p>Bạn nên chọn tên này như phần tiếp nối của &quot;Import as&quot;, ví dụ <em>&quot;Import as Silly Material&quot;</em>. Bạn có thể đặt bất kỳ tên nào bạn muốn, nhưng chúng tôi khuyên nên dùng một tên mang tính mô tả cho plugin của bạn.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_recognized_extensions</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mtxt&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Hệ thống import của Godot nhận diện loại tệp theo phần mở rộng. Trong phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-recognized-extensions" title="Class reference (English)"><span class="xref std std-ref">_get_recognized_extensions()</span></a>, bạn trả về một mảng chuỗi đại diện cho từng phần mở rộng mà plugin này có thể hiểu. Nếu một phần mở rộng được nhiều plugin nhận diện, người dùng có thể chọn plugin nào sẽ được dùng khi import tệp.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Các phần mở rộng phổ biến như <code class="docutils literal notranslate"><span class="pre">.json</span></code> và <code class="docutils literal notranslate"><span class="pre">.txt</span></code> có thể được nhiều plugin sử dụng. Ngoài ra, trong dự án có thể có những tệp chỉ là dữ liệu cho game và không nên được import. Bạn phải cẩn thận kiểm tra tính hợp lệ của dữ liệu khi import. Đừng bao giờ mặc định rằng tệp có định dạng đúng.</p>
+</div>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_save_extension</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;material&quot;</span>
+</pre></div>
+</div>
+<p>Các tệp đã import được lưu trong thư mục <code class="docutils literal notranslate"><span class="pre">.import</span></code> ở thư mục gốc của dự án. Phần mở rộng của chúng nên khớp với loại resource bạn đang import, nhưng vì Godot không thể biết bạn sẽ dùng phần mở rộng nào (do có thể có nhiều phần mở rộng hợp lệ cho cùng một resource), bạn cần khai báo phần mở rộng sẽ được dùng khi import.</p>
+<p>Vì chúng ta đang import một Material, chúng ta sẽ dùng phần mở rộng đặc biệt dành cho loại resource này. Nếu bạn import một scene, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">scn</span></code>. Các resource chung có thể dùng phần mở rộng <code class="docutils literal notranslate"><span class="pre">res</span></code>. Tuy nhiên, engine không bắt buộc điều này theo bất kỳ cách nào.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_resource_type</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;StandardMaterial3D&quot;</span>
+</pre></div>
+</div>
+<p>Resource được import có một kiểu cụ thể, nhờ vậy trình chỉnh sửa biết nó thuộc về ô thuộc tính nào. Điều này cho phép kéo thả từ FileSystem dock vào một thuộc tính trong Inspector.</p>
+<p>Trong trường hợp của chúng ta, đó là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">class_StandardMaterial3D</span></a>, có thể áp dụng cho các đối tượng 3D.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn cần import các kiểu khác nhau từ cùng một phần mở rộng, bạn phải tạo nhiều plugin import. Bạn có thể tách mã import ra một tệp khác để tránh trùng lặp.</p>
+</div>
+</section>
+<section id="options-and-presets">
+<h2>Tùy chọn và preset<a class="headerlink" href="#options-and-presets" title="Link to this heading"></a></h2>
+<p>Plugin của bạn có thể cung cấp nhiều tùy chọn khác nhau để người dùng kiểm soát cách resource được import. Nếu một nhóm tùy chọn thường được chọn cùng nhau, bạn cũng có thể tạo các preset khác nhau để người dùng thao tác dễ hơn. Hình sau cho thấy các tùy chọn sẽ xuất hiện trong trình chỉnh sửa như thế nào:</p>
+<img alt="../../../_images/import_plugin_options.png" src="../../../_images/import_plugin_options.png" />
+<p>Vì có thể có nhiều preset và chúng được xác định bằng một số, nên dùng enum để có thể tham chiếu đến chúng bằng tên.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">EditorImportPlugin</span>
+
+
+<span class="k">enum</span><span class="w"> </span><span class="n">Presets</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">DEFAULT</span><span class="w"> </span><span class="p">}</span>
+
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Giờ enum đã được định nghĩa, hãy tiếp tục xem các phương thức của một plugin import:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_preset_count</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nc">Presets</span><span class="o">.</span><span class="nf">size</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-preset-count" title="Class reference (English)"><span class="xref std std-ref">_get_preset_count()</span></a> trả về số lượng preset mà plugin này định nghĩa. Hiện tại chúng ta chỉ có một preset, nhưng có thể làm phương thức này sẵn sàng cho tương lai bằng cách trả về kích thước của enum <code class="docutils literal notranslate"><span class="pre">Presets</span></code>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_preset_name</span><span class="p">(</span><span class="n">preset_index</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">match</span><span class="w"> </span><span class="n">preset_index</span><span class="p">:</span>
+<span class="w">        </span><span class="nc">Presets</span><span class="o">.</span><span class="vi">DEFAULT</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;Default&quot;</span>
+<span class="w">        </span><span class="n">_</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="s2">&quot;Unknown&quot;</span>
+</pre></div>
+</div>
+<p>Tiếp theo là phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-preset-name" title="Class reference (English)"><span class="xref std std-ref">_get_preset_name()</span></a>, dùng để đặt tên cho các preset khi hiển thị cho người dùng, vì vậy hãy dùng tên ngắn gọn và rõ ràng.</p>
+<p>Chúng ta có thể dùng câu lệnh <code class="docutils literal notranslate"><span class="pre">match</span></code> ở đây để mã có cấu trúc hơn. Bằng cách này, sau này sẽ dễ dàng thêm preset mới. Chúng ta cũng dùng mẫu bắt tất cả (catch all) để luôn trả về một giá trị. Mặc dù Godot sẽ không yêu cầu các preset vượt quá số lượng preset bạn đã định nghĩa, nhưng cẩn thận vẫn hơn.</p>
+<p>Nếu chỉ có một preset, bạn có thể trả về tên của nó trực tiếp, nhưng nếu làm vậy, bạn phải cẩn thận khi thêm preset mới.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_import_options</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">preset_index</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">match</span><span class="w"> </span><span class="n">preset_index</span><span class="p">:</span>
+<span class="w">        </span><span class="nc">Presets</span><span class="o">.</span><span class="vi">DEFAULT</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">                       </span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;use_red_anyway&quot;</span><span class="p">,</span>
+<span class="w">                       </span><span class="s2">&quot;default_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="l">false</span>
+<span class="w">                    </span><span class="p">}]</span>
+<span class="w">        </span><span class="n">_</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="p">[]</span>
+</pre></div>
+</div>
+<p>Đây là phương thức định nghĩa các tùy chọn khả dụng. <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-import-options" title="Class reference (English)"><span class="xref std std-ref">_get_import_options()</span></a> trả về một mảng các dictionary, và mỗi dictionary chứa một vài khóa được kiểm tra để tùy chỉnh tùy chọn khi hiển thị cho người dùng. Bảng sau liệt kê các khóa có thể dùng:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Khóa</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Tên của tùy chọn. Khi hiển thị, dấu gạch dưới trở thành khoảng trắng và chữ cái đầu được viết hoa.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">default_value</span></code></p></td>
+<td><p>Bất kỳ</p></td>
+<td><p>Giá trị mặc định của tùy chọn cho preset này.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">property_hint</span></code></p></td>
+<td><p>Giá trị enum</p></td>
+<td><p>Một trong các giá trị <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#enum-globalscope-propertyhint" title="Class reference (English)"><span class="xref std std-ref">PropertyHint</span></a> dùng làm gợi ý.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hint_string</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Văn bản gợi ý của thuộc tính. Giống như văn bản bạn thêm vào câu lệnh <code class="docutils literal notranslate"><span class="pre">export</span></code> trong GDScript.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">usage</span></code></p></td>
+<td><p>Giá trị enum</p></td>
+<td><p>Một trong các giá trị <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#enum-globalscope-propertyusageflags" title="Class reference (English)"><span class="xref std std-ref">PropertyUsageFlags</span></a> để xác định cách sử dụng.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Các khóa <code class="docutils literal notranslate"><span class="pre">name</span></code> và <code class="docutils literal notranslate"><span class="pre">default_value</span></code> là <strong>bắt buộc</strong>, các khóa còn lại là tùy chọn.</p>
+<p>Lưu ý rằng phương thức <code class="docutils literal notranslate"><span class="pre">_get_import_options</span></code> nhận số thứ tự của preset, vì vậy bạn có thể cấu hình các tùy chọn cho từng preset khác nhau (đặc biệt là giá trị mặc định). Trong ví dụ này chúng ta dùng câu lệnh <code class="docutils literal notranslate"><span class="pre">match</span></code>, nhưng nếu bạn có nhiều tùy chọn và các preset chỉ thay đổi giá trị, bạn có thể muốn tạo mảng tùy chọn trước rồi thay đổi nó dựa trên preset.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Phương thức <code class="docutils literal notranslate"><span class="pre">_get_import_options</span></code> vẫn được gọi ngay cả khi bạn không định nghĩa preset nào (bằng cách cho <code class="docutils literal notranslate"><span class="pre">_get_preset_count</span></code> trả về 0). Bạn phải trả về một mảng ngay cả khi nó rỗng, nếu không có thể gặp lỗi.</p>
+</div>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_option_visibility</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">option_name</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">true</span>
+</pre></div>
+</div>
+<p>Với phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-get-option-visibility" title="Class reference (English)"><span class="xref std std-ref">_get_option_visibility()</span></a>, chúng ta chỉ cần trả về <code class="docutils literal notranslate"><span class="pre">true</span></code> vì tất cả các tùy chọn (tức là tùy chọn duy nhất mà chúng ta đã định nghĩa) luôn hiển thị.</p>
+<p>Nếu bạn cần làm cho một tùy chọn chỉ hiển thị khi một tùy chọn khác được đặt một giá trị nhất định, bạn có thể thêm logic đó vào phương thức này.</p>
+</section>
+<section id="the-import-method">
+<h2>Phương thức <code class="docutils literal notranslate"><span class="pre">import</span></code><a class="headerlink" href="#the-import-method" title="Link to this heading"></a></h2>
+<p>Phần nặng nhất của quá trình, chịu trách nhiệm chuyển đổi các tệp thành resource, nằm ở phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorimportplugin.html#class-editorimportplugin-private-method-import" title="Class reference (English)"><span class="xref std std-ref">_import()</span></a>. Mã ví dụ của chúng ta hơi dài, vì vậy hãy chia nó thành vài phần:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_import</span><span class="p">(</span><span class="n">source_file</span><span class="p">,</span><span class="w"> </span><span class="n">save_path</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">r_platform_variants</span><span class="p">,</span><span class="w"> </span><span class="n">r_gen_files</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="n">source_file</span><span class="p">,</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="vi">READ</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="nf">get_open_error</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">.</span><span class="nf">get_line</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Phần đầu tiên của phương thức import mở và đọc tệp nguồn. Chúng ta dùng lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fileaccess.html" title="Class reference (English)"><span class="xref std std-ref">FileAccess</span></a> để làm việc đó, truyền vào tham số <code class="docutils literal notranslate"><span class="pre">source_file</span></code> do trình chỉnh sửa cung cấp.</p>
+<p>Nếu có lỗi khi mở tệp, chúng ta trả về lỗi đó để trình chỉnh sửa biết việc import không thành công.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">channels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">line</span><span class="o">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">channels</span><span class="o">.</span><span class="nf">size</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">3</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">ERR_PARSE_ERROR</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">color</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">options</span><span class="o">.</span><span class="vi">use_red_anyway</span><span class="p">:</span>
+<span class="w">    </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="nf">from_rgba8</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="nf">from_rgba8</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">(</span><span class="n">channels</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Đoạn mã này lấy dòng đã đọc từ tệp và tách nó thành các phần được phân cách bằng dấu phẩy. Nếu có nhiều hơn hoặc ít hơn ba giá trị, nó xem tệp là không hợp lệ và báo lỗi.</p>
+<p>Sau đó, nó tạo một biến <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html" title="Class reference (English)"><span class="xref std std-ref">Color</span></a> mới và đặt các giá trị theo tệp đầu vào. Nếu tùy chọn <code class="docutils literal notranslate"><span class="pre">use_red_anyway</span></code> được bật, nó sẽ đặt màu thành đỏ thuần thay thế.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">material</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">StandardMaterial3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">material</span><span class="o">.</span><span class="vi">albedo_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">color</span>
+</pre></div>
+</div>
+<p>Phần này tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a> mới, chính là resource được import. Chúng ta tạo một instance mới của nó rồi đặt màu albedo bằng giá trị đã có trước đó.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb">ResourceSaver</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="n">material</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">save_path</span><span class="p">,</span><span class="w"> </span><span class="nf">_get_save_extension</span><span class="p">()])</span>
+</pre></div>
+</div>
+<p>Đây là phần cuối cùng và khá quan trọng, vì tại đây chúng ta lưu resource đã tạo xuống ổ đĩa. Đường dẫn của tệp được lưu do trình chỉnh sửa tạo ra và cung cấp qua tham số <code class="docutils literal notranslate"><span class="pre">save_path</span></code>. Lưu ý rằng đường dẫn này <strong>không</strong> có phần mở rộng, vì vậy chúng ta thêm nó bằng <a class="reference internal" href="../../scripting/gdscript/gdscript_format_string.html#doc-gdscript-printf"><span class="std std-ref">định dạng chuỗi</span></a>. Để làm vậy, chúng ta gọi phương thức <code class="docutils literal notranslate"><span class="pre">_get_save_extension</span></code> đã định nghĩa trước đó, nhờ vậy có thể chắc chắn rằng chúng sẽ không bị lệch nhau.</p>
+<p>Chúng ta cũng trả về kết quả từ phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resourcesaver.html#class-resourcesaver-method-save" title="Class reference (English)"><span class="xref std std-ref">ResourceSaver.save()</span></a>, vì vậy nếu có lỗi ở bước này, trình chỉnh sửa sẽ biết.</p>
+</section>
+<section id="platform-variants-and-generated-files">
+<h2>Biến thể theo nền tảng và các tệp được tạo<a class="headerlink" href="#platform-variants-and-generated-files" title="Link to this heading"></a></h2>
+<p>Có thể bạn đã nhận thấy plugin của chúng ta bỏ qua hai đối số của phương thức <code class="docutils literal notranslate"><span class="pre">import</span></code>. Đó là các <em>đối số trả về</em> (vì vậy tên của chúng bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">r</span></code>), nghĩa là trình chỉnh sửa sẽ đọc từ chúng sau khi gọi phương thức import của bạn. Cả hai đều là mảng mà bạn có thể điền thông tin vào.</p>
+<p>Đối số <code class="docutils literal notranslate"><span class="pre">r_platform_variants</span></code> được dùng nếu bạn cần import resource theo cách khác nhau tùy theo nền tảng đích. Dù được gọi là biến thể theo <em>nền tảng</em>, nó dựa trên sự hiện diện của các <a class="reference internal" href="../../export/feature_tags.html#doc-feature-tags"><span class="std std-ref">feature tag</span></a>, vì vậy ngay cả cùng một nền tảng cũng có thể có nhiều biến thể tùy theo thiết lập.</p>
+<p>Để import một biến thể theo nền tảng, bạn cần lưu nó với feature tag đặt trước phần mở rộng, rồi thêm tag đó vào mảng <code class="docutils literal notranslate"><span class="pre">r_platform_variants</span></code> để trình chỉnh sửa biết bạn đã làm vậy.</p>
+<p>Ví dụ, giả sử chúng ta lưu một material khác cho nền tảng di động. Chúng ta cần làm như sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">r_platform_variants</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="s2">&quot;mobile&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb">ResourceSaver</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="n">mobile_material</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">save_path</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">_get_save_extension</span><span class="p">()])</span>
+</pre></div>
+</div>
+<p>Đối số <code class="docutils literal notranslate"><span class="pre">r_gen_files</span></code> dành cho các tệp bổ sung được tạo ra trong quá trình import và cần được giữ lại. Trình chỉnh sửa sẽ xem đối số này để hiểu các phụ thuộc và đảm bảo tệp bổ sung không bị vô tình xóa.</p>
+<p>Đây cũng là một mảng và nên được điền đường dẫn đầy đủ của các tệp bạn lưu. Ví dụ, hãy tạo một material khác cho pass tiếp theo và lưu nó vào một tệp khác:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">next_pass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">StandardMaterial3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">next_pass</span><span class="o">.</span><span class="vi">albedo_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">color</span><span class="o">.</span><span class="nf">inverted</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">next_pass_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.next_pass.</span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">save_path</span><span class="p">,</span><span class="w"> </span><span class="nf">_get_save_extension</span><span class="p">()]</span>
+
+<span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ResourceSaver</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="n">next_pass</span><span class="p">,</span><span class="w"> </span><span class="n">next_pass_path</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">OK</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">err</span>
+<span class="n">r_gen_files</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="n">next_pass_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="trying-the-plugin">
+<h2>Thử plugin<a class="headerlink" href="#trying-the-plugin" title="Link to this heading"></a></h2>
+<p>Phần trên khá lý thuyết, nhưng giờ plugin import đã hoàn thành, hãy thử nghiệm nó. Hãy đảm bảo bạn đã tạo tệp mẫu (với nội dung được mô tả trong phần giới thiệu) và lưu nó thành <code class="docutils literal notranslate"><span class="pre">test.mtxt</span></code>. Sau đó kích hoạt plugin trong Project Settings.</p>
+<p>Nếu mọi thứ suôn sẻ, plugin import sẽ được thêm vào trình chỉnh sửa và hệ thống tệp được quét, khiến resource tùy chỉnh xuất hiện trong FileSystem dock. Nếu bạn chọn nó và chuyển sang Import dock, bạn sẽ thấy tùy chọn duy nhất có thể chọn ở đó.</p>
+<p>Tạo một node MeshInstance3D trong scene, và với thuộc tính Mesh của nó, thiết lập một SphereMesh mới. Mở rộng mục Material trong Inspector rồi kéo tệp từ FileSystem dock vào thuộc tính material. Đối tượng sẽ được cập nhật trong viewport với màu xanh lam của material đã import.</p>
+<img alt="../../../_images/import_plugin_trying.png" src="../../../_images/import_plugin_trying.png" />
+<p>Vào Import dock, bật tùy chọn &quot;Use Red Anyway&quot; và nhấn &quot;Reimport&quot;. Việc này sẽ cập nhật material đã import và sẽ tự động cập nhật khung nhìn để hiển thị màu đỏ thay thế.</p>
+<p>Vậy là xong! Plugin import đầu tiên của bạn đã hoàn thành! Giờ hãy sáng tạo và làm plugin cho các định dạng yêu thích của riêng bạn. Điều này khá hữu ích để viết dữ liệu theo một định dạng tùy chỉnh rồi dùng nó trong Godot như thể đó là resource gốc. Điều này cho thấy hệ thống import mạnh mẽ và dễ mở rộng đến mức nào.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="making_main_screen_plugins.html" class="btn btn-neutral float-left" title="Tạo plugin màn hình chính" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="3d_gizmos.html" class="btn btn-neutral float-right" title="Plugin gizmo 3D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

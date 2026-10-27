@@ -1,0 +1,668 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Unit test" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/architecture/unit_testing.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Godot Engine cho phép viết unit test trực tiếp bằng C++. Engine tích hợp framework unit test doctest, cho phép viết test suite và test case ngay cạnh mã production, nhưng vì các test trong Godot đi..." />
+<meta name="description" content="Godot Engine cho phép viết unit test trực tiếp bằng C++. Engine tích hợp framework unit test doctest, cho phép viết test suite và test case ngay cạnh mã production, nhưng vì các test trong Godot đi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Unit test &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Các API mở rộng engine" href="../engine_api/index.html" />
+    <link rel="prev" title="Hệ tọa độ 2D và phép biến đổi 2D" href="2d_coordinate_systems.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/architecture/unit_testing" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kiến trúc engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="godot_architecture_diagram.html">Tổng quan kiến trúc của Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_engine_methods_and_macros.html">Các phương thức và macro thông dụng của engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_types.html">Các kiểu cốt lõi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variant_class.html">Lớp Variant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_class.html">Lớp Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inheritance_class_tree.html">Cây kế thừa lớp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_rendering_architecture.html">Kiến trúc kết xuất nội bộ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_coordinate_systems.html">Hệ tọa độ 2D và phép biến đổi 2D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Unit test</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#platform-and-target-support">Hỗ trợ nền tảng và target</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-tests">Chạy test</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#filtering-tests">Lọc test</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-tests">Viết test</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subcases">Subcase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#assertions">Assertion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#logging">Ghi log</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testing-failure-paths">Kiểm thử các nhánh lỗi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#special-tags-in-test-case-names">Các tag đặc biệt trong tên test case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testing-signals">Test signal</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#test-tools">Công cụ test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-tests-for-gdscript">Integration test cho GDScript</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kiến trúc engine</a></li>
+      <li class="breadcrumb-item active">Unit test</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="unit-testing">
+<span id="doc-unit-testing"></span><h1>Unit test<a class="headerlink" href="#unit-testing" title="Link to this heading"></a></h1>
+<p>Godot Engine cho phép viết unit test trực tiếp bằng C++. Engine tích hợp framework unit test <a class="reference external" href="https://github.com/doctest/doctest">doctest</a>, cho phép viết test suite và test case ngay cạnh mã production, nhưng vì các test trong Godot đi qua một điểm vào <code class="docutils literal notranslate"><span class="pre">main</span></code> khác, nên các test được đặt trong thư mục riêng <code class="docutils literal notranslate"><span class="pre">tests/</span></code>, nằm ở thư mục gốc của mã nguồn engine.</p>
+<section id="platform-and-target-support">
+<h2>Hỗ trợ nền tảng và target<a class="headerlink" href="#platform-and-target-support" title="Link to this heading"></a></h2>
+<p>Unit test C++ có thể chạy trên các hệ điều hành Linux, macOS và Windows.</p>
+<p>Chỉ có thể chạy test khi bật <code class="docutils literal notranslate"><span class="pre">tools</span></code> của trình chỉnh sửa, nghĩa là hiện tại không thể test các export template.</p>
+</section>
+<section id="running-tests">
+<h2>Chạy test<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h2>
+<p>Trước khi có thể thực sự chạy test, engine phải được biên dịch với tùy chọn build <code class="docutils literal notranslate"><span class="pre">tests</span></code> được bật (cùng mọi tùy chọn build khác bạn thường dùng), vì theo mặc định các test không được biên dịch như một phần của engine:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">tests</span><span class="o">=</span>yes
+</pre></div>
+</div>
+<p>Khi build xong, hãy chạy test với tùy chọn dòng lệnh <code class="docutils literal notranslate"><span class="pre">--test</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test
+</pre></div>
+</div>
+<p>Việc chạy test có thể được cấu hình bằng nhiều tùy chọn dòng lệnh riêng của doctest. Để xem danh sách đầy đủ các tùy chọn được hỗ trợ, hãy chạy lệnh <code class="docutils literal notranslate"><span class="pre">--test</span></code> với tùy chọn <code class="docutils literal notranslate"><span class="pre">--help</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>Mọi tùy chọn và đối số khác sau lệnh <code class="docutils literal notranslate"><span class="pre">--test</span></code> đều được coi là đối số cho doctest.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các test được biên dịch tự động nếu bạn dùng tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">dev_mode=yes</span></code>. Nên dùng <code class="docutils literal notranslate"><span class="pre">dev_mode=yes</span></code> nếu bạn định đóng góp vào việc phát triển engine, vì nó sẽ tự động coi các cảnh báo biên dịch là lỗi. Hệ thống tích hợp liên tục sẽ thất bại nếu phát hiện bất kỳ cảnh báo biên dịch nào, nên bạn nên cố gắng sửa hết các cảnh báo trước khi mở pull request.</p>
+</div>
+<section id="filtering-tests">
+<h3>Lọc test<a class="headerlink" href="#filtering-tests" title="Link to this heading"></a></h3>
+<p>Theo mặc định, tất cả test đều được chạy nếu bạn không cung cấp thêm đối số nào sau lệnh <code class="docutils literal notranslate"><span class="pre">--test</span></code>. Nhưng nếu bạn đang viết test mới hoặc muốn xem output của các assertion thành công từ những test đó để debug, bạn có thể chạy các test cần quan tâm bằng nhiều tùy chọn lọc mà doctest cung cấp.</p>
+<p>Cú pháp ký tự đại diện <code class="docutils literal notranslate"><span class="pre">*</span></code> được hỗ trợ để khớp với số lượng ký tự bất kỳ trong tên test suite, test case và file nguồn:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Tùy chọn lọc</strong></p></td>
+<td><p><strong>Dạng viết tắt</strong></p></td>
+<td><p><strong>Ví dụ</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--test-suite</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-ts</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-ts=&quot;*[GDScript]*&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--test-case</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-tc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-tc=&quot;*[String]*&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--source-file</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-sf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-sf=&quot;*test_color*&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Ví dụ, để chỉ chạy các unit test của <code class="docutils literal notranslate"><span class="pre">String</span></code>, hãy chạy:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>--test-case<span class="o">=</span><span class="s2">&quot;*[String]*&quot;</span>
+</pre></div>
+</div>
+<p>Có thể bật output của các assertion thành công bằng tùy chọn <code class="docutils literal notranslate"><span class="pre">--success</span></code> (<code class="docutils literal notranslate"><span class="pre">-s</span></code>), và có thể kết hợp với bất kỳ tổ hợp tùy chọn lọc nào ở trên, ví dụ:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>--source-file<span class="o">=</span><span class="s2">&quot;*test_color*&quot;</span><span class="w"> </span>--success
+</pre></div>
+</div>
+<p>Có thể bỏ qua các test cụ thể bằng các tùy chọn <code class="docutils literal notranslate"><span class="pre">-exclude</span></code> tương ứng. Hiện tại, một số test bao gồm các stress test ngẫu nhiên mất khá nhiều thời gian để chạy. Để bỏ qua những loại test đó, hãy chạy lệnh sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>--test-case-exclude<span class="o">=</span><span class="s2">&quot;*[Stress]*&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="writing-tests">
+<h2>Viết test<a class="headerlink" href="#writing-tests" title="Link to this heading"></a></h2>
+<p>Test suite tương ứng với các file cài đặt C++, vốn phải bao gồm macro <code class="docutils literal notranslate"><span class="pre">TEST_FORCE_LINK()</span></code>. Phần lớn test suite nằm trực tiếp trong thư mục <code class="docutils literal notranslate"><span class="pre">tests/</span></code>.</p>
+<p>Tất cả file test đều có tiền tố <code class="docutils literal notranslate"><span class="pre">test_</span></code>, và đây là quy ước đặt tên mà hệ thống build của Godot dựa vào để phát hiện các test trong toàn bộ engine.</p>
+<p>Đây là một test suite tối giản hoạt động được, với một test case duy nhất:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tests/test_macros.h&quot;</span>
+
+<span class="n">TEST_FORCE_LINK</span><span class="p">(</span><span class="n">test_string</span><span class="p">)</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">TestString</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&quot;[String] Hello World!&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">hello</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hello World!&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">CHECK</span><span class="p">(</span><span class="n">hello</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Hello World!&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace TestString</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể nhanh chóng tạo test mới bằng script <code class="docutils literal notranslate"><span class="pre">create_test.py</span></code> nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">tests/</span></code>. Script này tự động tạo một file test mới với mã boilerplate cần thiết ở vị trí thích hợp. Để xem hướng dẫn sử dụng, hãy chạy script với flag <code class="docutils literal notranslate"><span class="pre">-h</span></code>.</p>
+</div>
+<p>Header <code class="docutils literal notranslate"><span class="pre">tests/test_macros.h</span></code> gói gọn mọi thứ cần thiết để viết unit test C++ trong Godot. Nó bao gồm các macro assertion và logging của doctest như <code class="docutils literal notranslate"><span class="pre">CHECK</span></code> đã thấy ở trên, và tất nhiên cả các định nghĩa để viết chính các test case.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Mã nguồn <a class="reference external" href="https://github.com/godotengine/godot/blob/master/tests/test_macros.h">tests/test_macros.h</a> chứa các macro hiện đã được cài đặt và alias của chúng.</p>
+</div>
+<p>Test case được tạo bằng macro dạng hàm <code class="docutils literal notranslate"><span class="pre">TEST_CASE</span></code>. Mỗi test case phải có một mô tả ngắn viết trong ngoặc đơn, có thể kèm các tag tùy chỉnh cho phép lọc test lúc chạy, chẳng hạn <code class="docutils literal notranslate"><span class="pre">[String]</span></code>, <code class="docutils literal notranslate"><span class="pre">[Stress]</span></code>, v.v.</p>
+<p>Test case được viết trong một namespace riêng. Điều này không bắt buộc, nhưng giúp tránh xung đột tên khi viết các hàm hỗ trợ tĩnh khác cho những quy trình test lặp lại, chẳng hạn như tạo dữ liệu test chung cho từng test, hoặc viết test có tham số.</p>
+<p>Godot hỗ trợ viết test cho từng module C++. Để biết cách viết test cho module, hãy tham khảo <a class="reference internal" href="../engine_api/custom_modules_in_cpp.html#doc-custom-module-unit-tests"><span class="std std-ref">Viết unit test tùy chỉnh</span></a>.</p>
+<section id="subcases">
+<h3>Subcase<a class="headerlink" href="#subcases" title="Link to this heading"></a></h3>
+<p>Trong trường hợp bạn có phần thiết lập chung cho nhiều test case và chỉ khác nhau đôi chút, subcase có thể rất hữu ích. Đây là một ví dụ:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&quot;[SceneTree][Node] Testing node operations with a very simple scene tree&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ... common setup (e.g. creating a scene tree with a few nodes)</span>
+<span class="w">    </span><span class="n">SUBCASE</span><span class="p">(</span><span class="s">&quot;Move node to specific index&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// ... setup and checks for moving a node</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">SUBCASE</span><span class="p">(</span><span class="s">&quot;Remove node at specific index&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// ... setup and checks for removing a node</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Mỗi <code class="docutils literal notranslate"><span class="pre">SUBCASE</span></code> khiến <code class="docutils literal notranslate"><span class="pre">TEST_CASE</span></code> được chạy lại từ đầu. Subcase có thể lồng nhau với độ sâu tùy ý, nhưng bạn nên giới hạn việc lồng nhau không quá một cấp.</p>
+</section>
+<section id="assertions">
+<h3>Assertion<a class="headerlink" href="#assertions" title="Link to this heading"></a></h3>
+<p>Danh sách tất cả các assertion thường dùng trong các test của Godot, sắp xếp theo mức độ nghiêm trọng.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Assertion</strong></p></td>
+<td><p><strong>Mô tả</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REQUIRE</span></code></p></td>
+<td><p>Kiểm tra điều kiện có đúng không. Làm toàn bộ test thất bại ngay lập tức nếu điều kiện không đúng.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REQUIRE_FALSE</span></code></p></td>
+<td><p>Kiểm tra điều kiện có sai không. Làm toàn bộ test thất bại ngay lập tức nếu điều kiện đúng.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CHECK</span></code></p></td>
+<td><p>Kiểm tra điều kiện có đúng không. Đánh dấu lần chạy test là thất bại, nhưng vẫn cho phép chạy các assertion khác.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CHECK_FALSE</span></code></p></td>
+<td><p>Kiểm tra điều kiện có sai không. Đánh dấu lần chạy test là thất bại, nhưng vẫn cho phép chạy các assertion khác.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WARN</span></code></p></td>
+<td><p>Kiểm tra điều kiện có đúng không. Không làm test thất bại trong bất kỳ trường hợp nào, nhưng ghi log cảnh báo nếu điều kiện không đúng.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WARN_FALSE</span></code></p></td>
+<td><p>Kiểm tra điều kiện có sai không. Không làm test thất bại trong bất kỳ trường hợp nào, nhưng ghi log cảnh báo nếu điều kiện đúng.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Tất cả assertion ở trên đều có các macro <code class="docutils literal notranslate"><span class="pre">*_MESSAGE</span></code> tương ứng, cho phép in thông điệp tùy chọn giải thích điều lẽ ra phải xảy ra.</p>
+<p>Nên dùng <code class="docutils literal notranslate"><span class="pre">CHECK</span></code> cho các assertion tự giải thích được và <code class="docutils literal notranslate"><span class="pre">CHECK_MESSAGE</span></code> cho các assertion phức tạp hơn nếu bạn nghĩ nó cần được giải thích rõ hơn.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference external" href="https://github.com/doctest/doctest/blob/master/doc/markdown/assertions.md">doctest: Assertion macros</a>.</p>
+</div>
+</section>
+<section id="logging">
+<h3>Ghi log<a class="headerlink" href="#logging" title="Link to this heading"></a></h3>
+<p>Output của test do chính doctest xử lý và hoàn toàn không phụ thuộc vào chức năng in hay ghi log của Godot, nên bạn nên dùng các macro chuyên dụng cho phép ghi log output của test theo định dạng của doctest.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Macro</strong></p></td>
+<td><p><strong>Mô tả</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code></p></td>
+<td><p>In một thông điệp.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">FAIL_CHECK</span></code></p></td>
+<td><p>Đánh dấu test là thất bại, nhưng tiếp tục chạy. Có thể đặt trong câu lệnh điều kiện cho các kiểm tra phức tạp.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FAIL</span></code></p></td>
+<td><p>Làm test thất bại ngay lập tức. Có thể đặt trong câu lệnh điều kiện cho các kiểm tra phức tạp.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Có thể chọn các reporter khác nhau lúc chạy. Ví dụ, đây là cách chuyển hướng output sang một file XML:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>--source-file<span class="o">=</span><span class="s2">&quot;*test_validate*&quot;</span><span class="w"> </span>--success<span class="w"> </span>--reporters<span class="o">=</span>xml<span class="w"> </span>--out<span class="o">=</span>doctest.txt
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference external" href="https://github.com/doctest/doctest/blob/master/doc/markdown/logging.md">doctest: Logging macros</a>.</p>
+</div>
+</section>
+<section id="testing-failure-paths">
+<h3>Kiểm thử các nhánh lỗi<a class="headerlink" href="#testing-failure-paths" title="Link to this heading"></a></h3>
+<p>Đôi khi, không phải lúc nào cũng có thể kiểm tra một kết quả <em>mong đợi</em>. Với triết lý phát triển của Godot rằng engine không được crash và phải phục hồi êm thấm mỗi khi xảy ra lỗi không nghiêm trọng, điều quan trọng là phải kiểm tra rằng các nhánh lỗi đó thực sự an toàn để chạy mà không làm crash engine.</p>
+<p>Hành vi <em>không mong đợi</em> có thể được kiểm tra giống như mọi thứ khác. Vấn đề duy nhất là việc in lỗi sẽ làm output của test bị nhiễu một cách không cần thiết bởi các lỗi đến từ chính engine (ngay cả khi kết quả cuối cùng là thành công).</p>
+<p>Để giảm bớt vấn đề này, hãy dùng các macro <code class="docutils literal notranslate"><span class="pre">ERR_PRINT_OFF</span></code> và <code class="docutils literal notranslate"><span class="pre">ERR_PRINT_ON</span></code> trực tiếp trong test case để tạm thời tắt output lỗi đến từ engine, ví dụ:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&quot;[Color] Constructor methods&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ERR_PRINT_OFF</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">html_invalid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Color</span><span class="o">::</span><span class="n">html</span><span class="p">(</span><span class="s">&quot;invalid&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ERR_PRINT_ON</span><span class="p">;</span><span class="w"> </span><span class="c1">// Don&#39;t forget to re-enable!</span>
+
+<span class="w">    </span><span class="n">CHECK_MESSAGE</span><span class="p">(</span><span class="n">html_invalid</span><span class="p">.</span><span class="n">is_equal_approx</span><span class="p">(</span><span class="n">Color</span><span class="p">()),</span>
+<span class="w">        </span><span class="s">&quot;Invalid HTML notation should result in a Color with the default values.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="special-tags-in-test-case-names">
+<h3>Các tag đặc biệt trong tên test case<a class="headerlink" href="#special-tags-in-test-case-names" title="Link to this heading"></a></h3>
+<p>Các tag này có thể được thêm vào tên test case để thay đổi hoặc mở rộng môi trường test:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Tag</strong></p></td>
+<td><p><strong>Mô tả</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[SceneTree]</span></code></p></td>
+<td><p>Bắt buộc cho các test case cần có sẵn scene tree với MessageQueue. Nó cũng bật một rendering server giả lập (mock) và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_themedb.html" title="Class reference (English)"><span class="xref std std-ref">ThemeDB</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[Editor]</span></code></p></td>
+<td><p>Giống <code class="docutils literal notranslate"><span class="pre">[SceneTree]</span></code>, nhưng có thêm hạ tầng liên quan đến trình chỉnh sửa, chẳng hạn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorsettings.html" title="Class reference (English)"><span class="xref std std-ref">EditorSettings</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[Audio]</span></code></p></td>
+<td><p>Khởi tạo <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audioserver.html" title="Class reference (English)"><span class="xref std std-ref">AudioServer</span></a> bằng một audio driver giả lập (mock).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[Navigation2D]</span></code></p></td>
+<td><p>Tạo navigation server 2D mặc định và cung cấp nó cho việc test.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[Navigation3D]</span></code></p></td>
+<td><p>Tạo navigation server 3D mặc định và cung cấp nó cho việc test.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Bạn có thể dùng chúng cùng nhau để kết hợp nhiều phần mở rộng môi trường test.</p>
+</section>
+<section id="testing-signals">
+<h3>Test signal<a class="headerlink" href="#testing-signals" title="Link to this heading"></a></h3>
+<p>Có thể dùng các macro sau để test signal:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Macro</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SIGNAL_WATCH(object,</span> <span class="pre">&quot;signal_name&quot;)</span></code></p></td>
+<td><p>Bắt đầu theo dõi signal được chỉ định trên đối tượng đã cho.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SIGNAL_UNWATCH(object,</span> <span class="pre">&quot;signal_name&quot;)</span></code></p></td>
+<td><p>Ngừng theo dõi signal được chỉ định trên đối tượng đã cho.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SIGNAL_CHECK(&quot;signal_name&quot;,</span> <span class="pre">Vector&lt;Vector&lt;Variant&gt;&gt;)</span></code></p></td>
+<td><p>Kiểm tra đối số của tất cả signal đã phát. Vector ngoài chứa từng signal đã phát, còn vector trong chứa danh sách đối số của signal đó. Thứ tự của các signal là quan trọng.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SIGNAL_CHECK_FALSE(&quot;signal_name&quot;)</span></code></p></td>
+<td><p>Kiểm tra xem signal được chỉ định có không được phát hay không.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SIGNAL_DISCARD(&quot;signal_name&quot;)</span></code></p></td>
+<td><p>Hủy tất cả bản ghi của signal được chỉ định.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Dưới đây là một ví dụ minh họa cách dùng các macro này:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//...</span>
+<span class="n">SUBCASE</span><span class="p">(</span><span class="s">&quot;[Timer] Timer process timeout signal must be emitted&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SIGNAL_WATCH</span><span class="p">(</span><span class="n">test_timer</span><span class="p">,</span><span class="w"> </span><span class="n">SNAME</span><span class="p">(</span><span class="s">&quot;timeout&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="n">test_timer</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">(</span><span class="mf">0.1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SceneTree</span><span class="o">::</span><span class="n">get_singleton</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">Array</span><span class="w"> </span><span class="n">signal_args</span><span class="p">;</span>
+<span class="w">    </span><span class="n">signal_args</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">Array</span><span class="p">());</span>
+
+<span class="w">    </span><span class="n">SIGNAL_CHECK</span><span class="p">(</span><span class="n">SNAME</span><span class="p">(</span><span class="s">&quot;timeout&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">signal_args</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">SIGNAL_UNWATCH</span><span class="p">(</span><span class="n">test_timer</span><span class="p">,</span><span class="w"> </span><span class="n">SNAME</span><span class="p">(</span><span class="s">&quot;timeout&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="c1">//...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="test-tools">
+<h2>Công cụ test<a class="headerlink" href="#test-tools" title="Link to this heading"></a></h2>
+<p>Test tool là các phương thức nâng cao cho phép bạn chạy các quy trình tùy ý để hỗ trợ việc test thủ công và debug phần bên trong của engine.</p>
+<p>Có thể chạy các công cụ này bằng cách cung cấp tên công cụ sau tùy chọn dòng lệnh <code class="docutils literal notranslate"><span class="pre">--test</span></code>. Ví dụ, module GDScript cài đặt và đăng ký một số công cụ để hỗ trợ debug tokenizer, parser và compiler:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>gdscript-tokenizer<span class="w"> </span>test.gd
+./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>gdscript-parser<span class="w"> </span>test.gd
+./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>gdscript-compiler<span class="w"> </span>test.gd
+</pre></div>
+</div>
+<p>Nếu phát hiện bất kỳ công cụ nào như vậy, phần còn lại của các unit test sẽ bị bỏ qua.</p>
+<p>Test tool có thể được đăng ký ở bất kỳ đâu trong engine vì cơ chế đăng ký rất giống với cách doctest đăng ký test case bằng kỹ thuật khởi tạo động, nhưng thông thường chúng được đăng ký trong các file nguồn <code class="docutils literal notranslate"><span class="pre">register_types.cpp</span></code> tương ứng (theo module hoặc core).</p>
+<p>Đây là ví dụ về cách GDScript đăng ký test tool trong <code class="docutils literal notranslate"><span class="pre">modules/gdscript/register_types.cpp</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef TESTS_ENABLED</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">test_tokenizer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TestGDScript</span><span class="o">::</span><span class="n">test</span><span class="p">(</span><span class="n">TestGDScript</span><span class="o">::</span><span class="n">TestType</span><span class="o">::</span><span class="n">TEST_TOKENIZER</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">test_parser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TestGDScript</span><span class="o">::</span><span class="n">test</span><span class="p">(</span><span class="n">TestGDScript</span><span class="o">::</span><span class="n">TestType</span><span class="o">::</span><span class="n">TEST_PARSER</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">test_compiler</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TestGDScript</span><span class="o">::</span><span class="n">test</span><span class="p">(</span><span class="n">TestGDScript</span><span class="o">::</span><span class="n">TestType</span><span class="o">::</span><span class="n">TEST_COMPILER</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">REGISTER_TEST_COMMAND</span><span class="p">(</span><span class="s">&quot;gdscript-tokenizer&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">test_tokenizer</span><span class="p">);</span>
+<span class="n">REGISTER_TEST_COMMAND</span><span class="p">(</span><span class="s">&quot;gdscript-parser&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">test_parser</span><span class="p">);</span>
+<span class="n">REGISTER_TEST_COMMAND</span><span class="p">(</span><span class="s">&quot;gdscript-compiler&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">test_compiler</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Test tool có thể tự thực hiện việc phân tích dòng lệnh tùy chỉnh với sự trợ giúp của phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_os.html#class-os-method-get-cmdline-args" title="Class reference (English)"><span class="xref std std-ref">get_cmdline_args</span></a> của OS.</p>
+</section>
+<section id="integration-tests-for-gdscript">
+<h2>Integration test cho GDScript<a class="headerlink" href="#integration-tests-for-gdscript" title="Link to this heading"></a></h2>
+<p>Godot dùng doctest để ngăn regression trong GDScript trong quá trình phát triển. Có một số loại test script có thể viết:</p>
+<ul class="simple">
+<li><p>test cho các lỗi mong đợi;</p></li>
+<li><p>test cho các cảnh báo;</p></li>
+<li><p>test cho các tính năng.</p></li>
+</ul>
+<p>Do đó, quy trình viết integration test cho GDScript như sau:</p>
+<ol class="arabic">
+<li><p>Chọn loại test script bạn muốn viết, rồi tạo một file GDScript mới trong thư mục <code class="docutils literal notranslate"><span class="pre">modules/gdscript/tests/scripts</span></code>, bên trong thư mục con tương ứng.</p></li>
+<li><p>Viết mã GDScript. Test script phải có một hàm tên là <code class="docutils literal notranslate"><span class="pre">test()</span></code> không nhận đối số nào. Hàm này sẽ được test runner gọi. Test không nên có phụ thuộc nào trừ khi phụ thuộc đó cũng là một phần của test. Các lớp toàn cục (dùng <code class="docutils literal notranslate"><span class="pre">class_name</span></code>) được đăng ký trước khi runner khởi động, nên chúng sẽ hoạt động nếu cần.</p>
+<p>Đây là một ví dụ test script:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">test</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="l">true</span><span class="w"> </span><span class="c1"># Missing colon here.</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Chuyển đến thư mục gốc của repository mã nguồn Godot.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>godot
+</pre></div>
+</div>
+</li>
+<li><p>Tạo các file <code class="docutils literal notranslate"><span class="pre">*.out</span></code> để cập nhật kết quả mong đợi từ output:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bin/&lt;godot_binary&gt;<span class="w"> </span>--gdscript-generate-tests<span class="w"> </span>modules/gdscript/tests/scripts
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Bạn có thể thêm tùy chọn <code class="docutils literal notranslate"><span class="pre">--print-filenames</span></code> để xem tên file khi output test của chúng được tạo. Nếu bạn đang làm một tính năng mới gây ra crash nghiêm trọng, bạn có thể dùng tùy chọn này để nhanh chóng tìm ra file test nào gây crash và debug từ đó.</p>
+<ol class="arabic" start="5">
+<li><p>Chạy test GDScript bằng:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/&lt;godot_binary&gt;<span class="w"> </span>--test<span class="w"> </span>--test-suite<span class="o">=</span><span class="s2">&quot;*GDScript*&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Lệnh này cũng chấp nhận tùy chọn <code class="docutils literal notranslate"><span class="pre">--print-filenames</span></code> (xem ở trên).</p>
+<p>Nếu không có lỗi nào được in ra và mọi thứ suôn sẻ, bạn đã hoàn tất!</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Hãy đảm bảo output thực sự có các giá trị mong đợi trước khi gửi pull request. Nếu <code class="docutils literal notranslate"><span class="pre">--gdscript-generate-tests</span></code> tạo ra các file <code class="docutils literal notranslate"><span class="pre">*.out</span></code> không liên quan đến các test mới thêm, bạn nên hoàn nguyên các file đó và chỉ commit các file <code class="docutils literal notranslate"><span class="pre">*.out</span></code> cho test mới.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Test runner của GDScript dùng để test bản cài đặt GDScript, không phải để test script của người dùng hay test engine bằng script. Chúng tôi khuyên bạn nên viết test mới cho các <a class="reference external" href="https://github.com/godotengine/godot/issues?q=is%3Aissue+label%3Atopic%3Agdscript+is%3Aclosed">issue liên quan đến GDScript trên GitHub</a> đã được giải quyết, hoặc viết test cho các tính năng hiện đang hoạt động.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu test case của bạn yêu cầu không có hàm <code class="docutils literal notranslate"><span class="pre">test()</span></code> trong file script, bạn có thể tắt phần runtime của test bằng cách đặt tên file script sao cho khớp với mẫu <code class="docutils literal notranslate"><span class="pre">*.notest.gd</span></code>. Ví dụ: &quot;test_empty_file.notest.gd&quot;.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2d_coordinate_systems.html" class="btn btn-neutral float-left" title="Hệ tọa độ 2D và phép biến đổi 2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../engine_api/index.html" class="btn btn-neutral float-right" title="Các API mở rộng engine" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

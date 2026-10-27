@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Room scale trong XR" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/xr/xr_room_scale.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Một trong những yếu tố cốt lõi của dự án XR là khả năng đi lại tự do trong một không gian rộng. Không gian này thường bị giới hạn bởi căn phòng mà người chơi thực sự đang ở, với các cảm biến theo d..." />
+<meta name="description" content="Một trong những yếu tố cốt lõi của dự án XR là khả năng đi lại tự do trong một không gian rộng. Không gian này thường bị giới hạn bởi căn phòng mà người chơi thực sự đang ở, với các cảm biến theo d..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Room scale trong XR &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Hiệu ứng toàn màn hình trong XR" href="xr_full_screen_effects.html" />
+    <link rel="prev" title="Di chuyển cơ bản trong XR" href="basic_xr_locomotion.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/xr/xr_room_scale" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XR</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xr_terminology.html">Thuật ngữ XR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Bắt đầu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#xr-interfaces">Các XR interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#godot-xr-tools">Godot XR Tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#advanced-topics">Chủ đề nâng cao</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Room scale trong XR</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#origin-centric-solution">Giải pháp lấy origin làm trung tâm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1">Bước 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2">Bước 2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3">Bước 3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#character-body-centric-solution">Giải pháp lấy thân nhân vật làm trung tâm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Bước 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Bước 2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Bước 3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#when-the-player-walks-to-somewhere-they-shouldn-t">Khi người chơi đi tới nơi không được phép</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#further-suggestions-for-improvements">Gợi ý cải tiến thêm</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xr_full_screen_effects.html">Hiệu ứng toàn màn hình trong XR</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">XR</a></li>
+      <li class="breadcrumb-item active">Room scale trong XR</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="room-scale-in-xr">
+<span id="doc-xr-room-scale"></span><h1>Room scale trong XR<a class="headerlink" href="#room-scale-in-xr" title="Link to this heading"></a></h1>
+<p>Một trong những yếu tố cốt lõi của dự án XR là khả năng đi lại tự do trong một không gian rộng. Không gian này thường bị giới hạn bởi căn phòng mà người chơi thực sự đang ở, với các cảm biến theo dõi được đặt bên trong. Tuy nhiên, với sự ra đời của công nghệ theo dõi inside-out, không gian chơi ngày càng có thể rộng hơn.</p>
+<p>Với nhà phát triển, điều này đặt ra nhiều thách thức thú vị. Trong tài liệu này, chúng ta sẽ xem xét một số thách thức bạn có thể gặp và phác thảo một vài giải pháp. Các vấn đề và thách thức của game XR chơi ở tư thế ngồi sẽ được bàn trong một tài liệu khác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nhà phát triển thường ngồi ở bàn khi xây dựng nền móng cho game. Ở chế độ này, các vấn đề khi phát triển cho room scale sẽ không lộ ra cho đến khi quá muộn. Lời khuyên ở đây là hãy bắt đầu thử nghiệm khi đứng và đi lại càng sớm càng tốt. Khi bạn đã hài lòng rằng nền móng vững chắc, bạn có thể thoải mái ngồi phát triển.</p>
+</div>
+<p>Trong các game góc nhìn thứ nhất truyền thống, người chơi được biểu diễn bằng một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody3D</span></a>. Node này được di chuyển bằng cách xử lý đầu vào truyền thống từ tay cầm, chuột hoặc bàn phím. Một camera được gắn vào node này tại vị trí xấp xỉ nơi đầu của người chơi.</p>
+<p>Áp dụng mô hình này vào thiết lập XR, ta thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrorigin3d.html" title="Class reference (English)"><span class="xref std std-ref">XROrigin3D</span></a> làm con của character body, và thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrcamera3d.html" title="Class reference (English)"><span class="xref std std-ref">XRCamera3D</span></a> làm con của node origin. Thoạt nhìn có vẻ cách này hoạt động. Tuy nhiên, xem xét kỹ hơn sẽ thấy mô hình này không tính đến việc trong XR có hai dạng di chuyển: di chuyển qua đầu vào tay cầm, và di chuyển vật lý của người chơi trong thế giới thực.</p>
+<p>Do đó, node origin không biểu diễn vị trí của người chơi. Nó biểu diễn tâm, hay điểm bắt đầu, của không gian theo dõi mà người chơi có thể di chuyển vật lý trong đó. Khi người chơi đi lại trong phòng, chuyển động này được thể hiện qua việc theo dõi kính của người chơi. Trong game, điều này có nghĩa là vị trí của node camera được cập nhật tương ứng. Về mọi mặt, chúng ta đang theo dõi một cái đầu không có thân. Trừ khi có body tracking, ta không biết gì về vị trí hay hướng của cơ thể người chơi.</p>
+<img alt="../../_images/XRRoomCenterWalk.gif" src="../../_images/XRRoomCenterWalk.gif" />
+<p>Vấn đề đầu tiên mà điều này gây ra khá rõ ràng. Khi người chơi di chuyển bằng đầu vào tay cầm, ta có thể dùng cách làm như trong game thông thường và di chuyển người chơi theo hướng phía trước. Tuy nhiên người chơi không ở nơi ta nghĩ, nên khi tiến về phía trước, ta lại kiểm tra va chạm sai vị trí.</p>
+<img alt="../../_images/XRRoomWalkOffCliff.gif" src="../../_images/XRRoomWalkOffCliff.gif" />
+<p>Vấn đề thứ hai thực sự lộ ra khi người chơi đi xa khỏi tâm của không gian theo dõi và dùng đầu vào tay cầm để xoay. Nếu ta xoay character body, người chơi sẽ bị di chuyển quanh phòng theo đường tròn.</p>
+<img alt="../../_images/XRRoomRotateOrigin.gif" src="../../_images/XRRoomRotateOrigin.gif" />
+<p>Nếu sửa được các vấn đề trên, ta sẽ gặp vấn đề thứ ba. Khi đường đi của người chơi bị chặn trong thế giới ảo, người chơi vẫn có thể bước tới về mặt vật lý.</p>
+<img alt="../../_images/XRRoomWalkWall.gif" src="../../_images/XRRoomWalkWall.gif" />
+<p>Chúng ta sẽ xem xét cách giải quyết hai vấn đề đầu bằng hai giải pháp riêng biệt, rồi bàn cách xử lý vấn đề thứ ba.</p>
+<section id="origin-centric-solution">
+<h2>Giải pháp lấy origin làm trung tâm<a class="headerlink" href="#origin-centric-solution" title="Link to this heading"></a></h2>
+<p>Với cách tiếp cận đầu tiên, chúng ta sẽ thay đổi cấu trúc. Đây là cách hiện được triển khai trong XR Tools.</p>
+<img alt="../../_images/xr_room_scale_origin_body.webp" src="../../_images/xr_room_scale_origin_body.webp" />
+<p>Trong thiết lập này, ta đánh dấu character body là top level để nó không di chuyển theo origin.</p>
+<p>Ta cũng có một node hỗ trợ cho biết khớp cổ nằm ở đâu so với camera. Ta dùng nó để xác định tâm cơ thể nằm ở đâu.</p>
+<p>Việc xử lý di chuyển nhân vật giờ được thực hiện theo ba bước.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/xr/openxr_origin_centric_movement">Bản demo di chuyển lấy origin làm trung tâm</a> chứa ví dụ chi tiết hơn về kỹ thuật được mô tả dưới đây.</p>
+</div>
+</section>
+<section id="step-1">
+<h2>Bước 1<a class="headerlink" href="#step-1" title="Link to this heading"></a></h2>
+<p>Ở bước đầu tiên, chúng ta sẽ xử lý chuyển động vật lý của người chơi. Ta xác định người chơi hiện đang ở đâu và cố gắng di chuyển character body tới đó.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="c1"># Remember our current velocity, we&#39;ll apply that later</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">current_velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">velocity</span>
+
+<span class="w">  </span><span class="c1"># Remember where our player body currently is</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">org_player_body</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">origin</span>
+
+<span class="w">  </span><span class="c1"># Determine where our player body should be</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">player_body_location</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$XRCamera3D</span><span class="o">.</span><span class="vi">transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="sx">$XRCamera3D/Neck</span><span class="o">.</span><span class="vi">transform</span><span class="o">.</span><span class="vi">origin</span>
+<span class="w">  </span><span class="n">player_body_location</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">  </span><span class="n">player_body_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">global_transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">player_body_location</span>
+
+<span class="w">  </span><span class="c1"># Attempt to move our character</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">player_body_location</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">org_player_body</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="w">  </span><span class="c1"># Set back to our current value</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_velocity</span>
+
+<span class="w">  </span><span class="c1"># Check if we managed to move all the way, ignoring height change</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">movement_left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player_body_location</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">origin</span>
+<span class="w">  </span><span class="n">movement_left</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="p">(</span><span class="n">movement_left</span><span class="p">)</span><span class="o">.</span><span class="nf">length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.01</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># We&#39;ll talk more about what we&#39;ll do here later on</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">true</span>
+<span class="w">  </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">false</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">is_colliding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lưu ý rằng ta trả về <code class="docutils literal notranslate"><span class="pre">true</span></code> từ hàm <code class="docutils literal notranslate"><span class="pre">_process_on_physical_movement</span></code> khi không thể di chuyển người chơi đến hết quãng đường.</p>
+</section>
+<section id="step-2">
+<h2>Bước 2<a class="headerlink" href="#step-2" title="Link to this heading"></a></h2>
+<p>Bước thứ hai là xử lý việc xoay người chơi theo đầu vào của người dùng.</p>
+<p>Vì đầu vào được dùng có thể khác nhau tùy nhu cầu, ở đây ta chỉ gọi hàm <code class="docutils literal notranslate"><span class="pre">_get_rotational_input</span></code>. Hàm này nên lấy đầu vào cần thiết và trả về tốc độ xoay tính bằng radian trên giây.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong ví dụ, chúng ta sẽ giữ mọi thứ đơn giản và dễ hiểu. Ta sẽ không bận tâm đến các tính năng tạo sự thoải mái như xoay theo nấc (snap turning) và áp dụng vignette. Chúng tôi rất khuyến khích bạn triển khai các tính năng tạo sự thoải mái như vậy.</p>
+</div>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_rotational_input</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Implement this function to return rotation in radians per second.</span>
+<span class="w">  </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="mf">0.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_copy_player_rotation_to_character_body</span><span class="p">():</span>
+<span class="w">  </span><span class="c1"># We only copy our forward direction to our character body, we ignore tilt</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">camera_forward</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="sx">$XRCamera3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">basis</span><span class="o">.</span><span class="vi">z</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">body_forward</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="n">camera_forward</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">camera_forward</span><span class="o">.</span><span class="vi">z</span><span class="p">)</span>
+
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Basis</span><span class="o">.</span><span class="nf">looking_at</span><span class="p">(</span><span class="n">body_forward</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process_rotation_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">()</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">t2</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">()</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">rot</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">()</span>
+
+<span class="w">  </span><span class="c1"># We are going to rotate the origin around the player</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">player_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">global_transform</span><span class="o">.</span><span class="vi">origin</span>
+
+<span class="w">  </span><span class="n">t1</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">player_position</span>
+<span class="w">  </span><span class="n">t2</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player_position</span>
+<span class="w">  </span><span class="n">rot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rot</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="nf">_get_rotational_input</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">  </span><span class="n">global_transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">global_transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rot</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t1</span><span class="p">)</span><span class="o">.</span><span class="nf">orthonormalized</span><span class="p">()</span>
+
+<span class="w">  </span><span class="c1"># Now ensure our player body is facing the correct way as well</span>
+<span class="w">  </span><span class="nf">_copy_player_rotation_to_character_body</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">is_colliding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="o">!</span><span class="n">is_colliding</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">_process_rotation_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Ta đã thêm lời gọi xử lý xoay vào physics process, nhưng chỉ thực thi nó nếu đã di chuyển được người chơi hoàn toàn. Điều này có nghĩa là nếu người chơi di chuyển đến nơi không được phép, ta sẽ không xử lý thêm chuyển động nào.</p>
+</div>
+</section>
+<section id="step-3">
+<h2>Bước 3<a class="headerlink" href="#step-3" title="Link to this heading"></a></h2>
+<p>Bước thứ ba và cũng là bước cuối cùng là di chuyển người chơi tiến, lùi hoặc sang ngang theo đầu vào của người dùng.</p>
+<p>Giống như với việc xoay, đầu vào khác nhau tùy từng dự án nên ở đây ta chỉ gọi hàm <code class="docutils literal notranslate"><span class="pre">_get_movement_input</span></code>. Hàm này nên lấy đầu vào cần thiết và trả về một vector hướng đã được nhân theo vận tốc cần thiết.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Cũng như với việc xoay, ta giữ mọi thứ đơn giản. Ở đây bạn cũng nên cân nhắc thêm các cài đặt tạo sự thoải mái.</p>
+</div>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">gravity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ProjectSettings</span><span class="o">.</span><span class="nf">get_setting</span><span class="p">(</span><span class="s2">&quot;physics/3d/default_gravity&quot;</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_movement_input</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Implement this to return requested directional movement in meters per second.</span>
+<span class="w">  </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process_movement_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="c1"># Remember where our player body currently is</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">org_player_body</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">origin</span>
+
+<span class="w">  </span><span class="c1"># We start with applying gravity</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">gravity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+
+<span class="w">  </span><span class="c1"># Now we add in our movement</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">input</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_get_movement_input</span><span class="p">()</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">movement</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="n">input</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="vi">y</span><span class="p">))</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">movement</span><span class="o">.</span><span class="vi">x</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">velocity</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">movement</span><span class="o">.</span><span class="vi">z</span>
+
+<span class="w">  </span><span class="c1"># Attempt to move our player</span>
+<span class="w">  </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="w">  </span><span class="c1"># And now apply the actual movement to our origin</span>
+<span class="w">  </span><span class="n">global_transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="sx">$CharacterBody3D</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">org_player_body</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">is_colliding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="o">!</span><span class="n">is_colliding</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">_process_rotation_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">_process_movement_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="character-body-centric-solution">
+<h2>Giải pháp lấy thân nhân vật làm trung tâm<a class="headerlink" href="#character-body-centric-solution" title="Link to this heading"></a></h2>
+<p>Trong thiết lập này, chúng ta giữ character body làm node gốc, nhờ đó dễ kết hợp với các cơ chế game truyền thống hơn.</p>
+<img alt="../../_images/xr_room_scale_character_body.webp" src="../../_images/xr_room_scale_character_body.webp" />
+<p>Ở đây ta có một character body tiêu chuẩn với collision shape, cùng node XR origin và camera là các node con bình thường. Ta cũng có node hỗ trợ cổ.</p>
+<p>Việc xử lý di chuyển nhân vật vẫn được thực hiện theo ba bước như trên nhưng được triển khai hơi khác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/xr/openxr_character_centric_movement">Bản demo di chuyển lấy nhân vật làm trung tâm</a> chứa ví dụ chi tiết hơn về kỹ thuật được mô tả dưới đây.</p>
+</div>
+</section>
+<section id="id1">
+<h2>Bước 1<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>Trong cách tiếp cận này, bước 1 là nơi mọi điều kỳ diệu diễn ra. Giống như cách trước, ta sẽ áp dụng chuyển động vật lý vào character body, nhưng sẽ triệt tiêu chuyển động đó trên node origin.</p>
+<p>Điều này đảm bảo vị trí của người chơi luôn đồng bộ với vị trí của character body.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Helper variables to keep our code readable</span>
+<span class="nd">@onready</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">origin_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$XROrigin3D</span>
+<span class="nd">@onready</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">camera_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$XROrigin3D/XRCamera3D</span>
+<span class="nd">@onready</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">neck_position_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$XROrigin3D/XRCamera3D/Neck</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Remember our current velocity, we&#39;ll apply that later</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">current_velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span>
+
+<span class="w">  </span><span class="c1"># Start by rotating the player to face the same way our real player is</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">camera_basis</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">origin_node</span><span class="o">.</span><span class="vi">transform</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">camera_node</span><span class="o">.</span><span class="vi">transform</span><span class="o">.</span><span class="vi">basis</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">forward</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="n">camera_basis</span><span class="o">.</span><span class="vi">z</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="n">camera_basis</span><span class="o">.</span><span class="vi">z</span><span class="o">.</span><span class="vi">z</span><span class="p">)</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">angle</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">forward</span><span class="o">.</span><span class="nf">angle_to</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">))</span>
+
+<span class="w">  </span><span class="c1"># Rotate our character body</span>
+<span class="w">  </span><span class="n">transform</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="o">.</span><span class="vi">basis</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">,</span><span class="w"> </span><span class="n">angle</span><span class="p">)</span>
+
+<span class="w">  </span><span class="c1"># Reverse this rotation our origin node</span>
+<span class="w">  </span><span class="n">origin_node</span><span class="o">.</span><span class="vi">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">()</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">angle</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">origin_node</span><span class="o">.</span><span class="vi">transform</span>
+
+<span class="w">  </span><span class="c1"># Now apply movement, first move our player body to the right location</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">org_player_body</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">global_transform</span><span class="o">.</span><span class="vi">origin</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">player_body_location</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">origin_node</span><span class="o">.</span><span class="vi">transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">camera_node</span><span class="o">.</span><span class="vi">transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">neck_position_node</span><span class="o">.</span><span class="vi">transform</span><span class="o">.</span><span class="vi">origin</span>
+<span class="w">  </span><span class="n">player_body_location</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">  </span><span class="n">player_body_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">global_transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">player_body_location</span>
+
+<span class="w">  </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">player_body_location</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">org_player_body</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">  </span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="w">  </span><span class="c1"># Now move our XROrigin back</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">delta_movement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">global_transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">org_player_body</span>
+<span class="w">  </span><span class="n">origin_node</span><span class="o">.</span><span class="vi">global_transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">delta_movement</span>
+
+<span class="w">  </span><span class="c1"># Return our value</span>
+<span class="w">  </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_velocity</span>
+
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="p">(</span><span class="n">player_body_location</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">global_transform</span><span class="o">.</span><span class="vi">origin</span><span class="p">)</span><span class="o">.</span><span class="nf">length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.01</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># We&#39;ll talk more about what we&#39;ll do here later on</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">true</span>
+<span class="w">  </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="l">false</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">is_colliding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Về bản chất, đoạn code trên sẽ di chuyển character body tới nơi người chơi đang đứng, rồi di chuyển node origin ngược lại một lượng bằng như vậy. Kết quả là người chơi luôn ở chính giữa phía trên character body.</p>
+<p>Ta bắt đầu bằng việc áp dụng phép xoay. Character body nên hướng về phía người chơi đã nhìn ở frame trước. Ta tính hướng của camera trong không gian của character body. Giờ ta có thể tính góc mà người chơi đã xoay đầu. Ta xoay character body một góc bằng như vậy để nó hướng cùng chiều với người chơi. Sau đó ta đảo ngược phép xoay trên node origin để camera lại thẳng hàng với người chơi.</p>
+<p>Với chuyển động, ta làm gần như tương tự. Character body nên ở nơi người chơi đã đứng ở frame trước. Ta tính xem người chơi đã di chuyển bao xa khỏi vị trí này. Sau đó ta cố gắng di chuyển character body tới vị trí đó.</p>
+<p>Vì người chơi có thể va vào một collision body và bị chặn lại, ta chỉ di chuyển điểm origin ngược lại đúng bằng lượng mà character body thực sự đã di chuyển. Do đó người chơi có thể rời khỏi vị trí này, nhưng điều đó sẽ được phản ánh trong việc định vị người chơi.</p>
+<p>Giống như giải pháp trước, ta trả về true nếu xảy ra trường hợp này.</p>
+</section>
+<section id="id2">
+<h2>Bước 2<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>Ở bước này, ta lại áp dụng phép xoay dựa trên đầu vào tay cầm. Tuy nhiên trong trường hợp này, code gần như giống hệt cách bạn triển khai trong một game góc nhìn thứ nhất thông thường.</p>
+<p>Vì đầu vào được dùng có thể khác nhau tùy nhu cầu, ở đây ta chỉ gọi hàm <code class="docutils literal notranslate"><span class="pre">_get_rotational_input</span></code>. Hàm này nên lấy đầu vào cần thiết và trả về tốc độ xoay tính bằng radian trên giây.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_rotational_input</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Implement this function to return rotation in radians per second.</span>
+<span class="w">  </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="mf">0.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process_rotation_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="n">rotation</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nf">_get_rotational_input</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">is_colliding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="o">!</span><span class="n">is_colliding</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">_process_rotation_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>Bước 3<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>Ở bước ba, ta lại áp dụng chuyển động dựa trên đầu vào tay cầm. Và cũng như ở bước 2, giờ ta có thể triển khai nó như trong một game góc nhìn thứ nhất thông thường.</p>
+<p>Giống như với việc xoay, đầu vào khác nhau tùy từng dự án nên ở đây ta chỉ gọi hàm <code class="docutils literal notranslate"><span class="pre">_get_movement_input</span></code>. Hàm này nên lấy đầu vào cần thiết và trả về một vector hướng đã được nhân theo vận tốc cần thiết.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_get_movement_input</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Implement this to return requested directional movement in meters per second.</span>
+<span class="w">  </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process_movement_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">movement_input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_get_movement_input</span><span class="p">()</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">global_transform</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="n">movement_input</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">movement_input</span><span class="o">.</span><span class="vi">y</span><span class="p">)</span>
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">direction</span><span class="p">:</span>
+<span class="w">    </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span>
+<span class="w">    </span><span class="n">velocity</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span>
+<span class="w">  </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">move_toward</span><span class="p">(</span><span class="n">velocity</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="n">velocity</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">move_toward</span><span class="p">(</span><span class="n">velocity</span><span class="o">.</span><span class="vi">z</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+
+<span class="w">  </span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">is_colliding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_process_on_physical_movement</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="w">  </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="o">!</span><span class="n">is_colliding</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">_process_rotation_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">_process_movement_on_input</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="when-the-player-walks-to-somewhere-they-shouldn-t">
+<h2>Khi người chơi đi tới nơi không được phép<a class="headerlink" href="#when-the-player-walks-to-somewhere-they-shouldn-t" title="Link to this heading"></a></h2>
+<p>Hãy hình dung tình huống người chơi đang ở bên ngoài một căn phòng bị khóa. Bạn không muốn người chơi vào phòng đó cho đến khi cửa được mở khóa. Bạn cũng không muốn người chơi nhìn thấy những gì bên trong phòng.</p>
+<p>Logic di chuyển người chơi bằng đầu vào tay cầm ngăn chặn điều này rất tốt. Người chơi gặp một static body, và code ngăn người chơi đi vào phòng.</p>
+<p>Tuy nhiên với XR, không gì ngăn người chơi bước tới một bước thật.</p>
+<p>Với cả hai cách tiếp cận đã trình bày ở trên, ta sẽ ngăn character body di chuyển tới nơi người chơi không được đi. Nhưng vì người chơi đã di chuyển vật lý tới vị trí này, camera giờ đã đi vào trong phòng.</p>
+<p>Giải pháp hợp lý sẽ là ngăn hoàn toàn chuyển động và điều chỉnh vị trí của điểm XR origin để người chơi vẫn ở bên ngoài phòng.</p>
+<p>Vấn đề của cách này là chuyển động vật lý giờ không còn được tái hiện trong không gian ảo. Điều này sẽ khiến người chơi buồn nôn.</p>
+<p>Thay vào đó, nhiều game XR đo khoảng cách giữa nơi người chơi thực sự đang đứng và nơi cơ thể ảo của người chơi bị bỏ lại phía sau. Khi khoảng cách này tăng lên, thường đến vài centimet, màn hình sẽ dần tối đen.</p>
+<p>Các giải pháp ở trên cho phép ta thêm logic này vào code ở cuối bước 1.</p>
+<p>Một số cải tiến thêm cho đoạn code đã trình bày có thể là:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>cho phép đầu vào tay cầm miễn là khoảng cách này còn nhỏ,</p></li>
+<li><p>vẫn áp dụng trọng lực cho người chơi ngay cả khi đầu vào tay cầm bị vô hiệu hóa.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các bản demo di chuyển trong kho demo của chúng tôi có ví dụ về việc làm tối màn hình khi người dùng đi vào khu vực bị hạn chế.</p>
+</div>
+</section>
+<section id="further-suggestions-for-improvements">
+<h2>Gợi ý cải tiến thêm<a class="headerlink" href="#further-suggestions-for-improvements" title="Link to this heading"></a></h2>
+<p>Phần trên cung cấp hai lựa chọn tốt làm điểm khởi đầu để triển khai game XR room scale.</p>
+<p>Một vài điều nữa đáng nêu ra mà nhiều khả năng bạn sẽ muốn triển khai:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Chiều cao của camera có thể được dùng để phát hiện người chơi đang đứng, cúi, nhảy hay nằm. Bạn có thể điều chỉnh kích thước và hướng của collision shape cho phù hợp. Sẽ càng tốt nếu bạn thêm nhiều collision shape để đầu và thân có shape riêng với kích thước chính xác hơn.</p></li>
+<li><p>Khi một scene được tải lần đầu, người chơi có thể ở rất xa tâm của không gian theo dõi. Điều này có thể khiến người chơi xuất hiện ở một căn phòng khác với điểm origin. Khi đó game sẽ cố gắng, và thất bại, trong việc di chuyển body của người chơi từ điểm bắt đầu tới nơi người chơi đang đứng. Bạn nên triển khai một hàm reset để di chuyển điểm origin sao cho người chơi ở đúng vị trí bắt đầu.</p></li>
+</ul>
+</div></blockquote>
+<p>Cả hai cải tiến trên đều yêu cầu người chơi đã sẵn sàng và đứng thẳng. Điều này không được đảm bảo, vì người chơi có thể vẫn đang đeo kính.</p>
+<p>Nhiều game, bao gồm XR Tools, giải quyết việc này bằng cách thêm màn hình giới thiệu hoặc màn hình tải, nơi người chơi phải nhấn một nút khi đã sẵn sàng. Môi trường khởi đầu này thường là một không gian rộng, nơi vị trí của người chơi ít ảnh hưởng đến những gì người chơi nhìn thấy. Khi người chơi sẵn sàng và nhấn nút, đó là lúc bạn ghi lại vị trí và chiều cao của camera.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic_xr_locomotion.html" class="btn btn-neutral float-left" title="Di chuyển cơ bản trong XR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="xr_full_screen_effects.html" class="btn btn-neutral float-right" title="Hiệu ứng toàn màn hình trong XR" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

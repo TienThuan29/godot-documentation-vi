@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sương mù thể tích và fog volume" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/volumetric_fog.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Như đã mô tả trong Môi trường và hậu xử lý, Godot hỗ trợ nhiều hiệu ứng hình ảnh, bao gồm hai loại sương mù: sương mù truyền thống (không thể tích) và sương mù thể tích. Sương mù truyền thống tác đ..." />
+<meta name="description" content="Như đã mô tả trong Môi trường và hậu xử lý, Godot hỗ trợ nhiều hiệu ứng hình ảnh, bao gồm hai loại sương mù: sương mù truyền thống (không thể tích) và sương mù thể tích. Sương mù truyền thống tác đ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sương mù thể tích và fog volume &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Khử răng cưa 3D" href="3d_antialiasing.html" />
+    <link rel="prev" title="Môi trường và hậu xử lý" href="environment_and_post_processing.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/volumetric_fog" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="global_illumination/index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sương mù thể tích và fog volume</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#volumetric-fog-properties">Các thuộc tính sương mù thể tích</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#light-interaction-with-volumetric-fog">Tương tác của ánh sáng với sương mù thể tích</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-volumetric-fog-as-a-volumetric-lighting-solution">Dùng sương mù thể tích làm giải pháp chiếu sáng thể tích</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#balancing-performance-and-quality">Cân bằng giữa hiệu năng và chất lượng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-fog-volumes-for-local-volumetric-fog">Dùng fog volume cho sương mù thể tích cục bộ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fogvolume-properties">Các thuộc tính của FogVolume</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-fogvolume-shaders">Shader FogVolume tùy chỉnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#faking-volumetric-fog-using-quads">Giả lập sương mù thể tích bằng quad</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Sương mù thể tích và fog volume</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="volumetric-fog-and-fog-volumes">
+<span id="doc-volumetric-fog"></span><h1>Sương mù thể tích và fog volume<a class="headerlink" href="#volumetric-fog-and-fog-volumes" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Sương mù thể tích chỉ được hỗ trợ trong renderer Forward+, không có trong renderer Mobile hay Compatibility.</p>
+</div>
+<p>Như đã mô tả trong <a class="reference internal" href="environment_and_post_processing.html#doc-environment-and-post-processing"><span class="std std-ref">Môi trường và hậu xử lý</span></a>, Godot hỗ trợ nhiều hiệu ứng hình ảnh, bao gồm hai loại sương mù: sương mù truyền thống (không thể tích) và sương mù thể tích. Sương mù truyền thống tác động lên toàn bộ scene cùng lúc và không thể tùy biến bằng <a class="reference internal" href="../shaders/shader_reference/fog_shader.html#doc-fog-shader"><span class="std std-ref">Fog shader</span></a>.</p>
+<p>Nếu muốn, bạn có thể dùng sương mù thể tích cùng lúc với sương mù không thể tích.</p>
+<p>Trong trang này, bạn sẽ học:</p>
+<ul class="simple">
+<li><p>Cách thiết lập sương mù thể tích trong Godot.</p></li>
+<li><p>Fog volume là gì và chúng khác sương mù thể tích &quot;toàn cục&quot; như thế nào.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem sương mù thể tích hoạt động thực tế bằng <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/volumetric_fog">dự án demo Volumetric Fog</a>.</p>
+</div>
+<p>Dưới đây là so sánh giữa sương mù truyền thống (không tương tác với ánh sáng) và sương mù thể tích, loại có thể tương tác với ánh sáng:</p>
+<img alt="../../_images/volumetric_fog_comparison.png" src="../../_images/volumetric_fog_comparison.png" />
+<section id="volumetric-fog-properties">
+<h2>Các thuộc tính sương mù thể tích<a class="headerlink" href="#volumetric-fog-properties" title="Link to this heading"></a></h2>
+<p>Sau khi bật sương mù thể tích trong resource Environment của node WorldEnvironment, bạn có thể chỉnh sửa các thuộc tính sau:</p>
+<ul class="simple">
+<li><p><strong>Density:</strong> Mật độ <em>hàm mũ</em> cơ sở của sương mù thể tích. Đặt giá trị này bằng mật độ thấp nhất bạn muốn có trên toàn cục. FogVolume có thể được dùng để tăng thêm hoặc trừ bớt mật độ này ở những khu vực cụ thể. Giá trị <code class="docutils literal notranslate"><span class="pre">0.0</span></code> sẽ tắt sương mù thể tích toàn cục nhưng vẫn cho phép FogVolume hiển thị sương mù thể tích ở những khu vực cụ thể. Việc kết xuất sương mù mang tính hàm mũ như ngoài đời thực.</p></li>
+<li><p><strong>Albedo:</strong> Color của sương mù thể tích khi tương tác với ánh sáng. Màn sương và sương mù có albedo gần với màu trắng (<code class="docutils literal notranslate"><span class="pre">Color(1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1)</span></code>), còn khói có albedo tối hơn.</p></li>
+<li><p><strong>Emission:</strong> Ánh sáng phát ra từ sương mù thể tích. Kể cả khi có emission, sương mù thể tích cũng không chiếu sáng lên các bề mặt khác. Emission hữu ích để tạo màu môi trường (ambient). Vì hiệu ứng sương mù thể tích chỉ dùng tán xạ đơn (single-scattering), sương mù thường cần một chút emission để làm dịu các bóng đổ gắt.</p></li>
+<li><p><strong>Emission Energy:</strong> Độ sáng của ánh sáng phát ra từ sương mù thể tích.</p></li>
+<li><p><strong>GI Inject:</strong> Điều chỉnh cường độ Global Illumination dùng trong màu albedo của sương mù thể tích. Giá trị <code class="docutils literal notranslate"><span class="pre">0.0</span></code> nghĩa là Global Illumination sẽ không ảnh hưởng đến sương mù thể tích. Có một chút chi phí hiệu năng khi đặt giá trị lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p></li>
+<li><p><strong>Anisotropy:</strong> Hướng tán xạ của ánh sáng khi đi qua sương mù thể tích. Giá trị gần <code class="docutils literal notranslate"><span class="pre">1.0</span></code> nghĩa là gần như toàn bộ ánh sáng bị tán xạ về phía trước. Giá trị gần <code class="docutils literal notranslate"><span class="pre">0.0</span></code> nghĩa là ánh sáng bị tán xạ đều theo mọi hướng. Giá trị gần <code class="docutils literal notranslate"><span class="pre">-1.0</span></code> nghĩa là ánh sáng bị tán xạ chủ yếu về phía sau. Sương mù và màn sương tán xạ ánh sáng hơi về phía trước, còn khói tán xạ ánh sáng đều theo mọi hướng.</p></li>
+<li><p><strong>Length:</strong> Khoảng cách mà sương mù thể tích được tính toán. Tăng lên để tính sương mù trên phạm vi rộng hơn, giảm xuống để tăng chi tiết khi không cần phạm vi xa. Để sương mù có chất lượng tốt nhất, hãy giữ giá trị này thấp nhất có thể.</p></li>
+<li><p><strong>Detail Spread:</strong> Sự phân bố kích thước dọc theo chiều dài của bộ đệm froxel. Giá trị cao hơn sẽ nén các froxel lại gần camera hơn và dồn nhiều chi tiết hơn ở gần camera.</p></li>
+<li><p><strong>Ambient Inject:</strong> Điều chỉnh cường độ ánh sáng môi trường (ambient light) dùng trong sương mù thể tích. Giá trị <code class="docutils literal notranslate"><span class="pre">0.0</span></code> nghĩa là ánh sáng môi trường sẽ không ảnh hưởng đến sương mù thể tích. Có một chút chi phí hiệu năng khi đặt giá trị lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p></li>
+<li><p><strong>Sky Affect:</strong> Điều khiển lượng sương mù thể tích được vẽ lên bầu trời nền. Nếu đặt thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code>, sương mù thể tích sẽ hoàn toàn không ảnh hưởng đến việc kết xuất bầu trời (kể cả FogVolume).</p></li>
+</ul>
+<p>Hai thuộc tính bổ sung được cung cấp trong mục <strong>Temporal Reprojection</strong>:</p>
+<ul class="simple">
+<li><p><strong>Temporal Reprojection &gt; Enabled:</strong> Bật temporal reprojection cho sương mù thể tích. Temporal reprojection trộn sương mù thể tích của frame hiện tại với sương mù thể tích của frame trước để làm mượt các cạnh răng cưa. Chi phí hiệu năng rất nhỏ, tuy nhiên nó khiến các FogVolume và Light3D đang di chuyển bị &quot;bóng ma&quot; (ghosting) và để lại vệt phía sau. Khi bật temporal reprojection, hãy cố tránh di chuyển FogVolume hoặc Light3D quá nhanh. Các hiệu ứng ánh sáng động tồn tại ngắn nên đặt <strong>Volumetric Fog Energy</strong> thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code> để tránh ghosting.</p></li>
+<li><p><strong>Temporal Reprojection &gt; Amount:</strong> Mức độ trộn frame trước với frame hiện tại. Giá trị cao hơn cho sương mù thể tích mượt hơn, nhưng làm hiện tượng &quot;bóng ma&quot; tệ hơn nhiều. Giá trị thấp hơn giảm ghosting nhưng có thể khiến hiện tượng rung (jitter) theo thời gian giữa các frame lộ ra.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khác với sương mù không thể tích, sương mù thể tích có phạm vi <em>hữu hạn</em>. Điều này có nghĩa là sương mù thể tích không thể bao phủ hoàn toàn một thế giới rộng lớn, vì đến một khoảng cách nào đó nó sẽ ngừng được kết xuất.</p>
+<p>Nếu bạn muốn che các khu vực ở xa khỏi tầm nhìn của người chơi, nên bật cả sương mù không thể tích lẫn sương mù thể tích cùng lúc và điều chỉnh mật độ của chúng cho phù hợp.</p>
+</div>
+</section>
+<section id="light-interaction-with-volumetric-fog">
+<h2>Tương tác của ánh sáng với sương mù thể tích<a class="headerlink" href="#light-interaction-with-volumetric-fog" title="Link to this heading"></a></h2>
+<p>Để mô phỏng hành vi tán xạ ánh sáng của sương mù ngoài đời thực, mọi loại đèn đều sẽ tương tác với sương mù thể tích. Mức độ mỗi đèn ảnh hưởng đến sương mù thể tích có thể được điều chỉnh bằng thuộc tính <strong>Volumetric Fog Energy</strong> trên từng đèn. Bật bóng đổ trên một đèn cũng sẽ làm các bóng đổ đó hiển thị trên sương mù thể tích.</p>
+<p>Nếu không muốn sương mù tương tác với ánh sáng vì lý do nghệ thuật, bạn có thể tắt điều này trên toàn cục bằng cách đặt <strong>Volumetric Fog &gt; Albedo</strong> thành màu đen tuyệt đối trong resource Environment. Bạn cũng có thể tắt tương tác ánh sáng với sương mù cho từng đèn cụ thể bằng cách đặt <strong>Volumetric Fog Energy</strong> của nó thành <code class="docutils literal notranslate"><span class="pre">0</span></code>. Làm vậy cũng giúp cải thiện hiệu năng đôi chút vì loại đèn đó khỏi các phép tính sương mù thể tích.</p>
+</section>
+<section id="using-volumetric-fog-as-a-volumetric-lighting-solution">
+<h2>Dùng sương mù thể tích làm giải pháp chiếu sáng thể tích<a class="headerlink" href="#using-volumetric-fog-as-a-volumetric-lighting-solution" title="Link to this heading"></a></h2>
+<p>Tuy không chính xác về mặt vật lý, bạn có thể tinh chỉnh cài đặt sương mù thể tích để hoạt động như một giải pháp <em>chiếu sáng</em> thể tích. Điều này có nghĩa là những phần không được chiếu sáng của môi trường sẽ không còn bị sương mù làm tối đi, nhưng ánh sáng vẫn có thể làm sương mù sáng hơn ở những khu vực cụ thể.</p>
+<p>Có thể làm điều này bằng cách đặt mật độ sương mù thể tích thành giá trị thấp nhất cho phép <em>lớn hơn không</em> (<code class="docutils literal notranslate"><span class="pre">0.0001</span></code>), rồi tăng thuộc tính <strong>Volumetric Fog Energy</strong> trên các đèn lên cao hơn nhiều so với mặc định để bù lại. Các giá trị từ <code class="docutils literal notranslate"><span class="pre">200.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">5000.0</span></code> thường hoạt động tốt cho trường hợp này.</p>
+<img alt="../../_images/volumetric_fog_lighting.png" src="../../_images/volumetric_fog_lighting.png" />
+</section>
+<section id="balancing-performance-and-quality">
+<h2>Cân bằng giữa hiệu năng và chất lượng<a class="headerlink" href="#balancing-performance-and-quality" title="Link to this heading"></a></h2>
+<p>Có một số cài đặt dự án để điều chỉnh hiệu năng và chất lượng của sương mù thể tích:</p>
+<ul class="simple">
+<li><p><strong>Rendering &gt; Environment &gt; Volumetric Fog &gt; Volume Size:</strong> Kích thước cơ sở dùng để xác định kích thước bộ đệm froxel theo trục X và trục Y của camera. Kích thước cuối cùng được điều chỉnh theo tỷ lệ khung hình của màn hình, nên giá trị thực tế có thể khác giá trị đã đặt. Đặt kích thước lớn hơn để sương mù chi tiết hơn, đặt kích thước nhỏ hơn để có hiệu năng tốt hơn.</p></li>
+<li><p><strong>Rendering &gt; Environment &gt; Volumetric Fog &gt; Volume Depth:</strong> Số lát cắt dùng dọc theo chiều sâu của bộ đệm froxel cho sương mù thể tích. Số thấp hơn sẽ hiệu quả hơn, nhưng có thể gây ra lỗi hình ảnh (artifact) khi camera di chuyển.</p></li>
+<li><p><strong>Rendering &gt; Environment &gt; Volumetric Fog &gt; Use Filter:</strong> Bật lọc hiệu ứng sương mù thể tích trước bước tích hợp. Việc này làm sương mù mờ đi đáng kể, làm giảm các chi tiết nhỏ, nhưng cũng làm mượt các cạnh gắt và lỗi răng cưa. Hãy tắt khi cần nhiều chi tiết hơn.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Sương mù thể tích có thể gây ra hiện tượng phân dải màu (banding) trên viewport, đặc biệt ở mức mật độ cao. Xem <a class="reference internal" href="3d_rendering_limitations.html#doc-3d-rendering-limitations-color-banding"><span class="std std-ref">Hiện tượng phân dải màu (color banding)</span></a> để biết cách giảm banding.</p>
+</div>
+</section>
+<section id="using-fog-volumes-for-local-volumetric-fog">
+<h2>Dùng fog volume cho sương mù thể tích cục bộ<a class="headerlink" href="#using-fog-volumes-for-local-volumetric-fog" title="Link to this heading"></a></h2>
+<p>Đôi khi bạn muốn sương mù chỉ giới hạn trong những khu vực cụ thể. Ngược lại, bạn có thể muốn có sương mù thể tích toàn cục nhưng loại trừ sương mù khỏi một số khu vực. Cả hai cách đều có thể thực hiện bằng các node FogVolume.</p>
+<p>Dưới đây là hướng dẫn nhanh để dùng FogVolume:</p>
+<ul class="simple">
+<li><p>Đảm bảo <strong>Volumetric Fog</strong> đã được bật trong các thuộc tính Environment. Nếu không muốn có sương mù thể tích toàn cục, hãy đặt <strong>Density</strong> của nó thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p></li>
+<li><p>Tạo một node FogVolume.</p></li>
+<li><p>Gán một FogMaterial mới cho thuộc tính <strong>Material</strong> của node FogVolume.</p></li>
+<li><p>Trong FogMaterial, đặt <strong>Density</strong> thành giá trị dương để tăng mật độ bên trong FogVolume, hoặc giá trị âm để trừ bớt mật độ khỏi sương mù thể tích toàn cục.</p></li>
+<li><p>Cấu hình kích thước (extents) và hình dạng của FogVolume theo nhu cầu.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các fog volume mỏng có thể bị nhấp nháy khi camera di chuyển hoặc xoay. Có thể giảm hiện tượng này bằng cách tăng cài đặt dự án <strong>Rendering &gt; Environment &gt; Volumetric Fog &gt; Volume Depth</strong> (đánh đổi hiệu năng) hoặc giảm <strong>Length</strong> trong các thuộc tính sương mù thể tích của Environment (không tốn hiệu năng, nhưng phải chịu phạm vi sương mù ngắn hơn). Ngoài ra, bạn có thể làm FogVolume dày hơn và dùng mật độ thấp hơn trong <strong>Material</strong>.</p>
+</div>
+</section>
+<section id="fogvolume-properties">
+<h2>Các thuộc tính của FogVolume<a class="headerlink" href="#fogvolume-properties" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Extents:</strong> Kích thước của FogVolume khi <strong>Shape</strong> là <strong>Ellipsoid</strong>, <strong>Cone</strong>, <strong>Cylinder</strong> hoặc <strong>Box</strong>. Nếu <strong>Shape</strong> là <strong>Cone</strong> hoặc <strong>Cylinder</strong>, hình nón/hình trụ sẽ được điều chỉnh để nằm vừa trong extents. Việc co giãn không đồng đều hình nón/hình trụ qua thuộc tính <strong>Extents</strong> không được hỗ trợ, nhưng bạn có thể co giãn node FogVolume thay thế.</p></li>
+<li><p><strong>Shape:</strong> Hình dạng của FogVolume. Có thể đặt thành <strong>Ellipsoid</strong>, <strong>Cone</strong>, <strong>Cylinder</strong>, <strong>Box</strong> hoặc <strong>World</strong> (hoạt động như sương mù thể tích toàn cục).</p></li>
+<li><p><strong>Material:</strong> Material được FogVolume sử dụng. Có thể là FogMaterial tích hợp sẵn hoặc một ShaderMaterial tùy chỉnh (<a class="reference internal" href="../shaders/shader_reference/fog_shader.html#doc-fog-shader"><span class="std std-ref">Fog shader</span></a>).</p></li>
+</ul>
+<p>Sau khi chọn <strong>New FogMaterial</strong> trong thuộc tính <strong>Material</strong>, bạn có thể điều chỉnh các thuộc tính sau trong FogMaterial:</p>
+<ul class="simple">
+<li><p><strong>Density:</strong> Mật độ của FogVolume. Đối tượng đặc hơn sẽ đục hơn, nhưng có thể gặp lỗi hình ảnh do lấy mẫu thiếu (under-sampling) trông giống các vệt sọc. Có thể dùng giá trị âm để trừ bớt sương mù khỏi các FogVolume khác hoặc sương mù thể tích toàn cục.</p></li>
+<li><p><strong>Albedo:</strong> Color tán xạ đơn của FogVolume. Bên trong, albedo của thành viên được chuyển đổi thành tán xạ đơn, rồi được trộn cộng (additive) với các FogVolume khác và <strong>Albedo</strong> của sương mù thể tích toàn cục.</p></li>
+<li><p><strong>Emission:</strong> Color của ánh sáng do FogVolume phát ra. Ánh sáng phát ra sẽ không chiếu sáng hay đổ bóng lên các đối tượng khác, nhưng có thể hữu ích để điều chỉnh Color của FogVolume độc lập với các nguồn sáng.</p></li>
+<li><p><strong>Height Falloff:</strong> Tốc độ giảm mật độ của sương mù theo độ cao khi độ cao tăng trong không gian thế giới. Falloff cao sẽ tạo chuyển tiếp đột ngột, còn falloff thấp sẽ tạo chuyển tiếp mượt hơn. Giá trị <code class="docutils literal notranslate"><span class="pre">0.0</span></code> cho sương mù có mật độ đồng đều. Ngưỡng độ cao được xác định bởi độ cao của FogVolume tương ứng.</p></li>
+<li><p><strong>Edge Fade:</strong> Độ cứng của các cạnh FogVolume. Giá trị cao hơn sẽ cho cạnh mềm hơn, còn giá trị thấp hơn sẽ cho cạnh cứng hơn.</p></li>
+<li><p><strong>Density Texture:</strong> Texture 3D dùng để điều chỉnh mật độ thành viên của FogVolume. Có thể dùng để thay đổi mật độ sương mù bên trong FogVolume theo bất kỳ họa tiết tĩnh nào. Với các hiệu ứng động, hãy cân nhắc dùng <a class="reference internal" href="../shaders/shader_reference/fog_shader.html#doc-fog-shader"><span class="std std-ref">fog shader</span></a> tùy chỉnh. Bạn có thể import bất kỳ ảnh nào thành texture 3D bằng cách <a class="reference internal" href="../assets_pipeline/importing_images.html#doc-importing-images-changing-import-type"><span class="std std-ref">thay đổi kiểu import của nó trong Import dock</span></a>.</p></li>
+</ul>
+<section id="using-3d-noise-density-textures">
+<h3>Dùng texture mật độ nhiễu 3D<a class="headerlink" href="#using-3d-noise-density-textures" title="Link to this heading"></a></h3>
+<p>Từ Godot 4.1, có resource NoiseTexture3D có thể dùng để tạo nhiễu 3D theo thủ tục (procedural). Resource này rất phù hợp làm texture mật độ cho FogMaterial, giúp tạo hiệu ứng sương mù chi tiết hơn:</p>
+<figure class="align-default" id="id1">
+<img alt="So sánh FogMaterial (không có và có texture mật độ)" src="../../_images/volumetric_fog_fog_material_density_texture.webp" />
+<figcaption>
+<p><span class="caption-text">Ảnh chụp màn hình được chụp với cài đặt dự án <strong>Volume Size</strong> đặt thành 192 để chi tiết tần số cao trong sương mù hiện rõ hơn.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Để làm vậy, chọn thuộc tính <strong>Density Texture</strong> và chọn <strong>New NoiseTexture3D</strong>. Chỉnh sửa NoiseTexture3D này bằng cách nhấp vào nó, sau đó nhấp <strong>Noise</strong> ở cuối danh sách thuộc tính NoiseTexture3D và chọn <strong>New FastNoiseLite</strong>. Điều chỉnh chiều rộng, chiều cao và chiều sâu của texture nhiễu theo kích thước fog volume của bạn.</p>
+<p>Để cải thiện hiệu năng, nên dùng kích thước texture nhỏ (64×64×64 hoặc nhỏ hơn), vì chi tiết tần số cao rất khó nhận thấy trong FogVolume. Nếu muốn thể hiện các biến thiên mật độ chi tiết hơn, bạn sẽ cần tăng <strong>Rendering &gt; Environment &gt; Volumetric Fog &gt; Volume Size</strong> trong cài đặt dự án, điều này tốn hiệu năng.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><strong>Color Ramp</strong> của NoiseTexture3D có ảnh hưởng đến texture mật độ của FogMaterial, nhưng vì chỉ kênh đỏ của texture được lấy mẫu, nên chỉ kênh đỏ của color ramp mới ảnh hưởng đến mật độ kết quả.</p>
+<p>Tuy nhiên, dùng color ramp sẽ <em>không</em> nhuộm màu fog volume theo texture. Để làm được điều này, bạn cần dùng một shader tùy chỉnh đọc Texture3D.</p>
+</div>
+</section>
+</section>
+<section id="custom-fogvolume-shaders">
+<h2>Shader FogVolume tùy chỉnh<a class="headerlink" href="#custom-fogvolume-shaders" title="Link to this heading"></a></h2>
+<p>Trang này chỉ đề cập đến các cài đặt tích hợp sẵn của FogMaterial. Nếu bạn cần tùy biến hành vi sương mù bên trong một node FogVolume (chẳng hạn tạo sương mù chuyển động), giao diện của các node FogVolume có thể được tùy biến bằng <a class="reference internal" href="../shaders/shader_reference/fog_shader.html#doc-fog-shader"><span class="std std-ref">Fog shader</span></a>.</p>
+</section>
+<section id="faking-volumetric-fog-using-quads">
+<h2>Giả lập sương mù thể tích bằng quad<a class="headerlink" href="#faking-volumetric-fog-using-quads" title="Link to this heading"></a></h2>
+<p>Trong một số trường hợp, dùng các QuadMesh được cấu hình đặc biệt có thể là lựa chọn thay thế tốt hơn cho sương mù thể tích:</p>
+<ul class="simple">
+<li><p>Quad hoạt động với mọi phương thức kết xuất, kể cả Mobile và Compatibility.</p></li>
+<li><p>Quad không cần temporal reprojection để trông mượt mà, nên chúng phù hợp với các hiệu ứng động di chuyển nhanh như tia laser. Chúng cũng có thể thể hiện những chi tiết nhỏ mà sương mù thể tích không thể xử lý hiệu quả.</p></li>
+<li><p>Quad thường có chi phí hiệu năng thấp hơn sương mù thể tích.</p></li>
+</ul>
+<p>Tuy nhiên, cách tiếp cận này có một vài nhược điểm:</p>
+<ul class="simple">
+<li><p>Hiệu ứng sương mù có độ suy giảm kém chân thực hơn, đặc biệt khi camera đi vào trong sương mù.</p></li>
+<li><p>Có thể xảy ra vấn đề sắp xếp độ trong suốt khi các sprite chồng lên nhau.</p></li>
+<li><p>Hiệu năng chưa chắc đã tốt hơn sương mù thể tích nếu có nhiều sprite ở gần camera.</p></li>
+</ul>
+<p>Để tạo một sprite sương mù dựa trên QuadMesh:</p>
+<ol class="arabic">
+<li><p>Tạo một node MeshInstance3D với resource QuadMesh trong thuộc tính <strong>Mesh</strong>. Đặt kích thước theo ý muốn.</p></li>
+<li><p>Tạo một StandardMaterial3D mới trong thuộc tính <strong>Material</strong> của mesh.</p></li>
+<li><p>Trong StandardMaterial3D, đặt <strong>Shading &gt; Shading Mode</strong> thành <strong>Unshaded</strong>, <strong>Billboard &gt; Mode</strong> thành <strong>Enabled</strong>, bật <strong>Proximity Fade</strong> và đặt <strong>Distance Fade</strong> thành <strong>Pixel Alpha</strong>.</p></li>
+<li><p>Đặt <strong>Albedo &gt; Texture</strong> thành texture bên dưới (nhấp chuột phải và chọn <strong>Save as…</strong>):</p>
+<img alt="../../_images/volumetric_fog_quad_mesh_texture.webp" src="../../_images/volumetric_fog_quad_mesh_texture.webp" />
+</li>
+<li><p><em>Sau khi</em> đặt texture albedo, vào Import dock, chọn texture và đổi chế độ nén của nó thành <strong>Lossless</strong> để cải thiện chất lượng.</p></li>
+</ol>
+<p>Màu của sương mù được đặt bằng thuộc tính <strong>Albedo &gt; Color</strong>; mật độ của nó được đặt bằng kênh alpha của màu đó. Để có kết quả tốt nhất, bạn sẽ phải điều chỉnh <strong>Proximity Fade &gt; Distance</strong> và <strong>Distance Fade &gt; Max Distance</strong> tùy theo kích thước QuadMesh của bạn.</p>
+<p>Tùy chọn, có thể để tắt billboarding nếu bạn đặt quad sao cho tất cả các góc của nó đều nằm trong hình khối đặc. Điều này hữu ích để phủ sương mù lên các mặt phẳng lớn mà camera không thể đi vào, chẳng hạn như các hố sâu không đáy.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="environment_and_post_processing.html" class="btn btn-neutral float-left" title="Môi trường và hậu xử lý" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="3d_antialiasing.html" class="btn btn-neutral float-right" title="Khử răng cưa 3D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

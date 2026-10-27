@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Transform của viewport và canvas" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/2d/2d_transforms.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Đây là tổng quan về các transform 2D diễn ra với node từ lúc chúng vẽ nội dung cục bộ cho đến khi được vẽ lên màn hình. Phần tổng quan này đề cập đến các chi tiết rất cấp thấp của engin..." />
+<meta name="description" content="Giới thiệu: Đây là tổng quan về các transform 2D diễn ra với node từ lúc chúng vẽ nội dung cục bộ cho đến khi được vẽ lên màn hình. Phần tổng quan này đề cập đến các chi tiết rất cấp thấp của engin..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Transform của viewport và canvas &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Ánh sáng và bóng đổ 2D" href="2d_lights_and_shadows.html" />
+    <link rel="prev" title="Canvas layer" href="canvas_layers.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/2d/2d_transforms" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_2d.html">Giới thiệu về 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_layers.html">Canvas layer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Transform của viewport và canvas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#canvas-transform">Canvas transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-canvas-transform">Global canvas transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stretch-transform">Stretch transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#window-transform">Biến đổi cửa sổ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transform-order">Thứ tự transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transform-functions">Các hàm transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#feeding-custom-input-events">Đưa vào sự kiện input tùy chỉnh</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#physics-and-movement">Vật lý và chuyển động</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">2D</a></li>
+      <li class="breadcrumb-item active">Transform của viewport và canvas</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="viewport-and-canvas-transforms">
+<span id="doc-viewport-and-canvas-transforms"></span><h1>Transform của viewport và canvas<a class="headerlink" href="#viewport-and-canvas-transforms" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Đây là tổng quan về các transform 2D diễn ra với node từ lúc chúng vẽ nội dung cục bộ cho đến khi được vẽ lên màn hình. Phần tổng quan này đề cập đến các chi tiết rất cấp thấp của engine.</p>
+<p>Mục tiêu của bài hướng dẫn này là chỉ cách đưa sự kiện input vào Input với vị trí nằm trong đúng hệ tọa độ.</p>
+<p>Mô tả đầy đủ hơn về tất cả hệ tọa độ và transform 2D có tại <a class="reference internal" href="../../engine_details/architecture/2d_coordinate_systems.html#doc-2d-coordinate-systems"><span class="std std-ref">Hệ tọa độ 2D và phép biến đổi 2D</span></a>.</p>
+</section>
+<section id="canvas-transform">
+<h2>Canvas transform<a class="headerlink" href="#canvas-transform" title="Link to this heading"></a></h2>
+<p>Như đã đề cập trong bài hướng dẫn trước, <a class="reference internal" href="canvas_layers.html#doc-canvas-layers"><span class="std std-ref">Canvas layer</span></a>, mọi node CanvasItem (hãy nhớ rằng các node dựa trên Node2D và Control dùng CanvasItem làm gốc chung) sẽ nằm trong một <em>Canvas Layer</em>. Mỗi canvas layer có một transform (tịnh tiến, xoay, scale, v.v.) có thể truy cập dưới dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">Transform2D</span></a>.</p>
+<p>Cũng như đã nói trong bài hướng dẫn trước, mặc định node được vẽ ở Layer 0, trong canvas tích hợp sẵn. Để đặt node vào một layer khác, có thể dùng node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvaslayer.html" title="Class reference (English)"><span class="xref std std-ref">CanvasLayer</span></a>.</p>
+</section>
+<section id="global-canvas-transform">
+<h2>Global canvas transform<a class="headerlink" href="#global-canvas-transform" title="Link to this heading"></a></h2>
+<p>Viewport cũng có một Global Canvas transform (cũng là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">Transform2D</span></a>). Đây là transform chủ, ảnh hưởng đến tất cả transform của từng <em>Canvas Layer</em>. Thông thường, nó chủ yếu được dùng trong CanvasItem Editor của Godot.</p>
+</section>
+<section id="stretch-transform">
+<h2>Stretch transform<a class="headerlink" href="#stretch-transform" title="Link to this heading"></a></h2>
+<p>Cuối cùng, viewport có một <em>Stretch Transform</em>, được dùng khi thay đổi kích thước hoặc kéo giãn màn hình. Transform này được dùng nội bộ (như mô tả trong <a class="reference internal" href="../rendering/multiple_resolutions.html#doc-multiple-resolutions"><span class="std std-ref">Đa độ phân giải</span></a>), nhưng cũng có thể đặt thủ công trên từng viewport.</p>
+<p>Sự kiện input được nhân với transform này, nhưng không có các transform ở trên. Để chuyển tọa độ InputEvent sang tọa độ cục bộ của CanvasItem, hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-make-input-local" title="Class reference (English)"><span class="xref std std-ref">CanvasItem.make_input_local()</span></a> đã được thêm vào cho tiện.</p>
+</section>
+<section id="window-transform">
+<h2>Biến đổi cửa sổ<a class="headerlink" href="#window-transform" title="Link to this heading"></a></h2>
+<p>Viewport gốc là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html" title="Class reference (English)"><span class="xref std std-ref">Window</span></a>. Để scale và định vị nội dung của <em>Window</em> như mô tả trong <a class="reference internal" href="../rendering/multiple_resolutions.html#doc-multiple-resolutions"><span class="std std-ref">Đa độ phân giải</span></a>, mỗi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_window.html" title="Class reference (English)"><span class="xref std std-ref">Window</span></a> chứa một <em>window transform</em>. Ví dụ, nó chịu trách nhiệm cho các dải đen ở hai bên <em>Window</em> để <em>Viewport</em> được hiển thị với tỷ lệ khung hình cố định.</p>
+</section>
+<section id="transform-order">
+<h2>Thứ tự transform<a class="headerlink" href="#transform-order" title="Link to this heading"></a></h2>
+<p>Để chuyển tọa độ cục bộ của CanvasItem sang tọa độ màn hình thực, phải áp dụng chuỗi transform sau:</p>
+<img alt="../../_images/viewport_transforms3.webp" src="../../_images/viewport_transforms3.webp" />
+</section>
+<section id="transform-functions">
+<h2>Các hàm transform<a class="headerlink" href="#transform-functions" title="Link to this heading"></a></h2>
+<p>Hình trên cho thấy một số hàm transform có sẵn. Tất cả transform đều có hướng từ phải sang trái, nghĩa là nhân một transform với một tọa độ sẽ cho ra hệ tọa độ nằm xa hơn về bên trái, còn nhân <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html#class-transform2d-method-affine-inverse" title="Class reference (English)"><span class="xref std std-ref">nghịch đảo affine</span></a> của một transform sẽ cho ra hệ tọa độ nằm xa hơn về bên phải:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Called from a CanvasItem.</span>
+<span class="n">canvas_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_global_transform</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">local_pos</span>
+<span class="n">local_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_global_transform</span><span class="p">()</span><span class="o">.</span><span class="nf">affine_inverse</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">canvas_pos</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Called from a CanvasItem.</span>
+<span class="n">canvasPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetGlobalTransform</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">localPos</span><span class="p">;</span>
+<span class="n">localPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetGlobalTransform</span><span class="p">().</span><span class="n">AffineInverse</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">canvasPos</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cuối cùng, để chuyển tọa độ cục bộ của CanvasItem sang tọa độ màn hình, chỉ cần nhân theo thứ tự sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">screen_coord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_viewport</span><span class="p">()</span><span class="o">.</span><span class="nf">get_screen_transform</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">get_global_transform_with_canvas</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">local_pos</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">screenCoord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewport</span><span class="p">().</span><span class="n">GetScreenTransform</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GetGlobalTransformWithCanvas</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">localPos</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tuy nhiên, hãy nhớ rằng thường không nên làm việc với tọa độ màn hình. Cách được khuyến nghị là chỉ làm việc trong tọa độ Canvas (<code class="docutils literal notranslate"><span class="pre">CanvasItem.get_global_transform()</span></code>), để tính năng tự động thay đổi kích thước theo độ phân giải màn hình hoạt động đúng.</p>
+</section>
+<section id="feeding-custom-input-events">
+<h2>Đưa vào sự kiện input tùy chỉnh<a class="headerlink" href="#feeding-custom-input-events" title="Link to this heading"></a></h2>
+<p>Thường bạn sẽ muốn đưa sự kiện input tùy chỉnh vào game. Với kiến thức ở trên, để làm đúng việc này trong cửa sổ đang được focus, cần thực hiện như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">local_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="c1"># Local to Control/Node2D.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">ie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">InputEventMouseButton</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">ie</span><span class="o">.</span><span class="vi">button_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MOUSE_BUTTON_LEFT</span>
+<span class="n">ie</span><span class="o">.</span><span class="vi">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_viewport</span><span class="p">()</span><span class="o">.</span><span class="nf">get_screen_transform</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">get_global_transform_with_canvas</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">local_pos</span>
+<span class="nb">Input</span><span class="o">.</span><span class="nf">parse_input_event</span><span class="p">(</span><span class="n">ie</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">localPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span><span class="w"> </span><span class="c1">// Local to Control/Node2D.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">ie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InputEventMouseButton</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ButtonIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MouseButton</span><span class="p">.</span><span class="n">Left</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewport</span><span class="p">().</span><span class="n">GetScreenTransform</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GetGlobalTransformWithCanvas</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">localPos</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="n">Input</span><span class="p">.</span><span class="n">ParseInputEvent</span><span class="p">(</span><span class="n">ie</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="canvas_layers.html" class="btn btn-neutral float-left" title="Canvas layer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="2d_lights_and_shadows.html" class="btn btn-neutral float-right" title="Ánh sáng và bóng đổ 2D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

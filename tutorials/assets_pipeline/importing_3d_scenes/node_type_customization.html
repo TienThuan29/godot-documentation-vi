@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tùy chỉnh kiểu node bằng hậu tố tên" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/assets_pipeline/importing_3d_scenes/node_type_customization.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Nhiều khi, lúc chỉnh sửa một scene, có những tác vụ phổ biến cần thực hiện sau khi xuất: Thêm phát hiện va chạm cho các đối tượng., Đặt đối tượng làm navigation mesh., Xóa các node không dùng trong..." />
+<meta name="description" content="Nhiều khi, lúc chỉnh sửa một scene, có những tác vụ phổ biến cần thực hiện sau khi xuất: Thêm phát hiện va chạm cho các đối tượng., Đặt đối tượng làm navigation mesh., Xóa các node không dùng trong..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tùy chỉnh kiểu node bằng hậu tố tên &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Cấu hình import" href="import_configuration.html" />
+    <link rel="prev" title="Lưu ý khi xuất model" href="model_export_considerations.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/assets_pipeline/importing_3d_scenes/node_type_customization" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Quy trình asset</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../import_process.html">Quy trình import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../importing_images.html">Import hình ảnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../importing_audio_samples.html">Import mẫu âm thanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../importing_translations.html">Import bản dịch</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Import scene 3D</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="available_formats.html">Các định dạng 3D có sẵn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_export_considerations.html">Lưu ý khi xuất model</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tùy chỉnh kiểu node bằng hậu tố tên</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#opting-out">Không sử dụng tính năng này</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remove-nodes-and-animations-noimp">Xóa node và hoạt ảnh (-noimp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-collisions-col-convcol-colonly-convcolonly">Tạo va chạm (-col, -convcol, -colonly, -convcolonly)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-occluder-occ-occonly">Tạo Occluder (-occ, -occonly)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-navigation-navmesh">Tạo navigation (-navmesh)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-a-vehiclebody-vehicle">Tạo VehicleBody (-vehicle)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-a-vehiclewheel-wheel">Tạo VehicleWheel (-wheel)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rigid-body-rigid">Rigid Body (-rigid)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#animation-loop-loop-cycle">Lặp hoạt ảnh (-loop, -cycle)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#material-alpha-alpha">Alpha của material (-alpha)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#material-vertex-color-vcol">Màu đỉnh của material (-vcol)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="import_configuration.html">Cấu hình import</a></li>
+<li class="toctree-l3"><a class="reference internal" href="advanced_import_settings.html">Cài đặt import nâng cao</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../retargeting_3d_skeletons.html">Retarget bộ xương 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exporting_3d_scenes.html">Xuất scene 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../escn_exporter/index.html">Trình xuất ESCN cho Blender</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Quy trình asset</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Import scene 3D</a></li>
+      <li class="breadcrumb-item active">Tùy chỉnh kiểu node bằng hậu tố tên</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="node-type-customization-using-name-suffixes">
+<span id="doc-importing-3d-scenes-node-type-customization"></span><h1>Tùy chỉnh kiểu node bằng hậu tố tên<a class="headerlink" href="#node-type-customization-using-name-suffixes" title="Link to this heading"></a></h1>
+<p>Nhiều khi, lúc chỉnh sửa một scene, có những tác vụ phổ biến cần thực hiện sau khi xuất:</p>
+<ul class="simple">
+<li><p>Thêm phát hiện va chạm cho các đối tượng.</p></li>
+<li><p>Đặt đối tượng làm navigation mesh.</p></li>
+<li><p>Xóa các node không dùng trong game engine (như các nguồn sáng riêng dùng cho việc mô hình hóa).</p></li>
+</ul>
+<p>Để đơn giản hóa quy trình này, Godot cung cấp một số hậu tố có thể thêm vào tên đối tượng trong phần mềm mô hình hóa 3D của bạn. Khi import, Godot sẽ phát hiện hậu tố trong tên đối tượng và tự động thực hiện các hành động tương ứng.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Tất cả hậu tố mô tả dưới đây có thể dùng với <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">$</span></code> và <code class="docutils literal notranslate"><span class="pre">_</span></code>, và <strong>không phân biệt chữ hoa chữ thường</strong>.</p>
+</div>
+<section id="opting-out">
+<h2>Không sử dụng tính năng này<a class="headerlink" href="#opting-out" title="Link to this heading"></a></h2>
+<p>Nếu bạn không muốn Godot thực hiện bất kỳ hành động nào mô tả dưới đây, bạn có thể đặt tùy chọn import <code class="docutils literal notranslate"><span class="pre">nodes/use_node_type_suffixes</span></code> thành <code class="docutils literal notranslate"><span class="pre">false</span></code>. Điều này sẽ tắt mọi hậu tố kiểu node, giữ nguyên kiểu node như tệp gốc chỉ định. Tuy nhiên, hậu tố <code class="docutils literal notranslate"><span class="pre">-noimp</span></code> vẫn được áp dụng, cũng như các hậu tố không liên quan đến node như <code class="docutils literal notranslate"><span class="pre">-vcol</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">-loop</span></code>.</p>
+<p>Ngoài ra, bạn có thể hoàn toàn không dùng mọi hậu tố tên bằng cách đặt tùy chọn import <code class="docutils literal notranslate"><span class="pre">nodes/use_name_suffixes</span></code> thành <code class="docutils literal notranslate"><span class="pre">false</span></code>. Điều này sẽ khiến mã import scene chung hoàn toàn không xét đến hậu tố tên. Tuy nhiên, mã import dành riêng cho từng định dạng vẫn có thể xét hậu tố tên, chẳng hạn trình import glTF kiểm tra hậu tố <code class="docutils literal notranslate"><span class="pre">-loop</span></code>.</p>
+<p>Tắt các tùy chọn này giúp tệp được import bởi trình chỉnh sửa giống tệp gốc hơn, và giống hơn với việc import tệp lúc chạy. Để có quy trình import hoạt động lúc chạy, cho kết quả dễ đoán hơn và chỉ có hành vi được định nghĩa tường minh, hãy cân nhắc đặt các tùy chọn này thành <code class="docutils literal notranslate"><span class="pre">false</span></code> và dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gltfdocumentextension.html" title="Class reference (English)"><span class="xref std std-ref">class_GLTFDocumentExtension</span></a> thay thế.</p>
+</section>
+<section id="remove-nodes-and-animations-noimp">
+<h2>Xóa node và hoạt ảnh (-noimp)<a class="headerlink" href="#remove-nodes-and-animations-noimp" title="Link to this heading"></a></h2>
+<p>Các node và hoạt ảnh có hậu tố <code class="docutils literal notranslate"><span class="pre">-noimp</span></code> sẽ bị xóa khi import bất kể kiểu của chúng là gì. Chúng sẽ không xuất hiện trong scene đã import.</p>
+<p>Điều này tương đương với việc bật <strong>Skip Import</strong> cho một node trong hộp thoại Advanced Import Settings.</p>
+</section>
+<section id="create-collisions-col-convcol-colonly-convcolonly">
+<h2>Tạo va chạm (-col, -convcol, -colonly, -convcolonly)<a class="headerlink" href="#create-collisions-col-convcol-colonly-convcolonly" title="Link to this heading"></a></h2>
+<p>Tùy chọn <code class="docutils literal notranslate"><span class="pre">-col</span></code> chỉ hoạt động với đối tượng Mesh. Nếu được phát hiện, một node va chạm tĩnh con sẽ được thêm vào, dùng cùng hình học với mesh. Điều này sẽ tạo một collision shape dạng lưới tam giác, là lựa chọn chậm nhưng chính xác cho việc phát hiện va chạm. Tùy chọn này thường là thứ bạn cần cho hình học của level (nhưng cũng xem <code class="docutils literal notranslate"><span class="pre">-colonly</span></code> bên dưới).</p>
+<p>Tùy chọn <code class="docutils literal notranslate"><span class="pre">-convcol</span></code> sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_convexpolygonshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_ConvexPolygonShape3D</span></a> thay vì <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_concavepolygonshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_ConcavePolygonShape3D</span></a>. Không giống lưới tam giác có thể lõm, một hình lồi chỉ có thể biểu diễn chính xác hình không có góc lõm nào (kim tự tháp là hình lồi, nhưng một chiếc hộp rỗng là hình lõm). Vì vậy, collision shape lồi nhìn chung không phù hợp cho hình học của level. Khi biểu diễn các mesh đủ đơn giản, collision shape lồi có thể cho hiệu năng tốt hơn so với collision shape tam giác. Tùy chọn này lý tưởng cho các đối tượng đơn giản hoặc động cần phát hiện va chạm tương đối chính xác.</p>
+<p>Tuy nhiên, trong cả hai trường hợp, hình học hiển thị có thể quá phức tạp hoặc không đủ mượt cho va chạm. Điều này có thể gây lỗi vật lý và làm chậm engine một cách không cần thiết.</p>
+<p>Để giải quyết vấn đề này, modifier <code class="docutils literal notranslate"><span class="pre">-colonly</span></code> ra đời. Nó sẽ xóa mesh khi import và tạo một va chạm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_StaticBody3D</span></a> thay thế. Điều này giúp tách biệt mesh hiển thị và va chạm thực tế.</p>
+<p>Tùy chọn <code class="docutils literal notranslate"><span class="pre">-convcolonly</span></code> hoạt động tương tự, nhưng sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_convexpolygonshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_ConvexPolygonShape3D</span></a> bằng cách phân rã lồi (convex decomposition).</p>
+<p>Với tệp Collada, tùy chọn <code class="docutils literal notranslate"><span class="pre">-colonly</span></code> cũng có thể dùng với các đối tượng empty của Blender. Khi import, nó sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_StaticBody3D</span></a> với một node va chạm làm con. Node va chạm sẽ có một trong số các hình được định nghĩa sẵn, tùy thuộc vào kiểu hiển thị (draw type) của empty trong Blender:</p>
+<figure class="align-center" id="id1">
+<img alt="Chọn kiểu hiển thị cho Empty khi tạo trong Blender" src="../../../_images/importing_3d_scenes_blender_empty_draw_types.webp" />
+<figcaption>
+<p><span class="caption-text">Chọn kiểu hiển thị cho Empty khi tạo trong Blender</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<ul class="simple">
+<li><p>Single arrow sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_separationrayshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_SeparationRayShape3D</span></a>.</p></li>
+<li><p>Cube sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_boxshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_BoxShape3D</span></a>.</p></li>
+<li><p>Image sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_worldboundaryshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_WorldBoundaryShape3D</span></a>.</p></li>
+<li><p>Sphere (và các kiểu khác không được liệt kê) sẽ tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sphereshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_SphereShape3D</span></a>.</p></li>
+</ul>
+<p>Khi có thể, <strong>hãy cố gắng dùng một vài collision shape nguyên thủy</strong> thay vì hình lưới tam giác hoặc hình lồi. Các hình nguyên thủy thường có hiệu năng và độ tin cậy tốt nhất.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để dễ nhìn hơn trong trình chỉnh sửa của Blender, bạn có thể bật tùy chọn &quot;X-Ray&quot; cho các empty va chạm và đặt cho chúng một màu riêng bằng cách thay đổi <strong>Edit &gt; Preferences &gt; Themes &gt; 3D Viewport &gt; Empty</strong>.</p>
+<p>Nếu dùng Blender 2.79 trở về trước, hãy làm theo các bước sau: <strong>User Preferences &gt; Themes &gt; 3D View &gt; Empty</strong>.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="../../physics/collision_shapes_3d.html#doc-collision-shapes-3d"><span class="std std-ref">Hình dạng va chạm (3D)</span></a> để có cái nhìn tổng quan đầy đủ về collision shape.</p>
+</div>
+</section>
+<section id="create-occluder-occ-occonly">
+<h2>Tạo Occluder (-occ, -occonly)<a class="headerlink" href="#create-occluder-occ-occonly" title="Link to this heading"></a></h2>
+<p>Nếu một mesh được import với hậu tố <code class="docutils literal notranslate"><span class="pre">-occ</span></code>, một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_occluder3d.html" title="Class reference (English)"><span class="xref std std-ref">class_occluder3D</span></a> sẽ được tạo dựa trên hình học của mesh, và nó không thay thế mesh. Một node mesh có hậu tố <code class="docutils literal notranslate"><span class="pre">-occonly</span></code> sẽ được chuyển thành <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_occluder3d.html" title="Class reference (English)"><span class="xref std std-ref">class_occluder3D</span></a> khi import.</p>
+</section>
+<section id="create-navigation-navmesh">
+<h2>Tạo navigation (-navmesh)<a class="headerlink" href="#create-navigation-navmesh" title="Link to this heading"></a></h2>
+<p>Một node mesh có hậu tố <code class="docutils literal notranslate"><span class="pre">-navmesh</span></code> sẽ được chuyển thành navigation mesh. Đối tượng Mesh gốc sẽ bị xóa khi import.</p>
+</section>
+<section id="create-a-vehiclebody-vehicle">
+<h2>Tạo VehicleBody (-vehicle)<a class="headerlink" href="#create-a-vehiclebody-vehicle" title="Link to this heading"></a></h2>
+<p>Một node mesh có hậu tố <code class="docutils literal notranslate"><span class="pre">-vehicle</span></code> sẽ được import làm con của một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vehiclebody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_VehicleBody3D</span></a>.</p>
+</section>
+<section id="create-a-vehiclewheel-wheel">
+<h2>Tạo VehicleWheel (-wheel)<a class="headerlink" href="#create-a-vehiclewheel-wheel" title="Link to this heading"></a></h2>
+<p>Một node mesh có hậu tố <code class="docutils literal notranslate"><span class="pre">-wheel</span></code> sẽ được import làm con của một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vehiclewheel3d.html" title="Class reference (English)"><span class="xref std std-ref">class_VehicleWheel3D</span></a>.</p>
+</section>
+<section id="rigid-body-rigid">
+<h2>Rigid Body (-rigid)<a class="headerlink" href="#rigid-body-rigid" title="Link to this heading"></a></h2>
+<p>Một node mesh có hậu tố <code class="docutils literal notranslate"><span class="pre">-rigid</span></code> sẽ được import thành một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rigidbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_RigidBody3D</span></a>.</p>
+</section>
+<section id="animation-loop-loop-cycle">
+<h2>Lặp hoạt ảnh (-loop, -cycle)<a class="headerlink" href="#animation-loop-loop-cycle" title="Link to this heading"></a></h2>
+<p>Các clip hoạt ảnh trong tệp 3D gốc bắt đầu hoặc kết thúc bằng từ khóa <code class="docutils literal notranslate"><span class="pre">loop</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">cycle</span></code> sẽ được import thành một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animation.html" title="Class reference (English)"><span class="xref std std-ref">class_Animation</span></a> của Godot với cờ lặp được bật. <strong>Không giống các hậu tố khác mô tả ở trên, hậu tố này không cần dấu gạch ngang.</strong></p>
+<p>Trong Blender, điều này yêu cầu dùng NLA Editor và đặt tên Action với tiền tố hoặc hậu tố <code class="docutils literal notranslate"><span class="pre">loop</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">cycle</span></code>.</p>
+</section>
+<section id="material-alpha-alpha">
+<h2>Alpha của material (-alpha)<a class="headerlink" href="#material-alpha-alpha" title="Link to this heading"></a></h2>
+<p>Một material có hậu tố <code class="docutils literal notranslate"><span class="pre">-alpha</span></code> sẽ được import với chế độ trong suốt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basematerial3d.html#class-basematerial3d-constant-transparency-alpha" title="Class reference (English)"><span class="xref std std-ref">TRANSPARENCY_ALPHA</span></a>.</p>
+</section>
+<section id="material-vertex-color-vcol">
+<h2>Màu đỉnh của material (-vcol)<a class="headerlink" href="#material-vertex-color-vcol" title="Link to this heading"></a></h2>
+<p>Một material có hậu tố <code class="docutils literal notranslate"><span class="pre">-vcol</span></code> sẽ được import với các cờ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basematerial3d.html#class-basematerial3d-constant-flag-albedo-from-vertex-color" title="Class reference (English)"><span class="xref std std-ref">FLAG_ALBEDO_FROM_VERTEX_COLOR</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basematerial3d.html#class-basematerial3d-constant-flag-srgb-vertex-color" title="Class reference (English)"><span class="xref std std-ref">FLAG_SRGB_VERTEX_COLOR</span></a> được bật.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model_export_considerations.html" class="btn btn-neutral float-left" title="Lưu ý khi xuất model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="import_configuration.html" class="btn btn-neutral float-right" title="Cấu hình import" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

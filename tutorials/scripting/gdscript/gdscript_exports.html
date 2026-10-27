@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Thuộc tính export trong GDScript" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/gdscript/gdscript_exports.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong Godot, các thành viên của lớp có thể được export. Điều này có nghĩa là giá trị của chúng được lưu cùng với resource (chẳng hạn scene) mà chúng gắn vào, và được truyền đi khi dùng RPC. Chúng c..." />
+<meta name="description" content="Trong Godot, các thành viên của lớp có thể được export. Điều này có nghĩa là giá trị của chúng được lưu cùng với resource (chẳng hạn scene) mà chúng gắn vào, và được truyền đi khi dùng RPC. Chúng c..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Thuộc tính export trong GDScript &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Comment tài liệu trong GDScript" href="gdscript_documentation_comments.html" />
+    <link rel="prev" title="GDScript: Giới thiệu về ngôn ngữ động" href="gdscript_advanced.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/gdscript/gdscript_exports" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">GDScript</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="gdscript_basics.html">Tham chiếu GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_advanced.html">GDScript: Giới thiệu về ngôn ngữ động</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Thuộc tính export trong GDScript</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-use">Cách dùng cơ bản</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grouping-exports">Nhóm các export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strings-as-paths">Chuỗi làm đường dẫn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strings-as-input-actions">String dưới dạng input action</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limiting-editor-input-ranges">Giới hạn khoảng giá trị nhập trong trình chỉnh sửa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-suffixes-and-handling-degrees-radians">Thêm hậu tố và xử lý độ/radian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linking-vector-values-together">Liên kết các giá trị vector với nhau</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#floats-with-easing-hint">Số thực với easing hint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#colors">Màu sắc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nodes">Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resources">Tài nguyên</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-bit-flags">Export bit flag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-enums">Export enum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-arrays">Export mảng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export-storage"><code class="docutils literal notranslate"><span class="pre">&#64;export_storage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export-custom"><code class="docutils literal notranslate"><span class="pre">&#64;export_custom</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export-tool-button"><code class="docutils literal notranslate"><span class="pre">&#64;export_tool_button</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-exported-variables-from-a-tool-script">Thiết lập biến được export từ tool script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reading-an-exported-variable-s-value-early-on">Đọc sớm giá trị của biến được export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#advanced-exports">Export nâng cao</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_documentation_comments.html">Comment tài liệu trong GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_styleguide.html">Hướng dẫn phong cách GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_typing.html">Kiểu tĩnh trong GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="warning_system.html">Hệ thống cảnh báo của GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_format_string.html">Chuỗi định dạng trong GDScript</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/index.html">C++ (godot-cpp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#core-features">Tính năng cốt lõi</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Lập trình script</a></li>
+          <li class="breadcrumb-item"><a href="index.html">GDScript</a></li>
+      <li class="breadcrumb-item active">Thuộc tính export trong GDScript</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="gdscript-exported-properties">
+<span id="doc-gdscript-exports"></span><h1>Thuộc tính export trong GDScript<a class="headerlink" href="#gdscript-exported-properties" title="Link to this heading"></a></h1>
+<p>Trong Godot, các thành viên của lớp có thể được export. Điều này có nghĩa là giá trị của chúng được lưu cùng với resource (chẳng hạn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedscene.html" title="Class reference (English)"><span class="xref std std-ref">scene</span></a>) mà chúng gắn vào, và được truyền đi khi dùng <a class="reference internal" href="../../networking/high_level_multiplayer.html#doc-high-level-multiplayer-rpcs"><span class="std std-ref">RPC</span></a>. Chúng cũng sẽ có thể chỉnh sửa trong trình chỉnh sửa thuộc tính. Việc export được thực hiện bằng annotation <code class="docutils literal notranslate"><span class="pre">&#64;export</span></code>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">number</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Trong ví dụ đó, giá trị <code class="docutils literal notranslate"><span class="pre">5</span></code> sẽ được lưu và hiển thị trong trình chỉnh sửa thuộc tính.</p>
+<p>Một biến được export phải được khởi tạo bằng một biểu thức hằng hoặc có chỉ định kiểu trong biến. Một số annotation export có kiểu cụ thể và không cần biến phải có kiểu (xem phần <em>Ví dụ</em> bên dưới).</p>
+<p>Một trong những lợi ích cơ bản của việc export biến thành viên là giúp chúng hiển thị và có thể chỉnh sửa trong trình chỉnh sửa. Bằng cách này, họa sĩ và game designer có thể thay đổi các giá trị ảnh hưởng đến cách chương trình chạy sau này. Để làm vậy, có một cú pháp export đặc biệt. Ngoài ra, có thể dùng <a class="reference internal" href="gdscript_documentation_comments.html#doc-gdscript-documentation-comments"><span class="std std-ref">comment tài liệu</span></a> để làm mô tả tooltip, hiển thị khi rê chuột qua.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Việc export thuộc tính cũng có thể thực hiện trong các ngôn ngữ khác như C#. Cú pháp khác nhau tùy theo ngôn ngữ. Xem <a class="reference internal" href="../c_sharp/c_sharp_exports.html#doc-c-sharp-exports"><span class="std std-ref">Thuộc tính export trong C#</span></a> để biết thông tin về export trong C#.</p>
+</div>
+<section id="basic-use">
+<h2>Cách dùng cơ bản<a class="headerlink" href="#basic-use" title="Link to this heading"></a></h2>
+<p>Nếu giá trị được export gán một hằng số hoặc biểu thức hằng, kiểu sẽ được suy ra và dùng trong trình chỉnh sửa.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Nếu không có giá trị mặc định, bạn có thể thêm kiểu cho biến.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">number</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span>
+</pre></div>
+</div>
+<p>Resource và node đều có thể được export.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">resource</span><span class="p">:</span><span class="w"> </span><span class="nb">Resource</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="nb">Node</span>
+</pre></div>
+</div>
+<p>Ngay cả khi script không được thực thi trong trình chỉnh sửa, các thuộc tính được export vẫn có thể chỉnh sửa. Tuy nhiên, getter và setter chỉ được dùng nếu script ở <a class="reference internal" href="gdscript_basics.html#doc-gdscript-tool-mode"><span class="std std-ref">Chế độ tool</span></a>.</p>
+</section>
+<section id="grouping-exports">
+<h2>Nhóm các export<a class="headerlink" href="#grouping-exports" title="Link to this heading"></a></h2>
+<p>Bạn có thể nhóm các thuộc tính được export trong Inspector bằng annotation <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-group" title="Class reference (English)"><span class="xref std std-ref">&#64;export_group</span></a>. Mọi thuộc tính được export sau annotation này sẽ được thêm vào nhóm. Hãy bắt đầu một nhóm mới hoặc dùng <code class="docutils literal notranslate"><span class="pre">&#64;export_group(&quot;&quot;)</span></code> để thoát khỏi nhóm.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_group</span><span class="p">(</span><span class="s2">&quot;My Properties&quot;</span><span class="p">)</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+</pre></div>
+</div>
+<p>Tham số thứ hai của annotation có thể dùng để chỉ nhóm các thuộc tính có tiền tố được chỉ định.</p>
+<p>Các nhóm không thể lồng nhau, hãy dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-subgroup" title="Class reference (English)"><span class="xref std std-ref">&#64;export_subgroup</span></a> để tạo nhóm con bên trong một nhóm.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_subgroup</span><span class="p">(</span><span class="s2">&quot;Extra Properties&quot;</span><span class="p">)</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+</pre></div>
+</div>
+<p>Bạn cũng có thể đổi tên danh mục chính, hoặc tạo thêm danh mục trong danh sách thuộc tính bằng annotation <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-category" title="Class reference (English)"><span class="xref std std-ref">&#64;export_category</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_category</span><span class="p">(</span><span class="s2">&quot;Main Category&quot;</span><span class="p">)</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+<span class="nd">@export_category</span><span class="p">(</span><span class="s2">&quot;Extra Category&quot;</span><span class="p">)</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Danh sách thuộc tính được sắp xếp dựa trên kế thừa lớp, và các danh mục mới sẽ phá vỡ kỳ vọng đó. Hãy dùng chúng cẩn thận, đặc biệt khi tạo dự án cho cộng đồng sử dụng.</p>
+</div>
+</section>
+<section id="strings-as-paths">
+<h2>Chuỗi làm đường dẫn<a class="headerlink" href="#strings-as-paths" title="Link to this heading"></a></h2>
+<p>String là đường dẫn đến một file. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-file" title="Class reference (English)"><span class="xref std std-ref">&#64;export_file</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_file</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">f</span>
+</pre></div>
+</div>
+<p>String là đường dẫn đến một thư mục. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-dir" title="Class reference (English)"><span class="xref std std-ref">&#64;export_dir</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_dir</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">f</span>
+</pre></div>
+</div>
+<p>String là đường dẫn đến một file, với bộ lọc tùy chỉnh được cung cấp làm gợi ý. Xem lại <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-file" title="Class reference (English)"><span class="xref std std-ref">&#64;export_file</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_file</span><span class="p">(</span><span class="s2">&quot;*.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">f</span>
+</pre></div>
+</div>
+<p>Cũng có thể dùng đường dẫn trong hệ thống file toàn cục, nhưng chỉ trong script ở chế độ tool.</p>
+<p>String là đường dẫn đến một file PNG trong hệ thống file toàn cục. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-global-file" title="Class reference (English)"><span class="xref std std-ref">&#64;export_global_file</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_global_file</span><span class="p">(</span><span class="s2">&quot;*.png&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">tool_image</span>
+</pre></div>
+</div>
+<p>String là đường dẫn đến một thư mục trong hệ thống file toàn cục. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-global-dir" title="Class reference (English)"><span class="xref std std-ref">&#64;export_global_dir</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_global_dir</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">tool_dir</span>
+</pre></div>
+</div>
+<p>Annotation multiline yêu cầu trình chỉnh sửa hiển thị một ô nhập lớn để chỉnh sửa trên nhiều dòng. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-multiline" title="Class reference (English)"><span class="xref std std-ref">&#64;export_multiline</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_multiline</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">text</span>
+</pre></div>
+</div>
+</section>
+<section id="strings-as-input-actions">
+<h2>String dưới dạng input action<a class="headerlink" href="#strings-as-input-actions" title="Link to this heading"></a></h2>
+<p>String là một input action được định nghĩa trong input map của dự án.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_custom</span><span class="p">(</span><span class="n">PROPERTY_HINT_INPUT_NAME</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">my_input</span>
+</pre></div>
+</div>
+<p>String là một input action được định nghĩa trong input map của dự án, cùng với các giá trị dựng sẵn mặc định như <code class="docutils literal notranslate"><span class="pre">ui_accept</span></code> và <code class="docutils literal notranslate"><span class="pre">ui_cancel</span></code>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_custom</span><span class="p">(</span><span class="n">PROPERTY_HINT_INPUT_NAME</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;show_builtin&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">my_input</span>
+</pre></div>
+</div>
+<p>String là một input action được định nghĩa trong input map của dự án, cùng với các giá trị tùy ý có thể nhập thủ công.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_custom</span><span class="p">(</span><span class="n">PROPERTY_HINT_INPUT_NAME</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;loose_mode&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">my_input</span>
+</pre></div>
+</div>
+<p>String là một input action được định nghĩa trong input map của dự án, cùng với các giá trị dựng sẵn mặc định như <code class="docutils literal notranslate"><span class="pre">ui_accept</span></code> và <code class="docutils literal notranslate"><span class="pre">ui_cancel</span></code> và các giá trị tùy ý có thể nhập thủ công.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_custom</span><span class="p">(</span><span class="n">PROPERTY_HINT_INPUT_NAME</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;show_builtin,loose_mode&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">my_input</span>
+</pre></div>
+</div>
+</section>
+<section id="limiting-editor-input-ranges">
+<h2>Giới hạn khoảng giá trị nhập trong trình chỉnh sửa<a class="headerlink" href="#limiting-editor-input-ranges" title="Link to this heading"></a></h2>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-range" title="Class reference (English)"><span class="xref std std-ref">&#64;export_range</span></a> cho tất cả các mục sau.</p>
+<p>Cho phép giá trị số nguyên từ 0 đến 20.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">i</span>
+</pre></div>
+</div>
+<p>Cho phép giá trị số nguyên từ -10 đến 20.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">j</span>
+</pre></div>
+</div>
+<p>Cho phép số thực từ -10 đến 20 và làm tròn (snap) giá trị theo bội số của 0.2.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">k</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span>
+</pre></div>
+</div>
+<p>Có thể khiến giới hạn chỉ ảnh hưởng đến thanh trượt nếu bạn thêm gợi ý <code class="docutils literal notranslate"><span class="pre">&quot;or_less&quot;</span></code> và/hoặc <code class="docutils literal notranslate"><span class="pre">&quot;or_greater&quot;</span></code>. Nếu dùng một trong hai gợi ý này, người dùng sẽ có thể nhập bất kỳ giá trị nào hoặc kéo giá trị bằng chuột khi không dùng thanh trượt, kể cả khi nằm ngoài khoảng được chỉ định.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;or_less&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;or_greater&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">l</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span>
+</pre></div>
+</div>
+<p>Gợi ý <code class="docutils literal notranslate"><span class="pre">&quot;exp&quot;</span></code> có thể dùng để giá trị có thanh trượt theo hàm mũ thay vì tuyến tính. Điều này có nghĩa là khi kéo thanh trượt sang phải, giá trị sẽ thay đổi ngày càng nhanh khi kéo chuột. Điều này giúp chỉnh sửa dễ hơn các giá trị có thể rất nhỏ hoặc rất lớn, đổi lại là kém trực quan hơn.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;exp&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">exponential</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span>
+</pre></div>
+</div>
+<p>Với các giá trị biểu diễn hệ số easing, hãy dùng <a class="reference internal" href="#doc-gdscript-exports-floats-with-easing-hint"><span class="std std-ref">Số thực với easing hint</span></a>.</p>
+<p>Gợi ý <code class="docutils literal notranslate"><span class="pre">&quot;hide_slider&quot;</span></code> có thể dùng để ẩn thanh ngang xuất hiện bên dưới thuộc tính <code class="docutils literal notranslate"><span class="pre">float</span></code>, hoặc các mũi tên lên/xuống xuất hiện bên cạnh thuộc tính <code class="docutils literal notranslate"><span class="pre">int</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;hide_slider&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">no_slider</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span>
+</pre></div>
+</div>
+<p>Ngược lại, gợi ý <code class="docutils literal notranslate"><span class="pre">&quot;prefer_slider&quot;</span></code> có thể dùng để hiển thị thanh ngang bên dưới thuộc tính <code class="docutils literal notranslate"><span class="pre">int</span></code> thay vì mũi tên lên/xuống:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;prefer_slider&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">with_slider</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-suffixes-and-handling-degrees-radians">
+<h2>Thêm hậu tố và xử lý độ/radian<a class="headerlink" href="#adding-suffixes-and-handling-degrees-radians" title="Link to this heading"></a></h2>
+<p>Bạn cũng có thể định nghĩa hậu tố để giá trị dễ hiểu hơn trong inspector. Ví dụ, để định nghĩa một giá trị mà người dùng sẽ cấu hình theo đơn vị &quot;mét&quot; (<code class="docutils literal notranslate"><span class="pre">m</span></code>):</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;suffix:m&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">m</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span>
+</pre></div>
+</div>
+<p>Với các góc được lưu bằng radian nhưng hiển thị bằng độ cho người dùng, hãy dùng gợi ý <cite>&quot;radians_as_degrees&quot;</cite>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radians_as_degrees&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">angle</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span>
+</pre></div>
+</div>
+<p>Gợi ý này tự động chuyển đổi khi giá trị được hiển thị hoặc chỉnh sửa trong inspector, đồng thời hiển thị hậu tố độ (<code class="docutils literal notranslate"><span class="pre">°</span></code>). Cách này được chính các thuộc tính <cite>rotation</cite> của Godot sử dụng trong toàn bộ trình chỉnh sửa.</p>
+<p>Nếu góc được lưu bằng độ, hãy dùng gợi ý <cite>&quot;degrees&quot;</cite> để hiển thị ký hiệu độ đồng thời tắt việc tự động chuyển đổi từ độ sang radian khi giá trị được chỉnh sửa từ inspector.</p>
+</section>
+<section id="linking-vector-values-together">
+<h2>Liên kết các giá trị vector với nhau<a class="headerlink" href="#linking-vector-values-together" title="Link to this heading"></a></h2>
+<p>Có thể liên kết các giá trị vector với nhau. Khi người dùng điều chỉnh một thành phần của vector, các thành phần khác sẽ tự động được điều chỉnh theo tỷ lệ. Ví dụ, điều này hữu ích để giữ tỷ lệ khung hình của một sprite 2D khi điều chỉnh scale của nó. Người dùng có thể tạm thời tắt tính năng này bằng cách nhấp vào biểu tượng liên kết ở bên phải thuộc tính.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Leave the hint string empty if you don&#39;t want to add a suffix.</span>
+<span class="nd">@export_custom</span><span class="p">(</span><span class="n">PROPERTY_HINT_LINK</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;suffix:px&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">vector2_linked</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Kết quả:</p>
+<figure class="align-center" id="id1">
+<img alt="Thuộc tính Vector2i được liên kết với hậu tố &quot;px&quot;" src="../../../_images/gdscript_exports_linked_vector.webp" />
+<figcaption>
+<p><span class="caption-text">Thuộc tính Vector2i được liên kết với hậu tố &quot;px&quot;</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-constant-property-hint-link" title="Class reference (English)"><span class="xref std std-ref">Gợi ý này</span></a> có hiệu lực với Vector2, Vector2i, Vector3, Vector3i, Vector4 và Vector4i. Nó có thể được dùng cùng lúc với hậu tố thuộc tính, như trong ví dụ trên.</p>
+</section>
+<section id="floats-with-easing-hint">
+<span id="doc-gdscript-exports-floats-with-easing-hint"></span><h2>Số thực với easing hint<a class="headerlink" href="#floats-with-easing-hint" title="Link to this heading"></a></h2>
+<p>Hiển thị biểu diễn trực quan của hàm <code class="docutils literal notranslate"><span class="pre">ease()</span></code> khi chỉnh sửa. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-exp-easing" title="Class reference (English)"><span class="xref std std-ref">&#64;export_exp_easing</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_exp_easing</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">transition_speed</span>
+</pre></div>
+</div>
+</section>
+<section id="colors">
+<h2>Màu sắc<a class="headerlink" href="#colors" title="Link to this heading"></a></h2>
+<p>Màu thông thường, cho dưới dạng giá trị đỏ-lục-lam-alpha.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">col</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span>
+</pre></div>
+</div>
+<p>Màu được cho dưới dạng giá trị đỏ-lục-lam (alpha luôn là 1). Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-color-no-alpha" title="Class reference (English)"><span class="xref std std-ref">&#64;export_color_no_alpha</span></a>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_color_no_alpha</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">col</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span>
+</pre></div>
+</div>
+</section>
+<section id="nodes">
+<h2>Node<a class="headerlink" href="#nodes" title="Link to this heading"></a></h2>
+<p>Node cũng có thể được export trực tiếp làm thuộc tính trong script mà không cần dùng NodePath:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allows any node.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># Allows any node that inherits from BaseButton.</span>
+<span class="c1"># Custom classes declared with `class_name` can also be used.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">some_button</span><span class="p">:</span><span class="w"> </span><span class="nb">BaseButton</span>
+</pre></div>
+</div>
+<p>Việc export NodePath như trong Godot 3.x vẫn khả thi, phòng khi bạn cần:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">node_path</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">NodePath</span>
+<span class="k">var</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="n">node_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Nếu muốn giới hạn loại node cho NodePath, bạn có thể dùng annotation <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-node-path" title="Class reference (English)"><span class="xref std std-ref">&#64;export_node_path</span></a>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_node_path</span><span class="p">(</span><span class="s2">&quot;Button&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;TouchScreenButton&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">some_button</span>
+</pre></div>
+</div>
+</section>
+<section id="resources">
+<h2>Tài nguyên<a class="headerlink" href="#resources" title="Link to this heading"></a></h2>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">resource</span><span class="p">:</span><span class="w"> </span><span class="nb">Resource</span>
+</pre></div>
+</div>
+<p>Trong Inspector, bạn có thể kéo thả một file resource từ FileSystem dock vào ô biến.</p>
+<p>Tuy nhiên, việc mở dropdown trong inspector có thể cho ra một danh sách cực kỳ dài các lớp có thể tạo. Vì vậy, nếu bạn chỉ định một lớp mở rộng của Resource như:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">resource</span><span class="p">:</span><span class="w"> </span><span class="nb">AnimationNode</span>
+</pre></div>
+</div>
+<p>Menu thả xuống sẽ được giới hạn ở AnimationNode và tất cả các lớp dẫn xuất của nó.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dùng biến <code class="docutils literal notranslate"><span class="pre">&#64;export</span></code> cho các object <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resource.html" title="Class reference (English)"><span class="xref std std-ref">Resource</span></a> sẽ biến chúng thành phụ thuộc của instance, nghĩa là mọi resource được tham chiếu bởi các biến <code class="docutils literal notranslate"><span class="pre">&#64;export</span></code> sẽ được nạp khi scene chứa script được nạp. Nếu bạn muốn tham chiếu đến một object <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resource.html" title="Class reference (English)"><span class="xref std std-ref">Resource</span></a> nhưng tự nạp nó khi cần (ví dụ, điều này thường xảy ra với các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedscene.html" title="Class reference (English)"><span class="xref std std-ref">PackedScene</span></a> chứa cả một màn chơi), hãy dùng <code class="docutils literal notranslate"><span class="pre">&#64;export_file</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">&#64;export_file_path</span></code>.</p>
+</div>
+</section>
+<section id="exporting-bit-flags">
+<span id="doc-gdscript-exports-exporting-bit-flags"></span><h2>Export bit flag<a class="headerlink" href="#exporting-bit-flags" title="Link to this heading"></a></h2>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-flags" title="Class reference (English)"><span class="xref std std-ref">&#64;export_flags</span></a>.</p>
+<p>Số nguyên dùng làm bit flag có thể lưu nhiều giá trị <code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code> (boolean) trong một thuộc tính. Bằng cách dùng annotation <code class="docutils literal notranslate"><span class="pre">&#64;export_flags</span></code>, chúng có thể được thiết lập từ trình chỉnh sửa:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set any of the given flags from the editor.</span>
+<span class="nd">@export_flags</span><span class="p">(</span><span class="s2">&quot;Fire&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Water&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Earth&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Wind&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">spell_elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Bạn phải cung cấp một chuỗi mô tả cho mỗi flag. Trong ví dụ này, <code class="docutils literal notranslate"><span class="pre">Fire</span></code> có giá trị 1, <code class="docutils literal notranslate"><span class="pre">Water</span></code> có giá trị 2, <code class="docutils literal notranslate"><span class="pre">Earth</span></code> có giá trị 4 và <code class="docutils literal notranslate"><span class="pre">Wind</span></code> tương ứng với giá trị 8. Thông thường, các hằng số nên được định nghĩa tương ứng (ví dụ <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">ELEMENT_WIND</span> <span class="pre">=</span> <span class="pre">8</span></code>, v.v.).</p>
+<p>Bạn có thể thêm giá trị tường minh bằng dấu hai chấm:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_flags</span><span class="p">(</span><span class="s2">&quot;Self:4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Allies:8&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Foes:16&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">spell_targets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Chỉ các giá trị lũy thừa của 2 mới hợp lệ làm tùy chọn bit flag. Giá trị nhỏ nhất được phép là 1, vì 0 nghĩa là không có gì được chọn. Bạn cũng có thể thêm các tùy chọn là tổ hợp của các flag khác:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_flags</span><span class="p">(</span><span class="s2">&quot;Self:4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Allies:8&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Self and Allies:12&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Foes:16&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">spell_targets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Cũng có các annotation export cho các layer vật lý, kết xuất và điều hướng được định nghĩa trong cài đặt dự án:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_flags_2d_physics</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">layers_2d_physics</span>
+<span class="nd">@export_flags_2d_render</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">layers_2d_render</span>
+<span class="nd">@export_flags_2d_navigation</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">layers_2d_navigation</span>
+<span class="nd">@export_flags_3d_physics</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">layers_3d_physics</span>
+<span class="nd">@export_flags_3d_render</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">layers_3d_render</span>
+<span class="nd">@export_flags_3d_navigation</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">layers_3d_navigation</span>
+</pre></div>
+</div>
+<p>Dùng bit flag đòi hỏi bạn hiểu đôi chút về các phép toán bitwise. Nếu không chắc, hãy dùng biến boolean thay thế.</p>
+</section>
+<section id="exporting-enums">
+<h2>Export enum<a class="headerlink" href="#exporting-enums" title="Link to this heading"></a></h2>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-enum" title="Class reference (English)"><span class="xref std std-ref">&#64;export_enum</span></a>.</p>
+<p>Thuộc tính có thể được export với gợi ý kiểu tham chiếu đến một enum để giới hạn giá trị của chúng trong các giá trị của enum đó. Trình chỉnh sửa sẽ tạo một widget trong Inspector, liệt kê các mục sau là &quot;Thing 1&quot;, &quot;Thing 2&quot;, &quot;Another Thing&quot;. Giá trị sẽ được lưu dưới dạng số nguyên.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="n">NamedEnum</span><span class="w"> </span><span class="p">{</span><span class="n">THING_1</span><span class="p">,</span><span class="w"> </span><span class="n">THING_2</span><span class="p">,</span><span class="w"> </span><span class="n">ANOTHER_THING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nc">NamedEnum</span>
+</pre></div>
+</div>
+<p>Thuộc tính số nguyên và chuỗi cũng có thể được giới hạn trong một danh sách giá trị cụ thể bằng annotation <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-enum" title="Class reference (English)"><span class="xref std std-ref">&#64;export_enum</span></a>. Trình chỉnh sửa sẽ tạo một widget trong Inspector, liệt kê các mục sau là Warrior, Magician, Thief. Giá trị sẽ được lưu dưới dạng số nguyên, tương ứng với chỉ số của tùy chọn được chọn (tức là <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">2</span></code>).</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_enum</span><span class="p">(</span><span class="s2">&quot;Warrior&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Magician&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Thief&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">character_class</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span>
+</pre></div>
+</div>
+<p>Bạn có thể thêm giá trị tường minh bằng dấu hai chấm:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_enum</span><span class="p">(</span><span class="s2">&quot;Slow:30&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Average:60&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Very Fast:200&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">character_speed</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span>
+</pre></div>
+</div>
+<p>Nếu kiểu là String, giá trị sẽ được lưu dưới dạng chuỗi.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_enum</span><span class="p">(</span><span class="s2">&quot;Rebecca&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Mary&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Leah&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">character_name</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span>
+</pre></div>
+</div>
+<p>Nếu muốn đặt giá trị ban đầu, bạn phải chỉ định nó một cách tường minh:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_enum</span><span class="p">(</span><span class="s2">&quot;Rebecca&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Mary&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Leah&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">character_name</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Rebecca&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="exporting-arrays">
+<h2>Export mảng<a class="headerlink" href="#exporting-arrays" title="Link to this heading"></a></h2>
+<p>Mảng được export có thể có giá trị khởi tạo, nhưng chúng phải là biểu thức hằng.</p>
+<p>Nếu mảng được export chỉ định một kiểu kế thừa từ Resource, bạn có thể đặt các giá trị của mảng trong Inspector bằng cách kéo thả nhiều file cùng lúc từ FileSystem dock.</p>
+<p>Giá trị mặc định <strong>bắt buộc</strong> phải là một biểu thức hằng.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Mảng được export có thể chỉ định kiểu (dùng các hint giống như trước).</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">ints</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">int</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span>
+
+<span class="c1"># Nested typed arrays such as `Array[Array[float]]` are not supported yet.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">two_dimensional</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">Array</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Bạn có thể bỏ qua giá trị mặc định, nhưng khi đó nó sẽ là <code class="docutils literal notranslate"><span class="pre">null</span></code> nếu không được gán.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">scenes</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb">PackedScene</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Mảng có kiểu được chỉ định kế thừa từ resource có thể được thiết lập bằng cách kéo thả nhiều file từ FileSystem dock.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">textures</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb">Texture</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">scenes</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb">PackedScene</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+</pre></div>
+</div>
+<p>Packed array cũng hoạt động, nhưng chỉ khi được khởi tạo rỗng:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">vector3s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">()</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">strings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedStringArray</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Các biến thể export khác cũng có thể được dùng khi export mảng:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_range</span><span class="p">(</span><span class="o">-</span><span class="mi">360</span><span class="p">,</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;degrees&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">laser_angles</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">float</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="nd">@export_file</span><span class="p">(</span><span class="s2">&quot;*.json&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">skill_trees</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">String</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="nd">@export_color_no_alpha</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">hair_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedColorArray</span><span class="p">()</span>
+<span class="nd">@export_enum</span><span class="p">(</span><span class="s2">&quot;Espresso&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Mocha&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Latte&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Capuccino&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">barista_suggestions</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">String</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+</pre></div>
+</div>
+</section>
+<section id="export-storage">
+<h2><code class="docutils literal notranslate"><span class="pre">&#64;export_storage</span></code><a class="headerlink" href="#export-storage" title="Link to this heading"></a></h2>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-storage" title="Class reference (English)"><span class="xref std std-ref">&#64;export_storage</span></a>.</p>
+<p>Theo mặc định, việc export một thuộc tính có hai tác dụng:</p>
+<ol class="arabic simple">
+<li><p>khiến thuộc tính được lưu trong file scene/resource (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-constant-property-usage-storage" title="Class reference (English)"><span class="xref std std-ref">PROPERTY_USAGE_STORAGE</span></a>);</p></li>
+<li><p>thêm một trường vào Inspector (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-constant-property-usage-editor" title="Class reference (English)"><span class="xref std std-ref">PROPERTY_USAGE_EDITOR</span></a>).</p></li>
+</ol>
+<p>Tuy nhiên, đôi khi bạn muốn một thuộc tính có thể được serialize nhưng không hiển thị trong trình chỉnh sửa, để tránh thay đổi ngoài ý muốn và làm rối giao diện.</p>
+<p>Để làm điều này, bạn có thể dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-storage" title="Class reference (English)"><span class="xref std std-ref">&#64;export_storage</span></a>. Điều này có thể hữu ích cho các script <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-tool" title="Class reference (English)"><span class="xref std std-ref">&#64;tool</span></a>. Ngoài ra, giá trị thuộc tính sẽ được sao chép khi gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resource.html#class-resource-method-duplicate" title="Class reference (English)"><span class="xref std std-ref">Resource.duplicate()</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-duplicate" title="Class reference (English)"><span class="xref std std-ref">Node.duplicate()</span></a>, khác với các biến không được export.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="c1"># Not stored in the file, not displayed in the editor.</span>
+<span class="nd">@export_storage</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="c1"># Stored in the file, not displayed in the editor.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">c</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="c1"># Stored in the file, displayed in the editor.</span>
+</pre></div>
+</div>
+</section>
+<section id="export-custom">
+<h2><code class="docutils literal notranslate"><span class="pre">&#64;export_custom</span></code><a class="headerlink" href="#export-custom" title="Link to this heading"></a></h2>
+<p>Nếu bạn cần kiểm soát nhiều hơn những gì các annotation <code class="docutils literal notranslate"><span class="pre">&#64;export</span></code> có sẵn cung cấp, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">&#64;export_custom</span></code>. Annotation này cho phép định nghĩa bất kỳ property hint, hint string và usage flag nào, với cú pháp tương tự cú pháp mà trình chỉnh sửa dùng cho các node có sẵn.</p>
+<p>Ví dụ, đoạn sau hiển thị thuộc tính <code class="docutils literal notranslate"><span class="pre">altitude</span></code> không giới hạn khoảng giá trị nhưng có định nghĩa hậu tố <code class="docutils literal notranslate"><span class="pre">m</span></code> (mét):</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@export_custom</span><span class="p">(</span><span class="n">PROPERTY_HINT_NONE</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;suffix:m&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">altitude</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span>
+</pre></div>
+</div>
+<p>Điều trên thường không thể làm được với cú pháp <code class="docutils literal notranslate"><span class="pre">&#64;export_range</span></code> tiêu chuẩn, vì nó yêu cầu phải định nghĩa một khoảng giá trị.</p>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;gdscript.html#class-gdscript-annotation-export-custom" title="Class reference (English)"><span class="xref std std-ref">tài liệu tham khảo lớp</span></a> để biết danh sách các tham số và giá trị được phép của chúng.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Khi dùng <code class="docutils literal notranslate"><span class="pre">&#64;export_custom</span></code>, GDScript không kiểm tra cú pháp. Cú pháp không hợp lệ có thể gây ra hành vi không mong muốn trong Inspector.</p>
+</div>
+</section>
+<section id="export-tool-button">
+<h2><code class="docutils literal notranslate"><span class="pre">&#64;export_tool_button</span></code><a class="headerlink" href="#export-tool-button" title="Link to this heading"></a></h2>
+<p>Nếu bạn cần tạo một nút bấm trong Inspector, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">&#64;export_tool_button</span></code>. Annotation này export một thuộc tính <code class="docutils literal notranslate"><span class="pre">Callable</span></code> dưới dạng nút bấm. Khi nút được nhấn, callable sẽ được gọi.</p>
+<p>Bạn có thể chỉ định tên icon tùy chỉnh, tên này phải khớp với một trong các tên file icon trong thư mục <a class="reference external" href="https://github.com/godotengine/godot/tree/master/editor/icons">editor/icons</a> của kho mã nguồn Godot (phân biệt chữ hoa/thường). Bạn cũng có thể duyệt các icon của trình chỉnh sửa qua trang web <a class="reference external" href="https://godot-editor-icons.github.io/">Godot editor icons</a>.</p>
+<p>Ví dụ, nếu bạn muốn dùng <code class="docutils literal notranslate"><span class="pre">Node2D.svg</span></code> từ thư mục đó, bạn phải chỉ định <code class="docutils literal notranslate"><span class="pre">&quot;Node2D&quot;</span></code> làm tham số thứ hai của <code class="docutils literal notranslate"><span class="pre">&#64;export_tool_button</span></code>. Hiện tại chưa thể dùng icon tùy chỉnh từ thư mục dự án; chỉ có thể dùng các icon có sẵn của trình chỉnh sửa.</p>
+<p>Đoạn này export một nút có nhãn <code class="docutils literal notranslate"><span class="pre">&quot;Hello&quot;</span></code> và icon <code class="docutils literal notranslate"><span class="pre">&quot;Callable&quot;</span></code> (là icon mặc định nếu không chỉ định icon). Khi bạn nhấn nút, nó sẽ in ra <code class="docutils literal notranslate"><span class="pre">&quot;Hello</span> <span class="pre">world!&quot;</span></code>.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export_tool_button</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Callable&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">hello_action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hello</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">hello</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-exported-variables-from-a-tool-script">
+<h2>Thiết lập biến được export từ tool script<a class="headerlink" href="#setting-exported-variables-from-a-tool-script" title="Link to this heading"></a></h2>
+<p>Khi thay đổi giá trị của một biến được export từ script trong <a class="reference internal" href="gdscript_basics.html#doc-gdscript-tool-mode"><span class="std std-ref">Chế độ tool</span></a>, giá trị trong Inspector sẽ không tự động cập nhật. Để cập nhật, hãy gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-method-notify-property-list-changed" title="Class reference (English)"><span class="xref std std-ref">notify_property_list_changed()</span></a> sau khi đặt giá trị của biến được export.</p>
+</section>
+<section id="reading-an-exported-variable-s-value-early-on">
+<h2>Đọc sớm giá trị của biến được export<a class="headerlink" href="#reading-an-exported-variable-s-value-early-on" title="Link to this heading"></a></h2>
+<p>Nếu bạn đọc giá trị của một biến được export trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-init" title="Class reference (English)"><span class="xref std std-ref">_init()</span></a>, nó sẽ trả về giá trị mặc định được chỉ định trong annotation export thay vì giá trị đã đặt trong Inspector. Lý do là việc gán giá trị từ file scene/resource đã lưu diễn ra <em>sau</em> khi khởi tạo đối tượng; trước thời điểm đó, giá trị mặc định được sử dụng.</p>
+<p>Để lấy giá trị đã đặt trong Inspector (và do đó được lưu trong file scene/resource), bạn cần đọc nó <em>sau</em> khi đối tượng được tạo, chẳng hạn trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-ready" title="Class reference (English)"><span class="xref std std-ref">Node._ready()</span></a>. Bạn cũng có thể đọc giá trị trong một setter được định nghĩa trên thuộc tính được export, cách này hữu ích với các resource tùy chỉnh, nơi không có <code class="docutils literal notranslate"><span class="pre">_ready()</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set this property to 3 in the inspector.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">exported_variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="n">exported_variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Inspector-set value: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">exported_variable</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_init</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Initial value: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">exported_variable</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Kết quả:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Initial value: 2
+Inspector-set value: 3
+</pre></div>
+</div>
+</section>
+<section id="advanced-exports">
+<h2>Export nâng cao<a class="headerlink" href="#advanced-exports" title="Link to this heading"></a></h2>
+<p>Không phải loại export nào cũng được cung cấp ở cấp độ ngôn ngữ, nhằm tránh độ phức tạp thiết kế không cần thiết. Phần sau mô tả một số tính năng export ít nhiều phổ biến có thể được triển khai bằng API cấp thấp.</p>
+<p>Trước khi đọc tiếp, bạn nên làm quen với cách các thuộc tính được xử lý và cách tùy biến chúng bằng các phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-set" title="Class reference (English)"><span class="xref std std-ref">_set()</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-get" title="Class reference (English)"><span class="xref std std-ref">_get()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-get-property-list" title="Class reference (English)"><span class="xref std std-ref">_get_property_list()</span></a> như được mô tả trong <a class="reference internal" href="../../best_practices/godot_interfaces.html#doc-accessing-data-or-logic-from-object"><span class="std std-ref">Truy cập dữ liệu hoặc logic từ một đối tượng</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để bind thuộc tính bằng các phương thức trên trong C++, xem <a class="reference internal" href="../../../engine_details/architecture/object_class.html#doc-binding-properties-using-set-get-property-list"><span class="std std-ref">Bind thuộc tính bằng _set/_get/_get_property_list</span></a>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Script phải chạy ở chế độ <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code> để các phương thức trên có thể hoạt động bên trong trình chỉnh sửa.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gdscript_advanced.html" class="btn btn-neutral float-left" title="GDScript: Giới thiệu về ngôn ngữ động" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="gdscript_documentation_comments.html" class="btn btn-neutral float-right" title="Comment tài liệu trong GDScript" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

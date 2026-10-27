@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tích hợp với các API Android" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/platform/android/javaclasswrapper_and_androidruntimeplugin.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Nền tảng Android có rất nhiều API cùng một hệ sinh thái thư viện bên thứ ba phong phú với các chức năng rộng và đa dạng, như thông báo đẩy, phân tích, xác thực, quảng cáo, v.v... Những thứ này khôn..." />
+<meta name="description" content="Nền tảng Android có rất nhiều API cùng một hệ sinh thái thư viện bên thứ ba phong phú với các chức năng rộng và đa dạng, như thông báo đẩy, phân tích, xác thực, quảng cáo, v.v... Những thứ này khôn..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tích hợp với các API Android &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Xử lý crash trên Android" href="resolving_crashes_on_android.html" />
+    <link rel="prev" title="Mua hàng trong ứng dụng trên Android" href="android_in_app_purchases.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/platform/android/javaclasswrapper_and_androidruntimeplugin" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Theo nền tảng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../linux/index.html">Linux</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Android</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="android_library.html">Thư viện Godot Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="android_plugin.html">Plugin Godot Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="android_in_app_purchases.html">Mua hàng trong ứng dụng trên Android</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tích hợp với các API Android</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#javaclasswrapper-godot-singleton">JavaClassWrapper (singleton của Godot)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#androidruntime-plugin">Plugin AndroidRuntime</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="resolving_crashes_on_android.html">Xử lý crash trên Android</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ios/index.html">Plugin iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../web/index.html">Web</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Theo nền tảng</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Android</a></li>
+      <li class="breadcrumb-item active">Tích hợp với các API Android</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="integrating-with-android-apis">
+<span id="doc-javaclasswrapper-and-androidruntimeplugin"></span><h1>Tích hợp với các API Android<a class="headerlink" href="#integrating-with-android-apis" title="Link to this heading"></a></h1>
+<p>Nền tảng Android có rất nhiều API cùng một hệ sinh thái thư viện bên thứ ba phong phú với các chức năng rộng và đa dạng, như thông báo đẩy, phân tích, xác thực, quảng cáo, v.v...</p>
+<p>Những thứ này không phù hợp để đưa vào lõi Godot, nên từ lâu Godot đã cung cấp một <a class="reference internal" href="android_plugin.html#doc-android-plugin"><span class="std std-ref">hệ thống plugin Android</span></a>. <a class="reference internal" href="android_plugin.html#doc-android-plugin"><span class="std std-ref">Hệ thống plugin Android</span></a> cho phép nhà phát triển tạo plugin Godot Android bằng mã Java hoặc Kotlin, cung cấp giao diện để truy cập và dùng các API Android hoặc thư viện bên thứ ba trong dự án Godot từ GDScript, C# hoặc GDExtension.</p>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nc">MyAndroidSingleton</span><span class="p">(</span><span class="n">godot</span><span class="p">:</span><span class="w"> </span><span class="n">Godot?)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">GodotPlugin</span><span class="p">(</span><span class="n">godot</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nd">@UsedByGodot</span>
+<span class="w">        </span><span class="kd">fun</span><span class="w"> </span><span class="nf">doSomething</span><span class="p">(</span><span class="n">value</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// ...</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Tuy nhiên, viết plugin Android đòi hỏi kiến thức về Java hoặc Kotlin, điều mà phần lớn nhà phát triển Godot không có. Vì vậy, có nhiều API Android và thư viện bên thứ ba không có plugin Godot để nhà phát triển giao tiếp. Thực tế, đây là một trong những lý do chính mà nhà phát triển nêu ra khi không thể chuyển sang Godot từ các game engine khác.</p>
+<p>Để giải quyết vấn đề này, chúng tôi đã giới thiệu một vài công cụ trong <strong>Godot 4.4</strong> nhằm đơn giản hóa quá trình truy cập các API Android và thư viện bên thứ ba cho nhà phát triển.</p>
+<section id="javaclasswrapper-godot-singleton">
+<h2>JavaClassWrapper (singleton của Godot)<a class="headerlink" href="#javaclasswrapper-godot-singleton" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code> là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javaclasswrapper.html" title="Class reference (English)"><span class="xref std std-ref">singleton của Godot</span></a> cho phép tạo instance của các lớp Java / Kotlin, triển khai các interface Java / Kotlin và gọi phương thức trên chúng chỉ bằng GDScript, C# hoặc GDExtension.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="nc">LocalDateTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;java.time.LocalDateTime&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="nc">DateTimeFormatter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;java.time.format.DateTimeFormatter&quot;</span><span class="p">)</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">datetime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">LocalDateTime</span><span class="o">.</span><span class="nf">now</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">formatter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">DateTimeFormatter</span><span class="o">.</span><span class="nf">ofPattern</span><span class="p">(</span><span class="s2">&quot;dd-MM-yyyy HH:mm:ss&quot;</span><span class="p">)</span>
+
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="nf">format</span><span class="p">(</span><span class="n">formatter</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Trong đoạn mã trên, <code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code> được dùng từ GDScript để truy cập các lớp Java <code class="docutils literal notranslate"><span class="pre">LocalDateTime</span></code> và <code class="docutils literal notranslate"><span class="pre">DateTimeFormatter</span></code>. Thông qua <code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code>, chúng ta có thể gọi trực tiếp phương thức của các lớp Java từ GDScript như thể chúng là phương thức GDScript.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PrintProxy</span><span class="p">:</span>
+<span class="w">    </span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">println</span><span class="p">(</span><span class="n">content</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">print_proxy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">PrintProxy</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">printer_object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">create_proxy</span><span class="p">(</span><span class="n">print_proxy</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;android.util.Printer&quot;</span><span class="p">])</span>
+<span class="n">printer_object</span><span class="o">.</span><span class="nf">println</span><span class="p">(</span><span class="s2">&quot;Hello Godot World!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Trong đoạn mã trên, <code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code> được dùng để triển khai interface Java <code class="docutils literal notranslate"><span class="pre">android.util.Printer</span></code> từ GDScript, dùng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html" title="Class reference (English)"><span class="xref std std-ref">Object</span></a> làm phần triển khai. Proxy được tạo instance sau đó có thể được truyền vào các phương thức Java nhận tham số <code class="docutils literal notranslate"><span class="pre">android.util.Printer</span></code>.</p>
+<p>Hãy xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javaclasswrapper.html" title="Class reference (English)"><span class="xref std std-ref">tài liệu JavaClassWrapper</span></a> để tìm hiểu thêm về API của nó.</p>
+</section>
+<section id="androidruntime-plugin">
+<h2>Plugin AndroidRuntime<a class="headerlink" href="#androidruntime-plugin" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code> rất tuyệt, nhưng để làm nhiều việc trên Android, bạn cần truy cập nhiều đối tượng vòng đời / runtime khác nhau của Android. Plugin <code class="docutils literal notranslate"><span class="pre">AndroidRuntime</span></code> là một <a class="reference external" href="https://javadoc.io/doc/org.godotengine/godot/latest/org/godotengine/godot/plugin/AndroidRuntimePlugin.html">plugin Godot Android tích hợp sẵn</a> cho phép bạn làm điều này.</p>
+<p>Kết hợp <code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code> với plugin <code class="docutils literal notranslate"><span class="pre">AndroidRuntime</span></code> cho phép nhà phát triển truy cập và dùng các API Android mà không cần rời khỏi GDScript hay dùng bất kỳ công cụ nào ngoài chính Godot. Đây là một bước tiến <strong>rất lớn</strong> cho việc áp dụng Godot vào phát triển Android:</p>
+<ul class="simple">
+<li><p>Nếu bạn cần làm một việc đơn giản, hoặc chỉ dùng một phần nhỏ của thư viện bên thứ ba, bạn không cần tạo plugin</p></li>
+<li><p>Nó cho phép nhà phát triển nhanh chóng tích hợp chức năng Android</p></li>
+<li><p>Nó cho phép nhà phát triển tạo addon Godot chỉ bằng GDScript và <code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code> (không cần Java hay Kotlin)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Với các bản xuất dùng <code class="docutils literal notranslate"><span class="pre">gradle</span></code>, Godot sẽ tự động đưa vào các tệp <code class="docutils literal notranslate"><span class="pre">.jar</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.aar</span></code> mà nó tìm thấy trong thư mục <code class="docutils literal notranslate"><span class="pre">addons</span></code> của dự án. Vì vậy, để dùng một thư viện bên thứ ba, bạn chỉ cần thả tệp <code class="docutils literal notranslate"><span class="pre">.jar</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.aar</span></code> của nó vào thư mục <code class="docutils literal notranslate"><span class="pre">addons</span></code> và gọi phương thức của nó trực tiếp từ GDScript bằng <code class="docutils literal notranslate"><span class="pre">JavaClassWrapper</span></code>.</p>
+</div>
+<section id="example-show-an-android-toast">
+<h3>Ví dụ: Hiển thị toast Android<a class="headerlink" href="#example-show-an-android-toast" title="Link to this heading"></a></h3>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the AndroidRuntime singleton.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">android_runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">get_singleton</span><span class="p">(</span><span class="s2">&quot;AndroidRuntime&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">android_runtime</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Retrieve the Android Activity instance.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">android_runtime</span><span class="o">.</span><span class="nf">getActivity</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Create a Godot Callable to wrap the toast display logic.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">toast_callable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">func</span><span class="p">():</span>
+<span class="w">        </span><span class="c1"># Use JavaClassWrapper to retrieve the android.widget.Toast class, then make and show a toast using the class APIs.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="nc">ToastClass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;android.widget.Toast&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nc">ToastClass</span><span class="o">.</span><span class="nf">makeText</span><span class="p">(</span><span class="n">activity</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;This is a test&quot;</span><span class="p">,</span><span class="w"> </span><span class="nc">ToastClass</span><span class="o">.</span><span class="vi">LENGTH_LONG</span><span class="p">)</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Wrap the Callable in a Java Runnable and run it on the Android UI thread to show the toast.</span>
+<span class="w">    </span><span class="n">activity</span><span class="o">.</span><span class="nf">runOnUiThread</span><span class="p">(</span><span class="n">android_runtime</span><span class="o">.</span><span class="nf">createRunnableFromGodotCallable</span><span class="p">(</span><span class="n">toast_callable</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="example-vibrate-the-device">
+<h3>Ví dụ: Rung thiết bị<a class="headerlink" href="#example-vibrate-the-device" title="Link to this heading"></a></h3>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the AndroidRuntime singleton.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">android_runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">get_singleton</span><span class="p">(</span><span class="s2">&quot;AndroidRuntime&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">android_runtime</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Retrieve the Android Vibrator system service and check if the device supports it.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">vibrator_service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">android_runtime</span><span class="o">.</span><span class="nf">getApplicationContext</span><span class="p">()</span><span class="o">.</span><span class="nf">getSystemService</span><span class="p">(</span><span class="s2">&quot;vibrator&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">vibrator_service</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">vibrator_service</span><span class="o">.</span><span class="nf">hasVibrator</span><span class="p">():</span>
+<span class="w">        </span><span class="c1"># Configure and run a VibrationEffect.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="nc">VibrationEffect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;android.os.VibrationEffect&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">VibrationEffect</span><span class="o">.</span><span class="nf">createOneShot</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="nc">VibrationEffect</span><span class="o">.</span><span class="vi">DEFAULT_AMPLITUDE</span><span class="p">)</span>
+<span class="w">        </span><span class="n">vibrator_service</span><span class="o">.</span><span class="nf">vibrate</span><span class="p">(</span><span class="n">effect</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-accessing-inner-classes">
+<h3>Ví dụ: Truy cập lớp lồng (inner class)<a class="headerlink" href="#example-accessing-inner-classes" title="Link to this heading"></a></h3>
+<p>Có thể truy cập lớp lồng của Java bằng ký hiệu <code class="docutils literal notranslate"><span class="pre">$</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Accessing &#39;VERSION&#39; class, which is an inner class from the &#39;android.os.Build&#39; class.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;android.os.Build$VERSION&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">sdk_int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">version</span><span class="o">.</span><span class="vi">SDK_INT</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">sdk_int</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Do something specific on android 11 devices.</span>
+<span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># All other devices</span>
+</pre></div>
+</div>
+</section>
+<section id="example-calling-a-constructor">
+<h3>Ví dụ: Gọi constructor<a class="headerlink" href="#example-calling-a-constructor" title="Link to this heading"></a></h3>
+<p>Constructor được gọi bằng cách gọi một phương thức có cùng tên với lớp.</p>
+<p>Ví dụ này tạo một intent để gửi văn bản:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the AndroidRuntime singleton.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">android_runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">get_singleton</span><span class="p">(</span><span class="s2">&quot;AndroidRuntime&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">android_runtime</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="nc">Intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;android.content.Intent&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">android_runtime</span><span class="o">.</span><span class="nf">getActivity</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Intent</span><span class="o">.</span><span class="nf">Intent</span><span class="p">()</span><span class="w"> </span><span class="c1"># Call the constructor.</span>
+<span class="w">    </span><span class="n">intent</span><span class="o">.</span><span class="nf">setAction</span><span class="p">(</span><span class="nc">Intent</span><span class="o">.</span><span class="vi">ACTION_SEND</span><span class="p">)</span>
+<span class="w">    </span><span class="n">intent</span><span class="o">.</span><span class="nf">putExtra</span><span class="p">(</span><span class="nc">Intent</span><span class="o">.</span><span class="vi">EXTRA_TEXT</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;This is a test message.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">intent</span><span class="o">.</span><span class="nf">setType</span><span class="p">(</span><span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">activity</span><span class="o">.</span><span class="nf">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-saving-an-image-to-the-android-gallery">
+<h3>Ví dụ: Lưu ảnh vào thư viện ảnh Android<a class="headerlink" href="#example-saving-an-image-to-the-android-gallery" title="Link to this heading"></a></h3>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the AndroidRuntime singleton.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">android_runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Engine</span><span class="o">.</span><span class="nf">get_singleton</span><span class="p">(</span><span class="s2">&quot;AndroidRuntime&quot;</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">android_runtime</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="nc">Intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;android.content.Intent&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">android_runtime</span><span class="o">.</span><span class="nf">getActivity</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Intent</span><span class="o">.</span><span class="nf">Intent</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Create the File and Uri.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="nc">Uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;android.net.Uri&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="nc">File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaClassWrapper</span><span class="o">.</span><span class="nf">wrap</span><span class="p">(</span><span class="s2">&quot;java.io.File&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">File</span><span class="o">.</span><span class="nf">File</span><span class="p">(</span><span class="n">file_path_to_image_here</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Uri</span><span class="o">.</span><span class="nf">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Set Action and Data of Intent.</span>
+<span class="w">    </span><span class="n">intent</span><span class="o">.</span><span class="nf">setAction</span><span class="p">(</span><span class="nc">Intent</span><span class="o">.</span><span class="vi">ACTION_MEDIA_SCANNER_SCAN_FILE</span><span class="p">)</span>
+<span class="w">    </span><span class="n">intent</span><span class="o">.</span><span class="nf">setData</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Broadcast it.</span>
+<span class="w">    </span><span class="n">activity</span><span class="o">.</span><span class="nf">sendBroadcast</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="android_in_app_purchases.html" class="btn btn-neutral float-left" title="Mua hàng trong ứng dụng trên Android" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="resolving_crashes_on_android.html" class="btn btn-neutral float-right" title="Xử lý crash trên Android" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

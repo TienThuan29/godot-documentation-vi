@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Điều khiển hàng nghìn con cá bằng Particles" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/vertex_animation/controlling_thousands_of_fish.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Vấn đề với MeshInstance3D là việc cập nhật mảng transform của chúng rất tốn kém. Nó rất tốt để đặt nhiều đối tượng tĩnh khắp scene, nhưng vẫn khó để di chuyển các đối tượng trong scene. Để mỗi inst..." />
+<meta name="description" content="Vấn đề với MeshInstance3D là việc cập nhật mảng transform của chúng rất tốn kém. Nó rất tốt để đặt nhiều đối tượng tĩnh khắp scene, nhưng vẫn khó để di chuyển các đối tượng trong scene. Để mỗi inst..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Điều khiển hàng nghìn con cá bằng Particles &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Sử dụng nhiều luồng" href="../using_multiple_threads.html" />
+    <link rel="prev" title="Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D" href="animating_thousands_of_fish.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/vertex_animation/controlling_thousands_of_fish" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#cpu">CPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#gpu">GPU</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#d">3D</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../optimizing_3d_performance.html">Tối ưu hiệu năng 3D</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tạo hoạt ảnh cho hàng nghìn đối tượng</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="animating_thousands_of_fish.html">Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Điều khiển hàng nghìn con cá bằng Particles</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Hiệu năng</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tạo hoạt ảnh cho hàng nghìn đối tượng</a></li>
+      <li class="breadcrumb-item active">Điều khiển hàng nghìn con cá bằng Particles</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="controlling-thousands-of-fish-with-particles">
+<span id="doc-controlling-thousands-of-fish"></span><h1>Điều khiển hàng nghìn con cá bằng Particles<a class="headerlink" href="#controlling-thousands-of-fish-with-particles" title="Link to this heading"></a></h1>
+<p>Vấn đề với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a> là việc cập nhật mảng transform của chúng rất tốn kém. Nó rất tốt để đặt nhiều đối tượng tĩnh khắp scene, nhưng vẫn khó để di chuyển các đối tượng trong scene.</p>
+<p>Để mỗi instance di chuyển theo cách thú vị, chúng ta sẽ dùng một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticles3d.html" title="Class reference (English)"><span class="xref std std-ref">GPUParticles3D</span></a>. Particle tận dụng khả năng tăng tốc của GPU bằng cách tính toán và đặt thông tin cho từng instance trong một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shader.html" title="Class reference (English)"><span class="xref std std-ref">Shader</span></a>.</p>
+<p>Trước tiên, tạo một node Particles. Sau đó, trong &quot;Draw Passes&quot;, đặt &quot;Draw Pass 1&quot; của Particle thành <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mesh.html" title="Class reference (English)"><span class="xref std std-ref">Mesh</span></a> của bạn. Rồi trong &quot;Process Material&quot;, tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html" title="Class reference (English)"><span class="xref std std-ref">ShaderMaterial</span></a> mới.</p>
+<p>Đặt <code class="docutils literal notranslate"><span class="pre">shader_type</span></code> thành <code class="docutils literal notranslate"><span class="pre">particles</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">particles</span>
+</pre></div>
+</div>
+<p>Sau đó thêm hai hàm sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">rand_from_seed</span><span class="p">(</span><span class="k">in</span><span class="w"> </span><span class="kt">uint</span><span class="w"> </span><span class="n">seed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">seed</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mo">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">305420679</span><span class="p">;</span>
+<span class="w">  </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">127773</span><span class="p">;</span>
+<span class="w">  </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16807</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">127773</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2836</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mo">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">2147483647</span><span class="p">;</span>
+<span class="w">  </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="kt">float</span><span class="p">(</span><span class="n">seed</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">65536</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">65535.0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">uint</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="kt">uint</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">((</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">73244475</span><span class="p">);</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">((</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">73244475</span><span class="p">);</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Các hàm này lấy từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_particleprocessmaterial.html" title="Class reference (English)"><span class="xref std std-ref">ParticleProcessMaterial</span></a> mặc định. Chúng được dùng để sinh một số ngẫu nhiên từ <code class="docutils literal notranslate"><span class="pre">RANDOM_SEED</span></code> của mỗi particle.</p>
+<p>Một điểm đặc biệt của particle shader là một số biến tích hợp được lưu lại qua các frame. <code class="docutils literal notranslate"><span class="pre">TRANSFORM</span></code>, <code class="docutils literal notranslate"><span class="pre">COLOR</span></code> và <code class="docutils literal notranslate"><span class="pre">CUSTOM</span></code> đều có thể được truy cập trong shader của mesh, và cả trong particle shader ở lần chạy tiếp theo.</p>
+<p>Tiếp theo, thiết lập hàm <code class="docutils literal notranslate"><span class="pre">start()</span></code> của bạn. Particle shader chứa một hàm <code class="docutils literal notranslate"><span class="pre">start()</span></code> và một hàm <code class="docutils literal notranslate"><span class="pre">process()</span></code>.</p>
+<p>Code trong hàm <code class="docutils literal notranslate"><span class="pre">start()</span></code> chỉ chạy khi hệ thống particle bắt đầu. Code trong hàm <code class="docutils literal notranslate"><span class="pre">process()</span></code> sẽ luôn chạy.</p>
+<p>Chúng ta cần sinh 4 số ngẫu nhiên: 3 số để tạo vị trí ngẫu nhiên và một số cho độ lệch ngẫu nhiên của chu kỳ bơi.</p>
+<p>Trước tiên, sinh 4 seed bên trong hàm <code class="docutils literal notranslate"><span class="pre">start()</span></code> bằng hàm <code class="docutils literal notranslate"><span class="pre">hash()</span></code> đã cung cấp ở trên:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">uint</span><span class="w"> </span><span class="n">alt_seed1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="n">NUMBER</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">RANDOM_SEED</span><span class="p">);</span>
+<span class="kt">uint</span><span class="w"> </span><span class="n">alt_seed2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="n">NUMBER</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">27</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">RANDOM_SEED</span><span class="p">);</span>
+<span class="kt">uint</span><span class="w"> </span><span class="n">alt_seed3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="n">NUMBER</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">43</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">RANDOM_SEED</span><span class="p">);</span>
+<span class="kt">uint</span><span class="w"> </span><span class="n">alt_seed4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="n">NUMBER</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">RANDOM_SEED</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Sau đó, dùng các seed đó để sinh số ngẫu nhiên bằng <code class="docutils literal notranslate"><span class="pre">rand_from_seed</span></code>:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">CUSTOM</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand_from_seed</span><span class="p">(</span><span class="n">alt_seed1</span><span class="p">);</span>
+<span class="kt">vec3</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">rand_from_seed</span><span class="p">(</span><span class="n">alt_seed2</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">rand_from_seed</span><span class="p">(</span><span class="n">alt_seed3</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">rand_from_seed</span><span class="p">(</span><span class="n">alt_seed4</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Cuối cùng, gán <code class="docutils literal notranslate"><span class="pre">position</span></code> cho <code class="docutils literal notranslate"><span class="pre">TRANSFORM[3].xyz</span></code>, là phần của transform chứa thông tin vị trí.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">TRANSFORM</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="n">xyz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">20.0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Hãy nhớ rằng toàn bộ code từ đầu đến giờ đều nằm bên trong hàm <code class="docutils literal notranslate"><span class="pre">start()</span></code>.</p>
+<p>Vertex shader cho mesh của bạn có thể giữ nguyên y hệt như trong bài hướng dẫn trước.</p>
+<p>Giờ đây bạn có thể di chuyển từng con cá riêng lẻ mỗi frame, bằng cách cộng trực tiếp vào <code class="docutils literal notranslate"><span class="pre">TRANSFORM</span></code> hoặc bằng cách ghi vào <code class="docutils literal notranslate"><span class="pre">VELOCITY</span></code>.</p>
+<p>Hãy di chuyển các con cá bằng cách đặt <code class="docutils literal notranslate"><span class="pre">VELOCITY</span></code> của chúng trong hàm <code class="docutils literal notranslate"><span class="pre">start()</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">VELOCITY</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Đây là cách cơ bản nhất để đặt <code class="docutils literal notranslate"><span class="pre">VELOCITY</span></code>: mọi particle (hay con cá) sẽ có cùng vận tốc.</p>
+<p>Chỉ cần đặt <code class="docutils literal notranslate"><span class="pre">VELOCITY</span></code> là bạn có thể khiến cá bơi theo bất kỳ cách nào bạn muốn. Ví dụ, hãy thử đoạn code dưới đây.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">VELOCITY</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">TIME</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">CUSTOM</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">6.28</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">6.0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Đoạn này sẽ cho mỗi con cá một tốc độ riêng trong khoảng từ <code class="docutils literal notranslate"><span class="pre">2</span></code> đến <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p>
+<p>Bạn cũng có thể để mỗi con cá thay đổi vận tốc theo thời gian nếu đặt vận tốc trong hàm <code class="docutils literal notranslate"><span class="pre">process()</span></code>.</p>
+<p>Nếu bạn đã dùng <code class="docutils literal notranslate"><span class="pre">CUSTOM.y</span></code> trong bài hướng dẫn trước, bạn cũng có thể đặt tốc độ của hoạt ảnh bơi dựa trên <code class="docutils literal notranslate"><span class="pre">VELOCITY</span></code>. Chỉ cần dùng <code class="docutils literal notranslate"><span class="pre">CUSTOM.y</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">CUSTOM</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VELOCITY</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Đoạn code này cho bạn hành vi như sau:</p>
+<img alt="../../../_images/scene.gif" src="../../../_images/scene.gif" />
+<p>Với ParticleProcessMaterial, bạn có thể tạo hành vi của cá đơn giản hoặc phức tạp tùy thích. Trong bài hướng dẫn này chúng ta chỉ đặt Velocity, nhưng trong các shader của riêng bạn, bạn cũng có thể đặt <code class="docutils literal notranslate"><span class="pre">COLOR</span></code>, xoay, tỉ lệ (thông qua <code class="docutils literal notranslate"><span class="pre">TRANSFORM</span></code>). Vui lòng tham khảo <a class="reference internal" href="../../shaders/shader_reference/particle_shader.html#doc-particle-shader"><span class="std std-ref">Tài liệu tham khảo Particles Shader</span></a> để biết thêm thông tin về particle shader.</p>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="animating_thousands_of_fish.html" class="btn btn-neutral float-left" title="Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../using_multiple_threads.html" class="btn btn-neutral float-right" title="Sử dụng nhiều luồng" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

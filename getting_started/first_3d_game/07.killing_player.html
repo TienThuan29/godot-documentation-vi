@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tiêu diệt người chơi" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_3d_game/07.killing_player.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Chúng ta có thể tiêu diệt kẻ địch bằng cách nhảy lên chúng, nhưng người chơi vẫn chưa thể chết. Hãy khắc phục điều này. Chúng ta muốn phát hiện việc bị kẻ địch va phải theo cách khác với việc dẫm b..." />
+<meta name="description" content="Chúng ta có thể tiêu diệt kẻ địch bằng cách nhảy lên chúng, nhưng người chơi vẫn chưa thể chết. Hãy khắc phục điều này. Chúng ta muốn phát hiện việc bị kẻ địch va phải theo cách khác với việc dẫm b..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tiêu diệt người chơi &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Điểm số và chơi lại" href="08.score_and_replay.html" />
+    <link rel="prev" title="Nhảy và dẫm bẹp quái vật" href="06.jump_and_squash.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_3d_game/07.killing_player" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 3D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.game_setup.html">Thiết lập khu vực chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02.player_input.html">Scene người chơi và các input action</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03.player_movement_code.html">Di chuyển người chơi bằng code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04.mob_scene.html">Thiết kế scene quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05.spawning_mobs.html">Sinh quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06.jump_and_squash.html">Nhảy và dẫm bẹp quái vật</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tiêu diệt người chơi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hitbox-with-the-area-node">Hitbox với node Area</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ending-the-game">Kết thúc game</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-checkpoint">Điểm kiểm tra code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="08.score_and_replay.html">Điểm số và chơi lại</a></li>
+<li class="toctree-l3"><a class="reference internal" href="09.adding_animations.html">Hoạt ảnh nhân vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="going_further.html">Đi xa hơn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 3D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Tiêu diệt người chơi</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="killing-the-player">
+<span id="doc-first-3d-game-killing-the-player"></span><h1>Tiêu diệt người chơi<a class="headerlink" href="#killing-the-player" title="Link to this heading"></a></h1>
+<p>Chúng ta có thể tiêu diệt kẻ địch bằng cách nhảy lên chúng, nhưng người chơi vẫn chưa thể chết. Hãy khắc phục điều này.</p>
+<p>Chúng ta muốn phát hiện việc bị kẻ địch va phải theo cách khác với việc dẫm bẹp chúng. Chúng ta muốn người chơi chết khi đang di chuyển trên sàn, nhưng không chết nếu đang ở trên không. Chúng ta có thể dùng toán vector để phân biệt hai loại va chạm này. Tuy nhiên, thay vào đó, chúng ta sẽ dùng một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_area3d.html" title="Class reference (English)"><span class="xref std std-ref">Area3D</span></a>, vốn rất phù hợp để làm hitbox.</p>
+<section id="hitbox-with-the-area-node">
+<h2>Hitbox với node Area<a class="headerlink" href="#hitbox-with-the-area-node" title="Link to this heading"></a></h2>
+<p>Quay lại scene <code class="docutils literal notranslate"><span class="pre">player.tscn</span></code> và thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_area3d.html" title="Class reference (English)"><span class="xref std std-ref">Area3D</span></a> mới. Đặt tên là <code class="docutils literal notranslate"><span class="pre">MobDetector</span></code>. Thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">CollisionShape3D</span></a> làm con của nó.</p>
+<p><img alt="image0" src="../../_images/01.adding_area_node.webp" /></p>
+<p>Trong <em>Inspector</em>, gán cho nó một shape hình trụ.</p>
+<p><img alt="image1" src="../../_images/02.cylinder_shape.webp" /></p>
+<p>Đây là một mẹo bạn có thể dùng để va chạm chỉ xảy ra khi người chơi đang ở trên mặt đất hoặc gần mặt đất. Bạn có thể giảm chiều cao của hình trụ và di chuyển nó lên phần trên của nhân vật. Bằng cách này, khi người chơi nhảy, shape sẽ ở quá cao để kẻ địch có thể va chạm với nó.</p>
+<p><img alt="image2" src="../../_images/03.cylinder_in_editor.png" /></p>
+<p>Bạn cũng muốn hình trụ rộng hơn quả cầu. Bằng cách này, người chơi sẽ bị trúng đòn trước khi va chạm và bị đẩy lên trên hộp va chạm của quái vật.</p>
+<p>Hình trụ càng rộng, người chơi càng dễ bị tiêu diệt.</p>
+<p>Tiếp theo, chọn lại node <code class="docutils literal notranslate"><span class="pre">MobDetector</span></code>, và trong <em>Inspector</em>, <strong>tắt</strong> thuộc tính <em>Monitorable</em> của nó. Điều này khiến các node vật lý khác không thể phát hiện area này. Thuộc tính bổ trợ <em>Monitoring</em> cho phép nó phát hiện va chạm. Sau đó, bỏ <em>Collision -&gt; Layer</em> và đặt mask thành layer &quot;enemies&quot;.</p>
+<p><img alt="image3" src="../../_images/04.mob_detector_properties.webp" /></p>
+<p>Khi area phát hiện va chạm, chúng phát ra signal. Chúng ta sẽ kết nối một signal với node <code class="docutils literal notranslate"><span class="pre">Player</span></code>. Chọn <code class="docutils literal notranslate"><span class="pre">MobDetector</span></code> và vào dock Signals, nhấp đúp vào signal <code class="docutils literal notranslate"><span class="pre">body_entered</span></code> và kết nối nó với <code class="docutils literal notranslate"><span class="pre">Player</span></code></p>
+<p><img alt="image4" src="../../_images/05.body_entered_signal.webp" /></p>
+<p><em>MobDetector</em> sẽ phát <code class="docutils literal notranslate"><span class="pre">body_entered</span></code> khi một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody3D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rigidbody3d.html" title="Class reference (English)"><span class="xref std std-ref">RigidBody3D</span></a> đi vào nó. Vì nó chỉ mask physics layer &quot;enemies&quot;, nó sẽ chỉ phát hiện các node <code class="docutils literal notranslate"><span class="pre">Mob</span></code>.</p>
+<p>Về mặt code, chúng ta sẽ làm hai việc: phát một signal mà sau này sẽ dùng để kết thúc trò chơi, và hủy người chơi. Chúng ta có thể gói các thao tác này trong một hàm <code class="docutils literal notranslate"><span class="pre">die()</span></code> để gắn một cái tên mô tả rõ ràng cho đoạn code.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Emitted when the player was hit by a mob.</span>
+<span class="c1"># Put this at the top of the script.</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">hit</span>
+
+
+<span class="c1"># And this function at the bottom.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">die</span><span class="p">():</span>
+<span class="w">    </span><span class="n">hit</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_detector_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">die</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Don&#39;t forget to rebuild the project so the editor knows about the new signal.</span>
+
+<span class="c1">// Emitted when the player was hit by a mob.</span>
+<span class="na">[Signal]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HitEventHandler</span><span class="p">();</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Die</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">Hit</span><span class="p">);</span>
+<span class="w">    </span><span class="n">QueueFree</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobDetectorBodyEntered</span><span class="p">(</span><span class="n">Node3D</span><span class="w"> </span><span class="n">body</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Die</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="ending-the-game">
+<h2>Kết thúc game<a class="headerlink" href="#ending-the-game" title="Link to this heading"></a></h2>
+<p>Chúng ta có thể dùng signal <code class="docutils literal notranslate"><span class="pre">hit</span></code> của <code class="docutils literal notranslate"><span class="pre">Player</span></code> để kết thúc trò chơi. Tất cả những gì cần làm là kết nối nó với node <code class="docutils literal notranslate"><span class="pre">Main</span></code> và dừng <code class="docutils literal notranslate"><span class="pre">MobTimer</span></code> khi nhận được signal.</p>
+<p>Mở <code class="docutils literal notranslate"><span class="pre">main.tscn</span></code>, chọn node <code class="docutils literal notranslate"><span class="pre">Player</span></code>, và trong dock <em>Signals</em>, kết nối signal <code class="docutils literal notranslate"><span class="pre">hit</span></code> của nó với node <code class="docutils literal notranslate"><span class="pre">Main</span></code>.</p>
+<p><img alt="image5" src="../../_images/06.player_hit_signal.webp" /></p>
+<p>Lấy timer và dừng nó trong hàm <code class="docutils literal notranslate"><span class="pre">_on_player_hit()</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_player_hit</span><span class="p">():</span>
+<span class="w">    </span><span class="sx">$MobTimer</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerHit</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Timer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MobTimer&quot;</span><span class="p">).</span><span class="n">Stop</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nếu bạn chơi thử bây giờ, quái vật sẽ ngừng xuất hiện khi bạn chết, và những con còn lại sẽ rời khỏi màn hình.</p>
+<p>Cũng hãy để ý rằng trò chơi không còn bị crash hay hiển thị lỗi khi người chơi chết. Vì chúng ta dừng MobTimer, nó không còn kích hoạt hàm <code class="docutils literal notranslate"><span class="pre">_on_mob_timer_timeout()</span></code> nữa.</p>
+<p>Cũng lưu ý rằng việc kẻ địch va chạm với người chơi và khiến người chơi chết phụ thuộc vào kích thước và vị trí của các collision shape của <code class="docutils literal notranslate"><span class="pre">Player</span></code> và <code class="docutils literal notranslate"><span class="pre">Mob</span></code>. Bạn có thể cần di chuyển và thay đổi kích thước chúng để đạt được cảm giác chơi chặt chẽ.</p>
+<p>Bạn có thể tự khen mình: bạn đã làm xong bản prototype của một trò chơi 3D hoàn chỉnh, dù nó vẫn còn hơi thô.</p>
+<p>Từ đây, chúng ta sẽ thêm điểm số, tùy chọn chơi lại, và bạn sẽ thấy cách làm trò chơi trở nên sống động hơn nhiều chỉ với các hoạt ảnh tối giản.</p>
+</section>
+<section id="code-checkpoint">
+<h2>Điểm kiểm tra code<a class="headerlink" href="#code-checkpoint" title="Link to this heading"></a></h2>
+<p>Đây là toàn bộ script của các node <code class="docutils literal notranslate"><span class="pre">Main</span></code>, <code class="docutils literal notranslate"><span class="pre">Mob</span></code> và <code class="docutils literal notranslate"><span class="pre">Player</span></code> để bạn tham khảo. Bạn có thể dùng chúng để so sánh và kiểm tra code của mình.</p>
+<p>Bắt đầu với <code class="docutils literal notranslate"><span class="pre">main.gd</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">mob_scene</span><span class="p">:</span><span class="w"> </span><span class="nb">PackedScene</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a new instance of the Mob scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mob_scene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Choose a random location on the SpawnPath.</span>
+<span class="w">    </span><span class="c1"># We store the reference to the SpawnLocation node.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob_spawn_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># And give it a random offset.</span>
+<span class="w">    </span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">progress_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">player_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="vi">position</span>
+<span class="w">    </span><span class="n">mob</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Spawn the mob by adding it to the Main scene.</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">mob</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_player_hit</span><span class="p">():</span>
+<span class="w">    </span><span class="sx">$MobTimer</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">MobScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobTimerTimeout</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create a new instance of the Mob scene.</span>
+<span class="w">        </span><span class="n">Mob</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MobScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="o">&lt;</span><span class="n">Mob</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Choose a random location on the SpawnPath.</span>
+<span class="w">        </span><span class="c1">// We store the reference to the SpawnLocation node.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">mobSpawnLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">PathFollow3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// And give it a random offset.</span>
+<span class="w">        </span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">ProgressRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Randf</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">Position</span><span class="p">;</span>
+<span class="w">        </span><span class="n">mob</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">Position</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Spawn the mob by adding it to the Main scene.</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">mob</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerHit</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Timer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MobTimer&quot;</span><span class="p">).</span><span class="n">Stop</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tiếp theo là <code class="docutils literal notranslate"><span class="pre">mob.gd</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody3D</span>
+
+<span class="c1"># Minimum speed of the mob in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">min_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span>
+<span class="c1"># Maximum speed of the mob in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">max_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">18.0</span>
+
+<span class="c1"># Emitted when the player jumped on the mob</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">squashed</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="c1"># This function will be called from the Main scene.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">initialize</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># We position the mob by placing it at start_position</span>
+<span class="w">    </span><span class="c1"># and rotate it towards player_position, so it looks at the player.</span>
+<span class="w">    </span><span class="nf">look_at_from_position</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Rotate this mob randomly within range of -45 and +45 degrees,</span>
+<span class="w">    </span><span class="c1"># so that it doesn&#39;t move directly towards the player.</span>
+<span class="w">    </span><span class="nf">rotate_y</span><span class="p">(</span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="o">-</span><span class="l">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">))</span>
+
+<span class="w">    </span><span class="c1"># We calculate a random speed (float)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="n">min_speed</span><span class="p">,</span><span class="w"> </span><span class="n">max_speed</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># We calculate a forward velocity that represents the speed.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">FORWARD</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">random_speed</span>
+<span class="w">    </span><span class="c1"># We then rotate the velocity vector based on the mob&#39;s Y rotation</span>
+<span class="w">    </span><span class="c1"># in order to move in the direction the mob is looking.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">,</span><span class="w"> </span><span class="n">rotation</span><span class="o">.</span><span class="vi">y</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_visible_on_screen_notifier_3d_screen_exited</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">squash</span><span class="p">():</span>
+<span class="w">    </span><span class="n">squashed</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span><span class="w"> </span><span class="c1"># Destroy this node</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Mob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Emitted when the played jumped on the mob.</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">SquashedEventHandler</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Minimum speed of the mob in meters per second</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">MinSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Maximum speed of the mob in meters per second</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">MaxSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">18.0f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// This function will be called from the Main scene.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">Vector3</span><span class="w"> </span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// We position the mob by placing it at startPosition</span>
+<span class="w">        </span><span class="c1">// and rotate it towards playerPosition, so it looks at the player.</span>
+<span class="w">        </span><span class="n">LookAtFromPosition</span><span class="p">(</span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Rotate this mob randomly within range of -45 and +45 degrees,</span>
+<span class="w">        </span><span class="c1">// so that it doesn&#39;t move directly towards the player.</span>
+<span class="w">        </span><span class="n">RotateY</span><span class="p">((</span><span class="kt">float</span><span class="p">)</span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="o">-</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">));</span>
+
+<span class="w">        </span><span class="c1">// We calculate a random speed (float)</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">randomSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="n">MinSpeed</span><span class="p">,</span><span class="w"> </span><span class="n">MaxSpeed</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// We calculate a forward velocity that represents the speed.</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Forward</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randomSpeed</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// We then rotate the velocity vector based on the mob&#39;s Y rotation</span>
+<span class="w">        </span><span class="c1">// in order to move in the direction the mob is looking.</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Velocity</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">,</span><span class="w"> </span><span class="n">Rotation</span><span class="p">.</span><span class="n">Y</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Squash</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">Squashed</span><span class="p">);</span>
+<span class="w">        </span><span class="n">QueueFree</span><span class="p">();</span><span class="w"> </span><span class="c1">// Destroy this node</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnVisibilityNotifierScreenExited</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">QueueFree</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cuối cùng, script dài nhất, <code class="docutils literal notranslate"><span class="pre">player.gd</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody3D</span>
+
+<span class="k">signal</span><span class="w"> </span><span class="n">hit</span>
+
+<span class="c1"># How fast the player moves in meters per second</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span>
+<span class="c1"># The downward acceleration while in the air, in meters per second squared.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">fall_acceleration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span>
+<span class="c1"># Vertical impulse applied to the character upon jumping in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">jump_impulse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span>
+<span class="c1"># Vertical impulse applied to the character upon bouncing over a mob</span>
+<span class="c1"># in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">bounce_impulse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">target_velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># We create a local variable to store the input direction</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span>
+
+<span class="w">    </span><span class="c1"># We check for each move input and update the direction accordingly</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_right&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_left&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_back&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Notice how we are working with the vector&#39;s x and z axes.</span>
+<span class="w">        </span><span class="c1"># In 3D, the XZ plane is the ground plane.</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_forward&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="w">    </span><span class="c1"># Prevent diagonal moving fast af</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span><span class="p">:</span>
+<span class="w">        </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span>
+<span class="w">        </span><span class="c1"># Setting the basis property will affect the rotation of the node.</span>
+<span class="w">        </span><span class="sx">$Pivot</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Basis</span><span class="o">.</span><span class="nf">looking_at</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Ground Velocity</span>
+<span class="w">    </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+
+<span class="w">    </span><span class="c1"># Vertical Velocity</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nf">is_on_floor</span><span class="p">():</span><span class="w"> </span><span class="c1"># If in the air, fall towards the floor. Literally gravity</span>
+<span class="w">        </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">fall_acceleration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Jumping.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nf">is_on_floor</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_just_pressed</span><span class="p">(</span><span class="s2">&quot;jump&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jump_impulse</span>
+
+<span class="w">    </span><span class="c1"># Iterate through all collisions that occurred this frame</span>
+<span class="w">    </span><span class="c1"># in C this would be for(int i = 0; i &lt; collisions.Count; i++)</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="nf">get_slide_collision_count</span><span class="p">()):</span>
+<span class="w">        </span><span class="c1"># We get one of the collisions with the player</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_slide_collision</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+<span class="w">        </span><span class="c1"># If the collision is with ground</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">continue</span>
+
+<span class="w">        </span><span class="c1"># If the collider is with a mob</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span><span class="o">.</span><span class="nf">is_in_group</span><span class="p">(</span><span class="s2">&quot;mob&quot;</span><span class="p">):</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">collision</span><span class="o">.</span><span class="nf">get_collider</span><span class="p">()</span>
+<span class="w">            </span><span class="c1"># we check that we are hitting it from above.</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="o">.</span><span class="nf">dot</span><span class="p">(</span><span class="n">collision</span><span class="o">.</span><span class="nf">get_normal</span><span class="p">())</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.1</span><span class="p">:</span>
+<span class="w">                </span><span class="c1"># If so, we squash it and bounce.</span>
+<span class="w">                </span><span class="n">mob</span><span class="o">.</span><span class="nf">squash</span><span class="p">()</span>
+<span class="w">                </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bounce_impulse</span>
+<span class="w">                </span><span class="c1"># Prevent further duplicate calls.</span>
+<span class="w">                </span><span class="k k-ControlFlow">break</span>
+
+<span class="w">    </span><span class="c1"># Moving the Character</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target_velocity</span>
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="c1"># And this function at the bottom.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">die</span><span class="p">():</span>
+<span class="w">    </span><span class="n">hit</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_detector_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">die</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Player</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Emitted when the player was hit by a mob.</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HitEventHandler</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// How fast the player moves in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Speed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// The downward acceleration when in the air, in meters per second squared.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">FallAcceleration</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Vertical impulse applied to the character upon jumping in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">JumpImpulse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Vertical impulse applied to the character upon bouncing over a mob in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">BounceImpulse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">_targetVelocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// We create a local variable to store the input direction.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// We check for each move input and update the direction accordingly.</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_right&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_left&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_back&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Notice how we are working with the vector&#39;s X and Z axes.</span>
+<span class="w">            </span><span class="c1">// In 3D, the XZ plane is the ground plane.</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_forward&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Prevent diagonal moving fast af</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">Normalized</span><span class="p">();</span>
+<span class="w">            </span><span class="c1">// Setting the basis property will affect the rotation of the node.</span>
+<span class="w">            </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Node3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Pivot&quot;</span><span class="p">).</span><span class="n">Basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Basis</span><span class="p">.</span><span class="n">LookingAt</span><span class="p">(</span><span class="n">direction</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Ground Velocity</span>
+<span class="w">        </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Vertical Velocity</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">IsOnFloor</span><span class="p">())</span><span class="w"> </span><span class="c1">// If in the air, fall towards the floor. Literally gravity</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">FallAcceleration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Jumping.</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IsOnFloor</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionJustPressed</span><span class="p">(</span><span class="s">&quot;jump&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JumpImpulse</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Iterate through all collisions that occurred this frame.</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">GetSlideCollisionCount</span><span class="p">();</span><span class="w"> </span><span class="n">index</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// We get one of the collisions with the player.</span>
+<span class="w">            </span><span class="n">KinematicCollision3D</span><span class="w"> </span><span class="n">collision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetSlideCollision</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// If the collision is with a mob.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">collision</span><span class="p">.</span><span class="n">GetCollider</span><span class="p">()</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">Mob</span><span class="w"> </span><span class="n">mob</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// We check that we are hitting it from above.</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">.</span><span class="n">Dot</span><span class="p">(</span><span class="n">collision</span><span class="p">.</span><span class="n">GetNormal</span><span class="p">())</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="c1">// If so, we squash it and bounce.</span>
+<span class="w">                    </span><span class="n">mob</span><span class="p">.</span><span class="n">Squash</span><span class="p">();</span>
+<span class="w">                    </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BounceImpulse</span><span class="p">;</span>
+<span class="w">                    </span><span class="c1">// Prevent further duplicate calls.</span>
+<span class="w">                    </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Moving the Character</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_targetVelocity</span><span class="p">;</span>
+<span class="w">        </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Die</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">Hit</span><span class="p">);</span>
+<span class="w">        </span><span class="n">QueueFree</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobDetectorBodyEntered</span><span class="p">(</span><span class="n">Node3D</span><span class="w"> </span><span class="n">body</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Die</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hẹn gặp bạn ở bài tiếp theo để thêm điểm số và tùy chọn chơi lại.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="06.jump_and_squash.html" class="btn btn-neutral float-left" title="Nhảy và dẫm bẹp quái vật" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="08.score_and_replay.html" class="btn btn-neutral float-right" title="Điểm số và chơi lại" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Xuất cho máy chủ chuyên dụng" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/export/exporting_for_dedicated_servers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Nếu bạn muốn chạy một máy chủ chuyên dụng (dedicated server) cho dự án trên một máy không có GPU hoặc display server, bạn sẽ cần chạy Godot với display server headless và audio driver Dummy. Kể từ ..." />
+<meta name="description" content="Nếu bạn muốn chạy một máy chủ chuyên dụng (dedicated server) cho dự án trên một máy không có GPU hoặc display server, bạn sẽ cần chạy Godot với display server headless và audio driver Dummy. Kể từ ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Xuất cho máy chủ chuyên dụng &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Nhập/xuất file và dữ liệu" href="../io/index.html" />
+    <link rel="prev" title="Triển khai một cú nhấp" href="one-click_deploy.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/export/exporting_for_dedicated_servers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Xuất (export)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="exporting_projects.html">Xuất dự án</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_pcks.html">Xuất gói, bản vá và mod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_tags.html">Feature tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_windows.html">Xuất cho Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_linux.html">Xuất cho Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_macos.html">Xuất cho macOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_android.html">Xuất cho Android</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_ios.html">Xuất cho iOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_visionos.html">Xuất cho visionOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_for_web.html">Xuất cho Web</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changing_application_icon_for_windows.html">Thay đổi thủ công biểu tượng ứng dụng cho Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_on_macos.html">Chạy ứng dụng Godot trên macOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="android_gradle_build.html">Build Gradle cho Android</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one-click_deploy.html">Triển khai một cú nhấp</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Xuất cho máy chủ chuyên dụng</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#editor-versus-export-template">Trình chỉnh sửa và export template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-approaches">Các cách xuất</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exporting-a-project-for-a-dedicated-server">Xuất dự án cho dedicated server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-dedicated-server">Khởi động dedicated server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Các bước tiếp theo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Xuất (export)</a></li>
+      <li class="breadcrumb-item active">Xuất cho máy chủ chuyên dụng</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="exporting-for-dedicated-servers">
+<span id="doc-exporting-for-dedicated-servers"></span><h1>Xuất cho máy chủ chuyên dụng<a class="headerlink" href="#exporting-for-dedicated-servers" title="Link to this heading"></a></h1>
+<p>Nếu bạn muốn chạy một máy chủ chuyên dụng (dedicated server) cho dự án trên một máy không có GPU hoặc display server, bạn sẽ cần chạy Godot với display server <code class="docutils literal notranslate"><span class="pre">headless</span></code> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-audio-driver-driver" title="Class reference (English)"><span class="xref std std-ref">audio driver</span></a> <code class="docutils literal notranslate"><span class="pre">Dummy</span></code>.</p>
+<p>Kể từ Godot 4.0, việc này có thể thực hiện bằng cách chạy tệp nhị phân Godot trên bất kỳ nền tảng nào với tham số dòng lệnh <code class="docutils literal notranslate"><span class="pre">--headless</span></code>, hoặc chạy một dự án đã được xuất dưới dạng máy chủ chuyên dụng. Bạn không cần dùng tệp nhị phân máy chủ chuyên biệt nữa, không giống như Godot 3.x.</p>
+<section id="editor-versus-export-template">
+<h2>Trình chỉnh sửa và export template<a class="headerlink" href="#editor-versus-export-template" title="Link to this heading"></a></h2>
+<p>Bạn có thể dùng tệp nhị phân trình chỉnh sửa hoặc export template (debug hoặc release) ở chế độ headless. Nên dùng loại nào tùy thuộc vào trường hợp sử dụng của bạn:</p>
+<ul class="simple">
+<li><p><strong>Export template:</strong> Dùng loại này để chạy máy chủ chuyên dụng. Nó không chứa chức năng trình chỉnh sửa, do đó nhỏ hơn và được tối ưu hơn.</p></li>
+<li><p><strong>Editor:</strong> Tệp nhị phân này chứa chức năng trình chỉnh sửa và được dùng để xuất dự án. Tệp nhị phân này <em>có thể</em> dùng để chạy máy chủ chuyên dụng, nhưng không được khuyến nghị vì nó lớn hơn và kém tối ưu hơn.</p></li>
+</ul>
+</section>
+<section id="export-approaches">
+<h2>Các cách xuất<a class="headerlink" href="#export-approaches" title="Link to this heading"></a></h2>
+<p>Có hai cách để xuất dự án cho máy chủ:</p>
+<ul class="simple">
+<li><p>Tạo một export preset riêng cho nền tảng sẽ chạy máy chủ, sau đó xuất dự án như bình thường.</p></li>
+<li><p>Chỉ xuất tệp PCK, tốt nhất là cho nền tảng trùng với nền tảng sẽ chạy máy chủ. Đặt tệp PCK này vào cùng thư mục với một tệp nhị phân export template, đổi tên tệp nhị phân cho trùng với tên tệp PCK (không tính phần mở rộng), rồi chạy tệp nhị phân đó.</p></li>
+</ul>
+<p>Cả hai cách đều cho kết quả giống hệt nhau. Phần còn lại của trang sẽ tập trung vào cách thứ nhất.</p>
+<p>Xem <a class="reference internal" href="exporting_projects.html#doc-exporting-projects"><span class="std std-ref">Xuất dự án</span></a> để biết thêm thông tin.</p>
+</section>
+<section id="exporting-a-project-for-a-dedicated-server">
+<span id="doc-exporting-for-dedicated-servers-exporting-project"></span><h2>Xuất dự án cho dedicated server<a class="headerlink" href="#exporting-a-project-for-a-dedicated-server" title="Link to this heading"></a></h2>
+<p>Nếu bạn xuất dự án như bình thường khi nhắm đến máy chủ, bạn sẽ thấy tệp PCK lớn y như của client. Đó là vì nó bao gồm tất cả resource, kể cả những resource mà máy chủ không cần (chẳng hạn dữ liệu texture). Ngoài ra, chế độ headless sẽ không tự động được dùng; người dùng sẽ phải chỉ định <code class="docutils literal notranslate"><span class="pre">--headless</span></code> để đảm bảo không có cửa sổ nào được tạo ra.</p>
+<p>Nhiều resource như texture có thể được loại bỏ khỏi tệp PCK để giảm đáng kể kích thước. Godot cung cấp cách làm điều này cho texture và material theo cách vẫn giữ nguyên các tham chiếu trong tệp scene hoặc resource (tích hợp sẵn hoặc bên ngoài).</p>
+<p>Để bắt đầu, hãy đảm bảo bạn có một export preset riêng cho máy chủ, sau đó chọn nó, vào tab <strong>Resources</strong> và thay đổi chế độ xuất:</p>
+<figure class="align-center" id="id1">
+<img alt="Chọn chế độ xuất **Export as dedicated server** trong export preset" src="../../_images/exporting_for_dedicated_servers_export_mode.webp" />
+<figcaption>
+<p><span class="caption-text">Chọn chế độ xuất <strong>Export as dedicated server</strong> trong export preset</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi chọn chế độ xuất này, feature tag <code class="docutils literal notranslate"><span class="pre">dedicated_server</span></code> sẽ tự động được thêm vào dự án đã xuất.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn không muốn dùng chế độ xuất này nhưng vẫn muốn có feature tag, bạn có thể ghi tên <code class="docutils literal notranslate"><span class="pre">dedicated_server</span></code> vào tab <strong>Features</strong> của export preset. Điều này cũng sẽ bắt buộc dùng <code class="docutils literal notranslate"><span class="pre">--headless</span></code> khi chạy dự án đã xuất.</p>
+</div>
+<p>Sau khi chọn chế độ xuất này, bạn sẽ thấy danh sách các resource trong dự án:</p>
+<figure class="align-center" id="id2">
+<img alt="Chọn resource để giữ lại, giữ lại nhưng loại bỏ phần hình ảnh, hoặc xóa bỏ" src="../../_images/exporting_for_dedicated_servers_export_resources.webp" />
+<figcaption>
+<p><span class="caption-text">Chọn resource để giữ lại, giữ lại nhưng loại bỏ phần hình ảnh, hoặc xóa bỏ</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Đánh dấu một ô cho phép bạn ghi đè các tùy chọn cho tệp hoặc thư mục được chỉ định. Việc đánh dấu các ô <strong>không</strong> ảnh hưởng đến những tệp nào được xuất; điều đó do các tùy chọn được chọn cho từng ô quyết định.</p>
+<p>Theo mặc định, các tệp trong một thư mục được đánh dấu sẽ tự động dùng tùy chọn của thư mục cha, được biểu thị bằng hậu tố <strong>(Inherited)</strong> sau tên tùy chọn (và tên tùy chọn bị làm mờ). Để thay đổi tùy chọn cho một tệp có tùy chọn đang được kế thừa, trước tiên bạn phải đánh dấu ô bên cạnh nó.</p>
+<ul class="simple">
+<li><p><strong>Strip Visuals:</strong> Xuất resource này, với các tệp hình ảnh (texture và material) được thay bằng các lớp giữ chỗ (placeholder). Các lớp placeholder lưu kích thước ảnh (vì đôi khi nó được dùng để định vị các phần tử trong scene 2D), ngoài ra không lưu gì khác.</p></li>
+<li><p><strong>Keep:</strong> Xuất resource này như bình thường, giữ nguyên các tệp hình ảnh.</p></li>
+<li><p><strong>Remove:</strong> Tệp không được đưa vào PCK. Tùy chọn này hữu ích để bỏ qua các scene và resource mà chỉ client cần. Nếu làm vậy, hãy đảm bảo máy chủ không tham chiếu đến các scene và resource chỉ dành cho client này theo bất kỳ cách nào.</p></li>
+</ul>
+<p>Khuyến nghị chung là dùng <strong>Strip Visuals</strong> bất cứ khi nào có thể, trừ khi máy chủ cần truy cập dữ liệu ảnh như màu của các pixel. Ví dụ, nếu máy chủ của bạn tạo dữ liệu va chạm dựa trên nội dung của một ảnh, bạn cần dùng <strong>Keep</strong> cho ảnh cụ thể đó.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để kiểm tra cấu trúc file của PCK đã xuất, hãy dùng nút <strong>Export PCK/ZIP...</strong> với phần mở rộng <code class="docutils literal notranslate"><span class="pre">.zip</span></code>, rồi mở file ZIP thu được bằng trình quản lý file.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Hãy cẩn thận khi dùng chế độ <strong>Remove</strong>, vì các scene/resource tham chiếu tới file đã bị xóa sẽ không thể tải thành công nữa.</p>
+<p>Nếu bạn muốn loại bỏ các resource cụ thể nhưng vẫn để các scene tải được khi thiếu chúng, bạn sẽ phải xóa tham chiếu trong file scene và tải các file vào thuộc tính của node bằng <code class="docutils literal notranslate"><span class="pre">load()</span></code> trong một script. Cách này có thể dùng để loại bỏ các resource mà Godot chưa hỗ trợ thay thế bằng placeholder, chẳng hạn như âm thanh.</p>
+<p>Loại bỏ texture thường là việc có tác động lớn nhất tới kích thước PCK, vì vậy bạn nên dùng <strong>Strip Visuals</strong> trước tiên.</p>
+</div>
+<p>Với các tùy chọn trên, một PCK dành cho client (xuất tất cả resource như bình thường) sẽ trông như sau:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+├── .godot
+│   ├── exported
+│   │   └── 133200997
+│   │       └── export-78c237d4bfdb4e1d02e0b5f38ddfd8bd-scene.scn
+│   ├── global_script_class_cache.cfg
+│   ├── imported
+│   │   ├── map_data.png-ce840618f399a990343bfc7298195a13.ctex
+│   │   ├── music.ogg-fa883da45ae49695a3d022f64e60aee2.oggvorbisstr
+│   │   └── sprite.png-7958af25f91bb9dbae43f35388f8e840.ctex
+│   └── uid_cache.bin
+├── client
+│   ├── music.ogg.import
+│   └── sprite.png.import
+├── server
+│   └── map_data.png.import
+├── test
+│   └── scene.gd
+└── unused
+│   └── development_test.gd
+├── project.binary
+├── scene.gd
+├── scene.tscn.remap
+</pre></div>
+</div>
+<p>Cấu trúc file của PCK dành cho server sẽ trông như sau:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+├── .godot
+│   ├── exported
+│   │   └── 3400186661
+│   │       ├── export-78c237d4bfdb4e1d02e0b5f38ddfd8bd-scene.scn
+│   │       ├── export-7958af25f91bb9dbae43f35388f8e840-sprite.res  # Placeholder texture
+│   │       └── export-fa883da45ae49695a3d022f64e60aee2-music.res
+│   ├── global_script_class_cache.cfg
+│   ├── imported
+│   │   └── map_data.png-ce840618f399a990343bfc7298195a13.ctex
+│   └── uid_cache.bin
+├── client
+│   ├── music.ogg.import
+│   └── sprite.png.import  # Points to placeholder texture
+└── server
+│   └── map_data.png.import
+├── project.binary
+├── scene.gd
+├── scene.tscn.remap
+</pre></div>
+</div>
+</section>
+<section id="starting-the-dedicated-server">
+<h2>Khởi động dedicated server<a class="headerlink" href="#starting-the-dedicated-server" title="Link to this heading"></a></h2>
+<p>Nếu cả client và server đều nằm trong cùng một dự án Godot, bạn sẽ phải thêm cách để khởi động server trực tiếp bằng một tham số dòng lệnh.</p>
+<p>Nếu bạn đã <a class="reference internal" href="#doc-exporting-for-dedicated-servers-exporting-project"><span class="std std-ref">xuất dự án</span></a> bằng chế độ xuất <strong>Export as dedicated server</strong> (hoặc đã thêm <code class="docutils literal notranslate"><span class="pre">dedicated_server</span></code> làm feature tag tùy chỉnh), bạn có thể dùng feature tag <code class="docutils literal notranslate"><span class="pre">dedicated_server</span></code> để phát hiện liệu PCK dành cho dedicated server có đang được sử dụng hay không:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Note: Feature tags are case-sensitive.</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">OS</span><span class="o">.</span><span class="nf">has_feature</span><span class="p">(</span><span class="s2">&quot;dedicated_server&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Run your server startup code here...</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Note: Feature tags are case-sensitive.</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">OS</span><span class="p">.</span><span class="n">HasFeature</span><span class="p">(</span><span class="s">&quot;dedicated_server&quot;</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Run your server startup code here...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nếu bạn cũng muốn chạy server khi dùng tham số dòng lệnh có sẵn <code class="docutils literal notranslate"><span class="pre">--headless</span></code>, hãy thêm đoạn code sau vào phương thức <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> của scene chính (hoặc của một autoload):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">DisplayServer</span><span class="o">.</span><span class="nf">get_name</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;headless&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Run your server startup code here...</span>
+<span class="w">    </span><span class="c1">#</span>
+<span class="w">    </span><span class="c1"># Using this check, you can start a dedicated server by running</span>
+<span class="w">    </span><span class="c1"># a Godot binary (editor or export template) with the `--headless`</span>
+<span class="w">    </span><span class="c1"># command-line argument.</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">System.Linq</span><span class="p">;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">DisplayServer</span><span class="p">.</span><span class="n">GetName</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;headless&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Run your server startup code here...</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Using this check, you can start a dedicated server by running</span>
+<span class="w">    </span><span class="c1">// a Godot binary (editor or export template) with the `--headless`</span>
+<span class="w">    </span><span class="c1">// command-line argument.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nếu bạn muốn dùng một tham số dòng lệnh tùy chỉnh, hãy thêm đoạn code sau vào phương thức <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> của scene chính (hoặc của một autoload):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="s2">&quot;--server&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">OS</span><span class="o">.</span><span class="nf">get_cmdline_user_args</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Run your server startup code here...</span>
+<span class="w">    </span><span class="c1">#</span>
+<span class="w">    </span><span class="c1"># Using this check, you can start a dedicated server by running</span>
+<span class="w">    </span><span class="c1"># a Godot binary (editor or export template) with the `--server`</span>
+<span class="w">    </span><span class="c1"># command-line argument.</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">System.Linq</span><span class="p">;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">OS</span><span class="p">.</span><span class="n">GetCmdlineUserArgs</span><span class="p">().</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;--server&quot;</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Run your server startup code here...</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Using this check, you can start a dedicated server by running</span>
+<span class="w">    </span><span class="c1">// a Godot binary (editor or export template) with the `--server`</span>
+<span class="w">    </span><span class="c1">// command-line argument.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn nên thêm ít nhất một trong các tham số dòng lệnh trên để khởi động server, vì nó có thể dùng để kiểm thử chức năng server từ dòng lệnh mà không cần xuất dự án.</p>
+<p>Nếu client và server là hai dự án Godot riêng biệt, server của bạn rất có thể nên được cấu hình sao cho việc chạy scene chính sẽ tự động khởi động server.</p>
+</section>
+<section id="next-steps">
+<h2>Các bước tiếp theo<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Trên Linux, để dedicated server tự khởi động lại sau khi bị crash hoặc khi hệ thống khởi động lại, bạn có thể <a class="reference external" href="https://medium.com/&#64;benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6">tạo một systemd service</a>. Cách này cũng giúp bạn xem log của server thuận tiện hơn, với tính năng xoay vòng log tự động do systemd cung cấp. Khi làm cho dự án có thể chạy dưới dạng systemd service, bạn cũng nên bật cài đặt dự án <code class="docutils literal notranslate"><span class="pre">application/run/flush_stdout_on_print</span></code>. Nhờ vậy, journald (dịch vụ ghi log của systemd) có thể thu thập log trong khi tiến trình đang chạy.</p>
+<p>Nếu đã có kinh nghiệm với container, bạn cũng có thể cân nhắc đóng gói dedicated server trong một container <a class="reference external" href="https://www.docker.com/">Docker</a>. Nhờ vậy, nó có thể được dùng dễ dàng hơn trong một hệ thống tự động mở rộng quy mô (nằm ngoài phạm vi bài hướng dẫn này).</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="one-click_deploy.html" class="btn btn-neutral float-left" title="Triển khai một cú nhấp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../io/index.html" class="btn btn-neutral float-right" title="Nhập/xuất file và dữ liệu" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

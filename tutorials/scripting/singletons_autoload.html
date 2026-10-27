@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Singleton (Autoload)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/singletons_autoload.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Hệ thống scene của Godot tuy mạnh mẽ và linh hoạt nhưng có một nhược điểm: không có cách nào để lưu trữ thông tin (ví dụ điểm số hoặc túi đồ của người chơi) mà nhiều scene cùng cần đến...." />
+<meta name="description" content="Giới thiệu: Hệ thống scene của Godot tuy mạnh mẽ và linh hoạt nhưng có một nhược điểm: không có cách nào để lưu trữ thông tin (ví dụ điểm số hoặc túi đồ của người chơi) mà nhiều scene cùng cần đến...." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Singleton (Autoload) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng SceneTree" href="scene_tree.html" />
+    <link rel="prev" title="Tài nguyên" href="resources.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/singletons_autoload" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gdscript/index.html">GDScript</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp/index.html">C++ (godot-cpp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-features">Tính năng cốt lõi</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="how_to_read_the_godot_api.html">Cách đọc API của Godot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug/index.html">Gỡ lỗi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="idle_and_physics_processing.html">Xử lý idle và xử lý vật lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Nhóm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nodes_and_scene_instances.html">Node và instance của scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overridable_functions.html">Các hàm có thể override</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cross_language_scripting.html">Lập trình script đa ngôn ngữ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="creating_script_templates.html">Tạo script template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evaluating_expressions.html">Tính giá trị biểu thức</a></li>
+<li class="toctree-l3"><a class="reference internal" href="change_scenes_manually.html">Chuyển scene thủ công</a></li>
+<li class="toctree-l3"><a class="reference internal" href="instancing_with_signals.html">Tạo instance với signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pausing_games.html">Tạm dừng game và process mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="filesystem.html">Hệ thống tệp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resources.html">Tài nguyên</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Singleton (Autoload)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#autoload">Autoload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-scene-switcher">Bộ chuyển scene tùy chỉnh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scene_tree.html">Sử dụng SceneTree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scene_unique_nodes.html">Node duy nhất trong scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html">Ghi log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Lập trình script</a></li>
+      <li class="breadcrumb-item active">Singleton (Autoload)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="singletons-autoload">
+<span id="doc-singletons-autoload"></span><h1>Singleton (Autoload)<a class="headerlink" href="#singletons-autoload" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Hệ thống scene của Godot tuy mạnh mẽ và linh hoạt nhưng có một nhược điểm: không có cách nào để lưu trữ thông tin (ví dụ điểm số hoặc túi đồ của người chơi) mà nhiều scene cùng cần đến.</p>
+<p>Có thể giải quyết vấn đề này bằng một số cách làm tạm, nhưng chúng đều có những hạn chế riêng:</p>
+<ul class="simple">
+<li><p>Bạn có thể dùng một scene &quot;chủ&quot; để tải và gỡ các scene khác làm con của nó. Tuy nhiên, như vậy bạn sẽ không thể chạy riêng từng scene đó mà vẫn mong chúng hoạt động đúng.</p></li>
+<li><p>Thông tin có thể được lưu xuống đĩa trong <code class="docutils literal notranslate"><span class="pre">user://</span></code> rồi được các scene cần đến tải lên, nhưng việc lưu và tải dữ liệu thường xuyên rất phiền phức và có thể chậm.</p></li>
+</ul>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Singleton_pattern">Mẫu Singleton</a> là một công cụ hữu ích để giải quyết trường hợp phổ biến khi bạn cần lưu thông tin bền vững giữa các scene. Trong trường hợp của chúng ta, có thể tái sử dụng cùng một scene hoặc lớp cho nhiều singleton, miễn là chúng có tên khác nhau.</p>
+<p>Dùng khái niệm này, bạn có thể tạo các đối tượng:</p>
+<ul class="simple">
+<li><p>Luôn được tải, bất kể scene nào đang chạy.</p></li>
+<li><p>Có thể lưu các biến toàn cục như thông tin người chơi.</p></li>
+<li><p>Có thể xử lý việc chuyển scene và hiệu ứng chuyển cảnh giữa các scene.</p></li>
+<li><p><em>Hoạt động</em> như một singleton, vì theo thiết kế GDScript không hỗ trợ biến toàn cục.</p></li>
+</ul>
+<p>Autoload các node và script có thể mang lại cho chúng ta những đặc tính này.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot không biến một Autoload thành singleton &quot;thực sự&quot; theo đúng mẫu thiết kế singleton. Người dùng vẫn có thể tạo instance của nó nhiều lần nếu muốn.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn tạo một autoload trong một plugin trình chỉnh sửa, hãy cân nhắc <a class="reference internal" href="../plugins/editor/making_plugins.html#doc-making-plugins-autoload"><span class="std std-ref">tự động đăng ký nó trong Project Settings</span></a> khi plugin được bật.</p>
+</div>
+</section>
+<section id="autoload">
+<h2>Autoload<a class="headerlink" href="#autoload" title="Link to this heading"></a></h2>
+<p>Bạn có thể tạo một Autoload để tải một scene hoặc một script kế thừa từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html" title="Class reference (English)"><span class="xref std std-ref">class_Node</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi autoload một script, một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html" title="Class reference (English)"><span class="xref std std-ref">class_Node</span></a> sẽ được tạo và script sẽ được gắn vào nó. Node này sẽ được thêm vào viewport gốc trước khi bất kỳ scene nào khác được tải.</p>
+</div>
+<img alt="../../_images/singleton.webp" src="../../_images/singleton.webp" />
+<p>Để autoload một scene hoặc script, hãy bắt đầu từ menu và đi tới <strong>Project &gt; Project Settings &gt; Globals &gt; Autoload</strong>.</p>
+<img alt="../../_images/autoload_tab.webp" src="../../_images/autoload_tab.webp" />
+<p>Tại đây bạn có thể thêm bao nhiêu scene hoặc script tùy ý. Mỗi mục trong danh sách cần một tên, tên này được gán cho thuộc tính <code class="docutils literal notranslate"><span class="pre">name</span></code> của node. Thứ tự các mục khi được thêm vào cây scene toàn cục có thể thay đổi bằng các phím mũi tên lên/xuống. Giống như các scene thông thường, engine sẽ đọc các node này theo thứ tự từ trên xuống dưới.</p>
+<img alt="../../_images/autoload_example.webp" src="../../_images/autoload_example.webp" />
+<p>Nếu cột <strong>Enable</strong> được chọn (mặc định), singleton có thể được truy cập trực tiếp trong GDScript:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nc">PlayerVariables</span><span class="o">.</span><span class="vi">health</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">10</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cột <strong>Enable</strong> không có tác dụng trong mã C#. Tuy nhiên, nếu singleton là một script C#, bạn có thể đạt hiệu quả tương tự bằng cách thêm một thuộc tính static tên là <code class="docutils literal notranslate"><span class="pre">Instance</span></code> và gán nó trong <code class="docutils literal notranslate"><span class="pre">_Ready()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-QyM=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="0">C#</button></div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">PlayerVariables</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">PlayerVariables</span><span class="w"> </span><span class="n">Instance</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Health</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cách này cho phép truy cập singleton từ mã C# mà không cần <code class="docutils literal notranslate"><span class="pre">GetNode()</span></code> và không cần ép kiểu:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-QyM=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="0">C#</button></div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">PlayerVariables</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Health</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu ý rằng các đối tượng autoload (script và/hoặc scene) được truy cập giống như mọi node khác trong cây scene. Thực tế, nếu nhìn vào cây scene đang chạy, bạn sẽ thấy các node được autoload xuất hiện:</p>
+<img alt="../../_images/autoload_runtime.webp" src="../../_images/autoload_runtime.webp" />
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Các autoload <strong>không được</strong> xóa bằng <code class="docutils literal notranslate"><span class="pre">free()</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">queue_free()</span></code> khi đang chạy, nếu không engine sẽ bị crash.</p>
+</div>
+</section>
+<section id="custom-scene-switcher">
+<h2>Bộ chuyển scene tùy chỉnh<a class="headerlink" href="#custom-scene-switcher" title="Link to this heading"></a></h2>
+<p>Bài hướng dẫn này sẽ minh họa cách xây dựng một bộ chuyển scene bằng autoload. Để chuyển scene cơ bản, bạn có thể dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html#class-scenetree-method-change-scene-to-file" title="Class reference (English)"><span class="xref std std-ref">SceneTree.change_scene_to_file()</span></a> (xem <a class="reference internal" href="scene_tree.html#doc-scene-tree"><span class="std std-ref">Sử dụng SceneTree</span></a> để biết chi tiết). Tuy nhiên, nếu bạn cần hành vi phức tạp hơn khi chuyển scene, cách này cung cấp nhiều chức năng hơn.</p>
+<p>Để bắt đầu, hãy tải mẫu tại đây: <a class="reference external" href="https://github.com/godotengine/godot-docs-project-starters/releases/download/latest-4.x/singleton_autoload_starter.zip">singleton_autoload_starter.zip</a> và mở nó trong Godot.</p>
+<p>Có thể xuất hiện một cửa sổ thông báo rằng dự án được mở lần cuối bằng một phiên bản Godot cũ hơn, điều đó không thành vấn đề. Nhấn <em>Ok</em> để mở dự án.</p>
+<p>Dự án chứa hai scene: <code class="docutils literal notranslate"><span class="pre">scene_1.tscn</span></code> và <code class="docutils literal notranslate"><span class="pre">scene_2.tscn</span></code>. Mỗi scene chứa một label hiển thị tên scene và một nút đã được kết nối signal <code class="docutils literal notranslate"><span class="pre">pressed()</span></code>. Khi chạy dự án, nó bắt đầu ở <code class="docutils literal notranslate"><span class="pre">scene_1.tscn</span></code>. Tuy nhiên, nhấn nút chẳng có tác dụng gì.</p>
+<section id="creating-the-script">
+<h3>Tạo script<a class="headerlink" href="#creating-the-script" title="Link to this heading"></a></h3>
+<p>Mở cửa sổ <strong>Script</strong> và tạo một script mới tên là <code class="docutils literal notranslate"><span class="pre">global.gd</span></code>. Đảm bảo nó kế thừa từ <code class="docutils literal notranslate"><span class="pre">Node</span></code>:</p>
+<img alt="../../_images/autoload_script.webp" src="../../_images/autoload_script.webp" />
+<p>Bước tiếp theo là thêm script này vào danh sách autoload. Từ menu, mở <strong>Project &gt; Project Settings &gt; Globals &gt; Autoload</strong> và chọn script bằng cách nhấn nút duyệt hoặc gõ đường dẫn của nó: <code class="docutils literal notranslate"><span class="pre">res://global.gd</span></code>. Nhấn <strong>Add</strong> để thêm nó vào danh sách autoload và đặt tên là &quot;Global&quot;, điều này là bắt buộc để các script truy cập nó bằng tên &quot;Global&quot;:</p>
+<img alt="../../_images/autoload_tutorial1.webp" src="../../_images/autoload_tutorial1.webp" />
+<p>Giờ đây, mỗi khi chạy bất kỳ scene nào trong dự án, script này sẽ luôn được tải.</p>
+<p>Quay lại script, nó cần lấy scene hiện tại trong hàm <cite>_ready()</cite>. Cả scene hiện tại (scene có nút bấm) và <code class="docutils literal notranslate"><span class="pre">global.gd</span></code> đều là con của root, nhưng các node được autoload luôn đứng đầu. Điều này có nghĩa là node con cuối cùng của root luôn là scene đã được tải.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">current_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">null</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span>
+<span class="w">    </span><span class="c1"># Using a negative index counts from the end, so this gets the last child node of `root`.</span>
+<span class="w">    </span><span class="n">current_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">root</span><span class="o">.</span><span class="nf">get_child</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Global</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">CurrentScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Viewport</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Using a negative index counts from the end, so this gets the last child node of `root`.</span>
+<span class="w">        </span><span class="n">CurrentScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">root</span><span class="p">.</span><span class="n">GetChild</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Giờ chúng ta cần một hàm để chuyển scene. Hàm này cần giải phóng scene hiện tại và thay thế nó bằng scene được yêu cầu.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">goto_scene</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># This function will usually be called from a signal callback,</span>
+<span class="w">    </span><span class="c1"># or some other function in the current scene.</span>
+<span class="w">    </span><span class="c1"># Deleting the current scene at this point is</span>
+<span class="w">    </span><span class="c1"># a bad idea, because it may still be executing code.</span>
+<span class="w">    </span><span class="c1"># This will result in a crash or unexpected behavior.</span>
+
+<span class="w">    </span><span class="c1"># The solution is to defer the load to a later time, when</span>
+<span class="w">    </span><span class="c1"># we can be sure that no code from the current scene is running:</span>
+
+<span class="w">    </span><span class="n">_deferred_goto_scene</span><span class="o">.</span><span class="nf">call_deferred</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_deferred_goto_scene</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># It is now safe to remove the current scene.</span>
+<span class="w">    </span><span class="n">current_scene</span><span class="o">.</span><span class="nf">free</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Load the new scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ResourceLoader</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Instance the new scene.</span>
+<span class="w">    </span><span class="n">current_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Add it to the active scene, as child of root.</span>
+<span class="w">    </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">current_scene</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.</span>
+<span class="w">    </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">current_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_scene</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">GotoScene</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">path</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// This function will usually be called from a signal callback,</span>
+<span class="w">    </span><span class="c1">// or some other function from the current scene.</span>
+<span class="w">    </span><span class="c1">// Deleting the current scene at this point is</span>
+<span class="w">    </span><span class="c1">// a bad idea, because it may still be executing code.</span>
+<span class="w">    </span><span class="c1">// This will result in a crash or unexpected behavior.</span>
+
+<span class="w">    </span><span class="c1">// The solution is to defer the load to a later time, when</span>
+<span class="w">    </span><span class="c1">// we can be sure that no code from the current scene is running:</span>
+
+<span class="w">    </span><span class="n">CallDeferred</span><span class="p">(</span><span class="n">MethodName</span><span class="p">.</span><span class="n">DeferredGotoScene</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">DeferredGotoScene</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">path</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// It is now safe to remove the current scene.</span>
+<span class="w">    </span><span class="n">CurrentScene</span><span class="p">.</span><span class="n">Free</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Load a new scene.</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">nextScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">PackedScene</span><span class="o">&gt;</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Instance the new scene.</span>
+<span class="w">    </span><span class="n">CurrentScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nextScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Add it to the active scene, as child of root.</span>
+<span class="w">    </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">CurrentScene</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.</span>
+<span class="w">    </span><span class="n">GetTree</span><span class="p">().</span><span class="n">CurrentScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CurrentScene</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nhờ dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-method-call-deferred" title="Class reference (English)"><span class="xref std std-ref">Object.call_deferred()</span></a>, hàm thứ hai sẽ chỉ chạy khi toàn bộ mã của scene hiện tại đã hoàn tất. Nhờ vậy, scene hiện tại sẽ không bị xóa khi nó vẫn đang được dùng (tức là mã của nó vẫn đang chạy).</p>
+<p>Cuối cùng, chúng ta cần điền nội dung cho các hàm callback còn trống trong hai scene:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add to &#39;scene_1.gd&#39;.</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_button_pressed</span><span class="p">():</span>
+<span class="w">    </span><span class="nc">Global</span><span class="o">.</span><span class="nf">goto_scene</span><span class="p">(</span><span class="s2">&quot;res://scene_2.tscn&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Add to &#39;Scene1.cs&#39;.</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnButtonPressed</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Global</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;/root/Global&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">global</span><span class="p">.</span><span class="n">GotoScene</span><span class="p">(</span><span class="s">&quot;res://Scene2.tscn&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>và</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add to &#39;scene_2.gd&#39;.</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_button_pressed</span><span class="p">():</span>
+<span class="w">    </span><span class="nc">Global</span><span class="o">.</span><span class="nf">goto_scene</span><span class="p">(</span><span class="s2">&quot;res://scene_1.tscn&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Add to &#39;Scene2.cs&#39;.</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnButtonPressed</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Global</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;/root/Global&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">global</span><span class="p">.</span><span class="n">GotoScene</span><span class="p">(</span><span class="s">&quot;res://Scene1.tscn&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chạy dự án và kiểm tra rằng bạn có thể chuyển qua lại giữa các scene bằng cách nhấn nút.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi scene nhỏ, quá trình chuyển diễn ra tức thì. Tuy nhiên, nếu scene của bạn phức tạp hơn, chúng có thể mất một khoảng thời gian đáng kể mới xuất hiện. Để biết cách xử lý việc này, hãy xem bài hướng dẫn tiếp theo: <a class="reference internal" href="../io/background_loading.html#doc-background-loading"><span class="std std-ref">Tải nền</span></a>.</p>
+<p>Ngoài ra, nếu thời gian tải tương đối ngắn (khoảng dưới 3 giây), bạn có thể hiển thị một &quot;bảng thông báo đang tải&quot; bằng cách hiện một phần tử 2D nào đó ngay trước khi chuyển scene. Sau đó bạn có thể ẩn nó ngay sau khi scene đã được chuyển. Cách này có thể dùng để báo cho người chơi biết một scene đang được tải.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="resources.html" class="btn btn-neutral float-left" title="Tài nguyên" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="scene_tree.html" class="btn btn-neutral float-right" title="Sử dụng SceneTree" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

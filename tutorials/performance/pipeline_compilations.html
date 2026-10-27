@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Giảm giật lag do biên dịch shader (pipeline)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/pipeline_compilations.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Biên dịch pipeline, còn thường được gọi là biên dịch shader, là một thao tác tốn kém mà engine cần thực hiện để có thể vẽ bất kỳ loại nội dung nào bằng GPU. Lưu đồ thể hiện toàn bộ quá trình biên d..." />
+<meta name="description" content="Biên dịch pipeline, còn thường được gọi là biên dịch shader, là một thao tác tốn kém mà engine cần thực hiện để có thể vẽ bất kỳ loại nội dung nào bằng GPU. Lưu đồ thể hiện toàn bộ quá trình biên d..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Giảm giật lag do biên dịch shader (pipeline) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tối ưu hiệu năng 3D" href="optimizing_3d_performance.html" />
+    <link rel="prev" title="Tối ưu bằng MultiMesh" href="using_multimesh.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/pipeline_compilations" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#gpu">GPU</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="gpu_optimization.html">Tối ưu hóa GPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="using_multimesh.html">Tối ưu bằng MultiMesh</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Giảm giật lag do biên dịch shader (pipeline)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline-precompilation-monitors">Monitor biên dịch trước pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline-precompilation-features">Các tính năng biên dịch trước pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline-precompilation-instancing">Tạo instance để biên dịch trước pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shader-baker">Shader baker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Giảm giật lag do biên dịch shader (pipeline)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="reducing-stutter-from-shader-pipeline-compilations">
+<span id="doc-pipeline-compilations"></span><h1>Giảm giật lag do biên dịch shader (pipeline)<a class="headerlink" href="#reducing-stutter-from-shader-pipeline-compilations" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Trang này chỉ áp dụng cho trình kết xuất Forward+ và Mobile, không áp dụng cho Compatibility. Ubershader và biên dịch trước pipeline dựa vào các chức năng chỉ có trong các API đồ họa cấp thấp hiện đại (Vulkan, Direct3D 12, Metal). Trình kết xuất Compatibility dùng OpenGL 3.3, OpenGL ES 3.0 hoặc WebGL 2.0 tùy theo nền tảng. Các phiên bản này thiếu chức năng cần thiết để triển khai hiệu quả ubershader và biên dịch trước pipeline.</p>
+<p>Để tránh giật lag do shader trong Compatibility, bạn cần dùng cách truyền thống là tải trước material, shader và particle bằng cách hiển thị chúng ít nhất một frame trong view frustum khi màn chơi đang tải.</p>
+</div>
+<p>Biên dịch pipeline, còn thường được gọi là biên dịch shader, là một thao tác tốn kém mà engine cần thực hiện để có thể vẽ bất kỳ loại nội dung nào bằng GPU.</p>
+<figure class="align-center" id="id1">
+<img alt="Lưu đồ thể hiện toàn bộ quá trình biên dịch của một shader: VisualShader và Standard Material sang Godot Shading Language sang GLSL sang Định dạng trung gian (SPIR-V) sang Pipeline. Biên dịch shader là bước từ GLSL sang Định dạng trung gian. Biên dịch pipeline là bước từ Định dạng trung gian sang Pipeline." src="../../_images/pipeline_compilations_shader_compilation_diagram.webp" />
+<figcaption>
+<p><span class="caption-text">Shader và material trong Godot đi qua một số bước trước khi có thể được GPU chạy.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Nói chính xác hơn, <em>biên dịch shader</em> là việc chuyển đổi mã GLSL mà Godot tạo ra thành một định dạng trung gian có thể chia sẻ giữa các hệ thống (chẳng hạn SPIR-V khi dùng Vulkan). Tuy nhiên, GPU không thể dùng trực tiếp định dạng này.</p>
+<p><em>Biên dịch pipeline</em> là bước mà driver GPU chuyển định dạng shader trung gian (kết quả của biên dịch shader) thành thứ mà GPU thực sự có thể dùng để kết xuất. Driver thường giữ một bộ nhớ cache các pipeline được lưu ở đâu đó trong hệ thống để tránh lặp lại quá trình mỗi lần chạy game. Cache này thường bị xóa khi driver được cập nhật.</p>
+<p>Pipeline chứa nhiều thông tin hơn chỉ mã shader, nghĩa là với mỗi shader, có thể có hàng chục pipeline hoặc hơn! Điều này khiến engine khó biên dịch chúng trước, vừa vì sẽ rất chậm, vừa vì sẽ chiếm nhiều bộ nhớ. Hơn nữa, bước này chỉ có thể thực hiện trên hệ thống của người dùng và rất khó chia sẻ kết quả giữa những người dùng trừ khi họ có cùng phần cứng và phiên bản driver.</p>
+<p>Trước Godot 4.4, không có giải pháp nào cho biên dịch pipeline ngoài việc tạo chúng khi một đối tượng xuất hiện trong tầm nhìn của camera, dẫn đến hiện tượng <em>shader stutter</em> khét tiếng, hay những lần khựng hình chỉ xảy ra trong lần chơi đầu tiên. <strong>Với Godot 4.4, các cơ chế mới đã được giới thiệu để giảm thiểu giật lag do biên dịch pipeline.</strong></p>
+<ul class="simple">
+<li><p><strong>Ubershader</strong>: Godot sử dụng specialization constant (hằng số chuyên biệt hóa), một tính năng cho phép driver tối ưu mã của pipeline dựa trên một tập tham số như chiếu sáng, chất lượng bóng đổ, v.v. Specialization constant được dùng để tối ưu shader bằng cách hạn chế các tính năng không cần thiết. Thay đổi một specialization constant đòi hỏi phải biên dịch lại pipeline. Ubershader là một phiên bản đặc biệt của shader có thể thay đổi các hằng số này trong khi kết xuất, nghĩa là Godot chỉ cần biên dịch trước một pipeline và biên dịch các phiên bản tối ưu hơn ở chế độ nền trong khi chơi. Điều này giảm đáng kể số pipeline cần được tạo.</p></li>
+<li><p><strong>Biên dịch trước pipeline</strong>: Bằng cách dùng ubershader, engine có thể biên dịch trước pipeline ở nhiều nơi, chẳng hạn khi mesh được tải hoặc khi node được thêm vào scene. Nhờ là một phần của quá trình tải resource, pipeline thậm chí có thể được biên dịch trước trên nhiều luồng nền nếu có thể, trong các màn hình tải hoặc ngay cả khi đang chơi.</p></li>
+</ul>
+<p>Bắt đầu từ Godot 4.4, Godot sẽ phát hiện những pipeline nào cần thiết và biên dịch trước chúng lúc tải. Hệ thống phát hiện này phần lớn là tự động, nhưng nó dựa vào việc RenderingServer nhìn thấy dấu hiệu của tất cả shader, mesh hoặc tính năng kết xuất lúc tải. Ví dụ, nếu bạn tải một mesh và shader trong khi game đang chạy, pipeline cho tổ hợp mesh/shader đó sẽ không được biên dịch cho đến khi mesh/shader được tải. Tương tự, những việc như bật MSAA hoặc tạo instance một node VoxelGI trong khi game đang chạy sẽ kích hoạt việc biên dịch lại pipeline.</p>
+<section id="pipeline-precompilation-monitors">
+<h2>Monitor biên dịch trước pipeline<a class="headerlink" href="#pipeline-precompilation-monitors" title="Link to this heading"></a></h2>
+<p>Biên dịch trước pipeline là cơ chế chính mà Godot dùng để giảm thiểu giật lag do shader, nhưng nó không phải giải pháp hoàn hảo. Nắm được những tình huống có thể dẫn đến giật lag do pipeline sẽ rất hữu ích, và các cách khắc phục khá đơn giản so với các phiên bản trước. Các cách khắc phục này có thể sẽ ít cần thiết hơn theo thời gian với các phiên bản Godot sau này khi có thêm nhiều kỹ thuật phát hiện được triển khai.</p>
+<p>Trình gỡ lỗi của Godot cung cấp các monitor để theo dõi số lượng pipeline mà game tạo ra và bước đã kích hoạt việc biên dịch chúng. Bạn có thể để mắt đến các monitor này khi game chạy để xác định các nguồn gây giật lag do shader tiềm ẩn mà không phải xóa cache driver mỗi lần muốn kiểm thử. Những lần tăng đột ngột của các giá trị này bên ngoài màn hình tải có thể biểu hiện thành những lần khựng hình trong khi chơi vào lần đầu tiên ai đó chơi game trên hệ thống của họ. <strong>Bạn nên xem các monitor này để xác định các nguồn có thể gây giật lag cho người chơi</strong>, vì bản thân bạn có thể không gặp phải chúng nếu không xóa cache driver hoặc kiểm thử trên một hệ thống yếu hơn.</p>
+<figure class="align-center" id="id2">
+<img alt="Ảnh chụp màn hình monitor biên dịch pipeline của Godot" src="../../_images/pipeline_compilations_monitors.webp" />
+<figcaption>
+<p><span class="caption-text">Biên dịch pipeline của một trong các dự án demo.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chúng ta có thể thấy các pipeline được biên dịch trong khi chơi và xác minh những bước nào có thể gây giật lag. Lưu ý rằng các giá trị này chỉ tăng chứ không bao giờ giảm, vì các pipeline đã bị xóa không được các monitor này theo dõi và pipeline có thể bị xóa rồi tạo lại trong khi chơi.</p>
+</div>
+<ul class="simple">
+<li><p><strong>Canvas</strong>: Được biên dịch khi vẽ một node 2D. Hiện engine chưa có tính năng biên dịch trước cho các phần tử 2D và giật lag sẽ xuất hiện khi node 2D được vẽ lần đầu tiên.</p></li>
+<li><p><strong>Mesh</strong>: Được biên dịch như một phần của việc tải mesh 3D và xác định những pipeline nào có thể được biên dịch trước từ các thuộc tính của nó. Những pipeline này có thể gây giật lag nếu mesh được tải trong khi chơi, nhưng có thể giảm thiểu nếu mesh được tải bằng một luồng nền. <strong>Các thành phần sửa đổi thuộc về node như material override không thể được biên dịch ở bước này</strong>.</p></li>
+<li><p><strong>Surface</strong>: Được biên dịch khi một frame sắp được vẽ và các đối tượng 3D được tạo instance trên scene tree lần đầu tiên. Bước này cũng có thể bao gồm việc biên dịch cho các node thậm chí không hiển thị trên scene tree. Giật lag sẽ chỉ xảy ra ở frame đầu tiên mà node được thêm vào scene, và sẽ không gây giật lag rõ rệt nếu nó xảy ra ngay sau một màn hình tải.</p></li>
+<li><p><strong>Draw</strong>: Được biên dịch theo nhu cầu khi một đối tượng 3D cần được vẽ và một ubershader chưa được biên dịch trước. Engine không thể biên dịch trước pipeline này do gặp phải một trường hợp chưa được xử lý hoặc do một thay đổi đã được thực hiện trên mã của engine. Gây giật lag trong khi chơi. Điều này giống hệt các phiên bản Godot trước 4.4. Nếu bạn thấy có biên dịch ở đây, vui lòng <a class="reference external" href="https://github.com/godotengine/godot/issues">báo cho các nhà phát triển</a> vì điều này không bao giờ nên xảy ra với hệ thống Ubershader. Hãy nhớ đính kèm một dự án tái hiện tối giản khi báo cáo.</p></li>
+<li><p><strong>Specialization</strong>: Được biên dịch ở chế độ nền trong khi chơi để tối ưu framerate. Không thể gây giật lag, nhưng có thể làm giảm framerate nếu có nhiều lần biên dịch diễn ra trong mỗi frame.</p></li>
+</ul>
+</section>
+<section id="pipeline-precompilation-features">
+<h2>Các tính năng biên dịch trước pipeline<a class="headerlink" href="#pipeline-precompilation-features" title="Link to this heading"></a></h2>
+<p>Godot cung cấp nhiều tính năng kết xuất không nhất thiết được mọi game sử dụng. Tiếc là hệ thống biên dịch trước pipeline không thể biết trước một tính năng cụ thể có được dự án sử dụng hay không. Một số tính năng chỉ có thể được phát hiện khi người dùng thêm một node vào scene hoặc bật/tắt một cài đặt cụ thể trong dự án hoặc trong environment. Hệ thống biên dịch trước pipeline sẽ theo dõi các tính năng này khi chúng được gặp lần đầu tiên và bật biên dịch trước cho chúng đối với mọi mesh hoặc surface được tạo sau đó.</p>
+<p>Nếu game của bạn sử dụng các tính năng này, <strong>hãy đảm bảo có một scene dùng chúng sớm nhất có thể</strong> trước khi tải phần lớn asset. Scene này có thể rất đơn giản và sẽ làm được việc miễn là nó dùng các tính năng mà game định sử dụng. Nó thậm chí có thể được kết xuất ngoài màn hình trong ít nhất một frame nếu cần, ví dụ bằng cách che nó bằng một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">class_ColorRect</span></a> hoặc dùng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">class_SubViewport</span></a> đặt bên ngoài biên cửa sổ.</p>
+<p>Bạn cũng nên lưu ý rằng việc thay đổi bất kỳ tính năng nào trong số này trong khi chơi sẽ gây giật lag ngay lập tức. Hãy đảm bảo chỉ thay đổi các tính năng này từ màn hình cấu hình nếu cần, và chèn màn hình tải cùng thông báo khi áp dụng thay đổi.</p>
+<ul class="simple">
+<li><p><strong>MSAA Level</strong>: Được bật khi mức MSAA 3D được thay đổi trong cài đặt dự án. Tiếc là việc dùng các mức MSAA khác nhau trên các viewport khác nhau sẽ gây giật lag vì engine chỉ theo dõi một mức tại một thời điểm để thực hiện biên dịch trước.</p></li>
+<li><p><strong>Reflection Probes</strong>: Được bật khi một node ReflectionProbe được đặt vào scene.</p></li>
+<li><p><strong>Separate Specular</strong>: Được bật khi dùng các hiệu ứng như sub-surface scattering hoặc một hiệu ứng compositor dựa vào việc lấy mẫu specular trực tiếp từ màn hình.</p></li>
+<li><p><strong>Motion Vectors</strong>: Được bật khi dùng các hiệu ứng như TAA, FSR2 hoặc một hiệu ứng compositor cần motion vector (chẳng hạn motion blur).</p></li>
+<li><p><strong>Normal and Roughness</strong>: Được bật khi dùng SDFGI, VoxelGI, phản chiếu không gian màn hình (screen-space reflections), SSAO, SSIL, hoặc khi dùng <code class="docutils literal notranslate"><span class="pre">normal_roughness_buffer</span></code> trong một shader tùy chỉnh hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_compositoreffect.html" title="Class reference (English)"><span class="xref std std-ref">class_CompositorEffect</span></a>.</p></li>
+<li><p><strong>Lightmaps</strong>: Được bật khi một node LightmapGI được đặt vào scene và có node dùng lightmap đã bake.</p></li>
+<li><p><strong>VoxelGI</strong>: Được bật khi một node VoxelGI được đặt vào scene.</p></li>
+<li><p><strong>SDFGI</strong>: Được bật khi WorldEnvironment bật SDFGI.</p></li>
+<li><p><strong>Multiview</strong>: Được bật cho các dự án XR.</p></li>
+<li><p><strong>16/32-bit Shadows</strong>: Được bật khi cấu hình độ chính xác độ sâu của shadowmap được thay đổi trong cài đặt dự án.</p></li>
+<li><p><strong>Omni Shadow Dual Paraboloid</strong>: Được bật khi một đèn omni đổ bóng và dùng chế độ dual paraboloid.</p></li>
+<li><p><strong>Omni Shadow Cubemap</strong>: Được bật khi một đèn omni đổ bóng và dùng chế độ cubemap (đây là chế độ mặc định).</p></li>
+</ul>
+<p>Nếu bạn gặp giật lag trong khi chơi và các monitor báo cáo số lần biên dịch tăng đột ngột ở bước <strong>Surface</strong>, rất có thể một tính năng đã không được bật trước. Đảm bảo hiệu ứng này được bật trong khi tải game nhiều khả năng sẽ giảm thiểu được vấn đề.</p>
+</section>
+<section id="pipeline-precompilation-instancing">
+<h2>Tạo instance để biên dịch trước pipeline<a class="headerlink" href="#pipeline-precompilation-instancing" title="Link to this heading"></a></h2>
+<p>Một nguồn gây giật lag phổ biến trong game là việc một số hiệu ứng chỉ được tạo instance trên scene do các tương tác chỉ xảy ra trong khi chơi. Ví dụ, nếu bạn có một hiệu ứng particle chỉ được thêm vào scene thông qua script khi người chơi thực hiện một hành động. Ngay cả khi scene đã được tải trước, engine có thể không biên dịch trước được các pipeline cho đến khi hiệu ứng được thêm vào scene ít nhất một lần.</p>
+<p>May mắn là từ Godot 4.4 trở đi có thể biên dịch trước các pipeline này miễn là scene được tạo instance ít nhất một lần trên scene, ngay cả khi nó hoàn toàn vô hình hoặc nằm ngoài tầm nhìn của camera.</p>
+<figure class="align-center" id="id3">
+<img alt="Ảnh chụp màn hình ví dụ về một Node ẩn cho một hiệu ứng" src="../../_images/pipeline_compilations_hidden_node.webp" />
+<figcaption>
+<p><span class="caption-text">Node viên đạn ẩn gắn vào người chơi trong một trong các dự án demo. Điều này giúp engine biên dịch trước các pipeline của hiệu ứng.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Nếu bạn biết có hiệu ứng nào được thêm vào scene một cách động trong khi chơi và thấy số lần biên dịch trên monitor tăng đột ngột khi các hiệu ứng này xuất hiện, một cách khắc phục là gắn một phiên bản ẩn của hiệu ứng ở đâu đó chắc chắn sẽ xuất hiện.</p>
+<p>Ví dụ, nếu nhân vật người chơi có thể gây ra một kiểu vụ nổ nào đó, bạn có thể gắn hiệu ứng làm node con của người chơi dưới dạng một node vô hình. Hãy nhớ tắt script gắn với node ẩn hoặc ẩn bất kỳ node nào khác có thể gây ra vấn đề, điều này có thể thực hiện bằng cách bật <strong>Editable Children</strong> trên node.</p>
+</section>
+<section id="shader-baker">
+<span id="doc-pipeline-compilations-shader-baker"></span><h2>Shader baker<a class="headerlink" href="#shader-baker" title="Link to this heading"></a></h2>
+<p>Từ Godot 4.5, bạn có thể chọn bake shader khi xuất (export) để cải thiện thời gian khởi động ban đầu. Việc này nhìn chung sẽ không giải quyết các trường hợp giật lag hiện có, nhưng sẽ giảm thời gian tải game lần đầu tiên. Điều này đặc biệt đúng khi dùng Direct3D 12 hoặc Metal, vốn có thời gian biên dịch shader ban đầu chậm hơn đáng kể so với Vulkan do cần thêm bước chuyển đổi. Các shader của chính Godot dùng GLSL và SPIR-V, nhưng Direct3D 12 và Metal dùng các định dạng khác.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Shader baker chỉ có thể bake mã nguồn thành định dạng trung gian (SPIR-V cho Vulkan, DXIL cho Direct3D 12, MIL cho Metal). Nó không thể bake định dạng trung gian thành pipeline cuối cùng, vì việc này phụ thuộc vào driver GPU và phần cứng.</p>
+<p>Shader baker không thay thế cho biên dịch trước pipeline, mà nhằm bổ sung cho nó.</p>
+</div>
+<p>Khi được bật, shader baker sẽ đóng gói mã shader đã biên dịch vào PCK, nhờ đó bước biên dịch shader được bỏ qua hoàn toàn. Nhược điểm là việc xuất sẽ mất thời gian lâu hơn một chút. File PCK sẽ lớn hơn vài megabyte.</p>
+<p>Shader baker bị tắt theo mặc định, nhưng bạn có thể bật nó trong từng export preset ở hộp thoại Export bằng cách đánh dấu tùy chọn xuất <span class="role-ui">Shader Baker &gt; Enabled</span>.</p>
+<p>Lưu ý rằng shader baking chỉ có thể xuất shader cho các driver được hỗ trợ bởi nền tảng mà trình chỉnh sửa đang chạy:</p>
+<ul class="simple">
+<li><p>Trình chỉnh sửa chạy trên Windows có thể xuất shader cho Vulkan và Direct3D 12.</p></li>
+<li><p>Trình chỉnh sửa chạy trên macOS có thể xuất shader cho Vulkan và Metal.</p></li>
+<li><p>Trình chỉnh sửa chạy trên Linux chỉ có thể xuất shader cho Vulkan.</p></li>
+<li><p>Trình chỉnh sửa chạy trên Android chỉ có thể xuất shader cho Vulkan.</p></li>
+</ul>
+<p>Shader baker sẽ chỉ xuất các shader khớp với cài đặt dự án <code class="docutils literal notranslate"><span class="pre">rendering/rendering_device/driver</span></code> cho nền tảng đích.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Shader baker chỉ được hỗ trợ cho trình kết xuất Forward+ và Mobile. Nó sẽ không có tác dụng nếu dự án dùng trình kết xuất Compatibility, hoặc với những người dùng phải dùng Compatibility dự phòng do phần cứng không hỗ trợ trình kết xuất Forward+ hay Mobile.</p>
+<p>Điều này cũng có nghĩa shader baker không được hỗ trợ trên nền tảng web, vì nền tảng web chỉ hỗ trợ trình kết xuất Compatibility.</p>
+<p>Ngoài ra, shader baker không được hỗ trợ khi xuất dự án bằng <a class="reference internal" href="../editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> <code class="docutils literal notranslate"><span class="pre">--headless</span></code>, vì Godot không thể truy cập GPU khi chạy ở chế độ headless.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_multimesh.html" class="btn btn-neutral float-left" title="Tối ưu bằng MultiMesh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="optimizing_3d_performance.html" class="btn btn-neutral float-right" title="Tối ưu hiệu năng 3D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

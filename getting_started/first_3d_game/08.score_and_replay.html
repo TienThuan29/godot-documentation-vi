@@ -1,0 +1,594 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Điểm số và chơi lại" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_3d_game/08.score_and_replay.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong phần này, chúng ta sẽ thêm điểm số, phát nhạc và khả năng khởi động lại trò chơi. Chúng ta phải theo dõi điểm số hiện tại trong một biến và hiển thị nó trên màn hình bằng một giao diện tối gi..." />
+<meta name="description" content="Trong phần này, chúng ta sẽ thêm điểm số, phát nhạc và khả năng khởi động lại trò chơi. Chúng ta phải theo dõi điểm số hiện tại trong một biến và hiển thị nó trên màn hình bằng một giao diện tối gi..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Điểm số và chơi lại &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Hoạt ảnh nhân vật" href="09.adding_animations.html" />
+    <link rel="prev" title="Tiêu diệt người chơi" href="07.killing_player.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_3d_game/08.score_and_replay" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 3D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.game_setup.html">Thiết lập khu vực chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02.player_input.html">Scene người chơi và các input action</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03.player_movement_code.html">Di chuyển người chơi bằng code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04.mob_scene.html">Thiết kế scene quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05.spawning_mobs.html">Sinh quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06.jump_and_squash.html">Nhảy và dẫm bẹp quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07.killing_player.html">Tiêu diệt người chơi</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Điểm số và chơi lại</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-ui-theme">Tạo theme cho UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keeping-track-of-the-score">Theo dõi điểm số</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retrying-the-game">Chơi lại game</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-music">Thêm âm nhạc</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="09.adding_animations.html">Hoạt ảnh nhân vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="going_further.html">Đi xa hơn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 3D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Điểm số và chơi lại</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="score-and-replay">
+<span id="doc-first-3d-game-score-and-replay"></span><h1>Điểm số và chơi lại<a class="headerlink" href="#score-and-replay" title="Link to this heading"></a></h1>
+<p>Trong phần này, chúng ta sẽ thêm điểm số, phát nhạc và khả năng khởi động lại trò chơi.</p>
+<p>Chúng ta phải theo dõi điểm số hiện tại trong một biến và hiển thị nó trên màn hình bằng một giao diện tối giản. Chúng ta sẽ dùng một nhãn văn bản để làm việc đó.</p>
+<p>Trong scene chính, thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html" title="Class reference (English)"><span class="xref std std-ref">Control</span></a> mới vào <code class="docutils literal notranslate"><span class="pre">Main</span></code> và đặt tên là <code class="docutils literal notranslate"><span class="pre">UserInterface</span></code>. Hãy đảm bảo bạn đang ở màn hình 2D, nơi bạn có thể chỉnh sửa giao diện người dùng (UI).</p>
+<p>Thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_label.html" title="Class reference (English)"><span class="xref std std-ref">Label</span></a> và đặt tên là <code class="docutils literal notranslate"><span class="pre">ScoreLabel</span></code></p>
+<p><img alt="image1" src="../../_images/01_label_node.webp" /></p>
+<p>Trong <em>Inspector</em>, đặt <em>Text</em> của <em>Label</em> thành một nội dung giữ chỗ như &quot;Score: 0&quot;.</p>
+<p><img alt="image2" src="../../_images/02_score_placeholder.webp" /></p>
+<p>Ngoài ra, văn bản mặc định có màu trắng, giống với nền của trò chơi. Chúng ta cần đổi màu của nó để có thể nhìn thấy khi chạy.</p>
+<p>Cuộn xuống <em>Theme Overrides</em>, mở rộng <em>Colors</em> và bật <em>Font Color</em> để tô văn bản thành màu đen (tương phản tốt với scene 3D màu trắng)</p>
+<p><img alt="image3" src="../../_images/03_score_font_color.webp" /></p>
+<p>Cuối cùng, nhấp và kéo văn bản trong viewport để di chuyển nó ra khỏi góc trên bên trái.</p>
+<p><img alt="image4" src="../../_images/04_score_label_moved.webp" /></p>
+<p>Node <code class="docutils literal notranslate"><span class="pre">UserInterface</span></code> cho phép chúng ta nhóm UI vào một nhánh của cây scene và dùng một resource theme sẽ được truyền xuống tất cả các node con của nó. Chúng ta sẽ dùng nó để đặt font cho trò chơi.</p>
+<section id="creating-a-ui-theme">
+<h2>Tạo theme cho UI<a class="headerlink" href="#creating-a-ui-theme" title="Link to this heading"></a></h2>
+<p>Một lần nữa, chọn node <code class="docutils literal notranslate"><span class="pre">UserInterface</span></code>. Trong <em>Inspector</em>, tạo một resource theme mới trong <em>Theme -&gt; Theme</em>.</p>
+<p><img alt="image5" src="../../_images/05_creating_theme.webp" /></p>
+<p>Nhấp vào nó để mở trình chỉnh sửa theme ở bảng phía dưới. Nó cho bạn xem trước tất cả các widget UI có sẵn sẽ trông như thế nào với resource theme của bạn.</p>
+<p><img alt="image6" src="../../_images/06_theme_preview.webp" /></p>
+<p>Theo mặc định, một theme chỉ có vài thuộc tính: <em>Default Base Scale</em>, <em>Default Font</em> và <em>Default Font Size</em>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể thêm nhiều thuộc tính hơn vào resource theme để thiết kế các giao diện người dùng phức tạp, nhưng điều đó nằm ngoài phạm vi của loạt bài này. Để tìm hiểu thêm về việc tạo và chỉnh sửa theme, xem <a class="reference internal" href="../../tutorials/ui/gui_skinning.html#doc-gui-skinning"><span class="std std-ref">Giới thiệu về tùy biến giao diện GUI</span></a>.</p>
+</div>
+<p><em>Default Font</em> cần một file font giống như các font bạn có trên máy tính. Hai định dạng file font phổ biến là TrueType Font (TTF) và OpenType Font (OTF).</p>
+<p>Trong dock <em>FileSystem</em>, mở rộng thư mục <code class="docutils literal notranslate"><span class="pre">fonts</span></code> rồi nhấp và kéo file <code class="docutils literal notranslate"><span class="pre">Montserrat-Medium.ttf</span></code> mà chúng tôi đã đưa vào dự án thả vào <em>Default Font</em>. Văn bản sẽ xuất hiện lại trong bản xem trước theme.</p>
+<p>Văn bản hơi nhỏ. Đặt <em>Default Font Size</em> thành <code class="docutils literal notranslate"><span class="pre">22</span></code> pixel để tăng kích thước văn bản.</p>
+<p><img alt="image7" src="../../_images/07_font_size.webp" /></p>
+</section>
+<section id="keeping-track-of-the-score">
+<h2>Theo dõi điểm số<a class="headerlink" href="#keeping-track-of-the-score" title="Link to this heading"></a></h2>
+<p>Tiếp theo, hãy làm phần điểm số. Gắn một script mới vào <code class="docutils literal notranslate"><span class="pre">ScoreLabel</span></code> và định nghĩa biến <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Label</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ScoreLabel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Label</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_score</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Điểm số sẽ tăng thêm <code class="docutils literal notranslate"><span class="pre">1</span></code> mỗi khi chúng ta dẫm bẹp một quái vật. Chúng ta có thể dùng signal <code class="docutils literal notranslate"><span class="pre">squashed</span></code> của chúng để biết khi nào điều đó xảy ra. Tuy nhiên, vì chúng ta tạo instance quái vật từ code, chúng ta không thể kết nối signal của mob với <code class="docutils literal notranslate"><span class="pre">ScoreLabel</span></code> qua trình chỉnh sửa.</p>
+<p>Thay vào đó, chúng ta phải tạo kết nối từ code mỗi khi sinh ra một quái vật.</p>
+<p>Mở script <code class="docutils literal notranslate"><span class="pre">main.gd</span></code>. Nếu nó vẫn đang mở, bạn có thể nhấp vào tên của nó ở cột bên trái của trình chỉnh sửa script.</p>
+<p><img alt="image8" src="../../_images/08_open_main_script.webp" /></p>
+<p>Ngoài ra, bạn có thể nhấp đúp vào file <code class="docutils literal notranslate"><span class="pre">main.gd</span></code> trong dock <em>FileSystem</em>.</p>
+<p>Ở cuối hàm <code class="docutils literal notranslate"><span class="pre">_on_mob_timer_timeout()</span></code>, thêm dòng sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="c1">#...</span>
+<span class="w">    </span><span class="c1"># We connect the mob to the score label to update the score upon squashing one.</span>
+<span class="w">    </span><span class="n">mob</span><span class="o">.</span><span class="vi">squashed</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="sx">$UserInterface/ScoreLabel</span><span class="o">.</span><span class="vi">_on_mob_squashed</span><span class="o">.</span><span class="nf">bind</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobTimerTimeout</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="c1">// We connect the mob to the score label to update the score upon squashing one.</span>
+<span class="w">    </span><span class="n">mob</span><span class="p">.</span><span class="n">Squashed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">ScoreLabel</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/ScoreLabel&quot;</span><span class="p">).</span><span class="n">OnMobSquashed</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dòng này có nghĩa là khi mob phát signal <code class="docutils literal notranslate"><span class="pre">squashed</span></code>, node <code class="docutils literal notranslate"><span class="pre">ScoreLabel</span></code> sẽ nhận nó và gọi hàm <code class="docutils literal notranslate"><span class="pre">_on_mob_squashed()</span></code>.</p>
+<p>Quay lại script <code class="docutils literal notranslate"><span class="pre">score_label.gd</span></code> để định nghĩa hàm callback <code class="docutils literal notranslate"><span class="pre">_on_mob_squashed()</span></code>.</p>
+<p>Ở đó, chúng ta tăng điểm số và cập nhật văn bản được hiển thị.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_squashed</span><span class="p">():</span>
+<span class="w">    </span><span class="n">score</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Score: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">score</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobSquashed</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_score</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;Score: {_score}&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dòng thứ hai dùng giá trị của biến <code class="docutils literal notranslate"><span class="pre">score</span></code> để thay thế chỗ giữ chỗ <code class="docutils literal notranslate"><span class="pre">%s</span></code>. Khi dùng tính năng này, Godot tự động chuyển đổi giá trị thành chuỗi văn bản, rất tiện khi xuất văn bản ra label hoặc khi dùng hàm <code class="docutils literal notranslate"><span class="pre">print()</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể tìm hiểu thêm về định dạng chuỗi tại đây: <a class="reference internal" href="../../tutorials/scripting/gdscript/gdscript_format_string.html#doc-gdscript-printf"><span class="std std-ref">Chuỗi định dạng trong GDScript</span></a>. Trong C#, hãy cân nhắc dùng <a class="reference external" href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated">nội suy chuỗi với &quot;$&quot;</a>.</p>
+</div>
+<p>Giờ bạn có thể chơi và dẫm bẹp vài kẻ địch để thấy điểm số tăng lên.</p>
+<p><img alt="image9" src="../../_images/09_score_in_game.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong một trò chơi phức tạp, bạn có thể muốn tách hoàn toàn giao diện người dùng khỏi thế giới game. Trong trường hợp đó, bạn sẽ không theo dõi điểm số trên label. Thay vào đó, bạn có thể muốn lưu nó trong một đối tượng riêng, chuyên dụng. Nhưng khi làm prototype hoặc khi dự án đơn giản, giữ cho code đơn giản là hoàn toàn ổn. Lập trình luôn là một việc cân bằng.</p>
+</div>
+</section>
+<section id="retrying-the-game">
+<h2>Chơi lại game<a class="headerlink" href="#retrying-the-game" title="Link to this heading"></a></h2>
+<p>Giờ chúng ta sẽ thêm khả năng chơi lại sau khi chết. Khi người chơi chết, chúng ta sẽ hiển thị một thông báo trên màn hình và chờ đầu vào.</p>
+<p>Quay lại scene <code class="docutils literal notranslate"><span class="pre">main.tscn</span></code>, chọn node <code class="docutils literal notranslate"><span class="pre">UserInterface</span></code>, thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">ColorRect</span></a> và đặt tên là <code class="docutils literal notranslate"><span class="pre">Retry</span></code>. Node này tô một hình chữ nhật bằng một màu đồng nhất và sẽ đóng vai trò lớp phủ để làm tối màn hình.</p>
+<p>Để nó trải rộng khắp viewport, bạn có thể dùng menu <em>Anchor Preset</em> trên thanh công cụ.</p>
+<p><img alt="image10" src="../../_images/10_anchor_preset.webp" /></p>
+<p>Mở nó và áp dụng lệnh <em>Full Rect</em>.</p>
+<p><img alt="image11" src="../../_images/11_full_rect_option.webp" /></p>
+<p>Không có gì xảy ra. À, gần như không có gì; chỉ có bốn chốt màu xanh lá di chuyển đến các góc của hộp chọn.</p>
+<p><img alt="image12" src="../../_images/12_anchors_updated.webp" /></p>
+<p>Đó là vì các node UI (tất cả những node có biểu tượng màu xanh lá) hoạt động với anchor và margin tương đối so với hộp bao của node cha. Ở đây, node <code class="docutils literal notranslate"><span class="pre">UserInterface</span></code> có kích thước nhỏ và node <code class="docutils literal notranslate"><span class="pre">Retry</span></code> bị giới hạn bởi nó.</p>
+<p>Chọn <code class="docutils literal notranslate"><span class="pre">UserInterface</span></code> và cũng áp dụng <em>Anchor Preset -&gt; Full Rect</em> cho nó. Node <code class="docutils literal notranslate"><span class="pre">Retry</span></code> giờ sẽ trải rộng khắp viewport.</p>
+<p>Hãy đổi màu của nó để làm tối khu vực chơi. Chọn <code class="docutils literal notranslate"><span class="pre">Retry</span></code> và trong <em>Inspector</em>, đặt <em>Color</em> của nó thành một màu vừa tối vừa trong suốt. Để làm vậy, trong bảng chọn màu, kéo thanh trượt <em>A</em> sang trái. Nó điều khiển kênh Alpha của màu, tức là độ mờ đục/trong suốt của nó.</p>
+<p><img alt="image13" src="../../_images/13_retry_color_picker.webp" /></p>
+<p>Tiếp theo, thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_label.html" title="Class reference (English)"><span class="xref std std-ref">Label</span></a> làm con của <code class="docutils literal notranslate"><span class="pre">Retry</span></code> và đặt <em>Text</em> của nó là &quot;Press Enter to retry.&quot; Để di chuyển và neo nó vào giữa màn hình, hãy áp dụng <em>Anchor Preset -&gt; Center</em> cho nó.</p>
+<p><img alt="image14" src="../../_images/14_center_option.webp" /></p>
+<section id="coding-the-retry-option">
+<h3>Lập trình tùy chọn chơi lại<a class="headerlink" href="#coding-the-retry-option" title="Link to this heading"></a></h3>
+<p>Giờ chúng ta có thể chuyển sang code để hiện và ẩn node <code class="docutils literal notranslate"><span class="pre">Retry</span></code> khi người chơi chết và chơi lại.</p>
+<p>Mở script <code class="docutils literal notranslate"><span class="pre">main.gd</span></code>. Đầu tiên, chúng ta muốn ẩn lớp phủ khi bắt đầu trò chơi. Thêm dòng này vào hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="sx">$UserInterface/Retry</span><span class="o">.</span><span class="nf">hide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Control</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/Retry&quot;</span><span class="p">).</span><span class="n">Hide</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Sau đó, khi người chơi bị trúng đòn, chúng ta hiển thị lớp phủ.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_player_hit</span><span class="p">():</span>
+<span class="w">    </span><span class="c1">#...</span>
+<span class="w">    </span><span class="sx">$UserInterface/Retry</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerHit</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//...</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Control</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/Retry&quot;</span><span class="p">).</span><span class="n">Show</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cuối cùng, khi node <code class="docutils literal notranslate"><span class="pre">Retry</span></code> hiển thị, chúng ta cần lắng nghe đầu vào của người chơi và khởi động lại trò chơi nếu họ nhấn Enter. Để làm vậy, chúng ta dùng callback có sẵn <code class="docutils literal notranslate"><span class="pre">_unhandled_input()</span></code>, được kích hoạt với mọi input.</p>
+<p>Nếu người chơi đã nhấn input action được định nghĩa sẵn <code class="docutils literal notranslate"><span class="pre">ui_accept</span></code> và <code class="docutils literal notranslate"><span class="pre">Retry</span></code> đang hiển thị, chúng ta tải lại scene hiện tại.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_unhandled_input</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;ui_accept&quot;</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="sx">$UserInterface/Retry</span><span class="o">.</span><span class="vi">visible</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># This restarts the current scene.</span>
+<span class="w">        </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">reload_current_scene</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_UnhandledInput</span><span class="p">(</span><span class="n">InputEvent</span><span class="w"> </span><span class="n">@event</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">@event</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;ui_accept&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Control</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/Retry&quot;</span><span class="p">).</span><span class="n">Visible</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// This restarts the current scene.</span>
+<span class="w">        </span><span class="n">GetTree</span><span class="p">().</span><span class="n">ReloadCurrentScene</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">get_tree()</span></code> cho chúng ta truy cập đối tượng toàn cục <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>, cho phép tải lại và khởi động lại scene hiện tại.</p>
+</section>
+</section>
+<section id="adding-music">
+<h2>Thêm âm nhạc<a class="headerlink" href="#adding-music" title="Link to this heading"></a></h2>
+<p>Để thêm nhạc phát liên tục ở nền, chúng ta sẽ dùng một tính năng khác của Godot: <a class="reference internal" href="../../tutorials/scripting/singletons_autoload.html#doc-singletons-autoload"><span class="std std-ref">autoload</span></a>.</p>
+<p>Để phát âm thanh, tất cả những gì bạn cần làm là thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audiostreamplayer.html" title="Class reference (English)"><span class="xref std std-ref">AudioStreamPlayer</span></a> vào scene và gắn một file âm thanh cho nó. Khi bạn bắt đầu scene, nó có thể tự động phát. Tuy nhiên, khi bạn tải lại scene, như chúng ta làm để chơi lại, các node âm thanh cũng bị đặt lại, và nhạc sẽ phát lại từ đầu.</p>
+<p>Bạn có thể dùng tính năng autoload để Godot tự động tải một node hoặc một scene khi bắt đầu trò chơi, bên ngoài scene hiện tại. Bạn cũng có thể dùng nó để tạo các đối tượng có thể truy cập toàn cục.</p>
+<p>Tạo một scene mới bằng cách vào menu <em>Scene</em> và nhấp <em>New Scene</em>, hoặc dùng biểu tượng <em>+</em> bên cạnh scene đang mở.</p>
+<p><img alt="image15" src="../../_images/15_new_scene.webp" /></p>
+<p>Nhấp vào nút <em>Other Node</em> để tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audiostreamplayer.html" title="Class reference (English)"><span class="xref std std-ref">AudioStreamPlayer</span></a> và đổi tên nó thành <code class="docutils literal notranslate"><span class="pre">MusicPlayer</span></code>.</p>
+<p><img alt="image16" src="../../_images/16_music_player_node.webp" /></p>
+<p>Chúng tôi đã đưa một bản nhạc nền vào thư mục <code class="docutils literal notranslate"><span class="pre">art/</span></code>, <code class="docutils literal notranslate"><span class="pre">House</span> <span class="pre">In</span> <span class="pre">a</span> <span class="pre">Forest</span> <span class="pre">Loop.ogg</span></code>. Nhấp và kéo nó vào thuộc tính <em>Stream</em> trong <em>Inspector</em>. Ngoài ra, hãy bật <em>Autoplay</em> để nhạc tự động phát khi bắt đầu trò chơi.</p>
+<p><img alt="image17" src="../../_images/17_music_node_properties.webp" /></p>
+<p>Lưu scene với tên <code class="docutils literal notranslate"><span class="pre">music_player.tscn</span></code>.</p>
+<p>Chúng ta phải đăng ký nó làm autoload. Vào menu <em>Project -&gt; Project Settings…</em> và nhấp vào tab <em>Globals -&gt; Autoload</em>.</p>
+<p>Trong ô <em>Path</em>, bạn cần nhập đường dẫn đến scene của mình. Nhấp vào biểu tượng thư mục để mở trình duyệt file và nhấp đúp vào <code class="docutils literal notranslate"><span class="pre">music_player.tscn</span></code>. Sau đó, nhấp nút <em>Add</em> ở bên phải để đăng ký node.</p>
+<p><img alt="image18" src="../../_images/18_register_autoload.webp" /></p>
+<p><code class="docutils literal notranslate"><span class="pre">music_player.tscn</span></code> giờ sẽ được tải vào bất kỳ scene nào bạn mở hoặc chạy. Vì vậy, nếu bạn chạy trò chơi bây giờ, nhạc sẽ tự động phát trong mọi scene.</p>
+<p>Trước khi kết thúc bài học này, hãy xem nhanh cách mọi thứ hoạt động bên dưới. Khi bạn chạy game, dock <em>Scene</em> sẽ thay đổi và hiển thị hai tab: <em>Remote</em> và <em>Local</em>.</p>
+<p><img alt="image19" src="../../_images/19_scene_dock_tabs.webp" /></p>
+<p>Tab <em>Remote</em> cho phép bạn xem cây node của game đang chạy. Tại đó, bạn sẽ thấy node <em>Main</em> cùng mọi thứ mà scene chứa, và các mob đã được tạo instance ở phía dưới.</p>
+<p><img alt="image20" src="../../_images/20_remote_scene_tree.webp" /></p>
+<p>Ở trên cùng là autoload <code class="docutils literal notranslate"><span class="pre">MusicPlayer</span></code> và một node <em>root</em>, chính là viewport của game.</p>
+<p>Vậy là xong bài học này. Trong phần tiếp theo, chúng ta sẽ thêm hoạt ảnh để game trông đẹp hơn và mang lại cảm giác tốt hơn nhiều.</p>
+<p>Dưới đây là script <code class="docutils literal notranslate"><span class="pre">main.gd</span></code> hoàn chỉnh để bạn tham khảo.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">mob_scene</span><span class="p">:</span><span class="w"> </span><span class="nb">PackedScene</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="sx">$UserInterface/Retry</span><span class="o">.</span><span class="nf">hide</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a new instance of the Mob scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mob_scene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Choose a random location on the SpawnPath.</span>
+<span class="w">    </span><span class="c1"># We store the reference to the SpawnLocation node.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob_spawn_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># And give it a random offset.</span>
+<span class="w">    </span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">progress_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">player_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="vi">position</span>
+<span class="w">    </span><span class="n">mob</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Spawn the mob by adding it to the Main scene.</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">mob</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># We connect the mob to the score label to update the score upon squashing one.</span>
+<span class="w">    </span><span class="n">mob</span><span class="o">.</span><span class="vi">squashed</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="sx">$UserInterface/ScoreLabel</span><span class="o">.</span><span class="vi">_on_mob_squashed</span><span class="o">.</span><span class="nf">bind</span><span class="p">())</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_player_hit</span><span class="p">():</span>
+<span class="w">    </span><span class="sx">$MobTimer</span><span class="o">.</span><span class="nf">stop</span><span class="p">()</span>
+<span class="w">    </span><span class="sx">$UserInterface/Retry</span><span class="o">.</span><span class="nf">show</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_unhandled_input</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;ui_accept&quot;</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="sx">$UserInterface/Retry</span><span class="o">.</span><span class="vi">visible</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># This restarts the current scene.</span>
+<span class="w">        </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">reload_current_scene</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">MobScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Control</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/Retry&quot;</span><span class="p">).</span><span class="n">Hide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_UnhandledInput</span><span class="p">(</span><span class="n">InputEvent</span><span class="w"> </span><span class="n">@event</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">@event</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;ui_accept&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Control</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/Retry&quot;</span><span class="p">).</span><span class="n">Visible</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// This restarts the current scene.</span>
+<span class="w">            </span><span class="n">GetTree</span><span class="p">().</span><span class="n">ReloadCurrentScene</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobTimerTimeout</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create a new instance of the Mob scene.</span>
+<span class="w">        </span><span class="n">Mob</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MobScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="o">&lt;</span><span class="n">Mob</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Choose a random location on the SpawnPath.</span>
+<span class="w">        </span><span class="c1">// We store the reference to the SpawnLocation node.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">mobSpawnLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">PathFollow3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// And give it a random offset.</span>
+<span class="w">        </span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">ProgressRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Randf</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">position</span><span class="p">;</span>
+<span class="w">        </span><span class="n">mob</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">Position</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Spawn the mob by adding it to the Main scene.</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">mob</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// We connect the mob to the score label to update the score upon squashing one.</span>
+<span class="w">        </span><span class="n">mob</span><span class="p">.</span><span class="n">Squashed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">ScoreLabel</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/ScoreLabel&quot;</span><span class="p">).</span><span class="n">OnMobSquashed</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerHit</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Timer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MobTimer&quot;</span><span class="p">).</span><span class="n">Stop</span><span class="p">();</span>
+<span class="w">        </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Control</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UserInterface/Retry&quot;</span><span class="p">).</span><span class="n">Show</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="07.killing_player.html" class="btn btn-neutral float-left" title="Tiêu diệt người chơi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="09.adding_animations.html" class="btn btn-neutral float-right" title="Hoạt ảnh nhân vật" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

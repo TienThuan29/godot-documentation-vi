@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tổng quan kiến trúc của Godot" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/architecture/godot_architecture_diagram.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Sơ đồ sau mô tả những khía cạnh quan trọng nhất trong kiến trúc của Godot. Sơ đồ không nhằm đầy đủ mọi chi tiết, mà chỉ nhằm cung cấp cái nhìn tổng quan cấp cao về các thành phần chính và mối quan ..." />
+<meta name="description" content="Sơ đồ sau mô tả những khía cạnh quan trọng nhất trong kiến trúc của Godot. Sơ đồ không nhằm đầy đủ mọi chi tiết, mà chỉ nhằm cung cấp cái nhìn tổng quan cấp cao về các thành phần chính và mối quan ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tổng quan kiến trúc của Godot &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Các phương thức và macro thông dụng của engine" href="common_engine_methods_and_macros.html" />
+    <link rel="prev" title="Kiến trúc engine" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/architecture/godot_architecture_diagram" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kiến trúc engine</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tổng quan kiến trúc của Godot</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scene-layer">Lớp Scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-layer">Lớp Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drivers-platform-interface">Drivers / Platform Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core">Core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main">Main</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common_engine_methods_and_macros.html">Các phương thức và macro thông dụng của engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_types.html">Các kiểu cốt lõi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variant_class.html">Lớp Variant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_class.html">Lớp Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inheritance_class_tree.html">Cây kế thừa lớp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_rendering_architecture.html">Kiến trúc kết xuất nội bộ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_coordinate_systems.html">Hệ tọa độ 2D và phép biến đổi 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html">Unit test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kiến trúc engine</a></li>
+      <li class="breadcrumb-item active">Tổng quan kiến trúc của Godot</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="godot-s-architecture-overview">
+<span id="doc-godot-architecture-diagram"></span><h1>Tổng quan kiến trúc của Godot<a class="headerlink" href="#godot-s-architecture-overview" title="Link to this heading"></a></h1>
+<p>Sơ đồ sau mô tả những khía cạnh quan trọng nhất trong kiến trúc của Godot. Sơ đồ không nhằm đầy đủ mọi chi tiết, mà chỉ nhằm cung cấp cái nhìn tổng quan cấp cao về các thành phần chính và mối quan hệ giữa chúng.</p>
+<figure class="align-default" id="id1">
+<img alt="Sơ đồ kiến trúc của Godot; chia thành ba lớp (từ trên xuống: lớp Scene, lớp Server, và lớp Drivers &amp; Platform interface), với Core và Main được tách riêng ở bên phải vì chúng tương tác với tất cả các lớp." src="../../_images/godot-architecture-diagram.webp" />
+<figcaption>
+<p><span class="caption-text">Ghi công: <a class="reference external" href="https://github.com/Geometror/godot-architecture-diagram">Hendrik Brucker</a></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="scene-layer">
+<h2>Lớp Scene<a class="headerlink" href="#scene-layer" title="Link to this heading"></a></h2>
+<p>Lớp Scene là cấp cao nhất trong kiến trúc của Godot, cung cấp hệ thống scene, là cách chính để xây dựng và tổ chức ứng dụng hoặc game của bạn. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">class_SceneTree</span></a> / <a class="reference internal" href="../../tutorials/scripting/scene_tree.html#doc-scene-tree"><span class="std std-ref">Sử dụng SceneTree</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html" title="Class reference (English)"><span class="xref std std-ref">class_Node</span></a> để biết thêm thông tin.</p>
+<p>Mã nguồn tương ứng: <a class="reference external" href="https://github.com/godotengine/godot/tree/master/scene">/scene/*</a></p>
+</section>
+<section id="server-layer">
+<h2>Lớp Server<a class="headerlink" href="#server-layer" title="Link to this heading"></a></h2>
+<p>Các thành phần server hiện thực hầu hết các hệ thống con của Godot (kết xuất, âm thanh, vật lý, v.v.). Chúng là các đối tượng singleton được khởi tạo khi engine khởi động.</p>
+<p><a class="reference external" href="https://godotengine.org/article/why-does-godot-use-servers-and-rids">Tại sao Godot dùng server và RID?</a></p>
+<p>Mã nguồn tương ứng: <a class="reference external" href="https://github.com/godotengine/godot/tree/master/servers">/servers/*</a></p>
+</section>
+<section id="drivers-platform-interface">
+<h2>Drivers / Platform Interface<a class="headerlink" href="#drivers-platform-interface" title="Link to this heading"></a></h2>
+<p>Lớp này trừu tượng hóa các chi tiết cấp thấp đặc thù cho từng nền tảng, chứa các driver cho API đồ họa, backend âm thanh và giao diện hệ điều hành (tất cả các hiện thực <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_os.html" title="Class reference (English)"><span class="xref std std-ref">class_OS</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_displayserver.html" title="Class reference (English)"><span class="xref std std-ref">class_DisplayServer</span></a> đặc thù cho từng nền tảng).</p>
+<p>Mã nguồn tương ứng: <a class="reference external" href="https://github.com/godotengine/godot/tree/master/drivers">/drivers/*</a> và <a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform">/platform/*</a></p>
+</section>
+<section id="core">
+<h2>Core<a class="headerlink" href="#core" title="Link to this heading"></a></h2>
+<p>Phần lõi của engine chứa các chức năng và cấu trúc dữ liệu thiết yếu được dùng xuyên suốt engine, như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html" title="Class reference (English)"><span class="xref std std-ref">class_Object</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_classdb.html" title="Class reference (English)"><span class="xref std std-ref">class_ClassDB</span></a>, <a class="reference internal" href="core_types.html#doc-core-types"><span class="std std-ref">quản lý bộ nhớ</span></a>, <a class="reference internal" href="core_types.html#doc-core-types"><span class="std std-ref">container</span></a>, file I/O, <a class="reference internal" href="variant_class.html#doc-variant-class"><span class="std std-ref">Variant</span></a>, và <a class="reference internal" href="common_engine_methods_and_macros.html#doc-common-engine-methods-and-macros"><span class="std std-ref">các tiện ích khác</span></a>.</p>
+<p>Mã nguồn tương ứng: <a class="reference external" href="https://github.com/godotengine/godot/tree/master/core">/core/*</a></p>
+</section>
+<section id="main">
+<h2>Main<a class="headerlink" href="#main" title="Link to this heading"></a></h2>
+<p>Thành phần Main chịu trách nhiệm khởi tạo và quản lý vòng đời của engine, bao gồm khởi động, tắt và vòng lặp chính. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mainloop.html" title="Class reference (English)"><span class="xref std std-ref">class_MainLoop</span></a> để biết thêm chi tiết.</p>
+<p>Mã nguồn tương ứng: <a class="reference external" href="https://github.com/godotengine/godot/tree/master/main">/main/*</a></p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Kiến trúc engine" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="common_engine_methods_and_macros.html" class="btn btn-neutral float-right" title="Các phương thức và macro thông dụng của engine" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

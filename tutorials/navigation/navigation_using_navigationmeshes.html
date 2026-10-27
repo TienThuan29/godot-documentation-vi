@@ -1,0 +1,909 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng navigation mesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/navigation/navigation_using_navigationmeshes.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Phiên bản 2D và 3D của navigation mesh lần lượt là NavigationPolygon và NavigationMesh. Navigation hoạt động độc lập với các phần khác của engine như kết xuất hay vật lý. Navigation mesh là thứ duy..." />
+<meta name="description" content="Phiên bản 2D và 3D của navigation mesh lần lượt là NavigationPolygon và NavigationMesh. Navigation hoạt động độc lập với các phần khác của engine như kết xuất hay vật lý. Navigation mesh là thứ duy..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng navigation mesh &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng NavigationPath" href="navigation_using_navigationpaths.html" />
+    <link rel="prev" title="Sử dụng NavigationRegion" href="navigation_using_navigationregions.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/navigation/navigation_using_navigationmeshes" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Điều hướng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigation_introduction_2d.html">Tổng quan về navigation 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_introduction_3d.html">Tổng quan về navigation 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationservers.html">Sử dụng NavigationServer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationmaps.html">Sử dụng NavigationMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationregions.html">Sử dụng NavigationRegion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng navigation mesh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#baking-a-navigation-mesh-with-a-navigationregion">Bake navigation mesh bằng NavigationRegion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#baking-a-navigation-mesh-with-the-navigationserver">Bake navigation mesh bằng NavigationServer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#baking-navigation-mesh-chunks-for-large-worlds">Bake các chunk navigation mesh cho thế giới lớn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navigation-mesh-baking-common-problems">Các vấn đề thường gặp khi bake navigation mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navigation-mesh-script-templates">Script template cho navigation mesh</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationpaths.html">Sử dụng NavigationPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationpathqueryobjects.html">Sử dụng NavigationPathQueryObjects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationagents.html">Sử dụng NavigationAgent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationobstacles.html">Sử dụng NavigationObstacle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationlinks.html">Sử dụng NavigationLink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationlayers.html">Sử dụng NavigationLayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_debug_tools.html">Công cụ gỡ lỗi navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_connecting_navmesh.html">Kết nối các navigation mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_types.html">Hỗ trợ các loại actor khác nhau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_locomotion.html">Hỗ trợ các kiểu di chuyển khác nhau cho actor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_area_access.html">Hỗ trợ quyền truy cập khu vực khác nhau cho các actor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_optimizing_performance.html">Tối ưu hiệu năng navigation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Điều hướng</a></li>
+      <li class="breadcrumb-item active">Sử dụng navigation mesh</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-navigation-meshes">
+<span id="doc-navigation-using-navigationmeshes"></span><h1>Sử dụng navigation mesh<a class="headerlink" href="#using-navigation-meshes" title="Link to this heading"></a></h1>
+<img alt="../../_images/nav_meshes.webp" src="../../_images/nav_meshes.webp" />
+<p>Phiên bản 2D và 3D của navigation mesh lần lượt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpolygon.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPolygon</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmesh.html" title="Class reference (English)"><span class="xref std std-ref">NavigationMesh</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Navigation mesh chỉ mô tả khu vực có thể đi qua đối với vị trí tâm của agent. Mọi giá trị bán kính mà agent có đều bị bỏ qua. Nếu muốn việc tìm đường tính đến kích thước (va chạm) của agent, bạn cần thu nhỏ navigation mesh cho phù hợp.</p>
+</div>
+<p>Navigation hoạt động độc lập với các phần khác của engine như kết xuất hay vật lý. Navigation mesh là thứ duy nhất được xét khi tìm đường; ví dụ, hình ảnh hiển thị và collision shape bị hệ thống navigation bỏ qua hoàn toàn. Nếu bạn cần tính đến dữ liệu khác (chẳng hạn hình ảnh hiển thị) khi tìm đường, bạn cần điều chỉnh navigation mesh cho phù hợp. Quá trình đưa các ràng buộc navigation vào navigation mesh thường được gọi là bake navigation mesh.</p>
+<figure class="align-center" id="id1">
+<img alt="So sánh đa giác navigation mesh lồi và lõm" src="../../_images/nav_mesh_vs_physics.webp" />
+<figcaption>
+<p><span class="caption-text">Navigation mesh mô tả một bề mặt mà tâm của agent có thể đứng an toàn, khác với các shape vật lý mô tả giới hạn va chạm bên ngoài.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Nếu bạn gặp vấn đề xuyên vật thể hoặc va chạm khi đi theo đường đi navigation, hãy luôn nhớ rằng bạn cần cho hệ thống navigation biết ý định của mình thông qua một navigation mesh phù hợp. Tự bản thân hệ thống navigation sẽ không bao giờ biết &quot;đây là collision shape hay mesh hiển thị của cái cây / tảng đá / bức tường&quot;, vì nó chỉ biết rằng &quot;ở đây tôi được báo là có thể đi an toàn vì nó nằm trên navigation mesh&quot;.</p>
+<p id="doc-navigation-navmesh-baking">Việc bake navigation mesh có thể được thực hiện bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationRegion2D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationRegion3D</span></a>, hoặc bằng cách dùng trực tiếp API <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer3D</span></a>.</p>
+<section id="baking-a-navigation-mesh-with-a-navigationregion">
+<span id="doc-navigation-using-navigationmeshes-baking-navigation-mesh-with-navigationregion"></span><h2>Bake navigation mesh bằng NavigationRegion<a class="headerlink" href="#baking-a-navigation-mesh-with-a-navigationregion" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id2">
+<img alt="Các bước bake navigation mesh" src="../../_images/nav_mesh_baking_steps.gif" />
+<figcaption>
+<p><span class="caption-text">Bake navigation mesh với khoảng lùi bán kính agent so với hình học.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Node NavigationRegion giúp việc bake navigation mesh trở nên dễ tiếp cận hơn. Khi bake bằng node NavigationRegion, các bước phân tích, bake và cập nhật region riêng lẻ đều được gộp vào một hàm.</p>
+<p>Các node này có trong 2D và 3D lần lượt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationRegion2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationRegion3D</span></a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p><code class="docutils literal notranslate"><span class="pre">source_geometry_mode</span></code> của navigation mesh có thể được chuyển sang phân tích theo tên nhóm node cụ thể, nhờ đó các node cần bake có thể được đặt ở bất cứ đâu trong scene.</p>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Baking with a NavigationRegion2D</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Baking with a NavigationRegion3D</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><p>Khi chọn một node NavigationRegion2D trong Editor, các tùy chọn bake cùng các công cụ vẽ đa giác sẽ xuất hiện trên thanh trên cùng của Editor.</p>
+<img alt="../../_images/nav_region_baking_01.webp" src="../../_images/nav_region_baking_01.webp" />
+<p>Để region hoạt động, bạn cần thêm một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpolygon.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPolygon</span></a>.</p>
+<p>Các thuộc tính để parse và bake navigation mesh khi đó thuộc về resource được dùng và có thể tìm thấy trong Inspector của resource.</p>
+<img alt="../../_images/nav_region_baking_02.webp" src="../../_images/nav_region_baking_02.webp" />
+<p>Kết quả phân tích hình học nguồn có thể được điều chỉnh bằng các thuộc tính sau.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parsed_geometry_type</span></code> lọc xem đối tượng hiển thị, đối tượng vật lý hay cả hai sẽ được parse từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>. Để biết chi tiết về những đối tượng nào được parse và parse như thế nào, xem phần về parse hình học nguồn bên dưới.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collision_mask</span></code> lọc những đối tượng va chạm vật lý nào được đưa vào khi <code class="docutils literal notranslate"><span class="pre">parsed_geometry_type</span></code> bao gồm static collider.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_geometry_mode</span></code> xác định bắt đầu parse từ (các) node nào và cách duyệt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_geometry_group_name</span></code> được dùng khi chỉ một nhóm node nhất định cần được parse. Phụ thuộc vào <code class="docutils literal notranslate"><span class="pre">source_geometry_mode</span></code> đã chọn.</p></li>
+</ul>
+<p>Sau khi đã thêm hình học nguồn, kết quả bake có thể được kiểm soát bằng các thuộc tính sau.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cell_size</span></code> đặt kích thước lưới raster hóa và nên khớp với kích thước của navigation map.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_radius</span></code> thu nhỏ navigation mesh được bake để có đủ khoảng cách lề cho kích thước (va chạm) của agent.</p></li>
+</ul>
+<p>Việc bake của NavigationRegion2D cũng có thể được dùng lúc runtime bằng script.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">on_thread</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="nf">bake_navigation_polygon</span><span class="p">(</span><span class="n">on_thread</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="n">onThread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="n">BakeNavigationPolygon</span><span class="p">(</span><span class="n">onThread</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để thử nhanh việc bake 2D với cài đặt mặc định:</p>
+<ul class="simple">
+<li><p>Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationRegion2D</span></a>.</p></li>
+<li><p>Thêm một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpolygon.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPolygon</span></a> vào NavigationRegion2D.</p></li>
+<li><p>Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_polygon2d.html" title="Class reference (English)"><span class="xref std std-ref">Polygon2D</span></a> bên dưới NavigationRegion2D.</p></li>
+<li><p>Vẽ 1 đường viền NavigationPolygon bằng công cụ vẽ của NavigationRegion2D đang được chọn.</p></li>
+<li><p>Vẽ 1 đường viền Polygon2D bên trong đường viền NavigationPolygon bằng công cụ vẽ của Polygon2D đang được chọn.</p></li>
+<li><p>Nhấn nút bake trong trình chỉnh sửa và một navigation mesh sẽ xuất hiện.</p></li>
+</ul>
+<img alt="../../_images/nav_region_baking_01.webp" src="../../_images/nav_region_baking_01.webp" />
+<img alt="../../_images/nav_mesh_mini_2d.webp" src="../../_images/nav_mesh_mini_2d.webp" />
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><p>Khi một node NavigationRegion3D được chọn trong trình chỉnh sửa, các tùy chọn bake sẽ xuất hiện trên thanh trên cùng của trình chỉnh sửa.</p>
+<img alt="../../_images/nav_mesh_bake_toolbar.webp" src="../../_images/nav_mesh_bake_toolbar.webp" />
+<p>Để region hoạt động, bạn cần thêm một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmesh.html" title="Class reference (English)"><span class="xref std std-ref">NavigationMesh</span></a>.</p>
+<p>Các thuộc tính để parse và bake navigation mesh khi đó thuộc về resource được dùng và có thể tìm thấy trong Inspector của resource.</p>
+<img alt="../../_images/nav_region3d_baking_01.webp" src="../../_images/nav_region3d_baking_01.webp" />
+<p>Kết quả phân tích hình học nguồn có thể được điều chỉnh bằng các thuộc tính sau.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parsed_geometry_type</span></code> lọc xem đối tượng hiển thị, đối tượng vật lý hay cả hai sẽ được parse từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>. Để biết chi tiết về những đối tượng nào được parse và parse như thế nào, xem phần về parse hình học nguồn bên dưới.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collision_mask</span></code> lọc những đối tượng va chạm vật lý nào được đưa vào khi <code class="docutils literal notranslate"><span class="pre">parsed_geometry_type</span></code> bao gồm static collider.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_geometry_mode</span></code> xác định bắt đầu parse từ (các) node nào và cách duyệt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_geometry_group_name</span></code> được dùng khi chỉ một nhóm node nhất định cần được parse. Phụ thuộc vào <code class="docutils literal notranslate"><span class="pre">source_geometry_mode</span></code> đã chọn.</p></li>
+</ul>
+<p>Sau khi đã thêm hình học nguồn, kết quả bake có thể được kiểm soát bằng các thuộc tính sau.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cell_size</span></code> và <code class="docutils literal notranslate"><span class="pre">cell_height</span></code> đặt kích thước lưới voxel raster hóa và nên khớp với kích thước của navigation map.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_radius</span></code> thu nhỏ navigation mesh được bake để có đủ khoảng cách lề cho kích thước (va chạm) của agent.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_height</span></code> loại khỏi navigation mesh những vùng mà agent quá cao để lọt vào.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agent_max_climb</span></code> và <code class="docutils literal notranslate"><span class="pre">agent_max_slope</span></code> loại bỏ những vùng mà chênh lệch độ cao giữa các voxel lân cận quá lớn, hoặc bề mặt quá dốc.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p><code class="docutils literal notranslate"><span class="pre">cell_size</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">cell_height</span></code> quá nhỏ có thể tạo ra quá nhiều voxel, có khả năng làm game bị treo hoặc thậm chí crash.</p>
+</div>
+<p>Việc bake của NavigationRegion3D cũng có thể được dùng lúc runtime bằng script.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">on_thread</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="nf">bake_navigation_mesh</span><span class="p">(</span><span class="n">on_thread</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="n">onThread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="n">BakeNavigationMesh</span><span class="p">(</span><span class="n">onThread</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để thử nhanh việc bake 3D với cài đặt mặc định:</p>
+<ul class="simple">
+<li><p>Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationRegion3D</span></a>.</p></li>
+<li><p>Thêm một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmesh.html" title="Class reference (English)"><span class="xref std std-ref">NavigationMesh</span></a> vào NavigationRegion3D.</p></li>
+<li><p>Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a> bên dưới NavigationRegion3D.</p></li>
+<li><p>Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_planemesh.html" title="Class reference (English)"><span class="xref std std-ref">PlaneMesh</span></a> vào MeshInstance3D.</p></li>
+<li><p>Nhấn nút bake trong trình chỉnh sửa và một navigation mesh sẽ xuất hiện.</p></li>
+</ul>
+<img alt="../../_images/nav_mesh_bake_toolbar.webp" src="../../_images/nav_mesh_bake_toolbar.webp" />
+<img alt="../../_images/nav_mesh_mini_3d.webp" src="../../_images/nav_mesh_mini_3d.webp" />
+</div></div>
+</section>
+<section id="baking-a-navigation-mesh-with-the-navigationserver">
+<span id="doc-navigation-using-navigationmeshes-baking-navigation-mesh-with-navigationserver"></span><h2>Bake navigation mesh bằng NavigationServer<a class="headerlink" href="#baking-a-navigation-mesh-with-the-navigationserver" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer3D</span></a> có các hàm API để gọi riêng từng bước của quá trình bake navigation mesh.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parse_source_geometry_data()</span></code> có thể được dùng để parse hình học nguồn thành một resource có thể tái sử dụng và serialize được.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bake_from_source_geometry_data()</span></code> có thể được dùng để bake navigation mesh từ dữ liệu đã được parse, ví dụ để tránh các vấn đề hiệu năng lúc runtime do việc parse (dư thừa).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bake_from_source_geometry_data_async()</span></code> cũng tương tự nhưng bake navigation mesh theo kiểu trì hoãn bằng các luồng, không chặn luồng chính.</p></li>
+</ul>
+<p>So với NavigationRegion, NavigationServer cho phép kiểm soát quá trình bake navigation mesh chi tiết hơn. Đổi lại, nó phức tạp hơn khi sử dụng nhưng cũng cung cấp nhiều tùy chọn nâng cao hơn.</p>
+<p>Một số ưu điểm khác của NavigationServer so với NavigationRegion là:</p>
+<ul class="simple">
+<li><p>Server có thể parse hình học nguồn mà không bake, ví dụ để lưu cache cho lần dùng sau.</p></li>
+<li><p>Server cho phép chọn thủ công node gốc để bắt đầu parse hình học nguồn.</p></li>
+<li><p>Server có thể nhận và bake từ dữ liệu hình học nguồn được tạo theo thủ tục (procedural).</p></li>
+<li><p>Server có thể bake nhiều navigation mesh lần lượt trong khi (tái) sử dụng cùng một dữ liệu hình học nguồn.</p></li>
+</ul>
+<p>Để bake navigation mesh bằng NavigationServer, bạn cần có hình học nguồn. Hình học nguồn (source geometry) là dữ liệu hình học cần được xét đến trong quá trình bake navigation mesh. Cả navigation mesh 2D và 3D đều được tạo bằng cách bake từ hình học nguồn.</p>
+<p>Phiên bản 2D và 3D của resource hình học nguồn lần lượt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmeshsourcegeometrydata2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationMeshSourceGeometryData2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmeshsourcegeometrydata3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationMeshSourceGeometryData3D</span></a>.</p>
+<p>Hình học nguồn có thể là hình học được parse từ mesh hiển thị, từ va chạm vật lý, hoặc các mảng dữ liệu được tạo theo thủ tục, như đường viền (2D) và mặt tam giác (3D). Để tiện lợi, hình học nguồn thường được parse trực tiếp từ các cấu trúc node trong SceneTree. Với việc (re)bake navigation mesh lúc runtime, hãy lưu ý rằng việc parse hình học luôn diễn ra trên luồng chính.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>SceneTree không an toàn luồng (thread-safe). Việc parse hình học nguồn từ SceneTree chỉ có thể được thực hiện trên luồng chính.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Dữ liệu từ mesh hiển thị và đa giác cần được nhận về từ GPU, khiến RenderingServer bị đình trệ trong quá trình đó. Với việc (re)bake lúc runtime, nên ưu tiên dùng physics shape làm hình học nguồn để parse.</p>
+</div>
+<p>Hình học nguồn được lưu trong resource để hình học đã tạo có thể được tái sử dụng cho nhiều lần bake. Ví dụ: bake nhiều navigation mesh cho các kích thước agent khác nhau từ cùng một hình học nguồn. Điều này cũng cho phép lưu hình học nguồn xuống đĩa để tải lại sau, ví dụ để tránh chi phí parse lại lúc runtime.</p>
+<p>Nhìn chung, dữ liệu hình học nên được giữ thật đơn giản. Càng ít cạnh càng tốt, miễn là đủ dùng. Đặc biệt trong 2D, nên tránh hình học trùng lặp và lồng nhau vì nó buộc phải tính toán lỗ đa giác, có thể dẫn đến đa giác bị lật. Một ví dụ về hình học lồng nhau là một shape StaticBody2D nhỏ hơn được đặt hoàn toàn bên trong biên của một shape StaticBody2D khác.</p>
+</section>
+<section id="baking-navigation-mesh-chunks-for-large-worlds">
+<h2>Bake các chunk navigation mesh cho thế giới lớn<a class="headerlink" href="#baking-navigation-mesh-chunks-for-large-worlds" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id3">
+<img alt="Xây dựng các chunk navigation mesh" src="../../_images/navmesh_chunk_build.gif" />
+<figcaption>
+<p><span class="caption-text">Xây dựng và cập nhật từng chunk navigation mesh riêng lẻ lúc runtime.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem cách bake chunk navigation mesh hoạt động thực tế trong các dự án demo <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/2d/navigation_mesh_chunks">Navigation Mesh Chunks 2D</a> và <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/navigation_mesh_chunks">Navigation Mesh Chunks 3D</a>.</p>
+</div>
+<p>Để tránh các cạnh bị lệch giữa các chunk region khác nhau, navigation mesh có hai thuộc tính quan trọng cho quá trình bake: baking bound (giới hạn bake) và border size (kích thước viền). Kết hợp lại, chúng có thể đảm bảo các cạnh giữa các chunk region được căn khớp hoàn hảo.</p>
+<figure class="align-center" id="id4">
+<img alt="Chunk navigation mesh với bake bound và border size" src="../../_images/navmesh_bound_bordersize.webp" />
+<figcaption>
+<p><span class="caption-text">Chunk navigation mesh được bake với bake bound hoặc được bake với border size bổ sung.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Baking bound, là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rect2.html" title="Class reference (English)"><span class="xref std std-ref">Rect2</span></a> căn theo trục cho 2D và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_aabb.html" title="Class reference (English)"><span class="xref std std-ref">AABB</span></a> cho 3D, giới hạn hình học nguồn được dùng bằng cách loại bỏ mọi hình học nằm ngoài giới hạn.</p>
+<p>Các thuộc tính <code class="docutils literal notranslate"><span class="pre">baking_rect</span></code> và <code class="docutils literal notranslate"><span class="pre">baking_rect_offset</span></code> của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpolygon.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPolygon</span></a> có thể được dùng để tạo và đặt baking bound 2D.</p>
+<p>Các thuộc tính <code class="docutils literal notranslate"><span class="pre">filter_baking_aabb</span></code> và <code class="docutils literal notranslate"><span class="pre">filter_baking_aabb_offset</span></code> của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmesh.html" title="Class reference (English)"><span class="xref std std-ref">NavigationMesh</span></a> có thể được dùng để tạo và đặt baking bound 3D.</p>
+<p>Nếu chỉ đặt baking bound thì vẫn còn một vấn đề khác. Navigation mesh kết quả chắc chắn sẽ bị ảnh hưởng bởi các offset cần thiết như <code class="docutils literal notranslate"><span class="pre">agent_radius</span></code>, khiến các cạnh không căn khớp đúng.</p>
+<figure class="align-center" id="id5">
+<img alt="Các chunk navigation mesh có khoảng hở" src="../../_images/navmesh_chunk_gaps.webp" />
+<figcaption>
+<p><span class="caption-text">Các chunk navigation mesh có khoảng hở dễ thấy do offset bán kính agent đã được bake.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Đây là lúc thuộc tính <code class="docutils literal notranslate"><span class="pre">border_size</span></code> của navigation mesh phát huy tác dụng. Border size là một lề hướng vào trong tính từ baking bound. Đặc điểm quan trọng của border size là nó không bị ảnh hưởng bởi hầu hết các offset và hậu xử lý như <code class="docutils literal notranslate"><span class="pre">agent_radius</span></code>.</p>
+<p>Thay vì loại bỏ hình học nguồn, border size loại bỏ các phần của bề mặt cuối cùng của navigation mesh đã bake. Nếu baking bound đủ lớn, border size có thể loại bỏ các phần bề mặt gây vấn đề để chỉ còn lại đúng kích thước chunk mong muốn.</p>
+<figure class="align-center" id="id6">
+<img alt="Các chunk navigation mesh không có khoảng hở" src="../../_images/navmesh_chunks.webp" />
+<figcaption>
+<p><span class="caption-text">Các chunk navigation mesh với các cạnh được căn khớp và không có khoảng hở.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Baking bound cần đủ lớn để bao gồm một lượng hình học nguồn hợp lý từ tất cả các chunk lân cận.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Trong 3D, chức năng của border size chỉ giới hạn trên trục xz.</p>
+</div>
+</section>
+<section id="navigation-mesh-baking-common-problems">
+<h2>Các vấn đề thường gặp khi bake navigation mesh<a class="headerlink" href="#navigation-mesh-baking-common-problems" title="Link to this heading"></a></h2>
+<p>Có một số vấn đề thường gặp và lưu ý quan trọng cần xem xét khi tạo hoặc bake navigation mesh.</p>
+<ul>
+<li><dl>
+<dt>Bake navigation mesh gây vấn đề về tốc độ khung hình khi đang chạy</dt><dd><p>Theo mặc định, việc bake navigation mesh được thực hiện trên một luồng nền, nên miễn là nền tảng hỗ trợ đa luồng, bản thân việc bake hiếm khi là nguồn gốc của các vấn đề hiệu năng (giả sử hình học có kích thước và độ phức tạp hợp lý cho việc rebake lúc runtime).</p>
+<p>Nguồn gây vấn đề hiệu năng phổ biến lúc runtime là bước parse hình học nguồn liên quan đến node và SceneTree. SceneTree không an toàn luồng nên mọi node đều phải được parse trên luồng chính. Một số node chứa nhiều dữ liệu có thể rất nặng và chậm khi parse lúc runtime, ví dụ TileMap có một hoặc nhiều đa giác cho mỗi ô được dùng và mỗi TileMapLayer cần parse. Các node chứa mesh cần yêu cầu dữ liệu từ RenderingServer, làm đình trệ việc kết xuất trong quá trình đó.</p>
+<p>Để cải thiện hiệu năng, hãy dùng các shape được tối ưu hơn, ví dụ collision shape thay vì mesh hiển thị chi tiết, đồng thời gộp và đơn giản hóa hình học càng nhiều càng tốt từ trước. Nếu không có cách nào hiệu quả, đừng parse SceneTree mà hãy thêm hình học nguồn theo thủ tục bằng script. Nếu chỉ dùng các mảng dữ liệu thuần làm hình học nguồn, toàn bộ quá trình bake có thể được thực hiện trên luồng nền.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Navigation mesh tạo ra các lỗ ngoài ý muốn trong 2D.</dt><dd><p>Việc bake navigation mesh trong 2D được thực hiện bằng các phép cắt đa giác dựa trên các đường viền. Đa giác có &quot;lỗ&quot; là điều bất đắc dĩ nhưng cần thiết để tạo các đa giác 2D phức tạp hơn, song có thể trở nên khó đoán với người dùng khi có nhiều shape phức tạp tham gia.</p>
+<p>Để tránh mọi vấn đề bất ngờ khi tính toán lỗ đa giác, hãy tránh lồng bất kỳ đường viền nào vào trong các đường viền khác cùng loại (đi qua được / vật cản). Điều này bao gồm cả các shape được parse từ node. Ví dụ: đặt một shape StaticBody2D nhỏ hơn bên trong một shape StaticBody2D lớn hơn có thể khiến đa giác kết quả bị lật.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Navigation mesh xuất hiện bên trong hình học trong 3D.</dt><dd><p>Việc bake navigation mesh trong 3D không có khái niệm &quot;bên trong&quot;. Các ô voxel dùng để raster hóa hình học chỉ có hai trạng thái: bị chiếm hoặc không. Hãy loại bỏ phần hình học nằm trên mặt đất bên trong hình học khác. Nếu không thể, hãy thêm hình học &quot;giả&quot; nhỏ hơn vào bên trong với càng ít tam giác càng tốt để các ô được lấp bởi thứ gì đó.</p>
+<p>Một shape <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationobstacle3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationObstacle3D</span></a> được đặt để bake cùng navigation mesh cũng có thể được dùng để loại bỏ hình học.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<figure class="align-center" id="id7">
+<img alt="NavigationObstacle3D loại bỏ hình học không mong muốn" src="../../_images/nav_mesh_obstacles_discard.webp" />
+<figcaption>
+<p><span class="caption-text">Một shape NavigationObstacle3D có thể được dùng để loại bỏ các phần navigation mesh không mong muốn.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="navigation-mesh-script-templates">
+<h2>Script template cho navigation mesh<a class="headerlink" href="#navigation-mesh-script-templates" title="Link to this heading"></a></h2>
+<p>Script sau dùng NavigationServer để parse hình học nguồn từ scene tree, bake một navigation mesh và cập nhật một navigation region với navigation mesh vừa cập nhật.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-MkQgR0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tab" tabindex="0">2D GDScript</button><button aria-controls="panel-3-MkQgQyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-MkQgQyM=" name="MkQgQyM=" role="tab" tabindex="-1">2D C#</button><button aria-controls="panel-3-M0QgR0RTY3JpcHQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tab" tabindex="-1">3D GDScript</button><button aria-controls="panel-3-M0QgQyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-M0QgQyM=" name="M0QgQyM=" role="tab" tabindex="-1">3D C#</button></div><div aria-labelledby="tab-3-MkQgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationPolygon</span>
+<span class="k">var</span><span class="w"> </span><span class="n">source_geometry</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationMeshSourceGeometryData2D</span>
+<span class="k">var</span><span class="w"> </span><span class="n">callback_parsing</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Callable</span>
+<span class="k">var</span><span class="w"> </span><span class="n">callback_baking</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Callable</span>
+<span class="k">var</span><span class="w"> </span><span class="n">region_rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationPolygon</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="o">.</span><span class="vi">agent_radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span>
+<span class="w">    </span><span class="n">source_geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationMeshSourceGeometryData2D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">callback_parsing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">on_parsing_done</span>
+<span class="w">    </span><span class="n">callback_baking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">on_baking_done</span>
+<span class="w">    </span><span class="n">region_rid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_create</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Enable the region and set it to the default navigation map.</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_set_enabled</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_set_map</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="nf">get_navigation_map</span><span class="p">())</span>
+
+<span class="w">    </span><span class="c1"># Some mega-nodes like TileMap are often not ready on the first frame.</span>
+<span class="w">    </span><span class="c1"># Also the parsing needs to happen on the main-thread.</span>
+<span class="w">    </span><span class="c1"># So do a deferred call to avoid common parsing issues.</span>
+<span class="w">    </span><span class="n">parse_source_geometry</span><span class="o">.</span><span class="nf">call_deferred</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">parse_source_geometry</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">source_geometry</span><span class="o">.</span><span class="nf">clear</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">root_node</span><span class="p">:</span><span class="w"> </span><span class="nb">Node2D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span>
+
+<span class="w">    </span><span class="c1"># Parse the obstruction outlines from all child nodes of the root node by default.</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">parse_source_geometry_data</span><span class="p">(</span>
+<span class="w">        </span><span class="n">navigation_mesh</span><span class="p">,</span>
+<span class="w">        </span><span class="n">source_geometry</span><span class="p">,</span>
+<span class="w">        </span><span class="n">root_node</span><span class="p">,</span>
+<span class="w">        </span><span class="n">callback_parsing</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">on_parsing_done</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># If we did not parse a TileMap with navigation mesh cells we may now only</span>
+<span class="w">    </span><span class="c1"># have obstruction outlines so add at least one traversable outline</span>
+<span class="w">    </span><span class="c1"># so the obstructions outlines have something to &quot;cut&quot; into.</span>
+<span class="w">    </span><span class="n">source_geometry</span><span class="o">.</span><span class="nf">add_traversable_outline</span><span class="p">(</span><span class="nb nb-Type">PackedVector2Array</span><span class="p">([</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">500.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">500.0</span><span class="p">,</span><span class="w"> </span><span class="mf">500.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">500.0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">]))</span>
+
+<span class="w">    </span><span class="c1"># Bake the navigation mesh on a thread with the source geometry data.</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">bake_from_source_geometry_data_async</span><span class="p">(</span>
+<span class="w">        </span><span class="n">navigation_mesh</span><span class="p">,</span>
+<span class="w">        </span><span class="n">source_geometry</span><span class="p">,</span>
+<span class="w">        </span><span class="n">callback_baking</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">on_baking_done</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Update the region with the updated navigation mesh.</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_set_navigation_polygon</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-MkQgQyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-MkQgQyM=" name="MkQgQyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NavigationPolygon</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NavigationMeshSourceGeometryData2D</span><span class="w"> </span><span class="n">_sourceGeometry</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Callable</span><span class="w"> </span><span class="n">_callbackParsing</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Callable</span><span class="w"> </span><span class="n">_callbackBaking</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_regionRid</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationPolygon</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="p">.</span><span class="n">AgentRadius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_sourceGeometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationMeshSourceGeometryData2D</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_callbackParsing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">OnParsingDone</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_callbackBaking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">OnBakingDone</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_regionRid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionCreate</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Enable the region and set it to the default navigation map.</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionSetEnabled</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionSetMap</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">NavigationMap</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Some mega-nodes like TileMap are often not ready on the first frame.</span>
+<span class="w">        </span><span class="c1">// Also the parsing needs to happen on the main-thread.</span>
+<span class="w">        </span><span class="c1">// So do a deferred call to avoid common parsing issues.</span>
+<span class="w">        </span><span class="n">CallDeferred</span><span class="p">(</span><span class="n">MethodName</span><span class="p">.</span><span class="n">ParseSourceGeometry</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ParseSourceGeometry</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_sourceGeometry</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Node2D</span><span class="w"> </span><span class="n">rootNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Parse the obstruction outlines from all child nodes of the root node by default.</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">ParseSourceGeometryData</span><span class="p">(</span>
+<span class="w">            </span><span class="n">_navigationMesh</span><span class="p">,</span>
+<span class="w">            </span><span class="n">_sourceGeometry</span><span class="p">,</span>
+<span class="w">            </span><span class="n">rootNode</span><span class="p">,</span>
+<span class="w">            </span><span class="n">_callbackParsing</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnParsingDone</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// If we did not parse a TileMap with navigation mesh cells we may now only</span>
+<span class="w">        </span><span class="c1">// have obstruction outlines so add at least one traversable outline</span>
+<span class="w">        </span><span class="c1">// so the obstructions outlines have something to &quot;cut&quot; into.</span>
+<span class="w">        </span><span class="n">_sourceGeometry</span><span class="p">.</span><span class="n">AddTraversableOutline</span><span class="p">(</span>
+<span class="w">        </span><span class="na">[</span>
+<span class="na">            new Vector2(0.0f, 0.0f),</span>
+<span class="na">            new Vector2(500.0f, 0.0f),</span>
+<span class="na">            new Vector2(500.0f, 500.0f),</span>
+<span class="na">            new Vector2(0.0f, 500.0f),</span>
+<span class="na">        ]</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Bake the navigation mesh on a thread with the source geometry data.</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">BakeFromSourceGeometryDataAsync</span><span class="p">(</span><span class="n">_navigationMesh</span><span class="p">,</span><span class="w"> </span><span class="n">_sourceGeometry</span><span class="p">,</span><span class="w"> </span><span class="n">_callbackBaking</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnBakingDone</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Update the region with the updated navigation mesh.</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionSetNavigationPolygon</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-M0QgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationMesh</span>
+<span class="k">var</span><span class="w"> </span><span class="n">source_geometry</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationMeshSourceGeometryData3D</span>
+<span class="k">var</span><span class="w"> </span><span class="n">callback_parsing</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Callable</span>
+<span class="k">var</span><span class="w"> </span><span class="n">callback_baking</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Callable</span>
+<span class="k">var</span><span class="w"> </span><span class="n">region_rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationMesh</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="o">.</span><span class="vi">agent_radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span>
+<span class="w">    </span><span class="n">source_geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationMeshSourceGeometryData3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">callback_parsing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">on_parsing_done</span>
+<span class="w">    </span><span class="n">callback_baking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">on_baking_done</span>
+<span class="w">    </span><span class="n">region_rid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_create</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Enable the region and set it to the default navigation map.</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_enabled</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_map</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="nf">get_world_3d</span><span class="p">()</span><span class="o">.</span><span class="nf">get_navigation_map</span><span class="p">())</span>
+
+<span class="w">    </span><span class="c1"># Some mega-nodes like GridMap are often not ready on the first frame.</span>
+<span class="w">    </span><span class="c1"># Also the parsing needs to happen on the main-thread.</span>
+<span class="w">    </span><span class="c1"># So do a deferred call to avoid common parsing issues.</span>
+<span class="w">    </span><span class="n">parse_source_geometry</span><span class="o">.</span><span class="nf">call_deferred</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">parse_source_geometry</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">source_geometry</span><span class="o">.</span><span class="nf">clear</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">root_node</span><span class="p">:</span><span class="w"> </span><span class="nb">Node3D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span>
+
+<span class="w">    </span><span class="c1"># Parse the geometry from all mesh child nodes of the root node by default.</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">parse_source_geometry_data</span><span class="p">(</span>
+<span class="w">        </span><span class="n">navigation_mesh</span><span class="p">,</span>
+<span class="w">        </span><span class="n">source_geometry</span><span class="p">,</span>
+<span class="w">        </span><span class="n">root_node</span><span class="p">,</span>
+<span class="w">        </span><span class="n">callback_parsing</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">on_parsing_done</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Bake the navigation mesh on a thread with the source geometry data.</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">bake_from_source_geometry_data_async</span><span class="p">(</span>
+<span class="w">        </span><span class="n">navigation_mesh</span><span class="p">,</span>
+<span class="w">        </span><span class="n">source_geometry</span><span class="p">,</span>
+<span class="w">        </span><span class="n">callback_baking</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">on_baking_done</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Update the region with the updated navigation mesh.</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_navigation_mesh</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-M0QgQyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-M0QgQyM=" name="M0QgQyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NavigationMesh</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NavigationMeshSourceGeometryData3D</span><span class="w"> </span><span class="n">_sourceGeometry</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Callable</span><span class="w"> </span><span class="n">_callbackParsing</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Callable</span><span class="w"> </span><span class="n">_callbackBaking</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_regionRid</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationMesh</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="p">.</span><span class="n">AgentRadius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_sourceGeometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationMeshSourceGeometryData3D</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_callbackParsing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">OnParsingDone</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_callbackBaking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">OnBakingDone</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_regionRid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionCreate</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Enable the region and set it to the default navigation map.</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetEnabled</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetMap</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">GetWorld3D</span><span class="p">().</span><span class="n">NavigationMap</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Some mega-nodes like GridMap are often not ready on the first frame.</span>
+<span class="w">        </span><span class="c1">// Also the parsing needs to happen on the main-thread.</span>
+<span class="w">        </span><span class="c1">// So do a deferred call to avoid common parsing issues.</span>
+<span class="w">        </span><span class="n">CallDeferred</span><span class="p">(</span><span class="n">MethodName</span><span class="p">.</span><span class="n">ParseSourceGeometry</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ParseSourceGeometry</span><span class="w"> </span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_sourceGeometry</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Node3D</span><span class="w"> </span><span class="n">rootNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Parse the geometry from all mesh child nodes of the root node by default.</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">ParseSourceGeometryData</span><span class="p">(</span>
+<span class="w">            </span><span class="n">_navigationMesh</span><span class="p">,</span>
+<span class="w">            </span><span class="n">_sourceGeometry</span><span class="p">,</span>
+<span class="w">            </span><span class="n">rootNode</span><span class="p">,</span>
+<span class="w">            </span><span class="n">_callbackParsing</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnParsingDone</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Bake the navigation mesh on a thread with the source geometry data.</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">BakeFromSourceGeometryDataAsync</span><span class="p">(</span><span class="n">_navigationMesh</span><span class="p">,</span><span class="w"> </span><span class="n">_sourceGeometry</span><span class="p">,</span><span class="w"> </span><span class="n">_callbackBaking</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnBakingDone</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Update the region with the updated navigation mesh.</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetNavigationMesh</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Script sau dùng NavigationServer để cập nhật một navigation region với dữ liệu navigation mesh được tạo theo thủ tục.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-MkQgR0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tab" tabindex="0">2D GDScript</button><button aria-controls="panel-4-MkQgQyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-MkQgQyM=" name="MkQgQyM=" role="tab" tabindex="-1">2D C#</button><button aria-controls="panel-4-M0QgR0RTY3JpcHQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tab" tabindex="-1">3D GDScript</button><button aria-controls="panel-4-M0QgQyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-M0QgQyM=" name="M0QgQyM=" role="tab" tabindex="-1">3D C#</button></div><div aria-labelledby="tab-4-MkQgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationPolygon</span>
+<span class="k">var</span><span class="w"> </span><span class="n">region_rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationPolygon</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">region_rid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_create</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Enable the region and set it to the default navigation map.</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_set_enabled</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_set_map</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="nf">get_navigation_map</span><span class="p">())</span>
+
+<span class="w">    </span><span class="c1"># Add vertices for a convex polygon.</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="o">.</span><span class="vi">vertices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="p">([</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span>
+
+<span class="w">    </span><span class="c1"># Add indices for the polygon.</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="o">.</span><span class="nf">add_polygon</span><span class="p">(</span>
+<span class="w">        </span><span class="nb nb-Type">PackedInt32Array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">region_set_navigation_polygon</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-MkQgQyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-MkQgQyM=" name="MkQgQyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NavigationPolygon</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_regionRid</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationPolygon</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_regionRid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionCreate</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Enable the region and set it to the default navigation map.</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionSetEnabled</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionSetMap</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">NavigationMap</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Add vertices for a convex polygon.</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="p">.</span><span class="n">Vertices</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="na">[</span>
+<span class="na">            new Vector2(0, 0),</span>
+<span class="na">            new Vector2(100.0f, 0),</span>
+<span class="na">            new Vector2(100.0f, 100.0f),</span>
+<span class="na">            new Vector2(0, 100.0f),</span>
+<span class="na">        ]</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Add indices for the polygon.</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="p">.</span><span class="n">AddPolygon</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]);</span>
+
+<span class="w">        </span><span class="n">NavigationServer2D</span><span class="p">.</span><span class="n">RegionSetNavigationPolygon</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-M0QgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationMesh</span>
+<span class="k">var</span><span class="w"> </span><span class="n">region_rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationMesh</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">region_rid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_create</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Enable the region and set it to the default navigation map.</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_enabled</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_map</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="nf">get_world_3d</span><span class="p">()</span><span class="o">.</span><span class="nf">get_navigation_map</span><span class="p">())</span>
+
+<span class="w">    </span><span class="c1"># Add vertices for a convex polygon.</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="o">.</span><span class="vi">vertices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">([</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span>
+
+<span class="w">    </span><span class="c1"># Add indices for the polygon.</span>
+<span class="w">    </span><span class="n">navigation_mesh</span><span class="o">.</span><span class="nf">add_polygon</span><span class="p">(</span>
+<span class="w">        </span><span class="nb nb-Type">PackedInt32Array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_navigation_mesh</span><span class="p">(</span><span class="n">region_rid</span><span class="p">,</span><span class="w"> </span><span class="n">navigation_mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-M0QgQyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-M0QgQyM=" name="M0QgQyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NavigationMesh</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_regionRid</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationMesh</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_regionRid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionCreate</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Enable the region and set it to the default navigation map.</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetEnabled</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetMap</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">GetWorld3D</span><span class="p">().</span><span class="n">NavigationMap</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Add vertices for a convex polygon.</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="p">.</span><span class="n">Vertices</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="na">[</span>
+<span class="na">            new Vector3(-1.0f, 0.0f, 1.0f),</span>
+<span class="na">            new Vector3(1.0f, 0.0f, 1.0f),</span>
+<span class="na">            new Vector3(1.0f, 0.0f, -1.0f),</span>
+<span class="na">            new Vector3(-1.0f, 0.0f, -1.0f),</span>
+<span class="na">        ]</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Add indices for the polygon.</span>
+<span class="w">        </span><span class="n">_navigationMesh</span><span class="p">.</span><span class="n">AddPolygon</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]);</span>
+
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetNavigationMesh</span><span class="p">(</span><span class="n">_regionRid</span><span class="p">,</span><span class="w"> </span><span class="n">_navigationMesh</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="navigation_using_navigationregions.html" class="btn btn-neutral float-left" title="Sử dụng NavigationRegion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="navigation_using_navigationpaths.html" class="btn btn-neutral float-right" title="Sử dụng NavigationPath" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

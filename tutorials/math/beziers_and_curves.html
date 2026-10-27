@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Bezier, đường cong và đường đi" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/math/beziers_and_curves.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Đường cong Bezier là một phép xấp xỉ toán học cho các hình dạng hình học tự nhiên. Chúng ta dùng chúng để biểu diễn một đường cong với càng ít thông tin càng tốt và với mức độ linh hoạt cao. Khác v..." />
+<meta name="description" content="Đường cong Bezier là một phép xấp xỉ toán học cho các hình dạng hình học tự nhiên. Chúng ta dùng chúng để biểu diễn một đường cong với càng ít thông tin càng tốt và với mức độ linh hoạt cao. Khác v..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Bezier, đường cong và đường đi &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo số ngẫu nhiên" href="random_number_generation.html" />
+    <link rel="prev" title="Nội suy" href="interpolation.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/math/beziers_and_curves" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Toán học</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="vector_math.html">Toán vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vectors_advanced.html">Toán vector nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrices_and_transforms.html">Ma trận và transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html">Nội suy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bezier, đường cong và đường đi</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quadratic-bezier">Bezier bậc hai</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cubic-bezier">Bezier bậc ba</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-control-points">Thêm điểm điều khiển</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#curve2d-curve3d-path-and-path2d">Curve2D, Curve3D, Path và Path2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#evaluating">Tính giá trị</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drawing">Vẽ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#traversal">Duyệt đường cong</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="random_number_generation.html">Tạo số ngẫu nhiên</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Toán học</a></li>
+      <li class="breadcrumb-item active">Bezier, đường cong và đường đi</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="beziers-curves-and-paths">
+<span id="doc-beziers-and-curves"></span><h1>Bezier, đường cong và đường đi<a class="headerlink" href="#beziers-curves-and-paths" title="Link to this heading"></a></h1>
+<p>Đường cong Bezier là một phép xấp xỉ toán học cho các hình dạng hình học tự nhiên. Chúng ta dùng chúng để biểu diễn một đường cong với càng ít thông tin càng tốt và với mức độ linh hoạt cao.</p>
+<p>Khác với các khái niệm toán học trừu tượng hơn, đường cong Bezier được tạo ra cho thiết kế công nghiệp. Chúng là một công cụ phổ biến trong ngành phần mềm đồ họa.</p>
+<p>Chúng dựa trên <a class="reference internal" href="interpolation.html#doc-interpolation"><span class="std std-ref">nội suy</span></a> mà ta đã thấy ở bài trước, kết hợp nhiều bước để tạo ra các đường cong mượt. Để hiểu rõ hơn cách đường cong Bezier hoạt động, hãy bắt đầu từ dạng đơn giản nhất của nó: Bezier bậc hai.</p>
+<section id="quadratic-bezier">
+<h2>Bezier bậc hai<a class="headerlink" href="#quadratic-bezier" title="Link to this heading"></a></h2>
+<p>Lấy ba điểm, số lượng tối thiểu cần thiết để Bezier bậc hai hoạt động:</p>
+<img alt="../../_images/bezier_quadratic_points.png" src="../../_images/bezier_quadratic_points.png" />
+<p>Để vẽ một đường cong giữa chúng, trước tiên ta nội suy dần dần trên hai đỉnh của mỗi đoạn trong hai đoạn thẳng tạo bởi ba điểm, với các giá trị từ 0 đến 1. Kết quả là hai điểm di chuyển dọc theo các đoạn thẳng khi ta thay đổi giá trị <code class="docutils literal notranslate"><span class="pre">t</span></code> từ 0 đến 1.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_quadratic_bezier</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p1</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">q0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="nf">QuadraticBezier</span><span class="p">(</span><span class="n">Vector2</span><span class="w"> </span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">q0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Sau đó ta nội suy <code class="docutils literal notranslate"><span class="pre">q0</span></code> và <code class="docutils literal notranslate"><span class="pre">q1</span></code> để thu được một điểm duy nhất <code class="docutils literal notranslate"><span class="pre">r</span></code> di chuyển dọc theo một đường cong.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">r</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector2</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">r</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Loại đường cong này được gọi là đường cong <em>Bezier bậc hai</em> (Quadratic Bezier).</p>
+<img alt="../../_images/bezier_quadratic_points2.gif" src="../../_images/bezier_quadratic_points2.gif" />
+<p><em>(Nguồn ảnh: Wikipedia)</em></p>
+</section>
+<section id="cubic-bezier">
+<h2>Bezier bậc ba<a class="headerlink" href="#cubic-bezier" title="Link to this heading"></a></h2>
+<p>Dựa trên ví dụ trước, ta có thể kiểm soát nhiều hơn bằng cách nội suy giữa bốn điểm.</p>
+<img alt="../../_images/bezier_cubic_points.png" src="../../_images/bezier_cubic_points.png" />
+<p>Trước tiên ta dùng một hàm có bốn tham số để nhận bốn điểm làm đầu vào, <code class="docutils literal notranslate"><span class="pre">p0</span></code>, <code class="docutils literal notranslate"><span class="pre">p1</span></code>, <code class="docutils literal notranslate"><span class="pre">p2</span></code> và <code class="docutils literal notranslate"><span class="pre">p3</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_cubic_bezier</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p1</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">):</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="nf">CubicBezier</span><span class="p">(</span><span class="n">Vector2</span><span class="w"> </span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ta áp dụng nội suy tuyến tính cho từng cặp điểm để rút gọn chúng còn ba:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">q0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p2</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector2</span><span class="w"> </span><span class="n">q0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="n">Vector2</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="n">Vector2</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p2</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Sau đó ta lấy ba điểm này và rút gọn chúng còn hai:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector2</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="n">Vector2</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và còn một:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">s</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector2</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Đây là hàm đầy đủ:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_cubic_bezier</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p1</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">q0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p2</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r0</span><span class="o">.</span><span class="nf">lerp</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">s</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="nf">CubicBezier</span><span class="p">(</span><span class="n">Vector2</span><span class="w"> </span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">q0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p2</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r0</span><span class="p">.</span><span class="n">Lerp</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Kết quả sẽ là một đường cong mượt nội suy giữa cả bốn điểm:</p>
+<img alt="../../_images/bezier_cubic_points.gif" src="../../_images/bezier_cubic_points.gif" />
+<p><em>(Nguồn ảnh: Wikipedia)</em></p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nội suy Bezier bậc ba hoạt động tương tự trong 3D, chỉ cần dùng <code class="docutils literal notranslate"><span class="pre">Vector3</span></code> thay vì <code class="docutils literal notranslate"><span class="pre">Vector2</span></code>.</p>
+</div>
+</section>
+<section id="adding-control-points">
+<h2>Thêm điểm điều khiển<a class="headerlink" href="#adding-control-points" title="Link to this heading"></a></h2>
+<p>Dựa trên Bezier bậc ba, ta có thể thay đổi cách hoạt động của hai điểm để tự do điều khiển hình dạng của đường cong. Thay vì có <code class="docutils literal notranslate"><span class="pre">p0</span></code>, <code class="docutils literal notranslate"><span class="pre">p1</span></code>, <code class="docutils literal notranslate"><span class="pre">p2</span></code> và <code class="docutils literal notranslate"><span class="pre">p3</span></code>, ta sẽ lưu chúng dưới dạng:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">point0</span> <span class="pre">=</span> <span class="pre">p0</span></code>: Là điểm thứ nhất, điểm nguồn</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">control0</span> <span class="pre">=</span> <span class="pre">p1</span> <span class="pre">-</span> <span class="pre">p0</span></code>: Là một vector tương đối với điểm điều khiển thứ nhất</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">control1</span> <span class="pre">=</span> <span class="pre">p3</span> <span class="pre">-</span> <span class="pre">p2</span></code>: Là một vector tương đối với điểm điều khiển thứ hai</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">point1</span> <span class="pre">=</span> <span class="pre">p3</span></code>: Là điểm thứ hai, điểm đích</p></li>
+</ul>
+<p>Bằng cách này, ta có hai điểm và hai điểm điều khiển là các vector tương đối với các điểm tương ứng. Nếu bạn từng dùng phần mềm đồ họa hoặc hoạt ảnh, điều này có thể trông quen thuộc:</p>
+<img alt="../../_images/bezier_cubic_handles.png" src="../../_images/bezier_cubic_handles.png" />
+<p>Đây là cách phần mềm đồ họa trình bày đường cong Bezier cho người dùng, và cũng là cách chúng hoạt động và hiển thị trong Godot.</p>
+</section>
+<section id="curve2d-curve3d-path-and-path2d">
+<h2>Curve2D, Curve3D, Path và Path2D<a class="headerlink" href="#curve2d-curve3d-path-and-path2d" title="Link to this heading"></a></h2>
+<p>Có hai đối tượng chứa đường cong: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_curve3d.html" title="Class reference (English)"><span class="xref std std-ref">Curve3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_curve2d.html" title="Class reference (English)"><span class="xref std std-ref">Curve2D</span></a> (lần lượt cho 3D và 2D).</p>
+<p>Chúng có thể chứa nhiều điểm, cho phép tạo các đường đi dài hơn. Cũng có thể gán chúng cho các node: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_path3d.html" title="Class reference (English)"><span class="xref std std-ref">Path3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_path2d.html" title="Class reference (English)"><span class="xref std std-ref">Path2D</span></a> (cũng lần lượt cho 3D và 2D):</p>
+<img alt="../../_images/bezier_path_2d.png" src="../../_images/bezier_path_2d.png" />
+<p>Tuy nhiên, cách sử dụng chúng có thể không hoàn toàn rõ ràng, vì vậy dưới đây là mô tả các trường hợp sử dụng phổ biến nhất của đường cong Bezier.</p>
+</section>
+<section id="evaluating">
+<h2>Tính giá trị<a class="headerlink" href="#evaluating" title="Link to this heading"></a></h2>
+<p>Chỉ tính giá trị của chúng cũng là một lựa chọn, nhưng trong hầu hết trường hợp thì không mấy hữu ích. Nhược điểm lớn của đường cong Bezier là nếu bạn duyệt qua chúng với tốc độ không đổi, từ <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code> đến <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">1</span></code>, thì phép nội suy thực tế sẽ <em>không</em> di chuyển với tốc độ không đổi. Tốc độ cũng là một phép nội suy giữa khoảng cách các điểm <code class="docutils literal notranslate"><span class="pre">p0</span></code>, <code class="docutils literal notranslate"><span class="pre">p1</span></code>, <code class="docutils literal notranslate"><span class="pre">p2</span></code> và <code class="docutils literal notranslate"><span class="pre">p3</span></code>, và không có cách đơn giản về mặt toán học nào để duyệt đường cong với tốc độ không đổi.</p>
+<p>Hãy làm một ví dụ với đoạn mã giả sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_cubic_bezier</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CubicBezier</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">_t</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<img alt="../../_images/bezier_interpolation_speed.gif" src="../../_images/bezier_interpolation_speed.gif" />
+<p>Như bạn thấy, tốc độ (tính bằng pixel mỗi giây) của hình tròn thay đổi, dù <code class="docutils literal notranslate"><span class="pre">t</span></code> được tăng với tốc độ không đổi. Điều này khiến bezier khó dùng ngay cho bất kỳ việc gì thực tế.</p>
+</section>
+<section id="drawing">
+<h2>Vẽ<a class="headerlink" href="#drawing" title="Link to this heading"></a></h2>
+<p>Vẽ bezier (hoặc các đối tượng dựa trên đường cong) là một trường hợp sử dụng rất phổ biến, nhưng cũng không dễ. Trong hầu hết mọi trường hợp, đường cong Bezier cần được chuyển thành một dạng đoạn thẳng nào đó. Tuy nhiên, việc này thường khó thực hiện nếu không tạo ra một số lượng đoạn rất lớn.</p>
+<p>Lý do là một số phần của đường cong (cụ thể là các góc) có thể cần một lượng điểm đáng kể, trong khi các phần khác thì không:</p>
+<img alt="../../_images/bezier_point_amount.png" src="../../_images/bezier_point_amount.png" />
+<p>Ngoài ra, nếu cả hai điểm điều khiển đều là <code class="docutils literal notranslate"><span class="pre">0,</span> <span class="pre">0</span></code> (hãy nhớ chúng là các vector tương đối), đường cong Bezier sẽ chỉ là một đường thẳng (nên vẽ một lượng điểm lớn sẽ rất lãng phí).</p>
+<p>Trước khi vẽ đường cong Bezier, cần thực hiện <em>tessellation</em>. Việc này thường được làm bằng một hàm đệ quy hoặc chia để trị, chia nhỏ đường cong cho đến khi độ cong nhỏ hơn một ngưỡng nhất định.</p>
+<p>Các lớp <em>Curve</em> cung cấp tính năng này qua hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_curve2d.html#class-curve2d-method-tessellate" title="Class reference (English)"><span class="xref std std-ref">Curve2D.tessellate()</span></a> (nhận các tham số tùy chọn <code class="docutils literal notranslate"><span class="pre">stages</span></code> cho số tầng đệ quy và <code class="docutils literal notranslate"><span class="pre">tolerance</span></code> cho dung sai góc). Bằng cách này, việc vẽ thứ gì đó dựa trên đường cong trở nên dễ dàng hơn.</p>
+</section>
+<section id="traversal">
+<h2>Duyệt đường cong<a class="headerlink" href="#traversal" title="Link to this heading"></a></h2>
+<p>Trường hợp sử dụng phổ biến cuối cùng của đường cong là duyệt qua chúng. Vì lý do đã đề cập trước đó về tốc độ không đổi, việc này cũng khó.</p>
+<p>Để việc này dễ hơn, các đường cong cần được <em>bake</em> thành các điểm cách đều nhau. Bằng cách này, chúng có thể được xấp xỉ bằng nội suy thông thường (có thể cải thiện thêm bằng tùy chọn bậc ba). Để làm việc này, chỉ cần dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_curve3d.html#class-curve3d-method-sample-baked" title="Class reference (English)"><span class="xref std std-ref">Curve3D.sample_baked()</span></a> cùng với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_curve2d.html#class-curve2d-method-get-baked-length" title="Class reference (English)"><span class="xref std std-ref">Curve2D.get_baked_length()</span></a>. Lần gọi đầu tiên tới bất kỳ phương thức nào trong số đó sẽ bake đường cong bên trong.</p>
+<p>Khi đó, việc duyệt với tốc độ không đổi có thể thực hiện bằng mã giả sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="n">t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curve</span><span class="o">.</span><span class="nf">sample_baked</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">curve</span><span class="o">.</span><span class="nf">get_baked_length</span><span class="p">(),</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_t</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curve</span><span class="p">.</span><span class="n">SampleBaked</span><span class="p">(</span><span class="n">_t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">curve</span><span class="p">.</span><span class="n">GetBakedLength</span><span class="p">(),</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và khi đó, kết quả sẽ di chuyển với tốc độ không đổi:</p>
+<img alt="../../_images/bezier_interpolation_baked.gif" src="../../_images/bezier_interpolation_baked.gif" />
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="interpolation.html" class="btn btn-neutral float-left" title="Nội suy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="random_number_generation.html" class="btn btn-neutral float-right" title="Tạo số ngẫu nhiên" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

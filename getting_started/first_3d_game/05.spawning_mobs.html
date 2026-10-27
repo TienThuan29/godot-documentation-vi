@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sinh quái vật" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_3d_game/05.spawning_mobs.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong phần này, chúng ta sẽ sinh quái vật ngẫu nhiên dọc theo một đường đi. Khi kết thúc, bạn sẽ có các quái vật đi lang thang trên bàn chơi. image0 Nhấp đúp vào main.tscn trong dock FileSystem để ..." />
+<meta name="description" content="Trong phần này, chúng ta sẽ sinh quái vật ngẫu nhiên dọc theo một đường đi. Khi kết thúc, bạn sẽ có các quái vật đi lang thang trên bàn chơi. image0 Nhấp đúp vào main.tscn trong dock FileSystem để ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sinh quái vật &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Nhảy và dẫm bẹp quái vật" href="06.jump_and_squash.html" />
+    <link rel="prev" title="Thiết kế scene quái vật" href="04.mob_scene.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_3d_game/05.spawning_mobs" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 3D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.game_setup.html">Thiết lập khu vực chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02.player_input.html">Scene người chơi và các input action</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03.player_movement_code.html">Di chuyển người chơi bằng code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04.mob_scene.html">Thiết kế scene quái vật</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sinh quái vật</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-the-spawn-path">Tạo đường sinh quái</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spawning-monsters-randomly">Sinh quái vật ngẫu nhiên</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="06.jump_and_squash.html">Nhảy và dẫm bẹp quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07.killing_player.html">Tiêu diệt người chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08.score_and_replay.html">Điểm số và chơi lại</a></li>
+<li class="toctree-l3"><a class="reference internal" href="09.adding_animations.html">Hoạt ảnh nhân vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="going_further.html">Đi xa hơn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 3D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Sinh quái vật</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="spawning-monsters">
+<span id="doc-first-3d-game-spawning-monsters"></span><h1>Sinh quái vật<a class="headerlink" href="#spawning-monsters" title="Link to this heading"></a></h1>
+<p>Trong phần này, chúng ta sẽ sinh quái vật ngẫu nhiên dọc theo một đường đi. Khi kết thúc, bạn sẽ có các quái vật đi lang thang trên bàn chơi.</p>
+<p><img alt="image0" src="../../_images/01.monsters_path_preview.png" /></p>
+<p>Nhấp đúp vào <code class="docutils literal notranslate"><span class="pre">main.tscn</span></code> trong dock <em>FileSystem</em> để mở scene <code class="docutils literal notranslate"><span class="pre">Main</span></code>.</p>
+<p>Trước khi vẽ đường đi, chúng ta sẽ thay đổi độ phân giải của trò chơi. Trò chơi có kích thước cửa sổ mặc định là <code class="docutils literal notranslate"><span class="pre">1152x648</span></code>. Chúng ta sẽ đặt nó thành <code class="docutils literal notranslate"><span class="pre">720x540</span></code>, một khung hình nhỏ gọn.</p>
+<p>Vào <em>Project -&gt; Project Settings</em>.</p>
+<p><img alt="image1" src="../../_images/02.project_settings.webp" /></p>
+<p>Nếu bạn vẫn đang mở <em>Input Map</em>, hãy chuyển sang tab <em>General</em>.</p>
+<p>Ở menu bên trái, đi xuống <em>Display -&gt; Window</em>. Ở bên phải, đặt <em>Viewport Width</em> thành <code class="docutils literal notranslate"><span class="pre">720</span></code> và <em>Viewport Height</em> thành <code class="docutils literal notranslate"><span class="pre">540</span></code>.</p>
+<p><img alt="image2" src="../../_images/03.window_settings.webp" /></p>
+<section id="creating-the-spawn-path">
+<h2>Tạo đường sinh quái<a class="headerlink" href="#creating-the-spawn-path" title="Link to this heading"></a></h2>
+<p>Giống như trong bài hướng dẫn game 2D, bạn sẽ thiết kế một đường đi và dùng một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pathfollow3d.html" title="Class reference (English)"><span class="xref std std-ref">PathFollow3D</span></a> để lấy mẫu các vị trí ngẫu nhiên trên đó.</p>
+<p>Tuy nhiên, trong 3D, việc vẽ đường đi phức tạp hơn một chút. Chúng ta muốn nó bao quanh khung nhìn của game để quái vật xuất hiện ngay bên ngoài màn hình. Nhưng nếu vẽ một đường đi, chúng ta sẽ không thấy nó trong bản xem trước của camera.</p>
+<p>Để tìm giới hạn của khung nhìn, chúng ta có thể dùng một số mesh giữ chỗ. Viewport của bạn vẫn nên được chia làm hai phần, với bản xem trước của camera ở phía dưới. Nếu không phải vậy, hãy nhấn <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">2</kbd></kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">2</kbd></kbd> trên macOS) để chia khung nhìn làm hai. Chọn node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a> và nhấp vào ô đánh dấu <em>Preview</em> ở viewport phía dưới.</p>
+<p><img alt="image3" src="../../_images/04.camera_preview.png" /></p>
+<section id="adding-placeholder-cylinders">
+<h3>Thêm các hình trụ giữ chỗ<a class="headerlink" href="#adding-placeholder-cylinders" title="Link to this heading"></a></h3>
+<p>Hãy thêm các mesh giữ chỗ. Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html" title="Class reference (English)"><span class="xref std std-ref">Node3D</span></a> mới làm con của node <code class="docutils literal notranslate"><span class="pre">Main</span></code> và đặt tên là <code class="docutils literal notranslate"><span class="pre">Cylinders</span></code>. Chúng ta sẽ dùng nó để nhóm các hình trụ. Chọn <code class="docutils literal notranslate"><span class="pre">Cylinders</span></code> và thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a></p>
+<p><img alt="image4" src="../../_images/05.cylinders_node.webp" /></p>
+<p>Trong <em>Inspector</em>, gán một <em>CylinderMesh</em> cho thuộc tính <em>Mesh</em>.</p>
+<p><img alt="image5" src="../../_images/06.cylinder_mesh.webp" /></p>
+<p>Đặt viewport phía trên sang góc nhìn trực giao từ trên xuống bằng menu ở góc trên bên trái của viewport. Ngoài ra, bạn có thể nhấn phím 7 trên bàn phím số.</p>
+<p><img alt="image6" src="../../_images/07.top_view.webp" /></p>
+<p>Lưới có thể gây rối mắt. Bạn có thể bật/tắt nó bằng cách vào menu <em>View</em> trên thanh công cụ và nhấp <em>View Grid</em>.</p>
+<p><img alt="image7" src="../../_images/08.toggle_view_grid.webp" /></p>
+<p>Giờ bạn cần di chuyển hình trụ dọc theo mặt phẳng mặt đất, đồng thời nhìn vào bản xem trước của camera ở viewport phía dưới. Tôi khuyên bạn nên dùng tính năng bắt dính lưới (grid snap) để làm việc này. Bạn có thể bật/tắt nó bằng cách nhấp vào biểu tượng nam châm trên thanh công cụ hoặc nhấn Y.</p>
+<p><img alt="image8" src="../../_images/09.toggle_grid_snap.webp" /></p>
+<p>Di chuyển hình trụ sao cho nó nằm ngay bên ngoài khung nhìn của camera ở góc trên bên trái.</p>
+<p><img alt="image9" src="../../_images/10.place_first_cylinder.png" /></p>
+<p>Chúng ta sẽ tạo các bản sao của mesh và đặt chúng xung quanh khu vực chơi. Nhấn <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">D</kbd></kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">D</kbd></kbd> trên macOS) để nhân bản node. Bạn cũng có thể nhấp chuột phải vào node trong dock <em>Scene</em> và chọn <em>Duplicate</em>. Di chuyển bản sao xuống dọc theo trục Z màu xanh dương cho đến khi nó nằm ngay bên ngoài bản xem trước của camera.</p>
+<p>Chọn cả hai hình trụ bằng cách giữ phím <kbd class="kbd docutils literal notranslate">Shift</kbd> và nhấp vào hình trụ chưa được chọn, rồi nhân bản chúng.</p>
+<p><img alt="image10" src="../../_images/11.both_cylinders_selected.png" /></p>
+<p>Di chuyển chúng sang phải bằng cách kéo trục X màu đỏ.</p>
+<p><img alt="image11" src="../../_images/12.four_cylinders.png" /></p>
+<p>Chúng hơi khó nhìn khi có màu trắng, phải không? Hãy làm chúng nổi bật bằng cách gán cho chúng một material mới.</p>
+<p>Trong 3D, material xác định các thuộc tính hình ảnh của một bề mặt như màu sắc, cách nó phản chiếu ánh sáng, và nhiều thứ khác. Chúng ta có thể dùng chúng để thay đổi màu của một mesh.</p>
+<p>Chúng ta có thể cập nhật cả bốn hình trụ cùng lúc. Chọn tất cả các mesh instance trong dock <em>Scene</em>. Để làm vậy, bạn có thể nhấp vào cái đầu tiên rồi giữ Shift và nhấp vào cái cuối cùng.</p>
+<p><img alt="image12" src="../../_images/13.selecting_all_cylinders.webp" /></p>
+<p>Trong <em>Inspector</em>, mở rộng mục <em>Material</em> và gán một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a> cho slot <em>0</em>.</p>
+<p><img alt="image13" src="../../_images/14.multi_material_selection.webp" /></p>
+<p>Nhấp vào biểu tượng hình cầu để mở resource material. Bạn sẽ thấy bản xem trước của material và một danh sách dài các mục chứa đầy thuộc tính. Bạn có thể dùng chúng để tạo đủ loại bề mặt, từ kim loại đến đá hay nước.</p>
+<p>Mở rộng mục <em>Albedo</em>.</p>
+<img alt="../../_images/albedo_section.webp" src="../../_images/albedo_section.webp" />
+<p>Đặt màu thành một màu tương phản với nền, chẳng hạn như cam sáng.</p>
+<p><img alt="image14" src="../../_images/15.bright-cylinders.webp" /></p>
+<p>Giờ chúng ta có thể dùng các hình trụ làm vật dẫn hướng. Thu gọn chúng trong dock <em>Scene</em> bằng cách nhấp vào mũi tên màu xám bên cạnh. Từ giờ trở đi, bạn cũng có thể bật/tắt hiển thị của chúng bằng cách nhấp vào biểu tượng con mắt bên cạnh <em>Cylinders</em>.</p>
+<p><img alt="image15" src="../../_images/16.cylinders_fold.webp" /></p>
+<p>Thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_path3d.html" title="Class reference (English)"><span class="xref std std-ref">Path3D</span></a> vào node <code class="docutils literal notranslate"><span class="pre">Main</span></code>. Trên thanh công cụ, bốn biểu tượng sẽ xuất hiện. Nhấp vào công cụ <em>Add Point</em>, biểu tượng có dấu &quot;+&quot; màu xanh lá.</p>
+<p><img alt="image16" src="../../_images/17.points_options.webp" /></p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể di chuột lên bất kỳ biểu tượng nào để xem tooltip mô tả công cụ đó.</p>
+</div>
+<p>Nhấp vào tâm của mỗi hình trụ để tạo một điểm. Sau đó, nhấp vào biểu tượng <em>Close Curve</em> trên thanh công cụ để khép kín đường đi. Nếu có điểm nào hơi lệch, bạn có thể nhấp và kéo để đặt lại vị trí cho nó.</p>
+<p><img alt="image17" src="../../_images/18.close_path.webp" /></p>
+<p>Đường đi của bạn sẽ trông như thế này.</p>
+<p><img alt="image18" src="../../_images/19.path_result.png" /></p>
+<p>Để lấy mẫu các vị trí ngẫu nhiên trên đường đi, chúng ta cần một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pathfollow3d.html" title="Class reference (English)"><span class="xref std std-ref">PathFollow3D</span></a>. Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_pathfollow3d.html" title="Class reference (English)"><span class="xref std std-ref">PathFollow3D</span></a> làm con của <code class="docutils literal notranslate"><span class="pre">Path3D</span></code>. Lần lượt đổi tên hai node thành <code class="docutils literal notranslate"><span class="pre">SpawnLocation</span></code> và <code class="docutils literal notranslate"><span class="pre">SpawnPath</span></code>. Các tên này mô tả rõ hơn mục đích chúng ta sẽ dùng chúng.</p>
+<p><img alt="image19" src="../../_images/20.spawn_nodes.webp" /></p>
+<p>Như vậy, chúng ta đã sẵn sàng viết code cho cơ chế sinh quái vật.</p>
+</section>
+</section>
+<section id="spawning-monsters-randomly">
+<h2>Sinh quái vật ngẫu nhiên<a class="headerlink" href="#spawning-monsters-randomly" title="Link to this heading"></a></h2>
+<p>Nhấp chuột phải vào node <code class="docutils literal notranslate"><span class="pre">Main</span></code> và gắn một script mới cho nó.</p>
+<p>Đầu tiên, chúng ta export một biến ra <em>Inspector</em> để có thể gán <code class="docutils literal notranslate"><span class="pre">mob.tscn</span></code> hoặc bất kỳ quái vật nào khác cho nó.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">mob_scene</span><span class="p">:</span><span class="w"> </span><span class="nb">PackedScene</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Don&#39;t forget to rebuild the project so the editor knows about the new export variable.</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">MobScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chúng ta muốn sinh mob theo các khoảng thời gian đều đặn. Để làm vậy, chúng ta cần quay lại scene và thêm một timer. Tuy nhiên, trước đó, chúng ta cần gán file <code class="docutils literal notranslate"><span class="pre">mob.tscn</span></code> cho thuộc tính <code class="docutils literal notranslate"><span class="pre">mob_scene</span></code> ở trên (nếu không nó sẽ là null!)</p>
+<p>Quay lại màn hình 3D và chọn node <code class="docutils literal notranslate"><span class="pre">Main</span></code>. Kéo <code class="docutils literal notranslate"><span class="pre">mob.tscn</span></code> từ dock <em>FileSystem</em> vào ô <em>Mob Scene</em> trong <em>Inspector</em>.</p>
+<p><img alt="image20" src="../../_images/20.mob_scene_property.webp" /></p>
+<p>Thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_timer.html" title="Class reference (English)"><span class="xref std std-ref">Timer</span></a> mới làm con của <code class="docutils literal notranslate"><span class="pre">Main</span></code>. Đặt tên là <code class="docutils literal notranslate"><span class="pre">MobTimer</span></code>.</p>
+<p><img alt="image21" src="../../_images/21.mob_timer.webp" /></p>
+<p>Trong <em>Inspector</em>, đặt <em>Wait Time</em> của nó thành <code class="docutils literal notranslate"><span class="pre">0.5</span></code> giây và bật <em>Autostart</em> để nó tự động bắt đầu khi chúng ta chạy trò chơi.</p>
+<p><img alt="image22" src="../../_images/22.mob_timer_properties.webp" /></p>
+<p>Timer phát ra signal <code class="docutils literal notranslate"><span class="pre">timeout</span></code> mỗi khi chạy hết <em>Wait Time</em>. Theo mặc định, chúng tự động khởi động lại, phát signal theo chu kỳ. Chúng ta có thể kết nối với signal này từ node <em>Main</em> để sinh quái vật mỗi <code class="docutils literal notranslate"><span class="pre">0.5</span></code> giây.</p>
+<p>Trong khi <em>MobTimer</em> vẫn đang được chọn, hãy chuyển đến dock <em>Signals</em> ở bên phải và nhấp đúp vào signal <code class="docutils literal notranslate"><span class="pre">timeout</span></code>.</p>
+<p><img alt="image23" src="../../_images/23.timeout_signal.webp" /></p>
+<p>Kết nối nó với node <em>Main</em>.</p>
+<p><img alt="image24" src="../../_images/24.connect_timer_to_main.webp" /></p>
+<p>Thao tác này sẽ đưa bạn trở lại script, với một hàm <code class="docutils literal notranslate"><span class="pre">_on_mob_timer_timeout()</span></code> mới còn trống.</p>
+<p>Hãy viết code cho logic sinh mob. Chúng ta sẽ:</p>
+<ol class="arabic simple">
+<li><p>Tạo instance của scene quái vật.</p></li>
+<li><p>Lấy mẫu một vị trí ngẫu nhiên trên đường sinh quái vật.</p></li>
+<li><p>Lấy vị trí của người chơi.</p></li>
+<li><p>Gọi phương thức <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> của mob, truyền cho nó vị trí ngẫu nhiên và vị trí của người chơi.</p></li>
+<li><p>Thêm mob làm con của node <em>Main</em>.</p></li>
+</ol>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a new instance of the Mob scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mob_scene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Choose a random location on the SpawnPath.</span>
+<span class="w">    </span><span class="c1"># We store the reference to the SpawnLocation node.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob_spawn_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># And give it a random offset.</span>
+<span class="w">    </span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">progress_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">player_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="vi">position</span>
+<span class="w">    </span><span class="n">mob</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Spawn the mob by adding it to the Main scene.</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">mob</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobTimerTimeout</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Create a new instance of the Mob scene.</span>
+<span class="w">    </span><span class="n">Mob</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MobScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="o">&lt;</span><span class="n">Mob</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Choose a random location on the SpawnPath.</span>
+<span class="w">    </span><span class="c1">// We store the reference to the SpawnLocation node.</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">mobSpawnLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">PathFollow3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// And give it a random offset.</span>
+<span class="w">    </span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">ProgressRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Randf</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">Position</span><span class="p">;</span>
+<span class="w">    </span><span class="n">mob</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">Position</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Spawn the mob by adding it to the Main scene.</span>
+<span class="w">    </span><span class="n">AddChild</span><span class="p">(</span><span class="n">mob</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ở trên, <code class="docutils literal notranslate"><span class="pre">randf()</span></code> tạo ra một giá trị ngẫu nhiên trong khoảng từ <code class="docutils literal notranslate"><span class="pre">0</span></code> đến <code class="docutils literal notranslate"><span class="pre">1</span></code>, đúng với giá trị mà <code class="docutils literal notranslate"><span class="pre">progress_ratio</span></code> của node <em>PathFollow</em> cần: 0 là điểm đầu của đường đi, 1 là điểm cuối. Đường đi chúng ta đã thiết lập bao quanh viewport của camera, nên bất kỳ giá trị ngẫu nhiên nào trong khoảng 0 đến 1 cũng là một vị trí ngẫu nhiên dọc theo các cạnh của viewport!</p>
+<p>Lưu ý rằng nếu bạn xóa <code class="docutils literal notranslate"><span class="pre">Player</span></code> khỏi scene chính, dòng sau</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">player_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="vi">position</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">Position</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>sẽ báo lỗi vì không có $Player!</p>
+<p>Đây là toàn bộ script <code class="docutils literal notranslate"><span class="pre">main.gd</span></code> cho đến lúc này, để bạn tham khảo.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">mob_scene</span><span class="p">:</span><span class="w"> </span><span class="nb">PackedScene</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_mob_timer_timeout</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a new instance of the Mob scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mob_scene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># Choose a random location on the SpawnPath.</span>
+<span class="w">    </span><span class="c1"># We store the reference to the SpawnLocation node.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mob_spawn_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="s2">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># And give it a random offset.</span>
+<span class="w">    </span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">progress_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">player_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="vi">position</span>
+<span class="w">    </span><span class="n">mob</span><span class="o">.</span><span class="nf">initialize</span><span class="p">(</span><span class="n">mob_spawn_location</span><span class="o">.</span><span class="vi">position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Spawn the mob by adding it to the Main scene.</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">mob</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">MobScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMobTimerTimeout</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create a new instance of the Mob scene.</span>
+<span class="w">        </span><span class="n">Mob</span><span class="w"> </span><span class="n">mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MobScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="o">&lt;</span><span class="n">Mob</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Choose a random location on the SpawnPath.</span>
+<span class="w">        </span><span class="c1">// We store the reference to the SpawnLocation node.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">mobSpawnLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">PathFollow3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SpawnPath/SpawnLocation&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// And give it a random offset.</span>
+<span class="w">        </span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">ProgressRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Randf</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">Position</span><span class="p">;</span>
+<span class="w">        </span><span class="n">mob</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">mobSpawnLocation</span><span class="p">.</span><span class="n">Position</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Spawn the mob by adding it to the Main scene.</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">mob</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn có thể kiểm thử scene bằng cách nhấn <kbd class="kbd docutils literal notranslate">F6</kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">R</kbd></kbd> trên macOS). Bạn sẽ thấy các quái vật được sinh ra và di chuyển theo đường thẳng.</p>
+<p><img alt="image25" src="../../_images/25.spawn_result.png" /></p>
+<p>Hiện tại, chúng va vào nhau và trượt đi khi đường đi của chúng cắt nhau. Chúng ta sẽ giải quyết vấn đề này trong phần tiếp theo.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="04.mob_scene.html" class="btn btn-neutral float-left" title="Thiết kế scene quái vật" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="06.jump_and_squash.html" class="btn btn-neutral float-right" title="Nhảy và dẫm bẹp quái vật" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

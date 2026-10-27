@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng sanitizer" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/debugging/using_sanitizers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Sanitizer là gì?: Sanitizer là các công cụ instrumentation tĩnh giúp tìm ra những lỗi mà trình gỡ lỗi truyền thống thường không phát hiện được. Điều này đặc biệt hữu ích khi kết hợp với Unit test t..." />
+<meta name="description" content="Sanitizer là gì?: Sanitizer là các công cụ instrumentation tĩnh giúp tìm ra những lỗi mà trình gỡ lỗi truyền thống thường không phát hiện được. Điều này đặc biệt hữu ích khi kết hợp với Unit test t..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng sanitizer &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Gỡ lỗi trên macOS" href="macos_debug.html" />
+    <link rel="prev" title="Debug" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/debugging/using_sanitizers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compiling/index.html">Build từ mã nguồn</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Debug</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sử dụng sanitizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-are-sanitizers">Sanitizer là gì?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-sanitizers-on-godot">Sử dụng sanitizer với Godot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#address-sanitizer-asan">Address sanitizer (ASAN)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#leak-sanitizer-lsan">Leak sanitizer (LSAN)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory-sanitizer-msan">Memory sanitizer (MSAN)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#thread-sanitizer-tsan">Thread sanitizer (TSAN)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#undefined-behavior-sanitizer-ubsan">Undefined behavior sanitizer (UBSAN)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#platform-specific-sanitizers">Sanitizer dành riêng cho nền tảng</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="macos_debug.html">Gỡ lỗi trên macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vulkan/index.html">Vulkan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#debugging-the-editor">Gỡ lỗi trình chỉnh sửa</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profiling/index.html">Sử dụng profiler C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../handling_compatibility_breakages.html">Xử lý việc phá vỡ tương thích</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Phát triển engine</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Debug</a></li>
+      <li class="breadcrumb-item active">Sử dụng sanitizer</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-sanitizers">
+<span id="doc-using-sanitizers"></span><h1>Sử dụng sanitizer<a class="headerlink" href="#using-sanitizers" title="Link to this heading"></a></h1>
+<section id="what-are-sanitizers">
+<h2>Sanitizer là gì?<a class="headerlink" href="#what-are-sanitizers" title="Link to this heading"></a></h2>
+<p>Sanitizer là các công cụ instrumentation tĩnh giúp tìm ra những lỗi mà trình gỡ lỗi truyền thống thường không phát hiện được. Điều này đặc biệt hữu ích khi kết hợp với <a class="reference internal" href="../../architecture/unit_testing.html#doc-unit-testing"><span class="std std-ref">Unit test</span></a> trong tích hợp liên tục (continuous integration).</p>
+<p>Sanitizer có thể dùng trên Windows, macOS và Linux với các trình biên dịch Clang (LLVM), GCC hoặc Visual Studio. <a class="reference internal" href="#doc-using-sanitizers-platform-specific-sanitizers"><span class="std std-ref">Một số nền tảng</span></a> cũng có thể có sẵn sanitizer riêng. Trong trường hợp một sanitizer được cung cấp bởi nhiều trình biên dịch khác nhau, hãy nhớ rằng đầu ra và hành vi của chúng sẽ hơi khác nhau.</p>
+</section>
+<section id="using-sanitizers-on-godot">
+<h2>Sử dụng sanitizer với Godot<a class="headerlink" href="#using-sanitizers-on-godot" title="Link to this heading"></a></h2>
+<p>Sanitizer <strong>yêu cầu</strong> biên dịch lại tệp nhị phân. Điều này có nghĩa là bạn không thể dùng các tệp nhị phân Godot chính thức để chạy sanitizer.</p>
+<p>Khi <a class="reference internal" href="../compiling/index.html#toc-devel-compiling"><span class="std std-ref">biên dịch</span></a> với bất kỳ sanitizer nào được bật, tệp nhị phân tạo ra sẽ có hậu tố <code class="docutils literal notranslate"><span class="pre">.san</span></code> được thêm vào tên để phân biệt với tệp nhị phân không có sanitizer.</p>
+<p>Có ảnh hưởng đến hiệu năng vì cần thực hiện nhiều kiểm tra runtime bổ sung. Mức sử dụng bộ nhớ cũng sẽ tăng. Bạn có thể bật một số tổ hợp nhiều sanitizer trong cùng một bản build. Tuy nhiên, hãy cẩn thận với ảnh hưởng hiệu năng khi dùng nhiều sanitizer cùng lúc, vì tệp nhị phân tạo ra có thể chậm quá mức.</p>
+<p>Một số tùy chọn có thể được truyền cho sanitizer qua biến môi trường mà không cần biên dịch lại tệp nhị phân.</p>
+</section>
+<section id="address-sanitizer-asan">
+<span id="doc-using-sanitizers-address-sanitizer"></span><h2>Address sanitizer (ASAN)<a class="headerlink" href="#address-sanitizer-asan" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Có sẵn trong Clang và GCC.</p></li>
+<li><p><strong>Nền tảng được hỗ trợ:</strong> Linux, macOS, Windows (Visual Studio), Web</p></li>
+<li><p><a class="reference external" href="https://clang.llvm.org/docs/AddressSanitizer.html">Tài liệu ASAN của Clang</a></p></li>
+</ul>
+<p>Address sanitizer nói chung là sanitizer được dùng thường xuyên nhất. Nó có thể chẩn đoán các vấn đề như tràn bộ đệm (buffer overrun) và truy cập ngoài giới hạn. Nếu engine bị crash với thông báo như <code class="docutils literal notranslate"><span class="pre">free():</span> <span class="pre">invalid</span> <span class="pre">pointer</span></code>, đây thường là kết quả của tràn bộ đệm. (Thông báo này được in ra bởi C runtime, không phải Godot.)</p>
+<p>Trong một số trường hợp (chẳng hạn phát hiện việc đọc bộ nhớ chưa khởi tạo), address sanitizer là không đủ. Khi đó nên dùng <a class="reference internal" href="#doc-using-sanitizers-memory-sanitizer"><span class="std std-ref">Memory sanitizer (MSAN)</span></a>.</p>
+<p>Bạn cũng có thể phát hiện các tình huống use-after-return bằng cách chỉ định biến môi trường <code class="docutils literal notranslate"><span class="pre">ASAN_OPTIONS=detect_stack_use_after_return=1</span></code> trước khi <em>chạy</em> Godot (không phải khi biên dịch). Điều này làm tăng chi phí runtime của address sanitizer, vì vậy chỉ bật tính năng này khi bạn thực sự cần.</p>
+<p>Để bật address sanitizer trong bản build Godot, hãy truyền tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_asan=yes</span></code> khi biên dịch. Bật ASAN thường khiến tệp nhị phân tạo ra chậm hơn khoảng 2 lần.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Do một <a class="reference external" href="https://stackoverflow.com/questions/36971902/why-cant-clang-enable-all-sanitizers/">quyết định thiết kế</a>, các sanitizer address, memory và thread loại trừ lẫn nhau. Điều này có nghĩa là bạn chỉ có thể dùng một trong các sanitizer đó trong một tệp nhị phân.</p>
+</div>
+</section>
+<section id="leak-sanitizer-lsan">
+<h2>Leak sanitizer (LSAN)<a class="headerlink" href="#leak-sanitizer-lsan" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Có sẵn trong Clang và GCC.</p></li>
+<li><p><strong>Nền tảng được hỗ trợ:</strong> Linux, Web</p></li>
+<li><p><a class="reference external" href="https://clang.llvm.org/docs/LeakSanitizer.html">Tài liệu LSAN của Clang</a></p></li>
+</ul>
+<p>Leak sanitizer có thể phát hiện rò rỉ bộ nhớ, tức là những tình huống mà bộ nhớ không còn được dùng nhưng chương trình đang chạy không bao giờ giải phóng. Điều này có thể dẫn đến tình trạng hết bộ nhớ nếu chương trình chạy đủ lâu. Vì Godot có thể chạy trên <a class="reference internal" href="../../../tutorials/export/exporting_for_dedicated_servers.html#doc-exporting-for-dedicated-servers"><span class="std std-ref">máy chủ chuyên dụng</span></a> trong nhiều tháng hoặc thậm chí nhiều năm mà không khởi động lại, việc sửa rò rỉ bộ nhớ khi chúng xảy ra là rất quan trọng.</p>
+<p>Để bật leak sanitizer trong bản build Godot, hãy truyền tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_lsan=yes</span></code> khi biên dịch. Bật LSAN chỉ gây chi phí hiệu năng nhỏ, nhưng chương trình sẽ thoát chậm hơn nhiều vì việc phát hiện rò rỉ diễn ra khi chương trình thoát.</p>
+</section>
+<section id="memory-sanitizer-msan">
+<span id="doc-using-sanitizers-memory-sanitizer"></span><h2>Memory sanitizer (MSAN)<a class="headerlink" href="#memory-sanitizer-msan" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Chỉ có trong Clang, không có trong GCC.</p></li>
+<li><p><strong>Nền tảng được hỗ trợ:</strong> Linux</p></li>
+<li><p><a class="reference external" href="https://clang.llvm.org/docs/MemorySanitizer.html">Tài liệu MSAN của Clang</a></p></li>
+</ul>
+<p>Memory sanitizer bổ sung cho <a class="reference internal" href="#doc-using-sanitizers-address-sanitizer"><span class="std std-ref">Address sanitizer (ASAN)</span></a>. Không giống address sanitizer, memory sanitizer có thể phát hiện việc đọc bộ nhớ chưa khởi tạo.</p>
+<p>Để bật memory sanitizer trong bản build Godot, hãy truyền tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_msan=yes</span></code> khi biên dịch. Bật MSAN thường khiến tệp nhị phân tạo ra chậm hơn khoảng 3 lần.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Do một <a class="reference external" href="https://stackoverflow.com/questions/36971902/why-cant-clang-enable-all-sanitizers/">quyết định thiết kế</a>, các sanitizer address, memory và thread loại trừ lẫn nhau. Điều này có nghĩa là bạn chỉ có thể dùng một trong các sanitizer đó trong một tệp nhị phân.</p>
+</div>
+</section>
+<section id="thread-sanitizer-tsan">
+<h2>Thread sanitizer (TSAN)<a class="headerlink" href="#thread-sanitizer-tsan" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Có sẵn trong Clang và GCC.</p></li>
+<li><p><strong>Nền tảng được hỗ trợ:</strong> Linux, macOS</p></li>
+<li><p><a class="reference external" href="https://clang.llvm.org/docs/ThreadSanitizer.html">Tài liệu TSAN của Clang</a></p></li>
+</ul>
+<p>Thread sanitizer được dùng để truy tìm các race condition liên quan đến đa luồng. Race condition xảy ra khi nhiều luồng cố gắng sửa đổi cùng một dữ liệu tại cùng một thời điểm. Vì hệ điều hành có thể sắp xếp lịch chạy luồng theo bất kỳ thứ tự nào, điều này dẫn đến hành vi sai chỉ thỉnh thoảng xảy ra (và do đó có thể khó truy tìm). Để ngăn race condition, bạn cần thêm một khóa (lock) để đảm bảo chỉ một luồng có thể truy cập dữ liệu dùng chung tại một thời điểm.</p>
+<p>Để bật thread sanitizer trong bản build Godot, hãy truyền tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_tsan=yes</span></code> khi biên dịch. Bật TSAN thường khiến tệp nhị phân tạo ra chậm hơn 10 lần, đồng thời làm mức sử dụng bộ nhớ tăng khoảng 8 lần.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Do một <a class="reference external" href="https://stackoverflow.com/questions/36971902/why-cant-clang-enable-all-sanitizers/">quyết định thiết kế</a>, các sanitizer address, memory và thread loại trừ lẫn nhau. Điều này có nghĩa là bạn chỉ có thể dùng một trong các sanitizer đó trong một tệp nhị phân.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trên Linux, nếu bạn gặp lỗi sau:</p>
+<p><code class="docutils literal notranslate"><span class="pre">FATAL:</span> <span class="pre">ThreadSanitizer:</span> <span class="pre">unexpected</span> <span class="pre">memory</span> <span class="pre">mapping</span></code></p>
+<p>Bạn có thể cần tạm thời giảm entropy của Address Space Layout Randomization (ASLR) trong hệ thống bằng:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sysctl<span class="w"> </span>vm.mmap_rnd_bits<span class="o">=</span><span class="m">28</span>
+</pre></div>
+</div>
+<p>Hoặc tốt hơn là tắt hoàn toàn bằng:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sysctl<span class="w"> </span>kernel.randomize_va_space<span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+<p>Và ngay khi bạn dùng xong thread sanitizer, hãy tăng lại entropy ASLR bằng:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sysctl<span class="w"> </span>vm.mmap_rnd_bits<span class="o">=</span><span class="m">32</span>
+</pre></div>
+</div>
+<p>Hoặc bật lại ASLR bằng:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sysctl<span class="w"> </span>kernel.randomize_va_space<span class="o">=</span><span class="m">2</span>
+</pre></div>
+</div>
+<p>Khởi động lại máy cũng sẽ đưa trạng thái ASLR về giá trị mặc định.</p>
+<p>Điều quan trọng là phải hoàn tác các thay đổi càng sớm càng tốt vì việc giảm entropy ASLR hoặc tắt hoàn toàn ASLR có thể gây rủi ro bảo mật.</p>
+</div>
+</section>
+<section id="undefined-behavior-sanitizer-ubsan">
+<h2>Undefined behavior sanitizer (UBSAN)<a class="headerlink" href="#undefined-behavior-sanitizer-ubsan" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Có sẵn trong Clang và GCC.</p></li>
+<li><p><strong>Nền tảng được hỗ trợ:</strong> Linux, macOS, Web</p></li>
+<li><p><a class="reference external" href="https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html">Tài liệu UBSAN của Clang</a></p></li>
+</ul>
+<p>Undefined behavior sanitizer được dùng để truy tìm các tình huống chương trình có hành vi ngẫu nhiên và không thể đoán trước. Nguyên nhân là mã C/C++ được trình biên dịch chấp nhận nhưng không <em>đúng</em>. Biên dịch với một tập tối ưu hóa khác cũng có thể làm thay đổi kết quả quan sát được của hành vi không xác định.</p>
+<p>Để bật undefined behavior sanitizer trong bản build Godot, hãy truyền tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_ubsan=yes</span></code> khi biên dịch. Bật UBSAN chỉ gây chi phí hiệu năng nhỏ.</p>
+</section>
+<section id="platform-specific-sanitizers">
+<span id="doc-using-sanitizers-platform-specific-sanitizers"></span><h2>Sanitizer dành riêng cho nền tảng<a class="headerlink" href="#platform-specific-sanitizers" title="Link to this heading"></a></h2>
+<section id="web">
+<h3>Web<a class="headerlink" href="#web" title="Link to this heading"></a></h3>
+<p>Khi <a class="reference internal" href="../compiling/compiling_for_web.html#doc-compiling-for-web"><span class="std std-ref">biên dịch cho Web</span></a>, có thêm 2 tùy chọn SCons sanitizer:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">use_assertions=yes</span></code> bật các assertion Emscripten lúc runtime, có thể phát hiện nhiều vấn đề khác nhau.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_safe_heap=yes</span></code> bật <a class="reference external" href="https://emscripten.org/docs/debugging/Sanitizers.html">sanitizer SAFE_HEAP của Emscripten</a>. Nó cung cấp chức năng tương tự ASAN, nhưng tập trung vào các vấn đề dành riêng cho WebAssembly. <code class="docutils literal notranslate"><span class="pre">SAFE_HEAP</span></code> không được đảm bảo tương thích với ASAN và UBSAN trong cùng một tệp nhị phân, nên bạn có thể phải build riêng.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Debug" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="macos_debug.html" class="btn btn-neutral float-right" title="Gỡ lỗi trên macOS" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

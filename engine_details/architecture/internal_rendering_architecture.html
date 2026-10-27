@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Kiến trúc kết xuất nội bộ" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/architecture/internal_rendering_architecture.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trang này là phần tổng quan cấp cao về thiết kế renderer nội bộ của Godot 4. Nó không áp dụng cho các phiên bản Godot trước đó. Mục tiêu của trang này là ghi lại các quyết định thiết kế được đưa ra..." />
+<meta name="description" content="Trang này là phần tổng quan cấp cao về thiết kế renderer nội bộ của Godot 4. Nó không áp dụng cho các phiên bản Godot trước đó. Mục tiêu của trang này là ghi lại các quyết định thiết kế được đưa ra..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Kiến trúc kết xuất nội bộ &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Hệ tọa độ 2D và phép biến đổi 2D" href="2d_coordinate_systems.html" />
+    <link rel="prev" title="Cây kế thừa lớp" href="inheritance_class_tree.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/architecture/internal_rendering_architecture" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kiến trúc engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="godot_architecture_diagram.html">Tổng quan kiến trúc của Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_engine_methods_and_macros.html">Các phương thức và macro thông dụng của engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_types.html">Các kiểu cốt lõi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variant_class.html">Lớp Variant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_class.html">Lớp Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inheritance_class_tree.html">Cây kế thừa lớp</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Kiến trúc kết xuất nội bộ</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rendering-methods">Các phương thức kết xuất</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#forward">Forward+</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mobile">Di động</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compatibility">Compatibility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-not-deferred-rendering">Tại sao không dùng deferred rendering?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rendering-drivers">Driver kết xuất</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vulkan">Vulkan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#direct3d-12">Direct3D 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metal">Metal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opengl">OpenGL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary-of-rendering-drivers-methods">Tóm tắt các driver/phương thức kết xuất</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#renderingdevice-abstraction">Lớp trừu tượng RenderingDevice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core-rendering-classes-architecture">Kiến trúc các lớp kết xuất cốt lõi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core-shaders">Shader lõi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-and-3d-rendering-separation">Tách biệt kết xuất 2D và 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-rendering-techniques">Các kỹ thuật kết xuất 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Các kỹ thuật kết xuất 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reverse-z">Reverse Z</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#batching-and-instancing">Batching và instancing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#light-decal-and-reflection-probe-rendering">Kết xuất light, decal và reflection probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shadow-mapping">Shadow mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#temporal-antialiasing">Khử răng cưa theo thời gian (TAA)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global-illumination">Chiếu sáng toàn cục (Global illumination)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#depth-of-field">Độ sâu trường ảnh (Depth of field)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#screen-space-effects-ssao-ssil-ssr-sss">Hiệu ứng không gian màn hình (SSAO, SSIL, SSR, SSS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sky-rendering">Kết xuất bầu trời</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volumetric-fog">Sương mù thể tích (Volumetric fog)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#occlusion-culling">Occlusion culling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visibility-range-lod">Visibility range (LOD)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#automatic-mesh-lod">LOD mesh tự động</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2d_coordinate_systems.html">Hệ tọa độ 2D và phép biến đổi 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html">Unit test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kiến trúc engine</a></li>
+      <li class="breadcrumb-item active">Kiến trúc kết xuất nội bộ</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="internal-rendering-architecture">
+<span id="doc-internal-rendering-architecture"></span><h1>Kiến trúc kết xuất nội bộ<a class="headerlink" href="#internal-rendering-architecture" title="Link to this heading"></a></h1>
+<p>Trang này là phần tổng quan cấp cao về thiết kế renderer nội bộ của Godot 4. Nó không áp dụng cho các phiên bản Godot trước đó.</p>
+<p>Mục tiêu của trang này là ghi lại các quyết định thiết kế được đưa ra để phù hợp nhất với <a class="reference external" href="https://contributing.godotengine.org/en/latest/engine/guidelines/best_practices.html">triết lý thiết kế của Godot</a>, đồng thời cung cấp điểm khởi đầu cho những người mới đóng góp vào phần kết xuất.</p>
+<p>Nếu bạn có câu hỏi về cơ chế kết xuất nội bộ chưa được giải đáp ở đây, cứ thoải mái hỏi trong kênh <code class="docutils literal notranslate"><span class="pre">#rendering</span></code> của <a class="reference external" href="https://chat.godotengine.org/channel/rendering">Godot Contributors Chat</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn gặp khó khăn khi hiểu các khái niệm trong trang này, bạn nên tìm hiểu qua một bài hướng dẫn OpenGL như <a class="reference external" href="https://learnopengl.com/">LearnOpenGL</a>.</p>
+<p>Các API cấp thấp hiện đại (Vulkan/Direct3D 12/Metal) đòi hỏi kiến thức trung cấp về các API cấp cao hơn (OpenGL/Direct3D 11) để sử dụng hiệu quả. May mắn là người đóng góp hiếm khi cần làm việc trực tiếp với các API cấp thấp. Các renderer của Godot được xây dựng hoàn toàn trên OpenGL và RenderingDevice, là lớp trừu tượng của chúng tôi trên Vulkan/Direct3D 12/Metal.</p>
+</div>
+<section id="rendering-methods">
+<span id="doc-internal-rendering-architecture-methods"></span><h2>Các phương thức kết xuất<a class="headerlink" href="#rendering-methods" title="Link to this heading"></a></h2>
+<section id="forward">
+<h3>Forward+<a class="headerlink" href="#forward" title="Link to this heading"></a></h3>
+<p>Đây là một forward renderer dùng phương pháp chiếu sáng <em>clustered</em>.</p>
+<p>Clustered lighting dùng một compute shader để nhóm các nguồn sáng vào một lưới 3D căn theo frustum. Sau đó, khi kết xuất, các pixel có thể tra cứu những nguồn sáng nào ảnh hưởng đến ô lưới chứa chúng và chỉ chạy tính toán ánh sáng cho các nguồn sáng có thể ảnh hưởng đến pixel đó.</p>
+<p>Phương pháp này có thể tăng đáng kể hiệu năng kết xuất trên phần cứng desktop, nhưng kém hiệu quả hơn nhiều trên thiết bị di động.</p>
+</section>
+<section id="mobile">
+<h3>Di động<a class="headerlink" href="#mobile" title="Link to this heading"></a></h3>
+<p>Đây là một forward renderer dùng phương pháp chiếu sáng single-pass truyền thống. Nội bộ, nó được gọi là <strong>Forward Mobile</strong>.</p>
+<p>Được thiết kế cho nền tảng di động, nhưng cũng có thể chạy trên nền tảng desktop. Phương thức kết xuất này được tối ưu để hoạt động tốt trên GPU di động. GPU di động có kiến trúc rất khác so với GPU desktop do các ràng buộc đặc thù về mức tiêu thụ pin, nhiệt độ và giới hạn băng thông tổng thể khi đọc ghi dữ liệu. Compute shader cũng được hỗ trợ rất hạn chế hoặc hoàn toàn không được hỗ trợ. Do đó, mobile renderer chỉ dùng các shader dựa trên raster (fragment/vertex).</p>
+<p>Không giống GPU desktop, GPU di động thực hiện <em>kết xuất dựa trên tile (tile-based rendering)</em>. Thay vì kết xuất toàn bộ hình ảnh như một khối duy nhất, hình ảnh được chia thành các tile nhỏ hơn vừa với bộ nhớ trong tốc độ cao của GPU di động. Mỗi tile được kết xuất rồi ghi ra texture đích. Toàn bộ quá trình này diễn ra tự động trong driver đồ họa.</p>
+<p>Vấn đề là điều này tạo ra nút thắt cổ chai trong phương pháp truyền thống của chúng tôi. Với kết xuất desktop, chúng tôi kết xuất toàn bộ hình học không trong suốt, sau đó xử lý nền, rồi đến hình học trong suốt, rồi hậu xử lý. Mỗi pass cần đọc kết quả hiện tại vào bộ nhớ tile, thực hiện các thao tác rồi ghi ra lại. Sau đó chúng tôi chờ tất cả các tile hoàn tất trước khi chuyển sang pass tiếp theo.</p>
+<p>Thay đổi quan trọng đầu tiên trong mobile renderer là nó không dùng định dạng texture RGBA16F như renderer desktop (Forward+). Thay vào đó, nó dùng định dạng texture R10G10B10A2 UNORM, trừ khi cài đặt dự án <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-viewport-hdr-2d" title="Class reference (English)"><span class="xref std std-ref">rendering/viewport/hdr_2d</span></a> được bật. Điều này giảm một nửa băng thông cần thiết và còn có thêm cải thiện, vì phần cứng di động thường được tối ưu thêm cho các định dạng 32-bit. Đánh đổi là theo mặc định, mobile renderer có khả năng HDR hạn chế do độ chính xác và giá trị tối đa của dữ liệu màu bị giảm.</p>
+<p>Khi cài đặt dự án <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-viewport-hdr-2d" title="Class reference (English)"><span class="xref std std-ref">rendering/viewport/hdr_2d</span></a> được bật, mobile renderer dùng cùng định dạng RGBA16F như Forward+. Điều này cho phép hỗ trợ HDR đầy đủ, nhưng cũng làm tăng mức sử dụng băng thông và có thể giảm hiệu năng trên GPU di động hoặc đồ họa tích hợp.</p>
+<p>Thay đổi quan trọng thứ hai là sử dụng sub-pass bất cứ khi nào có thể. Sub-pass cho phép chúng tôi thực hiện các bước kết xuất từ đầu đến cuối trên từng tile, tiết kiệm chi phí phát sinh từ việc đọc và ghi tile giữa mỗi pass kết xuất. Khả năng dùng sub-pass bị giới hạn bởi việc không thể đọc các pixel lân cận, vì chúng tôi bị ràng buộc làm việc trong phạm vi một tile duy nhất.</p>
+<p>Giới hạn này của sub-pass khiến không thể hiện thực hiệu quả các tính năng như glow và depth of field. Tương tự, nếu cần đọc từ screen texture hoặc depth texture, chúng tôi phải ghi ra toàn bộ kết quả kết xuất, làm hạn chế khả năng dùng sub-pass. Khi các tính năng này được bật, sẽ dùng kết hợp sub-pass và pass thông thường, và các tính năng này gây ra mức giảm hiệu năng đáng kể.</p>
+<p>Trên nền tảng desktop, việc dùng sub-pass sẽ không ảnh hưởng gì đến hiệu năng. Tuy nhiên, phương thức kết xuất này vẫn có thể hoạt động tốt hơn Forward+ trong các scene đơn giản nhờ độ phức tạp và mức sử dụng băng thông thấp hơn. Điều này đặc biệt rõ rệt trên GPU cấp thấp, đồ họa tích hợp hoặc trong các ứng dụng VR.</p>
+<p>Do tập trung vào phần cứng cấp thấp, phương thức kết xuất này không cung cấp các tính năng kết xuất cao cấp như SDFGI và <a class="reference internal" href="../../tutorials/3d/volumetric_fog.html#doc-volumetric-fog"><span class="std std-ref">Sương mù thể tích và fog volume</span></a>. Một số hiệu ứng hậu xử lý cũng không khả dụng.</p>
+</section>
+<section id="compatibility">
+<span id="doc-internal-rendering-architecture-compatibility"></span><h3>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đây là phương thức kết xuất duy nhất khả dụng khi dùng driver OpenGL. Phương thức kết xuất này không khả dụng khi dùng Vulkan, Direct3D 12 hoặc Metal.</p>
+</div>
+<p>Đây là một forward renderer truyền thống (không clustered). Nội bộ, nó được gọi là <strong>GL Compatibility</strong>. Nó được thiết kế cho các GPU cũ không hỗ trợ Vulkan, nhưng vẫn hoạt động rất hiệu quả trên phần cứng mới hơn. Cụ thể, nó được tối ưu cho các thiết bị di động cũ và cấp thấp. Tuy nhiên, nhiều tối ưu cũng áp dụng được, khiến nó cũng là lựa chọn tốt cho các máy desktop cũ và cấp thấp.</p>
+<p>Giống Mobile renderer, Compatibility renderer dùng texture R10G10B10A2 UNORM cho kết xuất 3D. Khác với mobile renderer, màu được tonemap và lưu ở định dạng sRGB nên không có hỗ trợ HDR. Điều này giúp tránh phải có pass tonemapping và cho phép chúng tôi dùng texture ít bit hơn mà không bị banding đáng kể.</p>
+<p>Compatibility renderer dùng phương pháp forward single-pass truyền thống để vẽ các đối tượng có nguồn sáng, nhưng dùng phương pháp multi-pass để vẽ các nguồn sáng có bóng đổ. Cụ thể, trong pass đầu tiên, nó có thể vẽ nhiều nguồn sáng không có bóng đổ và tối đa một DirectionalLight3D có bóng đổ. Trong mỗi pass tiếp theo, nó có thể vẽ tối đa một OmniLight3D, một SpotLight3D và một DirectionalLight3D có bóng đổ. Các nguồn sáng có bóng đổ sẽ ảnh hưởng đến scene khác với nguồn sáng không có bóng đổ, vì ánh sáng được hòa trộn trong không gian sRGB thay vì không gian tuyến tính. Sự khác biệt về chiếu sáng này sẽ ảnh hưởng đến diện mạo của scene và cần được lưu ý khi thiết kế scene cho Compatibility renderer.</p>
+<p>Do tập trung vào phần cứng cấp thấp, phương thức kết xuất này không cung cấp các tính năng kết xuất cao cấp (còn ít hơn so với Mobile). Hầu hết các hiệu ứng hậu xử lý không khả dụng.</p>
+</section>
+<section id="why-not-deferred-rendering">
+<h3>Tại sao không dùng deferred rendering?<a class="headerlink" href="#why-not-deferred-rendering" title="Link to this heading"></a></h3>
+<p>Forward rendering thường mang lại sự cân bằng tốt hơn giữa hiệu năng và tính linh hoạt, đặc biệt khi dùng phương pháp chiếu sáng clustered. Mặc dù deferred rendering có thể nhanh hơn trong một số trường hợp, nó cũng kém linh hoạt hơn và đòi hỏi dùng các thủ thuật để có thể dùng MSAA. Vì các game có phong cách đồ họa ít chân thực có thể hưởng lợi nhiều từ MSAA, chúng tôi chọn forward rendering cho Godot 4 (giống Godot 3).</p>
+<p>Dù vậy, một số phần của forward renderer <em>có</em> được thực hiện bằng phương pháp deferred để cho phép một số tối ưu khi có thể. Điều này đặc biệt áp dụng cho VoxelGI và SDFGI.</p>
+<p>Một clustered deferred renderer có thể được phát triển trong tương lai. Renderer này có thể được dùng trong những tình huống ưu tiên hiệu năng hơn tính linh hoạt.</p>
+</section>
+</section>
+<section id="rendering-drivers">
+<h2>Driver kết xuất<a class="headerlink" href="#rendering-drivers" title="Link to this heading"></a></h2>
+<p>Godot 4 hỗ trợ các API đồ họa sau:</p>
+<section id="vulkan">
+<h3>Vulkan<a class="headerlink" href="#vulkan" title="Link to this heading"></a></h3>
+<p>Đây là driver chính trong Godot 4, với phần lớn trọng tâm phát triển dành cho driver này.</p>
+<p>Yêu cầu tối thiểu là Vulkan 1.0, với các tính năng tùy chọn của Vulkan 1.1 và 1.2 được dùng khi có sẵn. <a class="reference external" href="https://github.com/zeux/volk">volk</a> được dùng làm Vulkan loader, và <a class="reference external" href="https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator">Vulkan Memory Allocator</a> được dùng để quản lý bộ nhớ.</p>
+<p>Cả hai <a class="reference internal" href="#doc-internal-rendering-architecture-methods"><span class="std std-ref">Các phương thức kết xuất</span></a> Forward+ và Mobile đều được hỗ trợ khi dùng driver Vulkan.</p>
+<p><strong>Tạo context Vulkan:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/drivers/vulkan/rendering_context_driver_vulkan.cpp">drivers/vulkan/rendering_context_driver_vulkan.cpp</a></p></li>
+</ul>
+<p><strong>Tạo context Direct3D 12:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/drivers/d3d12/rendering_context_driver_d3d12.cpp">drivers/d3d12/rendering_context_driver_d3d12.cpp</a></p></li>
+</ul>
+</section>
+<section id="direct3d-12">
+<h3>Direct3D 12<a class="headerlink" href="#direct3d-12" title="Link to this heading"></a></h3>
+<p>Giống Vulkan, driver Direct3D 12 chỉ nhắm đến các nền tảng hiện đại. Nó được thiết kế để nhắm đến cả Windows và Xbox (trong khi Vulkan không thể dùng trực tiếp trên Xbox).</p>
+<p>Cả hai <a class="reference internal" href="#doc-internal-rendering-architecture-methods"><span class="std std-ref">Các phương thức kết xuất</span></a> Forward+ và Mobile đều có thể dùng với Direct3D 12.</p>
+<p><a class="reference internal" href="#doc-internal-rendering-architecture-core-shaders"><span class="std std-ref">Shader lõi</span></a> được dùng chung với Vulkan renderer. Shader được chuyển đổi từ <abbr title="Standard Portable Intermediate Representation">SPIR-V</abbr> sang <abbr title="DirectX Intermediate Language">DXIL</abbr> bằng Mesa NIR (<a class="reference external" href="https://godotengine.org/article/d3d12-adventures-in-shaderland/">thêm thông tin</a>).</p>
+<p><strong>Driver này vẫn đang ở giai đoạn thử nghiệm và chỉ có từ Godot 4.3 trở đi.</strong> Mặc dù Direct3D 12 cho phép hỗ trợ các tính năng chỉ có trên Direct3D của Windows 11 như windowed optimizations và Auto HDR, Vulkan vẫn được khuyến nghị cho hầu hết các dự án. Xem <a class="reference external" href="https://github.com/godotengine/godot/pull/70315">pull request đã bổ sung hỗ trợ Direct3D 12</a> để biết thêm thông tin.</p>
+</section>
+<section id="metal">
+<h3>Metal<a class="headerlink" href="#metal" title="Link to this heading"></a></h3>
+<p>Godot cung cấp một driver Metal native hoạt động trên mọi phần cứng Apple Silicon (macOS ARM). So với việc dùng lớp chuyển đổi MoltenVK, driver này nhanh hơn đáng kể, đặc biệt trong các tình huống bị giới hạn bởi CPU.</p>
+<p>Cả hai <a class="reference internal" href="#doc-internal-rendering-architecture-methods"><span class="std std-ref">Các phương thức kết xuất</span></a> Forward+ và Mobile đều có thể dùng với Metal.</p>
+<p><a class="reference internal" href="#doc-internal-rendering-architecture-core-shaders"><span class="std std-ref">Shader lõi</span></a> được dùng chung với Vulkan renderer. Shader được chuyển đổi từ GLSL sang <abbr title="Metal Shading Language">MSL</abbr> bằng SPIRV-Cross.</p>
+<p>Godot cũng hỗ trợ kết xuất Metal thông qua <a class="reference external" href="https://github.com/KhronosGroup/MoltenVK">MoltenVK</a>, được dùng làm phương án dự phòng khi không có hỗ trợ Metal native (ví dụ trên macOS x86).</p>
+<p>Từ Godot 4.7, Metal 4 được dùng khi được hỗ trợ. Mọi phần cứng Apple Silicon đều hỗ trợ Metal 4, nhưng phải chạy macOS 26 trở lên hoặc iOS 26 trở lên. Metal 3 được tự động dùng làm phương án dự phòng trên các phiên bản macOS và iOS cũ hơn. Xem <a class="reference external" href="https://github.com/godotengine/godot/pull/114484">pull request đã bổ sung hỗ trợ Metal 4</a> để biết thêm thông tin.</p>
+</section>
+<section id="opengl">
+<h3>OpenGL<a class="headerlink" href="#opengl" title="Link to this heading"></a></h3>
+<p>Driver này dùng OpenGL ES 3.0 và nhắm đến các thiết bị cũ và cấp thấp không hỗ trợ Vulkan. OpenGL 3.3 Core Profile được dùng trên nền tảng desktop để chạy driver này, vì hầu hết driver đồ họa trên desktop không hỗ trợ OpenGL ES. WebGL 2.0 được dùng cho các bản export web.</p>
+<p>Có thể dùng trực tiếp OpenGL ES 3.0 trên nền tảng desktop bằng cách truyền đối số dòng lệnh <code class="docutils literal notranslate"><span class="pre">--rendering-driver</span> <span class="pre">opengl3_es</span></code>, tuy nhiên cách này chỉ hoạt động với các driver đồ họa có hỗ trợ OpenGL ES native (chẳng hạn Mesa).</p>
+<p>Chỉ phương thức kết xuất <a class="reference internal" href="#doc-internal-rendering-architecture-compatibility"><span class="std std-ref">Compatibility</span></a> có thể dùng với driver OpenGL.</p>
+<p><a class="reference internal" href="#doc-internal-rendering-architecture-core-shaders"><span class="std std-ref">Shader lõi</span></a> hoàn toàn khác với Vulkan renderer.</p>
+<p>Nhiều tính năng nâng cao không được hỗ trợ với driver này, vì nó ưu tiên hàng đầu cho các thiết bị cấp thấp.</p>
+</section>
+<section id="summary-of-rendering-drivers-methods">
+<h3>Tóm tắt các driver/phương thức kết xuất<a class="headerlink" href="#summary-of-rendering-drivers-methods" title="Link to this heading"></a></h3>
+<p>Hiện có thể dùng các tổ hợp API kết xuất + phương thức kết xuất sau:</p>
+<ul class="simple">
+<li><p>Vulkan + Forward+ (tùy chọn thông qua MoltenVK trên macOS và iOS)</p></li>
+<li><p>Vulkan + Mobile (tùy chọn thông qua MoltenVK trên macOS và iOS)</p></li>
+<li><p>Direct3D 12 + Forward+</p></li>
+<li><p>Direct3D 12 + Mobile</p></li>
+<li><p>Metal + Forward+</p></li>
+<li><p>Metal + Mobile</p></li>
+<li><p>OpenGL + Compatibility (tùy chọn thông qua ANGLE trên Windows và macOS)</p></li>
+</ul>
+<p>Mỗi tổ hợp có những giới hạn và đặc điểm hiệu năng riêng. Hãy đảm bảo kiểm thử các thay đổi của bạn trên tất cả các phương thức kết xuất nếu có thể trước khi mở pull request.</p>
+</section>
+</section>
+<section id="renderingdevice-abstraction">
+<h2>Lớp trừu tượng RenderingDevice<a class="headerlink" href="#renderingdevice-abstraction" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Driver OpenGL không dùng lớp trừu tượng RenderingDevice.</p>
+</div>
+<p>Để giúp việc xử lý độ phức tạp của các API đồ họa cấp thấp hiện đại dễ dàng hơn, Godot dùng lớp trừu tượng riêng gọi là RenderingDevice.</p>
+<p>Điều này có nghĩa là khi viết code cho các phương thức kết xuất hiện đại, bạn thực ra không dùng trực tiếp các API Vulkan, Direct3D 12 hay Metal. Dù vẫn ở cấp thấp hơn một API như OpenGL, điều này giúp làm việc với renderer dễ dàng hơn, vì RenderingDevice sẽ trừu tượng hóa nhiều điểm đặc thù của từng API cho bạn. RenderingDevice có mức độ trừu tượng tương tự WebGPU.</p>
+<p><strong>Hiện thực RenderingDevice cho Vulkan:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/drivers/vulkan/rendering_device_driver_vulkan.cpp">drivers/vulkan/rendering_device_driver_vulkan.cpp</a></p></li>
+</ul>
+<p><strong>Hiện thực RenderingDevice cho Direct3D 12:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/drivers/d3d12/rendering_device_driver_d3d12.cpp">drivers/d3d12/rendering_device_driver_d3d12.cpp</a></p></li>
+</ul>
+<p><strong>Hiện thực RenderingDevice cho Metal:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/drivers/metal/rendering_device_driver_metal.cpp">drivers/metal/rendering_device_driver_metal.cpp</a> - Metal 4</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/drivers/metal/rendering_device_driver_metal3.cpp">drivers/metal/rendering_device_driver_metal3.cpp</a> - Metal 3</p></li>
+</ul>
+</section>
+<section id="core-rendering-classes-architecture">
+<h2>Kiến trúc các lớp kết xuất cốt lõi<a class="headerlink" href="#core-rendering-classes-architecture" title="Link to this heading"></a></h2>
+<p>Sơ đồ này thể hiện cấu trúc các lớp kết xuất trong Godot, bao gồm lớp trừu tượng RenderingDevice:</p>
+<img alt="../../_images/rendering_architecture_diagram.webp" src="../../_images/rendering_architecture_diagram.webp" />
+<p><a class="reference external" href="https://raw.githubusercontent.com/godotengine/godot-docs/master/engine_details/architecture/img/rendering_architecture_diagram.webp">Xem ở kích thước đầy đủ</a></p>
+</section>
+<section id="core-shaders">
+<span id="doc-internal-rendering-architecture-core-shaders"></span><h2>Shader lõi<a class="headerlink" href="#core-shaders" title="Link to this heading"></a></h2>
+<p>Mặc dù shader trong các dự án Godot được viết bằng một <a class="reference internal" href="../../tutorials/shaders/shader_reference/shading_language.html#doc-shading-language"><span class="std std-ref">ngôn ngữ tùy chỉnh lấy cảm hứng từ GLSL</span></a>, các core shader được viết trực tiếp bằng GLSL.</p>
+<p>Các core shader này được nhúng vào file nhị phân của trình chỉnh sửa và export template khi biên dịch. Để thấy bất kỳ thay đổi nào bạn đã thực hiện với các shader GLSL đó, bạn cần biên dịch lại file nhị phân của trình chỉnh sửa hoặc export template.</p>
+<p>Một số tính năng của material như height mapping, refraction và proximity fade không thuộc core shader, mà được thực hiện trong BaseMaterial3D mặc định bằng ngôn ngữ shader của Godot (không phải GLSL). Điều này được thực hiện bằng cách sinh mã shader cần thiết theo thủ tục, tùy thuộc vào các tính năng được bật trong material.</p>
+<p>Theo quy ước, các file shader có <code class="docutils literal notranslate"><span class="pre">_inc</span></code> trong tên được include vào các file GLSL khác để tái sử dụng code tốt hơn. Tiền xử lý GLSL tiêu chuẩn được dùng để thực hiện điều này.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Core material shader sẽ được dùng bởi mọi material trong scene – cả với BaseMaterial3D mặc định lẫn shader tùy chỉnh. Do đó, các shader này phải được giữ đơn giản nhất có thể để tránh vấn đề hiệu năng và đảm bảo việc biên dịch shader không trở nên quá chậm.</p>
+<p>Nếu bạn dùng rẽ nhánh <code class="docutils literal notranslate"><span class="pre">if</span></code> trong shader, hiệu năng có thể giảm vì mức sử dụng <abbr title="Vector General-Purpose Register">VGPR</abbr> trong shader sẽ tăng. Điều này xảy ra ngay cả khi tất cả pixel đều được đánh giá là <code class="docutils literal notranslate"><span class="pre">true</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">false</span></code> trong một frame nhất định.</p>
+<p>Nếu bạn dùng rẽ nhánh tiền xử lý <code class="docutils literal notranslate"><span class="pre">#if</span></code>, số phiên bản shader cần thiết trong scene sẽ tăng. Trong trường hợp xấu nhất, việc thêm một <code class="docutils literal notranslate"><span class="pre">#define</span></code> boolean duy nhất có thể <em>nhân đôi</em> số phiên bản shader có thể cần biên dịch trong một scene. Trong một số trường hợp, Vulkan specialization constants có thể được dùng như một giải pháp thay thế nhanh hơn (nhưng hạn chế hơn).</p>
+<p>Điều này có nghĩa là có một rào cản cao để thêm các tính năng material tích hợp mới vào Godot, cả trong core shader lẫn BaseMaterial3D. Mặc dù BaseMaterial3D có thể tận dụng việc sinh mã động để chỉ đưa vào mã shader khi tính năng được bật, nó vẫn đòi hỏi sinh thêm phiên bản shader khi các tính năng này được dùng trong dự án. Điều này có thể khiến hiện tượng giật do biên dịch shader trở nên rõ rệt hơn trong các scene 3D phức tạp.</p>
+<p>Xem các bài blog <a class="reference external" href="https://therealmjp.github.io/posts/shader-permutations-part1/">The Shader Permutation Problem</a> và <a class="reference external" href="https://medium.com/&#64;jasonbooth_86226/branching-on-a-gpu-18bfc83694f2">Branching on a GPU</a> để biết thêm thông tin.</p>
+</div>
+<p><strong>Core GLSL material shader:</strong></p>
+<ul class="simple">
+<li><p>Forward+: <a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl">servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl</a></p></li>
+<li><p>Mobile: <a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/forward_mobile/scene_forward_mobile.glsl">servers/rendering/renderer_rd/shaders/forward_mobile/scene_forward_mobile.glsl</a></p></li>
+<li><p>Compatibility: <a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/drivers/gles3/shaders/scene.glsl">drivers/gles3/shaders/scene.glsl</a></p></li>
+</ul>
+<p><strong>Sinh material shader:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/resources/material.cpp">scene/resources/material.cpp</a></p></li>
+</ul>
+<p><strong>Các shader GLSL khác cho phương thức kết xuất Forward+ và Mobile:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/">servers/rendering/renderer_rd/shaders/</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/modules/lightmapper_rd">modules/lightmapper_rd/</a></p></li>
+</ul>
+<p><strong>Các shader GLSL khác cho phương thức kết xuất Compatibility:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/drivers/gles3/shaders/">drivers/gles3/shaders/</a></p></li>
+</ul>
+</section>
+<section id="d-and-3d-rendering-separation">
+<h2>Tách biệt kết xuất 2D và 3D<a class="headerlink" href="#d-and-3d-rendering-separation" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nội dung sau chỉ áp dụng cho phương thức kết xuất Forward+ và Mobile, không áp dụng cho Compatibility. Có thể dùng nhiều Viewport để mô phỏng điều này khi dùng Compatibility renderer, hoặc để thực hiện co giãn độ phân giải 2D.</p>
+</div>
+<p>2D và 3D được kết xuất vào các buffer riêng biệt, vì kết xuất 2D trong Godot được thực hiện trong không gian sRGB <abbr title="Low Dynamic Range">LDR</abbr>, trong khi kết xuất 3D dùng không gian tuyến tính <abbr title="High Dynamic Range">HDR</abbr>.</p>
+<p>Định dạng màu dùng cho kết xuất 2D là RGB8 (RGBA8 nếu thuộc tính <strong>Transparent</strong> trên Viewport được bật). Kết xuất 3D dùng depth buffer số nguyên không dấu chuẩn hóa 24-bit, hoặc số thực có dấu 32-bit nếu phần cứng không hỗ trợ depth buffer 24-bit. Kết xuất 2D không dùng depth buffer.</p>
+<p>Việc co giãn độ phân giải 3D được thực hiện khác nhau tùy theo dùng co giãn bilinear hay FSR 1.0. Khi dùng co giãn bilinear, không có shader upscale đặc biệt nào được chạy. Thay vào đó, texture của viewport được kéo giãn và hiển thị bằng một linear sampler (khiến việc lọc diễn ra trực tiếp trên phần cứng). Điều này cho phép tối đa hóa hiệu năng của co giãn 3D bilinear.</p>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">configure()</span></code> trong RenderSceneBuffersRD cấp phát lại các buffer 2D/3D khi độ phân giải hoặc tỉ lệ co giãn thay đổi.</p>
+<p>Co giãn độ phân giải động hiện chưa được hỗ trợ, nhưng đã được lên kế hoạch cho một bản phát hành Godot trong tương lai.</p>
+<p><strong>Code C++ cấu hình buffer kết xuất 2D và 3D:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp">servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp</a></p></li>
+</ul>
+<p><strong>FSR 1.0:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/effects/fsr.cpp">servers/rendering/renderer_rd/effects/fsr.cpp</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/thirdparty/amd-fsr">thirdparty/amd-fsr/</a></p></li>
+</ul>
+</section>
+<section id="d-rendering-techniques">
+<h2>Các kỹ thuật kết xuất 2D<a class="headerlink" href="#d-rendering-techniques" title="Link to this heading"></a></h2>
+<p>Kết xuất ánh sáng 2D được thực hiện trong một pass duy nhất để đạt hiệu năng tốt hơn với số lượng lớn nguồn sáng.</p>
+<p>Tất cả phương thức kết xuất đều có 2D batching để cải thiện hiệu năng, điều này đặc biệt rõ rệt khi có nhiều văn bản trên màn hình.</p>
+<p>MSAA có thể được bật trong 2D để cung cấp khử răng cưa &quot;tự động&quot; cho đường và đa giác, nhưng FXAA không ảnh hưởng đến kết xuất 2D vì nó được tính trước khi kết xuất 2D bắt đầu. Các phương thức vẽ 2D của Godot như node Line2D hoặc một số phương thức <code class="docutils literal notranslate"><span class="pre">draw_*()</span></code> của CanvasItem cung cấp cách khử răng cưa riêng dựa trên triangle strip và màu đỉnh, không cần MSAA để hoạt động.</p>
+<p>Một trường khoảng cách có dấu (signed distance field) 2D biểu diễn các node LightOccluder2D trong viewport sẽ được tự động tạo ra nếu shader của người dùng yêu cầu. Nó có thể được dùng cho nhiều hiệu ứng trong shader tùy chỉnh, chẳng hạn chiếu sáng toàn cục 2D. Nó cũng được dùng để tính va chạm của hạt (particle) trong 2D.</p>
+<p><strong>Shader GLSL tạo SDF 2D:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/canvas_sdf.glsl">servers/rendering/renderer_rd/shaders/canvas_sdf.glsl</a></p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>Các kỹ thuật kết xuất 3D<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="reverse-z">
+<h3>Reverse Z<a class="headerlink" href="#reverse-z" title="Link to this heading"></a></h3>
+<p>Tất cả renderer của Godot đều dùng reverse Z. Điều này có nghĩa là depth buffer bị đảo ngược, với <code class="docutils literal notranslate"><span class="pre">1.0</span></code> biểu thị mặt phẳng gần và <code class="docutils literal notranslate"><span class="pre">0.0</span></code> biểu thị mặt phẳng xa. Cách này mang lại <a class="reference external" href="https://developer.nvidia.com/content/depth-precision-visualized">độ chính xác tốt hơn</a>, đặc biệt ở khoảng cách xa.</p>
+</section>
+<section id="batching-and-instancing">
+<h3>Batching và instancing<a class="headerlink" href="#batching-and-instancing" title="Link to this heading"></a></h3>
+<p>Trong renderer Forward+, Vulkan instancing được dùng để gom nhóm việc kết xuất các đối tượng giống hệt nhau thuộc loại opaque hoặc alpha-tested nhằm tăng hiệu năng. (Các đối tượng alpha-blended không bao giờ được instancing.) Cách này không nhanh bằng việc gộp mesh tĩnh, nhưng vẫn cho phép cull từng instance riêng lẻ.</p>
+</section>
+<section id="light-decal-and-reflection-probe-rendering">
+<h3>Kết xuất light, decal và reflection probe<a class="headerlink" href="#light-decal-and-reflection-probe-rendering" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hiện tại renderer Compatibility chưa hỗ trợ kết xuất decal.</p>
+</div>
+<p>Renderer Forward+ dùng clustered lighting. Cách này cho phép dùng bao nhiêu nguồn sáng tùy ý; hiệu năng phụ thuộc phần lớn vào diện tích che phủ trên màn hình. Các nguồn sáng không có bóng gần như không tốn chi phí nếu chúng không chiếm nhiều không gian trên màn hình.</p>
+<p>Tất cả phương thức kết xuất cũng hỗ trợ kết xuất tối đa 8 directional light cùng lúc (mặc dù chất lượng bóng sẽ thấp hơn khi có nhiều hơn một nguồn sáng bật bóng).</p>
+<p>Renderer Mobile dùng cách chiếu sáng single-pass, với giới hạn 8 OmniLight + 8 SpotLight tác động lên mỗi <em>resource</em> Mesh (cộng thêm giới hạn 256 OmniLight + 256 SpotLight trong tầm nhìn camera). Các giới hạn này được hardcode và không thể điều chỉnh trong cài đặt dự án.</p>
+<p>Renderer Compatibility dùng cách chiếu sáng lai giữa single-pass và multi-pass. Nguồn sáng không có bóng được kết xuất trong một pass duy nhất. Nguồn sáng có bóng được kết xuất qua nhiều pass. Điều này là cần thiết vì lý do hiệu năng trên thiết bị di động. Do đó, hiệu năng không mở rộng tốt khi có nhiều nguồn sáng đổ bóng. Bạn nên chỉ để vài nguồn sáng có bóng trong camera frustum tại một thời điểm, và đặt các nguồn sáng đó cách xa nhau để mỗi đối tượng chỉ chịu tác động của 1 hoặc 2 nguồn sáng có bóng cùng lúc. Số lượng nguồn sáng tối đa hiển thị cùng lúc có thể được điều chỉnh trong cài đặt dự án.</p>
+<p>Trong cả 3 phương thức, nguồn sáng không có bóng rẻ hơn nhiều so với nguồn sáng có bóng. Để cải thiện hiệu năng, nguồn sáng chỉ được cập nhật khi chính nó bị thay đổi hoặc khi các đối tượng trong bán kính của nó bị thay đổi. Hiện tại Godot chưa tách việc kết xuất bóng tĩnh khỏi kết xuất bóng động, nhưng điều này đã được lên kế hoạch cho một phiên bản trong tương lai.</p>
+<p>Clustering cũng được dùng cho reflection probe và kết xuất decal trong renderer Forward+.</p>
+<p>Area light sử dụng kỹ thuật <a class="reference external" href="https://eheitzresearch.wordpress.com/757-2/">Linearly Transformed Cosines</a>.</p>
+</section>
+<section id="shadow-mapping">
+<h3>Shadow mapping<a class="headerlink" href="#shadow-mapping" title="Link to this heading"></a></h3>
+<p>Cả hai phương thức Forward+ và Mobile đều dùng <abbr title="Percentage Closer Filtering">PCF</abbr> để lọc shadow map và tạo vùng bán ảnh (penumbra) mềm. Thay vì dùng một mẫu PCF cố định, các phương thức này dùng mẫu vogel disk, cho phép thay đổi số lượng mẫu và điều chỉnh chất lượng một cách mượt mà.</p>
+<p>Godot cũng hỗ trợ percentage-closer soft shadows (PCSS) để kết xuất vùng bán ảnh của bóng chân thực hơn. Bóng PCSS chỉ có trong renderer Forward+ vì chúng quá nặng để dùng được trong renderer Mobile. PCSS cũng dùng kernel có hình vogel disk.</p>
+<p>Ngoài ra, cả hai kỹ thuật shadow mapping đều xoay kernel theo từng pixel để giúp làm mềm các artifact do lấy mẫu thiếu (under-sampling).</p>
+<p>Renderer Compatibility hỗ trợ shadow mapping cho các nguồn sáng DirectionalLight3D, OmniLight3D và SpotLight3D.</p>
+</section>
+<section id="temporal-antialiasing">
+<h3>Khử răng cưa theo thời gian (TAA)<a class="headerlink" href="#temporal-antialiasing" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chỉ có trong renderer Forward+, không có trong renderer Mobile hay Compatibility.</p>
+</div>
+<p>Godot dùng một bản cài đặt TAA tùy chỉnh dựa trên bản cài đặt TAA cũ của <a class="reference external" href="https://github.com/PanosK92/SpartanEngine">Spartan Engine</a>.</p>
+<p>Temporal antialiasing cần motion vector để hoạt động. Nếu motion vector không được tạo đúng, hiện tượng bóng ma (ghosting) sẽ xảy ra khi camera hoặc đối tượng di chuyển.</p>
+<p>Motion vector được tạo trên GPU trong shader material chính. Việc này được thực hiện bằng cách chạy vertex shader tương ứng với khung hình đã kết xuất trước đó (với transform camera trước đó) bên cạnh vertex shader cho khung hình hiện tại, rồi lưu phần chênh lệch giữa chúng vào một color buffer.</p>
+<p>Ngoài ra, có thể dùng FSR 2.2 làm giải pháp upscale, đồng thời cung cấp thuật toán temporal antialiasing riêng. FSR 2.2 được cài đặt trên lớp trừu tượng RenderingDevice thay vì dùng trực tiếp mã tham chiếu của AMD.</p>
+<p><strong>TAA resolve:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/taa_resolve.glsl">servers/rendering/renderer_rd/shaders/effects/taa_resolve.glsl</a></p></li>
+</ul>
+<p><strong>FSR 2.2:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/effects/fsr2.cpp">servers/rendering/renderer_rd/effects/fsr2.cpp</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/servers/rendering/renderer_rd/shaders/effects/fsr2">servers/rendering/renderer_rd/shaders/effects/fsr2/</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/thirdparty/amd-fsr2">thirdparty/amd-fsr2/</a></p></li>
+</ul>
+</section>
+<section id="global-illumination">
+<h3>Chiếu sáng toàn cục (Global illumination)<a class="headerlink" href="#global-illumination" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>VoxelGI và SDFGI chỉ có trong renderer Forward+, không có trong renderer Mobile hay Compatibility.</p>
+<p>Việc <em>bake</em> LightmapGI chỉ có trong renderer Forward+ và Mobile, và chỉ có thể thực hiện trong trình chỉnh sửa (không thực hiện được trong dự án đã xuất). Việc <em>kết xuất</em> LightmapGI được renderer Compatibility hỗ trợ.</p>
+</div>
+<p>Godot hỗ trợ GI dựa trên voxel (VoxelGI), GI dựa trên signed distance field (SDFGI) cùng với bake và kết xuất lightmap (LightmapGI). Các kỹ thuật này có thể được dùng đồng thời nếu muốn.</p>
+<p>Việc bake lightmap diễn ra trên GPU bằng compute shader Vulkan. Lightmapper chạy trên GPU được cài đặt trong lớp LightmapperRD, kế thừa từ lớp Lightmapper. Điều này cho phép cài đặt thêm các lightmapper khác, mở đường cho việc port lightmapper chạy trên CPU vốn có trong Godot 3.x trong tương lai. Khi đó sẽ có thể bake lightmap khi dùng renderer Compatibility.</p>
+<p><strong>Mã C++ lõi của GI:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/environment/gi.cpp">servers/rendering/renderer_rd/environment/gi.cpp</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/3d/voxel_gi.cpp">scene/3d/voxel_gi.cpp</a> - Node VoxelGI</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/editor/scene/3d/voxel_gi_editor_plugin.cpp">editor/scene/3d/voxel_gi_editor_plugin.cpp</a> - Giao diện trình chỉnh sửa cho node VoxelGI</p></li>
+</ul>
+<p><strong>Shader GLSL lõi của GI:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/voxel_gi.glsl">servers/rendering/renderer_rd/shaders/environment/voxel_gi.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/voxel_gi_debug.glsl">servers/rendering/renderer_rd/shaders/environment/voxel_gi_debug.glsl</a> - Chế độ vẽ debug VoxelGI</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/sdfgi_debug.glsl">servers/rendering/renderer_rd/shaders/environment/sdfgi_debug.glsl</a> - Chế độ vẽ debug SDFGI Cascades</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/sdfgi_debug_probes.glsl">servers/rendering/renderer_rd/shaders/environment/sdfgi_debug_probes.glsl</a> - Chế độ vẽ debug SDFGI Probes</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/sdfgi_integrate.glsl">servers/rendering/renderer_rd/shaders/environment/sdfgi_integrate.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/sdfgi_preprocess.glsl">servers/rendering/renderer_rd/shaders/environment/sdfgi_preprocess.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/sdfgi_direct_light.glsl">servers/rendering/renderer_rd/shaders/environment/sdfgi_direct_light.glsl</a></p></li>
+</ul>
+<p><strong>Mã C++ của lightmapper:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/3d/lightmap_gi.cpp">scene/3d/lightmap_gi.cpp</a> - Node LightmapGI</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/editor/scene/3d/lightmap_gi_editor_plugin.cpp">editor/scene/3d/lightmap_gi_editor_plugin.cpp</a> - Giao diện trình chỉnh sửa cho node LightmapGI</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/3d/lightmapper.cpp">scene/3d/lightmapper.cpp</a> - Lớp trừu tượng</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/modules/lightmapper_rd/lightmapper_rd.cpp">modules/lightmapper_rd/lightmapper_rd.cpp</a> - Bản cài đặt lightmapper chạy trên GPU</p></li>
+</ul>
+<p><strong>Shader GLSL của lightmapper:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/modules/lightmapper_rd/lm_raster.glsl">modules/lightmapper_rd/lm_raster.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/modules/lightmapper_rd/lm_compute.glsl">modules/lightmapper_rd/lm_compute.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/modules/lightmapper_rd/lm_blendseams.glsl">modules/lightmapper_rd/lm_blendseams.glsl</a></p></li>
+</ul>
+</section>
+<section id="depth-of-field">
+<h3>Độ sâu trường ảnh (Depth of field)<a class="headerlink" href="#depth-of-field" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chỉ có trong renderer Forward+ và Mobile, không có trong renderer Compatibility.</p>
+</div>
+<p>Renderer Forward+ và Mobile dùng các cách tiếp cận khác nhau để kết xuất DOF, cho ra kết quả hình ảnh khác nhau. Điều này nhằm phù hợp nhất với đặc tính hiệu năng của phần cứng mục tiêu. Trong Forward+, DOF được thực hiện bằng compute shader. Trong Mobile, DOF được thực hiện bằng fragment shader (raster).</p>
+<p>Có sẵn các hình dạng bokeh hộp, lục giác và tròn (từ nhanh nhất đến chậm nhất). Độ sâu trường ảnh có thể được jitter mỗi khung hình (tùy chọn) để cải thiện hình ảnh khi bật temporal antialiasing.</p>
+<p><strong>Mã C++ của độ sâu trường ảnh:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/effects/bokeh_dof.cpp">servers/rendering/renderer_rd/effects/bokeh_dof.cpp</a></p></li>
+</ul>
+<p><strong>Shader GLSL của độ sâu trường ảnh (compute - dùng cho Forward+):</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/bokeh_dof.glsl">servers/rendering/renderer_rd/shaders/effects/bokeh_dof.glsl</a></p></li>
+</ul>
+<p><strong>Shader GLSL của độ sâu trường ảnh (raster - dùng cho Mobile):</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/bokeh_dof_raster.glsl">servers/rendering/renderer_rd/shaders/effects/bokeh_dof_raster.glsl</a></p></li>
+</ul>
+</section>
+<section id="screen-space-effects-ssao-ssil-ssr-sss">
+<h3>Hiệu ứng không gian màn hình (SSAO, SSIL, SSR, SSS)<a class="headerlink" href="#screen-space-effects-ssao-ssil-ssr-sss" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chỉ có trong renderer Forward+, không có trong renderer Mobile hay Compatibility.</p>
+</div>
+<p>Renderer Forward+ hỗ trợ screen-space ambient occlusion, screen-space indirect lighting, screen-space reflections và subsurface scattering.</p>
+<p>SSAO dùng một bản cài đặt bắt nguồn từ <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/articles/technical/adaptive-screen-space-ambient-occlusion.html">ASSAO</a> của Intel (đã chuyển sang Vulkan). SSIL được phát triển từ SSAO để cung cấp chiếu sáng gián tiếp hiệu năng cao.</p>
+<p>Khi bật cả SSAO và SSIL, một số phần của SSAO và SSIL được dùng chung để giảm tác động đến hiệu năng.</p>
+<p>Theo mặc định, SSAO, SSIL và SSR được thực hiện ở một nửa độ phân giải để cải thiện hiệu năng.</p>
+<p>SSR dùng Hi-Z buffer để cải thiện hiệu năng. Hi-Z buffer này được tạo từ depth buffer trong một compute shader. Xem <a class="reference external" href="https://github.com/godotengine/godot/pull/111210">pull request đã đại tu SSR</a> để biết thêm thông tin.</p>
+<p><strong>Mã C++ của hiệu ứng không gian màn hình:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/effects/ss_effects.cpp">servers/rendering/renderer_rd/effects/ss_effects.cpp</a></p></li>
+</ul>
+<p><strong>Shader GLSL của screen-space ambient occlusion:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssao.glsl">servers/rendering/renderer_rd/shaders/effects/ssao.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssao_blur.glsl">servers/rendering/renderer_rd/shaders/effects/ssao_blur.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssao_interleave.glsl">servers/rendering/renderer_rd/shaders/effects/ssao_interleave.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssao_importance_map.glsl">servers/rendering/renderer_rd/shaders/effects/ssao_importance_map.glsl</a></p></li>
+</ul>
+<p><strong>Shader GLSL của screen-space indirect lighting:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssil.glsl">servers/rendering/renderer_rd/shaders/effects/ssil.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssil_blur.glsl">servers/rendering/renderer_rd/shaders/effects/ssil_blur.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssil_interleave.glsl">servers/rendering/renderer_rd/shaders/effects/ssil_interleave.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/ssil_importance_map.glsl">servers/rendering/renderer_rd/shaders/effects/ssil_importance_map.glsl</a></p></li>
+</ul>
+<p><strong>Shader GLSL của screen-space reflections:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/screen_space_reflection.glsl">servers/rendering/renderer_rd/shaders/effects/screen_space_reflection.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_filter.glsl">servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_filter.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_resolve.glsl">servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_resolve.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_hiz.glsl">servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_hiz.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_downsample.glsl">servers/rendering/renderer_rd/shaders/effects/screen_space_reflection_downsample.glsl</a></p></li>
+</ul>
+<p><strong>GLSL của subsurface scattering:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/effects/subsurface_scattering.glsl">servers/rendering/renderer_rd/shaders/effects/subsurface_scattering.glsl</a></p></li>
+</ul>
+</section>
+<section id="sky-rendering">
+<h3>Kết xuất bầu trời<a class="headerlink" href="#sky-rendering" title="Link to this heading"></a></h3>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference internal" href="../../tutorials/shaders/shader_reference/sky_shader.html#doc-sky-shader"><span class="std std-ref">Sky shader</span></a></p>
+</div>
+<p>Godot hỗ trợ dùng shader để kết xuất nền bầu trời. Radiance map (được dùng để cung cấp ánh sáng môi trường và phản chiếu cho các material PBR) được tự động cập nhật dựa trên sky shader.</p>
+<p>Các resource SkyMaterial như ProceduralSkyMaterial, PhysicalSkyMaterial và PanoramaSkyMaterial tạo ra một shader dựng sẵn để kết xuất bầu trời. Điều này tương tự với những gì BaseMaterial3D cung cấp cho material của scene 3D.</p>
+<p>Bạn có thể tìm thấy chi tiết kỹ thuật về cách cài đặt trong bài viết <a class="reference external" href="https://godotengine.org/article/custom-sky-shaders-godot-4-0">Custom sky shaders in Godot 4.0</a>.</p>
+<p><strong>Mã C++ kết xuất bầu trời:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/environment/sky.cpp">servers/rendering/renderer_rd/environment/sky.cpp</a> - Kết xuất bầu trời</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/resources/sky.cpp">scene/resources/sky.cpp</a> - Resource Sky (đừng nhầm với kết xuất bầu trời)</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/resources/3d/sky_material.cpp">scene/resources/3d/sky_material.cpp</a> Các resource SkyMaterial (dùng trong resource Sky)</p></li>
+</ul>
+<p><strong>Shader GLSL kết xuất bầu trời:</strong></p>
+</section>
+<section id="volumetric-fog">
+<h3>Sương mù thể tích (Volumetric fog)<a class="headerlink" href="#volumetric-fog" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chỉ có trong renderer Forward+, không có trong renderer Mobile hay Compatibility.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference internal" href="../../tutorials/shaders/shader_reference/fog_shader.html#doc-fog-shader"><span class="std std-ref">Fog shader</span></a></p>
+</div>
+<p>Godot hỗ trợ cách tiếp cận voxel căn theo frustum (froxel) để kết xuất sương mù thể tích. So với một bộ lọc hậu xử lý, cách tiếp cận này đa dụng hơn vì nó hoạt động được với mọi loại nguồn sáng. Sương mù cũng có thể dùng shader cho hành vi tùy chỉnh, cho phép tạo hoạt ảnh cho sương mù hoặc dùng texture 3D để biểu diễn mật độ.</p>
+<p>Resource FogMaterial tạo ra một shader dựng sẵn cho các node FogVolume. Điều này tương tự với những gì BaseMaterial3D cung cấp cho material của scene 3D.</p>
+<p>Bạn có thể tìm thấy giải thích kỹ thuật chi tiết trong bài viết <a class="reference external" href="https://godotengine.org/article/fog-volumes-arrive-in-godot-4">Fog Volumes arrive in Godot 4.0</a>.</p>
+<p><strong>Mã C++ của sương mù thể tích:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/environment/fog.cpp">servers/rendering/renderer_rd/environment/fog.cpp</a> - Sương mù thể tích nói chung</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/3d/fog_volume.cpp">scene/3d/fog_volume.cpp</a> - Node FogVolume</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/resources/3d/fog_material.cpp">scene/resources/3d/fog_material.cpp</a> - Resource FogMaterial (được FogVolume sử dụng)</p></li>
+</ul>
+<p><strong>Shader GLSL của sương mù thể tích:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/volumetric_fog.glsl">servers/rendering/renderer_rd/shaders/environment/volumetric_fog.glsl</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_rd/shaders/environment/volumetric_fog_process.glsl">servers/rendering/renderer_rd/shaders/environment/volumetric_fog_process.glsl</a></p></li>
+</ul>
+</section>
+<section id="occlusion-culling">
+<h3>Occlusion culling<a class="headerlink" href="#occlusion-culling" title="Link to this heading"></a></h3>
+<p>Mặc dù GPU hiện đại có thể vẽ rất nhiều tam giác, số lượng draw call trong các scene phức tạp vẫn có thể là điểm nghẽn (ngay cả với Vulkan, Direct3D 12 và Metal).</p>
+<p>Godot 4 hỗ trợ occlusion culling để giảm overdraw (khi depth prepass bị tắt) và giảm lưu lượng vertex. Việc này được thực hiện bằng cách rasterize một buffer độ phân giải thấp trên CPU bằng <a class="reference external" href="https://github.com/embree/embree">Embree</a>. Độ phân giải của buffer phụ thuộc vào số luồng CPU trên hệ thống, vì việc này được thực hiện song song. Buffer này bao gồm các hình dạng occluder đã được bake trong trình chỉnh sửa hoặc được tạo lúc chạy. Buffer occlusion culling được jitter một lượng nhỏ mỗi khung hình để giúp giảm các artifact do lấy mẫu thiếu, vốn có thể dẫn đến dương tính giả (đối tượng bị che khuất khi lẽ ra không bị).</p>
+<p>Vì các occluder phức tạp có thể gây nhiều áp lực lên CPU, các occluder đã bake có thể được đơn giản hóa tự động khi được tạo trong trình chỉnh sửa.</p>
+<p>Occlusion culling của Godot chưa hỗ trợ occluder động, nhưng các node OccluderInstance3D vẫn có thể được bật/tắt hiển thị hoặc di chuyển. Tuy nhiên, việc cập nhật các occluder phức tạp theo cách này sẽ chậm. Vì vậy, tốt nhất chỉ nên cập nhật occluder lúc chạy với các hình dạng occluder đơn giản như hình tứ giác (quad) hoặc hình hộp (cuboid).</p>
+<p>Cách tiếp cận dựa trên CPU này có một vài ưu điểm so với các giải pháp khác, chẳng hạn như portal và room hoặc giải pháp culling dựa trên GPU:</p>
+<ul class="simple">
+<li><p>Không cần thiết lập thủ công (nhưng có thể tinh chỉnh thủ công để đạt hiệu năng tốt nhất).</p></li>
+<li><p>Không có độ trễ khung hình, vốn gây vấn đề trong cutscene khi camera chuyển cảnh hoặc khi camera di chuyển nhanh ra sau một bức tường.</p></li>
+<li><p>Hoạt động như nhau trên mọi driver và phương thức kết xuất, không có hành vi khó lường tùy thuộc vào driver hay phần cứng GPU.</p></li>
+</ul>
+<p>Occlusion culling được thực hiện bằng cách đăng ký các occluder mesh, thông qua các <em>node</em> OccluderInstance3D (bản thân chúng dùng các <em>resource</em> Occluder3D). Sau đó RenderingServer thực hiện occlusion culling bằng cách gọi Embree trong RendererSceneOcclusionCull.</p>
+<p><strong>Mã C++ của occlusion culling:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/3d/occluder_instance_3d.cpp">scene/3d/occluder_instance_3d.cpp</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_scene_occlusion_cull.cpp">servers/rendering/renderer_scene_occlusion_cull.cpp</a></p></li>
+</ul>
+</section>
+<section id="visibility-range-lod">
+<h3>Visibility range (LOD)<a class="headerlink" href="#visibility-range-lod" title="Link to this heading"></a></h3>
+<p>Godot hỗ trợ level of detail phân cấp (HLOD) do người dùng tự tạo, với khoảng cách được người dùng chỉ định trong inspector.</p>
+<p>Trong RenderingSceneCull, các hàm <code class="docutils literal notranslate"><span class="pre">_scene_cull()</span></code> và <code class="docutils literal notranslate"><span class="pre">_render_scene()</span></code> là nơi diễn ra phần lớn việc xác định LOD. Mỗi viewport có thể kết xuất cùng một mesh với các LOD khác nhau (để việc kết xuất chia đôi màn hình trông đúng).</p>
+<p><strong>Mã C++ của visibility range:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_scene_cull.cpp">servers/rendering/renderer_scene_cull.cpp</a></p></li>
+</ul>
+</section>
+<section id="automatic-mesh-lod">
+<h3>LOD mesh tự động<a class="headerlink" href="#automatic-mesh-lod" title="Link to this heading"></a></h3>
+<p>Lớp ImporterMesh được dùng cho quy trình import mesh 3D trong trình chỉnh sửa. Hàm <code class="docutils literal notranslate"><span class="pre">generate_lods()</span></code> của nó xử lý việc tạo LOD bằng thư viện <a class="reference external" href="https://meshoptimizer.org/">meshoptimizer</a>.</p>
+<p>Việc tạo LOD mesh cũng đồng thời tạo ra các shadow mesh. Đây là các mesh có vertex được hàn lại với nhau bất kể smoothing và material. Điều này được dùng để cải thiện hiệu năng kết xuất bóng bằng cách giảm lưu lượng vertex cần thiết để kết xuất bóng.</p>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">_render_scene()</span></code> của lớp RenderingSceneCull xác định LOD mesh nào sẽ được dùng khi kết xuất. Mỗi viewport có thể kết xuất cùng một mesh với các LOD khác nhau (để việc kết xuất chia đôi màn hình trông đúng).</p>
+<p>LOD mesh được chọn tự động dựa trên một chỉ số về độ che phủ màn hình. Chỉ số này tính đến thay đổi về độ phân giải và FOV của camera mà không cần người dùng can thiệp. Hệ số nhân ngưỡng có thể được điều chỉnh trong cài đặt dự án.</p>
+<p>Để cải thiện hiệu năng, việc kết xuất bóng và kết xuất reflection probe cũng tự chọn ngưỡng LOD mesh riêng (có thể khác với ngưỡng của việc kết xuất scene chính).</p>
+<p><strong>Mã C++ tạo LOD mesh khi import:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/scene/resources/3d/importer_mesh.cpp">scene/resources/3d/importer_mesh.cpp</a></p></li>
+</ul>
+<p><strong>Mã C++ xác định LOD mesh:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/4.6/servers/rendering/renderer_scene_cull.cpp">servers/rendering/renderer_scene_cull.cpp</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="inheritance_class_tree.html" class="btn btn-neutral float-left" title="Cây kế thừa lớp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="2d_coordinate_systems.html" class="btn btn-neutral float-right" title="Hệ tọa độ 2D và phép biến đổi 2D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

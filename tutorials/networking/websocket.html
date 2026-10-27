@@ -1,0 +1,467 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng WebSocket" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/networking/websocket.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="HTML5 và WebSocket: Giao thức WebSocket được chuẩn hóa vào năm 2011 với mục tiêu ban đầu là cho phép trình duyệt tạo các kết nối ổn định và hai chiều với server. Trước đó, trình duyệt chỉ hỗ trợ HT..." />
+<meta name="description" content="HTML5 và WebSocket: Giao thức WebSocket được chuẩn hóa vào năm 2011 với mục tiêu ban đầu là cho phép trình duyệt tạo các kết nối ổn định và hai chiều với server. Trước đó, trình duyệt chỉ hỗ trợ HT..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng WebSocket &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="WebRTC" href="webrtc.html" />
+    <link rel="prev" title="Chứng chỉ TLS/SSL" href="ssl_certificates.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/networking/websocket" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Mạng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="high_level_multiplayer.html">Multiplayer cấp cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http_request_class.html">Gửi HTTP request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http_client_class.html">Lớp HTTP client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ssl_certificates.html">Chứng chỉ TLS/SSL</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng WebSocket</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#html5-and-websocket">HTML5 và WebSocket</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-websocket-in-godot">Sử dụng WebSocket trong Godot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#minimal-client-example">Ví dụ client tối giản</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#minimal-server-example">Ví dụ server tối giản</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#advanced-chat-demo">Demo chat nâng cao</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webrtc.html">WebRTC</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Mạng</a></li>
+      <li class="breadcrumb-item active">Sử dụng WebSocket</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-websockets">
+<span id="doc-websocket"></span><h1>Sử dụng WebSocket<a class="headerlink" href="#using-websockets" title="Link to this heading"></a></h1>
+<section id="html5-and-websocket">
+<h2>HTML5 và WebSocket<a class="headerlink" href="#html5-and-websocket" title="Link to this heading"></a></h2>
+<p>Giao thức WebSocket được chuẩn hóa vào năm 2011 với mục tiêu ban đầu là cho phép trình duyệt tạo các kết nối ổn định và hai chiều với server. Trước đó, trình duyệt chỉ hỗ trợ HTTP request, vốn không phù hợp cho giao tiếp hai chiều.</p>
+<p>Giao thức này dựa trên thông điệp và là một công cụ rất mạnh để gửi thông báo đẩy đến trình duyệt. Nó đã được dùng để triển khai chat, game theo lượt và nhiều thứ khác. Nó vẫn dùng kết nối TCP, tốt cho độ tin cậy nhưng không tốt cho độ trễ, nên không phù hợp với các ứng dụng thời gian thực như VoIP và game có nhịp độ nhanh (xem <a class="reference internal" href="webrtc.html#doc-webrtc"><span class="std std-ref">WebRTC</span></a> cho những trường hợp đó).</p>
+<p>Nhờ sự đơn giản, khả năng tương thích rộng và dễ dùng hơn kết nối TCP thô, WebSocket bắt đầu lan rộng ra ngoài trình duyệt, vào các ứng dụng native như một phương tiện để giao tiếp với các server mạng.</p>
+<p>Godot hỗ trợ WebSocket trong cả bản xuất native lẫn web.</p>
+</section>
+<section id="using-websocket-in-godot">
+<h2>Sử dụng WebSocket trong Godot<a class="headerlink" href="#using-websocket-in-godot" title="Link to this heading"></a></h2>
+<p>WebSocket được triển khai trong Godot qua <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_websocketpeer.html" title="Class reference (English)"><span class="xref std std-ref">WebSocketPeer</span></a>. Phần triển khai WebSocket tương thích với High-Level Multiplayer. Xem phần <a class="reference internal" href="high_level_multiplayer.html#doc-high-level-multiplayer"><span class="std std-ref">multiplayer cấp cao</span></a> để biết thêm chi tiết.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Khi xuất sang Android, hãy đảm bảo bật quyền <code class="docutils literal notranslate"><span class="pre">INTERNET</span></code> trong export preset Android trước khi xuất dự án hoặc dùng one-click deploy. Nếu không, mọi loại giao tiếp mạng sẽ bị Android chặn.</p>
+</div>
+<section id="minimal-client-example">
+<h3>Ví dụ client tối giản<a class="headerlink" href="#minimal-client-example" title="Link to this heading"></a></h3>
+<p>Ví dụ này sẽ cho bạn thấy cách tạo kết nối WebSocket đến một server từ xa, và cách gửi và nhận dữ liệu.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># The URL we will connect to.</span>
+<span class="c1"># Use &quot;ws://localhost:9080&quot; if testing with the minimal server example below.</span>
+<span class="c1"># `wss://` is used for secure connections,</span>
+<span class="c1"># while `ws://` is used for plain text (insecure) connections.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">websocket_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;wss://echo.websocket.org&quot;</span>
+
+<span class="c1"># Our WebSocketClient instance.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Initiate connection to the given URL.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="nf">connect_to_url</span><span class="p">(</span><span class="n">websocket_url</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OK</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Connecting to </span><span class="si">%s</span><span class="s2">...&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">websocket_url</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># Wait for the socket to connect.</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">create_timer</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="vi">timeout</span>
+
+<span class="w">        </span><span class="c1"># Send data.</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;&gt; Sending test packet.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">socket</span><span class="o">.</span><span class="nf">send_text</span><span class="p">(</span><span class="s2">&quot;Test packet&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Unable to connect.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nf">set_process</span><span class="p">(</span><span class="l">false</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Call this in `_process()` or `_physics_process()`.</span>
+<span class="w">    </span><span class="c1"># Data transfer and state updates will only happen when calling this function.</span>
+<span class="w">    </span><span class="n">socket</span><span class="o">.</span><span class="nf">poll</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># get_ready_state() tells you what state the socket is in.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="nf">get_ready_state</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1"># `WebSocketPeer.STATE_OPEN` means the socket is connected and ready</span>
+<span class="w">    </span><span class="c1"># to send and receive data.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="vi">STATE_OPEN</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">while</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="nf">get_available_packet_count</span><span class="p">():</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="nf">get_packet</span><span class="p">()</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="nf">was_string_packet</span><span class="p">():</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">packet_text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packet</span><span class="o">.</span><span class="nf">get_string_from_utf8</span><span class="p">()</span>
+<span class="w">                </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;&lt; Got text data from server: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">packet_text</span><span class="p">)</span>
+<span class="w">            </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">                </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;&lt; Got binary data from server: </span><span class="si">%d</span><span class="s2"> bytes&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="o">.</span><span class="nf">size</span><span class="p">())</span>
+
+<span class="w">    </span><span class="c1"># `WebSocketPeer.STATE_CLOSING` means the socket is closing.</span>
+<span class="w">    </span><span class="c1"># It is important to keep polling for a clean close.</span>
+<span class="w">    </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="vi">STATE_CLOSING</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">pass</span>
+
+<span class="w">    </span><span class="c1"># `WebSocketPeer.STATE_CLOSED` means the connection has fully closed.</span>
+<span class="w">    </span><span class="c1"># It is now safe to stop polling.</span>
+<span class="w">    </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="vi">STATE_CLOSED</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># The code will be `-1` if the disconnection was not properly notified by the remote peer.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="nf">get_close_code</span><span class="p">()</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;WebSocket closed with code: </span><span class="si">%d</span><span class="s2">. Clean: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="w">        </span><span class="nf">set_process</span><span class="p">(</span><span class="l">false</span><span class="p">)</span><span class="w"> </span><span class="c1"># Stop processing.</span>
+</pre></div>
+</div>
+<p>Kết quả in ra sẽ tương tự như:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Connecting to wss://echo.websocket.org...
+&lt; Got text data from server: Request served by 7811941c69e658
+&gt; Sending test packet.
+&lt; Got text data from server: Test packet
+</pre></div>
+</div>
+</section>
+<section id="minimal-server-example">
+<h3>Ví dụ server tối giản<a class="headerlink" href="#minimal-server-example" title="Link to this heading"></a></h3>
+<p>Ví dụ này sẽ cho bạn thấy cách tạo một WebSocket server lắng nghe các kết nối từ xa, và cách gửi và nhận dữ liệu.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># The port we will listen to.</span>
+<span class="k">const</span><span class="w"> </span><span class="n">PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9080</span>
+
+<span class="c1"># Our TCP Server instance.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_tcp_server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">TCPServer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+
+<span class="c1"># Our connected peers list.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_peers</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">int</span><span class="p">,</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">last_peer_id</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Start listening on the given port.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_tcp_server</span><span class="o">.</span><span class="nf">listen</span><span class="p">(</span><span class="n">PORT</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OK</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Server started.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Unable to start server.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nf">set_process</span><span class="p">(</span><span class="l">false</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">while</span><span class="w"> </span><span class="n">_tcp_server</span><span class="o">.</span><span class="nf">is_connection_available</span><span class="p">():</span>
+<span class="w">        </span><span class="n">last_peer_id</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;+ Peer </span><span class="si">%d</span><span class="s2"> connected.&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">last_peer_id</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">ws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">        </span><span class="n">ws</span><span class="o">.</span><span class="nf">accept_stream</span><span class="p">(</span><span class="n">_tcp_server</span><span class="o">.</span><span class="nf">take_connection</span><span class="p">())</span>
+<span class="w">        </span><span class="n">_peers</span><span class="p">[</span><span class="n">last_peer_id</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ws</span>
+
+<span class="w">    </span><span class="c1"># Iterate over all connected peers using &quot;keys()&quot; so we can erase in the loop</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">peer_id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_peers</span><span class="o">.</span><span class="nf">keys</span><span class="p">():</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_peers</span><span class="p">[</span><span class="n">peer_id</span><span class="p">]</span>
+
+<span class="w">        </span><span class="n">peer</span><span class="o">.</span><span class="nf">poll</span><span class="p">()</span>
+
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">peer_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">get_ready_state</span><span class="p">()</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">peer_state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="vi">STATE_OPEN</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">while</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">get_available_packet_count</span><span class="p">():</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">get_packet</span><span class="p">()</span>
+<span class="w">                </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">was_string_packet</span><span class="p">():</span>
+<span class="w">                    </span><span class="k">var</span><span class="w"> </span><span class="n">packet_text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packet</span><span class="o">.</span><span class="nf">get_string_from_utf8</span><span class="p">()</span>
+<span class="w">                    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;&lt; Got text data from peer </span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> ... echoing&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">peer_id</span><span class="p">,</span><span class="w"> </span><span class="n">packet_text</span><span class="p">])</span>
+<span class="w">                    </span><span class="c1"># Echo the packet back.</span>
+<span class="w">                    </span><span class="n">peer</span><span class="o">.</span><span class="nf">send_text</span><span class="p">(</span><span class="n">packet_text</span><span class="p">)</span>
+<span class="w">                </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">                    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;&lt; Got binary data from peer </span><span class="si">%d</span><span class="s2">: </span><span class="si">%d</span><span class="s2"> ... echoing&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">peer_id</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="o">.</span><span class="nf">size</span><span class="p">()])</span>
+<span class="w">                    </span><span class="c1"># Echo the packet back.</span>
+<span class="w">                    </span><span class="n">peer</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">peer_state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">WebSocketPeer</span><span class="o">.</span><span class="vi">STATE_CLOSED</span><span class="p">:</span>
+<span class="w">            </span><span class="c1"># Remove the disconnected peer.</span>
+<span class="w">            </span><span class="n">_peers</span><span class="o">.</span><span class="nf">erase</span><span class="p">(</span><span class="n">peer_id</span><span class="p">)</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">get_close_code</span><span class="p">()</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">get_close_reason</span><span class="p">()</span>
+<span class="w">            </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;- Peer </span><span class="si">%s</span><span class="s2"> closed with code: </span><span class="si">%d</span><span class="s2">, reason </span><span class="si">%s</span><span class="s2">. Clean: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">[</span><span class="n">peer_id</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">reason</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Khi một client kết nối, kết quả in ra sẽ tương tự như sau:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Server started.
++ Peer 2 connected.
+&lt; Got text data from peer 2: Test packet ... echoing
+</pre></div>
+</div>
+</section>
+<section id="advanced-chat-demo">
+<h3>Demo chat nâng cao<a class="headerlink" href="#advanced-chat-demo" title="Link to this heading"></a></h3>
+<p>Một demo chat nâng cao hơn, có tùy chọn dùng lớp trừu tượng multiplayer cấp trung, và một demo multiplayer cấp cao có trong <a class="reference external" href="https://github.com/godotengine/godot-demo-projects">các dự án demo của godot</a> tại <cite>networking/websocket_chat</cite> và <cite>networking/websocket_multiplayer</cite>.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ssl_certificates.html" class="btn btn-neutral float-left" title="Chứng chỉ TLS/SSL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="webrtc.html" class="btn btn-neutral float-right" title="WebRTC" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

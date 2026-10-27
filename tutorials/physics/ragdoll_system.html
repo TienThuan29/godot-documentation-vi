@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Hệ thống ragdoll" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/physics/ragdoll_system.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Godot hỗ trợ vật lý ragdoll. Ragdoll dựa vào mô phỏng vật lý để tạo hoạt ảnh thủ tục (procedural) chân thực. Chúng được dùng cho hoạt ảnh khi nhân vật chết trong nhiều game. Trong bài h..." />
+<meta name="description" content="Giới thiệu: Godot hỗ trợ vật lý ragdoll. Ragdoll dựa vào mô phỏng vật lý để tạo hoạt ảnh thủ tục (procedural) chân thực. Chúng được dùng cho hoạt ảnh khi nhân vật chết trong nhiều game. Trong bài h..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Hệ thống ragdoll &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Nhân vật kinematic (2D)" href="kinematic_character_2d.html" />
+    <link rel="prev" title="Ray-casting" href="ray-casting.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/physics/ragdoll_system" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Vật lý</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="physics_introduction.html">Giới thiệu về vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_jolt_physics.html">Sử dụng Jolt Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigid_body.html">Sử dụng RigidBody</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_area_2d.html">Sử dụng Area2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_character_body_2d.html">Sử dụng CharacterBody2D/3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ray-casting.html">Ray-casting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hệ thống ragdoll</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-ragdoll">Thiết lập ragdoll</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-physical-bones">Tạo physical bone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clean-up-and-optimize-the-skeleton">Dọn dẹp và tối ưu skeleton</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adjust-joints-and-constraints">Điều chỉnh joint và ràng buộc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adjust-collision-shapes">Điều chỉnh collision shape</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#simulate-the-ragdoll">Mô phỏng ragdoll</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#collision-layer-and-mask">Collision layer và mask</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kinematic_character_2d.html">Nhân vật kinematic (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="soft_body.html">Sử dụng SoftBody3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_2d.html">Hình dạng va chạm (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_3d.html">Hình dạng va chạm (3D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="large_world_coordinates.html">Tọa độ thế giới lớn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation/index.html">Nội suy vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_physics_issues.html">Khắc phục sự cố vật lý</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Vật lý</a></li>
+      <li class="breadcrumb-item active">Hệ thống ragdoll</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="ragdoll-system">
+<span id="doc-ragdoll-system"></span><h1>Hệ thống ragdoll<a class="headerlink" href="#ragdoll-system" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Godot hỗ trợ vật lý ragdoll. Ragdoll dựa vào mô phỏng vật lý để tạo hoạt ảnh thủ tục (procedural) chân thực. Chúng được dùng cho hoạt ảnh khi nhân vật chết trong nhiều game.</p>
+<p>Trong bài hướng dẫn này, chúng ta sẽ dùng demo Platformer 3D để thiết lập một ragdoll.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể tải demo Platformer 3D trên <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/platformer">GitHub</a> hoặc qua <a class="reference external" href="https://godotengine.org/asset-library/asset/2748">Asset Library</a>.</p>
+<p>Bạn cũng có thể xem ví dụ về một thiết lập ragdoll hoàn chỉnh trong <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/ragdoll_physics">demo Ragdoll Physics</a>.</p>
+</div>
+</section>
+<section id="setting-up-the-ragdoll">
+<h2>Thiết lập ragdoll<a class="headerlink" href="#setting-up-the-ragdoll" title="Link to this heading"></a></h2>
+<section id="creating-physical-bones">
+<h3>Tạo physical bone<a class="headerlink" href="#creating-physical-bones" title="Link to this heading"></a></h3>
+<p>Giống như nhiều tính năng khác trong engine, có hai node được dùng để thiết lập một ragdoll:</p>
+<ul class="simple">
+<li><p>Một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicalBoneSimulator3D</span></a>. Node này là cha của tất cả physical bone và chịu trách nhiệm điều khiển việc mô phỏng.</p></li>
+<li><p>Một hoặc nhiều node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbone3d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicalBone3D</span></a>. Mỗi node đại diện cho một xương trong ragdoll.</p></li>
+</ul>
+<p>Mở demo platformer trong Godot, rồi mở scene <code class="docutils literal notranslate"><span class="pre">player/player.tscn</span></code>. Chọn node <code class="docutils literal notranslate"><span class="pre">Skeleton3D</span></code>. Một nút skeleton sẽ xuất hiện ở phía trên viewport của trình chỉnh sửa 3D:</p>
+<figure class="align-center" id="id1">
+<img alt="Tạo physical skeleton trong trình chỉnh sửa" src="../../_images/ragdoll_system_create_physical_skeleton.webp" />
+<figcaption>
+<p><span class="caption-text">Tạo physical skeleton trong trình chỉnh sửa</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Nhấp vào đó và chọn tùy chọn <span class="role-menu role-ui">Create Physical Skeleton</span>. Godot sẽ tạo các node PhysicalBone3D và collision shape cho mỗi xương trong skeleton, cùng với các pin joint để nối chúng lại với nhau:</p>
+<figure class="align-center" id="id2">
+<img alt="Cây scene của scene player sau khi tạo physical skeleton" src="../../_images/ragdoll_system_skeleton_scene_tree.webp" />
+<figcaption>
+<p><span class="caption-text">Cây scene của scene player sau khi tạo physical skeleton</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Một số xương được tạo ra là không cần thiết, như xương <code class="docutils literal notranslate"><span class="pre">MASTER</span></code> trong scene này. Chúng ta sẽ dọn dẹp skeleton bằng cách xóa chúng đi.</p>
+</section>
+<section id="clean-up-and-optimize-the-skeleton">
+<h3>Dọn dẹp và tối ưu skeleton<a class="headerlink" href="#clean-up-and-optimize-the-skeleton" title="Link to this heading"></a></h3>
+<p>Với mỗi PhysicalBone3D mà engine cần mô phỏng, sẽ có một chi phí hiệu năng. Bạn nên xóa mọi xương quá nhỏ để tạo ra khác biệt trong mô phỏng, cũng như tất cả các xương tiện ích.</p>
+<p>Ví dụ, với một nhân vật hình người, bạn không cần có physical bone cho từng ngón tay. Thay vào đó, bạn có thể dùng một xương duy nhất cho cả bàn tay, hoặc một xương cho lòng bàn tay, một cho ngón cái và một cho bốn ngón còn lại.</p>
+<p>Xóa các node PhysicalBone3D sau: <code class="docutils literal notranslate"><span class="pre">MASTER</span></code>, <code class="docutils literal notranslate"><span class="pre">waist</span></code>, <code class="docutils literal notranslate"><span class="pre">neck</span></code>, <code class="docutils literal notranslate"><span class="pre">headtracker</span></code>. Điều này cho chúng ta một skeleton được tối ưu và giúp việc điều khiển ragdoll dễ dàng hơn.</p>
+</section>
+<section id="adjust-joints-and-constraints">
+<h3>Điều chỉnh joint và ràng buộc<a class="headerlink" href="#adjust-joints-and-constraints" title="Link to this heading"></a></h3>
+<p>Khi bạn đã điều chỉnh xong các collision shape, ragdoll gần như đã sẵn sàng. Bây giờ, bạn cần điều chỉnh các pin joint để có mô phỏng tốt hơn. Mặc định, các node PhysicalBone3D được gán một pin joint không có ràng buộc. Để thay đổi pin joint, hãy chọn một node PhysicalBone3D và thay đổi loại ràng buộc trong mục <span class="role-menu role-ui">Joint</span> của inspector. Tại đó, bạn có thể thay đổi hướng và giới hạn của ràng buộc.</p>
+<p>Joint cũng có gizmo hiển thị trong trình chỉnh sửa 3D, nên bạn có thể thấy các ràng buộc của chúng hoạt động thực tế.</p>
+<figure class="align-center" id="id3">
+<img alt="Điều chỉnh joint trong inspector sau khi chọn một node PhysicalBone3D" src="../../_images/ragdoll_system_adjust_joints_inspector.webp" />
+<figcaption>
+<p><span class="caption-text">Điều chỉnh joint trong inspector sau khi chọn một node PhysicalBone3D</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để có góc nhìn tốt hơn khi chỉnh sửa joint và collision shape, bạn có thể làm như sau:</p>
+<ul class="simple">
+<li><p>Ẩn các node PhysicalBone3D mà bạn hiện không làm việc cùng, để có thể tập trung vào những node đang điều chỉnh.</p></li>
+<li><p>Ẩn MeshInstance3D của nhân vật bằng cách nhấp vào biểu tượng con mắt bên cạnh nó trong dock cây scene.</p></li>
+<li><p>Ẩn các gizmo Skeleton3D, để các tam giác màu cam đại diện cho skeleton không làm rối viewport trong khi vẫn để phần còn lại hiển thị. Để làm vậy, hãy nhấp <span class="role-menu role-ui">View &gt; Gizmos &gt; Skeleton3D</span> ở phía trên viewport của trình chỉnh sửa 3D cho đến khi biểu tượng con mắt hiện trạng thái nhắm.</p></li>
+<li><p>Tắt môi trường xem trước bằng cách nhấp vào biểu tượng quả địa cầu ở phía trên viewport của trình chỉnh sửa 3D.</p></li>
+<li><p>Đặt cài đặt dự án <strong>Default Clear Color</strong> thành màu đen tuyền trong Project Settings. Điều này chỉ có tác dụng nếu môi trường xem trước đã bị tắt.</p></li>
+<li><p>Thay đổi chế độ vẽ debug bằng nút <span class="role-menu role-ui">Perspective</span> ở góc trên bên trái viewport của trình chỉnh sửa 3D. Các tùy chọn <span class="role-menu role-ui">Display Wireframe</span> và <span class="role-menu role-ui">Display Overdraw</span> đặc biệt hữu ích khi điều chỉnh collision shape, vì chúng cho phép bạn nhìn xuyên qua mesh gốc.</p></li>
+<li><p>Dùng camera trực giao bằng cách nhấp vào các nút <span class="role-button role-ui">X</span>/<span class="role-button role-ui">Y</span>/<span class="role-button role-ui">Z</span> ở góc trên bên phải viewport của trình chỉnh sửa 3D.</p></li>
+</ul>
+</div>
+<p>Đây là danh sách các joint có sẵn:</p>
+<ul class="simple">
+<li><p><strong>None:</strong> Không áp dụng ràng buộc nào.</p></li>
+<li><p><strong>ConeJoint:</strong> Khớp cầu (ball-and-socket). Hữu ích cho vai, hông, cổ.</p></li>
+<li><p><strong>HingeJoint:</strong> Cung cấp ràng buộc góc; hãy hình dung nó như bản lề cửa. Hữu ích cho khuỷu tay và đầu gối.</p></li>
+<li><p><strong>PinJoint:</strong> Giữ hai body được nối với nhau <em>(mặc định)</em>. Dẫn đến việc các xương bị &quot;rũ xuống&quot;, vì vậy nên dùng các loại joint khác cho hầu hết nhân vật.</p></li>
+<li><p><strong>SliderJoint:</strong> Trượt một xương dọc theo xương khác trên một trục cụ thể.</p></li>
+<li><p><strong>6DOFJoint:</strong> Joint mạnh mẽ nhất, cung cấp cả ràng buộc tuyến tính lẫn ràng buộc góc, nhưng cũng phức tạp nhất để cấu hình.</p></li>
+</ul>
+<p>Nếu còn phân vân, hãy bắt đầu với HingeJoint và ConeJoint, vì chúng bao quát hầu hết các trường hợp sử dụng:</p>
+<ul class="simple">
+<li><p>Với HingeJoint, hãy nhớ bật <strong>Angular Limit</strong> trong mục <span class="role-menu role-ui">Joint Constraints</span> của inspector. Sau khi bật, bạn có thể thấy góc mà nó bị giới hạn trong viewport. Bạn có thể xoay PhysicalBone3D để thay đổi trục mà joint bị ràng buộc, rồi điều chỉnh các góc.</p></li>
+<li><p>Với ConeJoint, thường tốt nhất là giới hạn <strong>Swing Span</strong> trong khoảng 20 đến 90 độ, và <strong>Twist Span</strong> trong khoảng 20 đến 45 độ.</p></li>
+</ul>
+</section>
+<section id="adjust-collision-shapes">
+<h3>Điều chỉnh collision shape<a class="headerlink" href="#adjust-collision-shapes" title="Link to this heading"></a></h3>
+<p>Việc tiếp theo là điều chỉnh collision shape và kích thước của các physical bone để khớp với phần cơ thể mà mỗi xương cần mô phỏng.</p>
+<p>Bạn nên điều chỉnh collision shape <em>sau khi</em> điều chỉnh joint và ràng buộc, vì xoay một joint cũng sẽ xoay collision shape. Để tránh phải điều chỉnh collision shape hai lần, tốt hơn là điều chỉnh joint trước.</p>
+<p>Lưu ý rằng có thể có nhiều collision shape làm node con của một node PhysicalBone3D. Điều này có thể hữu ích để biểu diễn các hình dạng chi đặc biệt phức tạp nhưng vốn cứng.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để tạm dừng phát hoạt ảnh trong khi điều chỉnh ragdoll, hãy chọn node <code class="docutils literal notranslate"><span class="pre">AnimationTree</span></code> và tắt thuộc tính <strong>Active</strong> trong Inspector. Hãy nhớ bật lại khi bạn hoàn tất, vì nó điều khiển việc phát hoạt ảnh trong khi chơi.</p>
+</div>
+<figure class="align-center" id="id4">
+<img alt="Điều chỉnh collision shape trong trình chỉnh sửa 3D" src="../../_images/ragdoll_system_adjust_collision_shapes.webp" />
+<figcaption>
+<p><span class="caption-text">Điều chỉnh collision shape trong trình chỉnh sửa 3D</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Đây là kết quả cuối cùng:</p>
+<figure class="align-center" id="id5">
+<img alt="Kết quả sau khi điều chỉnh joint và collision shape (mesh của người chơi được ẩn để dễ quan sát)" src="../../_images/ragdoll_system_result.webp" />
+<figcaption>
+<p><span class="caption-text">Kết quả sau khi điều chỉnh joint và collision shape (mesh của người chơi được ẩn để dễ quan sát)</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="simulate-the-ragdoll">
+<h2>Mô phỏng ragdoll<a class="headerlink" href="#simulate-the-ragdoll" title="Link to this heading"></a></h2>
+<p>Ragdoll giờ đã sẵn sàng để sử dụng. Để bắt đầu mô phỏng và phát hoạt ảnh ragdoll, bạn cần gọi phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html#class-physicalbonesimulator3d-method-physical-bones-start-simulation" title="Class reference (English)"><span class="xref std std-ref">PhysicalBoneSimulator3D.physical_bones_start_simulation()</span></a>. Gắn một script vào node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicalBoneSimulator3D</span></a> là cha của tất cả các node PhysicalBone3D trong scene, rồi gọi nó trong phương thức <code class="docutils literal notranslate"><span class="pre">_ready</span></code> của script:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">physical_bones_start_simulation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">PhysicalBonesStartSimulation</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để dừng mô phỏng, hãy gọi phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html#class-physicalbonesimulator3d-method-physical-bones-stop-simulation" title="Class reference (English)"><span class="xref std std-ref">PhysicalBoneSimulator3D.physical_bones_stop_simulation()</span></a>.</p>
+<div  class="sphinx-contrib-video-container align-default"><video autoplay="True" controls="True" loop="True" muted="True" preload="auto" width="100%"><source src="../../_images/ragdoll_system_full_simulation.webm" type="video/webm">Full simulation of ragdoll system, with the player falling to the ground</video></div><p>Bạn cũng có thể giới hạn mô phỏng chỉ ở một vài xương. Điều này có thể hữu ích để tạo các hiệu ứng như chi ragdoll hoặc các vật đính kèm có thể tương tác với thế giới. Để làm vậy, hãy truyền tên xương (<em>không phải</em> tên node PhysicalBone3D) làm tham số. Để xem tên xương, hãy xem thuộc tính <strong>Bone Name</strong> trong inspector sau khi chọn một node PhysicalBone3D.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Khi dùng physical skeleton được tạo tự động như trong bài hướng dẫn này, tên xương cũng có trong tên node. Ví dụ, trong <code class="docutils literal notranslate"><span class="pre">Physical</span> <span class="pre">Bone</span> <span class="pre">l-arm</span></code>, <code class="docutils literal notranslate"><span class="pre">l-arm</span></code> là tên xương.</p>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">physical_bones_start_simulation</span><span class="p">([</span><span class="s2">&quot;l-arm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;r-arm&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">PhysicalBonesStartSimulation</span><span class="p">([</span><span class="s">&quot;l-arm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;r-arm&quot;</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lưu ý rằng tên xương không tồn tại sẽ không in ra lỗi hay cảnh báo nào. Nếu không có gì xảy ra khi bắt đầu mô phỏng (hoặc nếu toàn bộ cơ thể bị ragdoll thay vì chỉ những xương cụ thể), hãy kiểm tra lại danh sách xương đã cung cấp.</p>
+<p>Đây là ví dụ về mô phỏng ragdoll một phần:</p>
+<div  class="sphinx-contrib-video-container align-default"><video autoplay="True" controls="True" loop="True" muted="True" preload="auto" width="100%"><source src="../../_images/ragdoll_system_partial_simulation.webm" type="video/webm">Partial simulation of ragdoll system, with arms flailing while the player is walking</video></div><div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để điều khiển mức độ ảnh hưởng của mô phỏng ragdoll một phần đến toàn bộ hoạt ảnh, bạn có thể điều chỉnh thuộc tính <strong>Influence</strong> trong node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html" title="Class reference (English)"><span class="xref std std-ref">PhysicalBoneSimulator3D</span></a> là cha của tất cả các node PhysicalBone3D. Mặc định, giá trị này là <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, nghĩa là mô phỏng ragdoll ghi đè hoàn toàn phần còn lại của hoạt ảnh.</p>
+</div>
+<section id="collision-layer-and-mask">
+<h3>Collision layer và mask<a class="headerlink" href="#collision-layer-and-mask" title="Link to this heading"></a></h3>
+<p>Hãy đảm bảo thiết lập collision layer và mask đúng cách để capsule của CharacterBody3D không cản trở mô phỏng vật lý. Hãy nhớ điều chỉnh collision layer và mask trong scene đồng xu nữa, để người chơi vẫn có thể nhặt đồng xu:</p>
+<figure class="align-center" id="id6">
+<img alt="Layer và mask phải được điều chỉnh thành các giá trị này trong inspector cho từng node" src="../../_images/ragdoll_system_collision_layers_masks.webp" />
+<figcaption>
+<p><span class="caption-text">Layer và mask phải được điều chỉnh thành các giá trị này trong inspector cho từng node</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Bạn có thể tìm thấy GridMap trong demo platformer 3D tại <code class="docutils literal notranslate"><span class="pre">stage/grid_map.scn</span></code>. Node Area3D của đồng xu (nơi cần điều chỉnh layer và mask) nằm tại <code class="docutils literal notranslate"><span class="pre">coin/coin.tscn</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để chọn nhanh tất cả các node PhysicalBone3D, hãy nhập <code class="docutils literal notranslate"><span class="pre">t:PhysicalBone3D</span></code> vào thanh tìm kiếm ở phía trên dock cây scene. Thao tác này lọc cây scene để chỉ hiển thị các node PhysicalBone3D, cho phép bạn chọn tất cả cùng lúc bằng <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Shift</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">Left</kbd> <kbd class="kbd docutils literal notranslate">mouse</kbd> <kbd class="kbd docutils literal notranslate">button</kbd></kbd> trên mục đầu tiên và mục cuối cùng.</p>
+</div>
+<p>Nếu không làm vậy, va chạm sẽ hoạt động sai vì người chơi sẽ va chạm với chính ragdoll (đang không hoạt động) của nó. Điều này có thể khiến người chơi nảy loạn xạ hoặc bị kẹt.</p>
+<p>Giống như RigidBody3D, PhysicalBone3D hỗ trợ ngoại lệ va chạm thông qua code bằng các phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html#class-physicalbonesimulator3d-method-physical-bones-add-collision-exception" title="Class reference (English)"><span class="xref std std-ref">physical_bones_add_collision_exception()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicalbonesimulator3d.html#class-physicalbonesimulator3d-method-physical-bones-remove-collision-exception" title="Class reference (English)"><span class="xref std std-ref">physical_bones_remove_collision_exception()</span></a>. Bạn có thể dùng chúng để ngăn va chạm với một đối tượng cụ thể mà không cần dựa vào layer và mask.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để biết thêm thông tin, xem <a class="reference internal" href="physics_introduction.html#doc-physics-introduction-collision-layers-and-masks"><span class="std std-ref">Collision layer và mask</span></a>.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ray-casting.html" class="btn btn-neutral float-left" title="Ray-casting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="kinematic_character_2d.html" class="btn btn-neutral float-right" title="Nhân vật kinematic (2D)" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

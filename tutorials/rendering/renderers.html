@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tổng quan về các trình kết xuất" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/rendering/renderers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Godot 4 có ba renderer: Forward+. Renderer tiên tiến nhất, chỉ phù hợp với nền tảng desktop. Được dùng mặc định trên nền tảng desktop. Renderer này dùng Vulkan, Direct3D 12 hoặc Metal l..." />
+<meta name="description" content="Giới thiệu: Godot 4 có ba renderer: Forward+. Renderer tiên tiến nhất, chỉ phù hợp với nền tảng desktop. Được dùng mặc định trên nền tảng desktop. Renderer này dùng Vulkan, Direct3D 12 hoặc Metal l..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tổng quan về các trình kết xuất &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng Viewport" href="viewports.html" />
+    <link rel="prev" title="Kết xuất" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/rendering/renderers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Kết xuất</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tổng quan về các trình kết xuất</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#renderers-rendering-drivers-and-renderingdevice">Trình kết xuất, driver kết xuất và RenderingDevice</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-renderer">Chọn renderer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#switching-between-renderers">Chuyển đổi giữa các renderer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#feature-comparison">So sánh tính năng</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overall-comparison">So sánh tổng quan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lights-and-shadows">Ánh sáng và bóng đổ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global-illumination">Chiếu sáng toàn cục (Global Illumination)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environment-and-post-processing">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#antialiasing">Khử răng cưa (Antialiasing)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#standardmaterial-features">Tính năng của StandardMaterial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shader-features">Tính năng shader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-features">Tính năng khác</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viewports.html">Sử dụng Viewport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_resolutions.html">Đa độ phân giải</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jitter_stutter.html">Khắc phục jitter, stutter và độ trễ input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compositor.html">Compositor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drawable_textures.html">Sử dụng DrawableTexture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdr_output.html">Đầu ra HDR</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kết xuất</a></li>
+      <li class="breadcrumb-item active">Tổng quan về các trình kết xuất</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="overview-of-renderers">
+<span id="doc-renderers"></span><h1>Tổng quan về các trình kết xuất<a class="headerlink" href="#overview-of-renderers" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Trang này giới thiệu tổng quan về các trình kết xuất của Godot, tập trung vào sự khác biệt giữa các tính năng kết xuất của chúng. Để biết thêm chi tiết kỹ thuật về các trình kết xuất, xem <a class="reference internal" href="../../engine_details/architecture/internal_rendering_architecture.html#doc-internal-rendering-architecture"><span class="std std-ref">Kiến trúc kết xuất nội bộ</span></a>.</p>
+</div>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Godot 4 có ba renderer:</p>
+<ul class="simple">
+<li><p><strong>Forward+</strong>. Renderer tiên tiến nhất, chỉ phù hợp với nền tảng desktop. Được dùng mặc định trên nền tảng desktop. Renderer này dùng <strong>Vulkan</strong>, <strong>Direct3D 12</strong> hoặc <strong>Metal</strong> làm driver kết xuất, và dùng backend <strong>RenderingDevice</strong>.</p></li>
+<li><p><strong>Mobile</strong>. Ít tính năng hơn, nhưng kết xuất scene đơn giản nhanh hơn. Phù hợp với nền tảng di động và desktop. Được dùng mặc định trên nền tảng di động. Renderer này dùng <strong>Vulkan</strong>, <strong>Direct3D 12</strong> hoặc <strong>Metal</strong> làm driver kết xuất, và dùng backend <strong>RenderingDevice</strong>.</p></li>
+<li><p><strong>Compatibility</strong>, đôi khi được gọi là <strong>GL Compatibility</strong>. Trình kết xuất ít tiên tiến nhất, phù hợp với các nền tảng desktop và di động cấu hình thấp. Được dùng mặc định trên nền tảng web. Trình kết xuất này dùng <strong>OpenGL</strong> làm driver kết xuất.</p></li>
+</ul>
+<section id="renderers-rendering-drivers-and-renderingdevice">
+<h3>Trình kết xuất, driver kết xuất và RenderingDevice<a class="headerlink" href="#renderers-rendering-drivers-and-renderingdevice" title="Link to this heading"></a></h3>
+<figure class="align-center" id="id1">
+<img alt="Sơ đồ các lớp kết xuất. Trình kết xuất Compatibility chạy trên driver OpenGL. Trình kết xuất Forward+ và Mobile chạy trên RenderingDevice, vốn có thể dùng Vulkan, Direct3D 12 hoặc Metal làm driver kết xuất." src="../../_images/renderers_rendering_layers.webp" />
+<figcaption>
+<p><span class="caption-text">Các lớp trừu tượng kết xuất của Godot.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><em>Trình kết xuất</em> (renderer), hay <em>phương thức kết xuất</em> (rendering method), quyết định những tính năng nào khả dụng. Phần lớn thời gian, đây là điều duy nhất bạn cần quan tâm. Các trình kết xuất của Godot là <strong>Forward+</strong>, <strong>Mobile</strong> và <strong>Compatibility</strong>.</p>
+<p><em>Driver kết xuất</em> (rendering driver) chỉ dẫn GPU phải làm gì, thông qua một API đồ họa. Godot có thể dùng các driver kết xuất <strong>OpenGL</strong>, <strong>Vulkan</strong>, <strong>Direct3D 12</strong> và <strong>Metal</strong>. Không phải GPU nào cũng hỗ trợ mọi driver kết xuất, và do đó không phải GPU nào cũng hỗ trợ mọi trình kết xuất. Vulkan, Direct3D 12 và Metal là các API đồ họa cấp thấp hiện đại, và yêu cầu phần cứng mới hơn. OpenGL là API đồ họa cũ hơn, chạy được trên hầu hết phần cứng.</p>
+<p>RenderingDevice là một <em>backend kết xuất</em>, một lớp trừu tượng nằm giữa trình kết xuất và driver kết xuất. Nó được dùng bởi trình kết xuất Forward+ và Mobile, và các trình kết xuất này đôi khi được gọi là &quot;trình kết xuất dựa trên RenderingDevice&quot;.</p>
+</section>
+</section>
+<section id="choosing-a-renderer">
+<h2>Chọn renderer<a class="headerlink" href="#choosing-a-renderer" title="Link to this heading"></a></h2>
+<p>Chọn renderer là một câu hỏi phức tạp, phụ thuộc vào phần cứng của bạn và các nền tảng bạn đang phát triển. Để bắt đầu:</p>
+<p>Chọn <strong>Forward+</strong> nếu:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bạn đang phát triển cho desktop.</p></li>
+<li><p>Bạn có phần cứng tương đối mới, hỗ trợ Vulkan, Direct3D 12 hoặc Metal.</p></li>
+<li><p>Bạn đang phát triển một game 3D.</p></li>
+<li><p>Bạn muốn dùng các tính năng kết xuất tiên tiến nhất.</p></li>
+</ul>
+</div></blockquote>
+<p>Chọn <strong>Mobile</strong> nếu:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bạn đang phát triển cho thiết bị di động đời mới, XR trên desktop, XR độc lập (standalone) hoặc desktop.</p></li>
+<li><p>Bạn có phần cứng tương đối mới, hỗ trợ Vulkan, Direct3D 12 hoặc Metal.</p></li>
+<li><p>Bạn đang phát triển một game 3D.</p></li>
+<li><p>Bạn muốn dùng các tính năng kết xuất nâng cao, trong giới hạn của phần cứng di động.</p></li>
+</ul>
+</div></blockquote>
+<p>Chọn <strong>Compatibility</strong> nếu:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bạn đang phát triển cho thiết bị di động hoặc máy desktop đời cũ. Renderer Compatibility hỗ trợ dải phần cứng rộng nhất.</p></li>
+<li><p>Bạn đang phát triển cho web. Trong trường hợp này, Compatibility là lựa chọn duy nhất.</p></li>
+<li><p>Bạn có phần cứng cũ không hỗ trợ Vulkan. Trong trường hợp này, Compatibility là lựa chọn duy nhất.</p></li>
+<li><p>Bạn đang phát triển một game 2D, hoặc một game 3D không cần các tính năng kết xuất nâng cao.</p></li>
+<li><p>Bạn muốn hiệu năng tốt nhất có thể trên mọi thiết bị và không cần các tính năng kết xuất nâng cao.</p></li>
+</ul>
+</div></blockquote>
+<p>Hãy nhớ rằng mỗi game là duy nhất, và đây chỉ là điểm khởi đầu. Ví dụ, bạn có thể chọn dùng renderer Compatibility dù có GPU mới nhất, để hỗ trợ dải phần cứng rộng nhất. Hoặc bạn có thể muốn dùng renderer Forward+ cho game 2D để dùng được các tính năng nâng cao như compute shader.</p>
+<section id="switching-between-renderers">
+<h3>Chuyển đổi giữa các renderer<a class="headerlink" href="#switching-between-renderers" title="Link to this heading"></a></h3>
+<p>Trong trình chỉnh sửa, bạn luôn có thể chuyển đổi giữa các renderer bằng cách nhấp vào tên renderer ở góc trên bên phải của trình chỉnh sửa.</p>
+<p>Chuyển đổi giữa các renderer có thể cần một số tinh chỉnh thủ công cho scene, chiếu sáng và môi trường, vì mỗi renderer mỗi khác. Nhìn chung, chuyển giữa Mobile và Forward+ sẽ cần ít điều chỉnh hơn so với chuyển giữa Compatibility và Forward+ hoặc Mobile.</p>
+<p>Từ Godot 4.4, khi dùng Forward+ hoặc Mobile, nếu Vulkan không được hỗ trợ, engine sẽ chuyển dự phòng sang Direct3D 12 và ngược lại. Nếu driver dự phòng đó cũng không được hỗ trợ, engine sẽ chuyển dự phòng sang Compatibility khi backend RenderingDevice không được hỗ trợ. Điều này cho phép dự án vẫn chạy được, nhưng có thể trông khác so với thiết kế ban đầu do renderer hạn chế hơn. Bạn có thể tắt hành vi này trong cài đặt dự án bằng cách bỏ chọn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-rendering-device-fallback-to-opengl3" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Rendering Device &gt; Fallback to OpenGL 3</span></a>.</p>
+</section>
+</section>
+<section id="feature-comparison">
+<h2>So sánh tính năng<a class="headerlink" href="#feature-comparison" title="Link to this heading"></a></h2>
+<p>Đây không phải danh sách đầy đủ các tính năng của từng renderer. Nếu một tính năng không có ở đây, nó có sẵn trong mọi renderer, dù có thể nhanh hơn nhiều trên một số renderer. Để xem danh sách <em>tất cả</em> tính năng của Godot, hãy xem <a class="reference internal" href="../../about/list_of_features.html#doc-list-of-features"><span class="std std-ref">Danh sách tính năng</span></a>.</p>
+<p>Phần cứng hỗ trợ RenderingDevice là phần cứng có thể chạy Vulkan, Direct3D 12 hoặc Metal.</p>
+<section id="overall-comparison">
+<h3>So sánh tổng quan<a class="headerlink" href="#overall-comparison" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Phần cứng</strong> <strong>yêu cầu</strong></p></td>
+<td><p>Đời cũ hoặc cấu hình thấp.</p></td>
+<td><p>Đời mới hoặc cấu hình cao. Yêu cầu hỗ trợ Vulkan, Direct3D 12 hoặc Metal.</p></td>
+<td><p>Đời mới hoặc cấu hình cao. Yêu cầu hỗ trợ Vulkan, Direct3D 12 hoặc Metal.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chạy trên phần cứng mới</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+</tr>
+<tr class="row-even"><td><p>Chạy trên phần cứng cũ và cấu hình thấp</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có, nhưng chậm hơn Compatibility.</p></td>
+<td><p>✔️ Có, nhưng chậm nhất trong các renderer.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chạy trên phần cứng không hỗ trợ RenderingDevice</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>❌ Không.</p></td>
+<td><p>❌ Không.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Nền tảng mục tiêu</strong></p></td>
+<td><p>Di động, desktop cấu hình thấp, web.</p></td>
+<td><p>Di động, desktop.</p></td>
+<td><p>Desktop.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Desktop</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+</tr>
+<tr class="row-even"><td><p>Di động</p></td>
+<td><p>✔️ Có (cấu hình thấp).</p></td>
+<td><p>✔️ Có (cấu hình cao).</p></td>
+<td><p>⚠️ Được hỗ trợ, nhưng tối ưu kém. Hãy dùng Mobile hoặc Compatibility thay thế.</p></td>
+</tr>
+<tr class="row-odd"><td><p>XR</p></td>
+<td><p>⚠️ Được hỗ trợ, nhưng không khuyến nghị. Hãy dùng Mobile thay thế.</p></td>
+<td><p>✔️ Có. Khuyến nghị cho kính XR trên desktop và kính độc lập.</p></td>
+<td><p>⚠️ Được hỗ trợ, nhưng tối ưu kém. Hãy dùng Mobile hoặc Compatibility thay thế.</p></td>
+</tr>
+<tr class="row-even"><td><p>Web</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>❌ Không.</p></td>
+<td><p>❌ Không.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Game 2D</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có, nhưng Compatibility thường đã đủ tốt cho 2D.</p></td>
+<td><p>✔️ Có, nhưng Compatibility thường đã đủ tốt cho 2D.</p></td>
+</tr>
+<tr class="row-even"><td><p>Game 3D</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Bộ tính năng</strong></p></td>
+<td><p>Tính năng 2D và tính năng 3D cốt lõi.</p></td>
+<td><p>Hầu hết các tính năng kết xuất.</p></td>
+<td><p>Tất cả tính năng kết xuất.</p></td>
+</tr>
+<tr class="row-even"><td><p>Tính năng kết xuất 2D</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tính năng kết xuất 3D cốt lõi</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+<td><p>✔️ Có.</p></td>
+</tr>
+<tr class="row-even"><td><p>Tính năng kết xuất nâng cao</p></td>
+<td><p>❌ Không.</p></td>
+<td><p>⚠️ Có, bị giới hạn bởi phần cứng di động.</p></td>
+<td><p>✔️ Có. Hỗ trợ tất cả tính năng kết xuất.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tính năng mới</p></td>
+<td><p>⚠️ Một số tính năng kết xuất mới được thêm vào Compatibility. Tính năng được thêm sau Mobile và Forward+.</p></td>
+<td><p>✔️ Hầu hết tính năng kết xuất mới được thêm vào Mobile. Mobile thường nhận tính năng mới cùng lúc với Forward+.</p></td>
+<td><p>✔️ Mọi tính năng mới đều được thêm vào Forward+. Là trọng tâm phát triển mới, Forward+ nhận tính năng đầu tiên.</p></td>
+</tr>
+<tr class="row-even"><td><p>Chi phí kết xuất</p></td>
+<td><p>Chi phí cơ bản thấp, nhưng chi phí mở rộng cao.</p></td>
+<td><p>Chi phí cơ bản trung bình, chi phí mở rộng trung bình.</p></td>
+<td><p>Chi phí cơ bản cao nhất, chi phí mở rộng thấp.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Driver kết xuất</p></td>
+<td><p>OpenGL.</p></td>
+<td><p>Vulkan, Direct3D 12 hoặc Metal.</p></td>
+<td><p>Vulkan, Direct3D 12 hoặc Metal.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="lights-and-shadows">
+<h3>Ánh sáng và bóng đổ<a class="headerlink" href="#lights-and-shadows" title="Link to this heading"></a></h3>
+<p>Xem <a class="reference internal" href="../3d/lights_and_shadows.html#doc-lights-and-shadows"><span class="std std-ref">Đèn và bóng đổ 3D</span></a> để biết thêm thông tin.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Phương pháp chiếu sáng</p></td>
+<td><p>Forward single-pass. Đèn có bóng đổ dùng phương pháp multi-pass và blending kém chính xác hơn.</p></td>
+<td><p>Forward single-pass.</p></td>
+<td><p>Clustered forward.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Số OmniLight tối đa</p></td>
+<td><p>8 mỗi mesh. Có thể tăng thêm.</p></td>
+<td><p>8 mỗi mesh, 256 mỗi view.</p></td>
+<td><p>512 mỗi cluster. Có thể tăng thêm.</p></td>
+</tr>
+<tr class="row-even"><td><p>Số SpotLight tối đa</p></td>
+<td><p>8 mỗi mesh. Có thể tăng thêm.</p></td>
+<td><p>8 mỗi mesh, 256 mỗi view.</p></td>
+<td><p>512 mỗi cluster. Có thể tăng thêm.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Số DirectionalLight tối đa</p></td>
+<td><p>8</p></td>
+<td><p>8</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-even"><td><p>PCSS cho OmniLight và SpotLight</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>PCSS cho DirectionalLight</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Texture chiếu của đèn (light projector)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="global-illumination">
+<h3>Chiếu sáng toàn cục (Global Illumination)<a class="headerlink" href="#global-illumination" title="Link to this heading"></a></h3>
+<p>Xem <a class="reference internal" href="../3d/global_illumination/introduction_to_global_illumination.html#doc-introduction-to-global-illumination"><span class="std std-ref">Giới thiệu về chiếu sáng toàn cục</span></a> để biết thêm thông tin.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ReflectionProbe</p></td>
+<td><p>✔️ Được hỗ trợ, 2 mỗi mesh.</p></td>
+<td><p>✔️ Được hỗ trợ, 8 mỗi mesh.</p></td>
+<td><p>✔️ Được hỗ trợ, không giới hạn.</p></td>
+</tr>
+<tr class="row-odd"><td><p>LightmapGI</p></td>
+<td><p>⚠️ Hỗ trợ kết xuất lightmap đã bake. Việc bake yêu cầu phần cứng hỗ trợ RenderingDevice.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>VoxelGI</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chiếu sáng gián tiếp không gian màn hình (SSIL)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Chiếu sáng toàn cục bằng trường khoảng cách có dấu (SDFGI)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="environment-and-post-processing">
+<h3>Môi trường và hậu xử lý<a class="headerlink" href="#environment-and-post-processing" title="Link to this heading"></a></h3>
+<p>Xem <a class="reference internal" href="../3d/environment_and_post_processing.html#doc-environment-and-post-processing"><span class="std std-ref">Môi trường và hậu xử lý</span></a> để biết thêm thông tin.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Sương mù (Depth và Height)</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sương mù thể tích</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Tonemapping</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Phản chiếu không gian màn hình (Screen-Space Reflections)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Che khuất môi trường không gian màn hình (SSAO)</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Chiếu sáng gián tiếp không gian màn hình (SSIL)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Chiếu sáng toàn cục bằng trường khoảng cách có dấu (SDFGI)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Glow (phát quang)</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Điều chỉnh</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hậu xử lý tùy chỉnh với quad toàn màn hình</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Hậu xử lý tùy chỉnh với CompositorEffects</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="antialiasing">
+<h3>Khử răng cưa (Antialiasing)<a class="headerlink" href="#antialiasing" title="Link to this heading"></a></h3>
+<p>Xem <a class="reference internal" href="../3d/3d_antialiasing.html#doc-3d-antialiasing"><span class="std std-ref">Khử răng cưa 3D</span></a> để biết thêm thông tin.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MSAA 3D</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>MSAA 2D</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>TAA</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>FSR2</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>FXAA</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SMAA</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>SSAA</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bộ giới hạn độ nhám không gian màn hình</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="standardmaterial-features">
+<h3>Tính năng của StandardMaterial<a class="headerlink" href="#standardmaterial-features" title="Link to this heading"></a></h3>
+<p>Xem <a class="reference internal" href="../3d/standard_material_3d.html#doc-standard-material-3d"><span class="std std-ref">Standard Material 3D và ORM Material 3D</span></a> để biết thêm thông tin.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Tán xạ dưới bề mặt (Sub-surface scattering)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="shader-features">
+<h3>Tính năng shader<a class="headerlink" href="#shader-features" title="Link to this heading"></a></h3>
+<p>Xem <a class="reference internal" href="../shaders/shader_reference/index.html#doc-shading-reference"><span class="std std-ref">Tham chiếu shading</span></a> để biết thêm thông tin.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Screen texture</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Texture độ sâu (depth texture)</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Buffer Normal/Roughness</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Compute shader</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>⚠️ Được hỗ trợ, nhưng giảm hiệu năng trên thiết bị đời cũ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="other-features">
+<h3>Tính năng khác<a class="headerlink" href="#other-features" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tính năng</p></th>
+<th class="head"><p>Compatibility</p></th>
+<th class="head"><p>Di động</p></th>
+<th class="head"><p>Forward+</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Độ chính xác màu</p></td>
+<td><p>RGBA8. Dải động thấp, độ chính xác trung bình.</p></td>
+<td><p>RGB10A2. Dải động trung bình, độ chính xác thấp. RGBA16F nếu bật HDR 2D.</p></td>
+<td><p>RGBA16F. Dải động cao, độ chính xác tốt.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Độ chính xác độ sâu</p></td>
+<td><p>24-bit không có reverse Z. Độ chính xác trung bình.</p></td>
+<td><p>24-bit có reverse Z. Độ chính xác trung bình.</p></td>
+<td><p>32-bit có reverse Z. Độ chính xác tốt.</p></td>
+</tr>
+<tr class="row-even"><td><p>Khử dải màu (Debanding)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Variable rate
+shading</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Decal</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Vệt hạt</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Va chạm SDF cho hạt (particle)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Làm mờ độ sâu trường ảnh (depth of field)</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Chế độ VSync Adaptive và Mailbox</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Viewport HDR 2D</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Đầu ra HDR</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Truy cập RenderingDevice</p></td>
+<td><p>❌ Không được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+<td><p>✔️ Được hỗ trợ.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Kết xuất" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="viewports.html" class="btn btn-neutral float-right" title="Sử dụng Viewport" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

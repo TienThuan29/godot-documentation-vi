@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Khi nào dùng scene, khi nào dùng script" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/best_practices/scenes_versus_scripts.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Chúng ta đã tìm hiểu scene và script khác nhau như thế nào. Script định nghĩa phần mở rộng của lớp engine bằng mã mệnh lệnh, còn scene thì bằng mã khai báo. Do đó, khả năng của mỗi hệ thống là khác..." />
+<meta name="description" content="Chúng ta đã tìm hiểu scene và script khác nhau như thế nào. Script định nghĩa phần mở rộng của lớp engine bằng mã mệnh lệnh, còn scene thì bằng mã khai báo. Do đó, khả năng của mỗi hệ thống là khác..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Khi nào dùng scene, khi nào dùng script &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Autoload so với node thông thường" href="autoloads_versus_regular_nodes.html" />
+    <link rel="prev" title="Tổ chức scene" href="scene_organization.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/best_practices/scenes_versus_scripts" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Thực hành tốt nhất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_best_practices.html">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="what_are_godot_classes.html">Áp dụng nguyên tắc hướng đối tượng trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scene_organization.html">Tổ chức scene</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Khi nào dùng scene, khi nào dùng script</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#anonymous-types">Kiểu ẩn danh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#named-types">Kiểu có tên</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-of-script-vs-packedscene">Hiệu năng của Script so với PackedScene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">Kết luận</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoloads_versus_regular_nodes.html">Autoload so với node thông thường</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_alternatives.html">Khi nào và làm thế nào để tránh dùng node cho mọi thứ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_interfaces.html">Giao tiếp giữa các đối tượng trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_notifications.html">Notification trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preferences.html">Lựa chọn cấu trúc dữ liệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic_preferences.html">Lựa chọn về logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_organization.html">Tổ chức dự án</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version_control_systems.html">Hệ thống quản lý phiên bản</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Thực hành tốt nhất</a></li>
+      <li class="breadcrumb-item active">Khi nào dùng scene, khi nào dùng script</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="when-to-use-scenes-versus-scripts">
+<span id="doc-scenes-versus-scripts"></span><h1>Khi nào dùng scene, khi nào dùng script<a class="headerlink" href="#when-to-use-scenes-versus-scripts" title="Link to this heading"></a></h1>
+<p>Chúng ta đã tìm hiểu scene và script khác nhau như thế nào. Script định nghĩa phần mở rộng của lớp engine bằng mã mệnh lệnh, còn scene thì bằng mã khai báo.</p>
+<p>Do đó, khả năng của mỗi hệ thống là khác nhau. Scene có thể định nghĩa cách một lớp mở rộng được khởi tạo, nhưng không định nghĩa hành vi thực sự của nó. Scene thường được dùng kết hợp với script: scene khai báo một tổ hợp các node, còn script bổ sung hành vi bằng mã mệnh lệnh.</p>
+<section id="anonymous-types">
+<h2>Kiểu ẩn danh<a class="headerlink" href="#anonymous-types" title="Link to this heading"></a></h2>
+<p>Bạn <em>hoàn toàn có thể</em> định nghĩa toàn bộ nội dung của scene chỉ bằng script. Về bản chất, đây chính là điều Godot Editor làm, chỉ có điều là trong constructor C++ của các đối tượng của nó.</p>
+<p>Nhưng việc chọn dùng cái nào có thể là một tình thế khó xử. Tạo instance script giống hệt tạo các lớp trong engine, trong khi xử lý scene đòi hỏi thay đổi API:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;my_node.gd&quot;</span><span class="p">)</span>
+<span class="k">const</span><span class="w"> </span><span class="nc">MyScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;my_scene.tscn&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Node</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">my_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">MyNode</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span><span class="w"> </span><span class="c1"># Same method call.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">my_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">MyScene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span><span class="w"> </span><span class="c1"># Different method call.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">my_inherited_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">MyScene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">(</span><span class="nb">PackedScene</span><span class="o">.</span><span class="vi">GEN_EDIT_STATE_MAIN</span><span class="p">)</span><span class="w"> </span><span class="c1"># Create scene inheriting from MyScene.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Game</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">CSharpScript</span><span class="w"> </span><span class="n">MyNode</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">CSharpScript</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://Path/To/MyNode.cs&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">MyScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">PackedScene</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://Path/To/MyScene.tscn&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">_node</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">_myNode</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">_myScene</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">_myInheritedScene</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">Game</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Node</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_myNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyNode</span><span class="p">.</span><span class="n">New</span><span class="p">().</span><span class="n">As</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Different than calling new() or MyNode.New(). Instantiated from a PackedScene.</span>
+<span class="w">        </span><span class="n">_myScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Create scene inheriting from MyScene.</span>
+<span class="w">        </span><span class="n">_myInheritedScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="p">(</span><span class="n">PackedScene</span><span class="p">.</span><span class="n">GenEditState</span><span class="p">.</span><span class="n">Main</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ngoài ra, script sẽ chạy chậm hơn scene một chút do chênh lệch tốc độ giữa mã engine và mã script. Node càng lớn và càng phức tạp thì càng có lý do để xây dựng nó thành scene.</p>
+</section>
+<section id="named-types">
+<h2>Kiểu có tên<a class="headerlink" href="#named-types" title="Link to this heading"></a></h2>
+<p>Script có thể được đăng ký thành một kiểu mới ngay trong trình chỉnh sửa. Khi đó nó hiển thị như một kiểu mới trong hộp thoại tạo node hoặc resource, kèm biểu tượng tùy chọn. Nhờ vậy, người dùng sử dụng script dễ dàng hơn nhiều. Thay vì phải...</p>
+<ol class="arabic simple">
+<li><p>Biết kiểu cơ sở của script họ muốn dùng.</p></li>
+<li><p>Tạo một instance của kiểu cơ sở đó.</p></li>
+<li><p>Gắn script vào node.</p></li>
+</ol>
+<p>Với script đã đăng ký, kiểu được viết bằng script sẽ trở thành một lựa chọn trong hộp thoại tạo giống như các node và resource khác trong hệ thống. Hộp thoại tạo thậm chí còn có thanh tìm kiếm để tra cứu kiểu theo tên.</p>
+<p>Có hai hệ thống để đăng ký kiểu:</p>
+<ul>
+<li><p><a class="reference internal" href="../plugins/editor/making_plugins.html#doc-making-plugins"><span class="std std-ref">Kiểu tùy chỉnh</span></a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Chỉ có trong trình chỉnh sửa. Tên kiểu không truy cập được khi chạy.</p></li>
+<li><p>Không hỗ trợ kiểu tùy chỉnh kế thừa.</p></li>
+<li><p>Một công cụ khởi tạo. Tạo node kèm script. Không gì hơn.</p></li>
+<li><p>Trình chỉnh sửa không nhận biết kiểu của script hay quan hệ của nó với các kiểu engine hoặc script khác.</p></li>
+<li><p>Cho phép người dùng định nghĩa biểu tượng.</p></li>
+<li><p>Hoạt động với mọi ngôn ngữ script vì nó làm việc với resource Script ở mức trừu tượng.</p></li>
+<li><p>Thiết lập bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editorplugin.html#class-editorplugin-method-add-custom-type" title="Class reference (English)"><span class="xref std std-ref">EditorPlugin.add_custom_type</span></a>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><a class="reference internal" href="../scripting/gdscript/gdscript_basics.html#doc-gdscript-basics-class-name"><span class="std std-ref">Lớp script</span></a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Truy cập được cả trong trình chỉnh sửa lẫn khi chạy.</p></li>
+<li><p>Hiển thị đầy đủ quan hệ kế thừa.</p></li>
+<li><p>Tạo node kèm script, nhưng cũng có thể đổi kiểu hoặc mở rộng kiểu từ trình chỉnh sửa.</p></li>
+<li><p>Trình chỉnh sửa nhận biết quan hệ kế thừa giữa các script, lớp script và lớp C++ của engine.</p></li>
+<li><p>Cho phép người dùng định nghĩa biểu tượng.</p></li>
+<li><p>Nhà phát triển engine phải thêm hỗ trợ cho từng ngôn ngữ một cách thủ công (cả việc công khai tên lẫn khả năng truy cập khi chạy).</p></li>
+<li><p>Trình chỉnh sửa quét các thư mục dự án và đăng ký mọi tên được công khai cho tất cả ngôn ngữ script. Mỗi ngôn ngữ script phải tự triển khai hỗ trợ việc công khai thông tin này.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Cả hai phương pháp đều thêm tên vào hộp thoại tạo, nhưng riêng lớp script còn cho phép người dùng truy cập tên kiểu mà không cần tải resource script. Có thể tạo instance và truy cập hằng số hoặc phương thức static từ bất cứ đâu.</p>
+<p>Với những tính năng như vậy, bạn có thể muốn kiểu của mình là một script không kèm scene vì sự tiện dụng nó mang lại cho người dùng. Những ai phát triển plugin hoặc tạo công cụ nội bộ cho nhà thiết kế sử dụng sẽ thấy cách này dễ dàng hơn.</p>
+<p>Mặt trái là nó cũng đồng nghĩa với việc phải dùng phần lớn là lập trình mệnh lệnh.</p>
+</section>
+<section id="performance-of-script-vs-packedscene">
+<h2>Hiệu năng của Script so với PackedScene<a class="headerlink" href="#performance-of-script-vs-packedscene" title="Link to this heading"></a></h2>
+<p>Khía cạnh cuối cùng cần cân nhắc khi chọn giữa scene và script là tốc độ thực thi.</p>
+<p>Khi kích thước đối tượng tăng lên, kích thước script cần thiết để tạo và khởi tạo chúng cũng tăng lên rất nhiều. Việc tạo hệ phân cấp node minh chứng cho điều này. Logic của mỗi Node có thể dài vài trăm dòng mã.</p>
+<p>Ví dụ mã dưới đây tạo một <code class="docutils literal notranslate"><span class="pre">Node</span></code> mới, đổi tên nó, gán script cho nó, đặt node cha tương lai làm owner để nó được lưu xuống đĩa cùng node cha, và cuối cùng thêm nó làm con của node <code class="docutils literal notranslate"><span class="pre">Main</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.gd</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_init</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Node</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">child</span><span class="o">.</span><span class="vi">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Child&quot;</span>
+<span class="w">    </span><span class="n">child</span><span class="o">.</span><span class="vi">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;child.gd&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+<span class="w">    </span><span class="n">child</span><span class="o">.</span><span class="vi">owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">Child</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">Main</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Node</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Child</span><span class="p">.</span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Child&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">childID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Child</span><span class="p">.</span><span class="n">GetInstanceId</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Child</span><span class="p">.</span><span class="n">SetScript</span><span class="p">(</span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">Script</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://Path/To/Child.cs&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="c1">// SetScript() causes the C# wrapper object to be disposed, so obtain a new</span>
+<span class="w">        </span><span class="c1">// wrapper for the Child node using its instance ID before proceeding.</span>
+<span class="w">        </span><span class="n">Child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Node</span><span class="p">)</span><span class="n">GodotObject</span><span class="p">.</span><span class="n">InstanceFromId</span><span class="p">(</span><span class="n">childID</span><span class="p">);</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">Child</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Child</span><span class="p">.</span><span class="n">Owner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Mã script như thế này chậm hơn nhiều so với mã C++ phía engine. Mỗi lệnh đều gọi tới API script, dẫn đến nhiều lần &quot;tra cứu&quot; ở phía back-end để tìm logic cần thực thi.</p>
+<p>Scene giúp tránh vấn đề hiệu năng này. <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedscene.html" title="Class reference (English)"><span class="xref std std-ref">PackedScene</span></a>, kiểu cơ sở mà scene kế thừa, định nghĩa các resource dùng dữ liệu được tuần tự hóa để tạo đối tượng. Engine có thể xử lý scene theo lô ở phía back-end và cho hiệu năng tốt hơn nhiều so với script.</p>
+</section>
+<section id="conclusion">
+<h2>Kết luận<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>Rốt cuộc, cách tiếp cận tốt nhất là cân nhắc những điều sau:</p>
+<ul>
+<li><p>Nếu bạn muốn tạo một công cụ cơ bản sẽ được tái sử dụng trong nhiều dự án khác nhau và có thể được người dùng ở mọi trình độ sử dụng (kể cả những người không tự nhận mình là &quot;lập trình viên&quot;), thì nhiều khả năng nó nên là một script, có lẽ kèm tên/biểu tượng tùy chỉnh.</p></li>
+<li><p>Nếu bạn muốn tạo một khái niệm riêng cho game của mình, thì nó luôn nên là một scene. Scene dễ theo dõi/chỉnh sửa hơn và an toàn hơn script.</p></li>
+<li><p>Nếu bạn muốn đặt tên cho một scene, bạn vẫn có thể làm gần như vậy bằng cách khai báo một lớp script và gán scene cho nó dưới dạng hằng số. Về thực chất, script khi đó trở thành một namespace:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># game.gd</span>
+<span class="k">class_name</span><span class="w"> </span><span class="nc">Game</span><span class="w"> </span><span class="c1"># extends RefCounted, so it won&#39;t show up in the node creation dialog.</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">RefCounted</span>
+
+<span class="k">const</span><span class="w"> </span><span class="nc">MyScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;my_scene.tscn&quot;</span><span class="p">)</span>
+
+<span class="c1"># main.gd</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="nc">Game</span><span class="o">.</span><span class="vi">MyScene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Game.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Game</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RefCounted</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">PackedScene</span><span class="w"> </span><span class="n">MyScene</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">PackedScene</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://Path/To/MyScene.tscn&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Main.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">Game</span><span class="p">.</span><span class="n">MyScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</li>
+</ul>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scene_organization.html" class="btn btn-neutral float-left" title="Tổ chức scene" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="autoloads_versus_regular_nodes.html" class="btn btn-neutral float-right" title="Autoload so với node thông thường" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

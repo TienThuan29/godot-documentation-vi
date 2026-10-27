@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Hậu xử lý nâng cao" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/advanced_postprocessing.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Bài hướng dẫn này mô tả một phương pháp hậu xử lý (post-processing) nâng cao trong Godot. Cụ thể, nó sẽ giải thích cách viết một shader hậu xử lý sử dụng depth buffer. Bạn nên làm quen ..." />
+<meta name="description" content="Giới thiệu: Bài hướng dẫn này mô tả một phương pháp hậu xử lý (post-processing) nâng cao trong Godot. Cụ thể, nó sẽ giải thích cách viết một shader hậu xử lý sử dụng depth buffer. Bạn nên làm quen ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Hậu xử lý nâng cao &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo cây" href="making_trees.html" />
+    <link rel="prev" title="Hậu xử lý tùy chỉnh" href="custom_postprocessing.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/advanced_postprocessing" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shader_reference/index.html">Tham chiếu shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visual_shaders.html">Sử dụng VisualShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute_shaders.html">Sử dụng compute shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="screen-reading_shaders.html">Shader đọc màn hình</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_viewport_as_texture.html">Dùng SubViewport làm texture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hậu xử lý nâng cao</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-screen-quad">Quad toàn màn hình</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#depth-texture">Texture độ sâu (depth texture)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-shader">Shader ví dụ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#an-optimization">Một cách tối ưu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Shader</a></li>
+      <li class="breadcrumb-item active">Hậu xử lý nâng cao</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="advanced-post-processing">
+<span id="doc-advanced-postprocessing"></span><h1>Hậu xử lý nâng cao<a class="headerlink" href="#advanced-post-processing" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Bài hướng dẫn này mô tả một phương pháp hậu xử lý (post-processing) nâng cao trong Godot. Cụ thể, nó sẽ giải thích cách viết một shader hậu xử lý sử dụng depth buffer. Bạn nên làm quen trước với hậu xử lý nói chung và đặc biệt là các phương pháp được trình bày trong <a class="reference internal" href="custom_postprocessing.html#doc-custom-postprocessing"><span class="std std-ref">bài hướng dẫn hậu xử lý tùy chỉnh</span></a>.</p>
+</section>
+<section id="full-screen-quad">
+<h2>Quad toàn màn hình<a class="headerlink" href="#full-screen-quad" title="Link to this heading"></a></h2>
+<p>Một cách để tạo hiệu ứng hậu xử lý tùy chỉnh là dùng viewport. Tuy nhiên, dùng Viewport có hai nhược điểm chính:</p>
+<ol class="arabic simple">
+<li><p>Không thể truy cập depth buffer</p></li>
+<li><p>Hiệu ứng của shader hậu xử lý không hiển thị trong trình chỉnh sửa</p></li>
+</ol>
+<p>Để vượt qua hạn chế về việc dùng depth buffer, hãy dùng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a> với primitive <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_quadmesh.html" title="Class reference (English)"><span class="xref std std-ref">QuadMesh</span></a>. Cách này cho phép chúng ta dùng shader và truy cập depth texture của scene. Tiếp theo, dùng một vertex shader để quad luôn phủ kín màn hình, nhờ đó hiệu ứng hậu xử lý sẽ luôn được áp dụng, kể cả trong trình chỉnh sửa.</p>
+<p>Đầu tiên, tạo một MeshInstance3D mới và đặt mesh của nó là một QuadMesh. Thao tác này tạo một quad có tâm tại vị trí <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code> với chiều rộng và chiều cao là <code class="docutils literal notranslate"><span class="pre">1</span></code>. Đặt chiều rộng và chiều cao thành <code class="docutils literal notranslate"><span class="pre">2</span></code> và bật <strong>Flip Faces</strong>. Hiện tại, quad nằm ở gốc tọa độ trong world space. Tuy nhiên, chúng ta muốn nó di chuyển theo camera để luôn phủ kín toàn bộ màn hình. Để làm vậy, chúng ta sẽ bỏ qua các phép biến đổi tọa độ vốn chuyển vị trí vertex qua các không gian tọa độ khác nhau và coi các vertex như thể chúng đã ở trong clip space.</p>
+<p>Vertex shader yêu cầu tọa độ đầu ra nằm trong clip space, tức là tọa độ trải từ <code class="docutils literal notranslate"><span class="pre">-1</span></code> ở cạnh trái và cạnh dưới màn hình đến <code class="docutils literal notranslate"><span class="pre">1</span></code> ở cạnh trên và cạnh phải màn hình. Đó là lý do QuadMesh cần có chiều cao và chiều rộng là <code class="docutils literal notranslate"><span class="pre">2</span></code>. Godot tự xử lý ngầm phép biến đổi từ model space sang view space rồi sang clip space, vì vậy chúng ta cần vô hiệu hóa tác dụng của các phép biến đổi đó. Chúng ta làm điều này bằng cách gán biến built-in <code class="docutils literal notranslate"><span class="pre">POSITION</span></code> bằng vị trí mong muốn. <code class="docutils literal notranslate"><span class="pre">POSITION</span></code> bỏ qua các phép biến đổi built-in và đặt trực tiếp vị trí vertex trong clip space.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">spatial</span><span class="p">;</span>
+<span class="c1">// Prevent the quad from being affected by lighting and fog. This also improves performance.</span>
+<span class="n">render_mode</span><span class="w"> </span><span class="n">unshaded</span><span class="p">,</span><span class="w"> </span><span class="n">fog_disabled</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">vertex</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">POSITION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Ở các phiên bản Godot trước 4.3, đoạn mã này khuyến nghị dùng <code class="docutils literal notranslate"><span class="pre">POSITION</span> <span class="pre">=</span> <span class="pre">vec4(VERTEX,</span> <span class="pre">1.0);</span></code>, vốn ngầm giả định near plane trong clip space nằm ở <code class="docutils literal notranslate"><span class="pre">0.0</span></code>. Đoạn mã đó giờ không còn đúng và sẽ không hoạt động ở phiên bản 4.3+ vì hiện nay chúng ta dùng depth buffer &quot;reversed-z&quot;, trong đó near plane nằm ở <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+</div>
+<p>Ngay cả với vertex shader này, quad vẫn liên tục biến mất. Nguyên nhân là frustum culling, được thực hiện trên CPU. Frustum culling dùng ma trận camera và AABB của các Mesh để xác định Mesh có hiển thị hay không <em>trước khi</em> gửi nó tới GPU. CPU không biết chúng ta đang làm gì với các vertex, nên nó giả định các tọa độ được chỉ định là vị trí trong world space chứ không phải clip space, dẫn đến việc Godot cull mất quad khi chúng ta quay khỏi tâm scene. Để quad không bị cull, có một vài lựa chọn:</p>
+<ol class="arabic simple">
+<li><p>Thêm QuadMesh làm con của camera, để camera luôn hướng vào nó</p></li>
+<li><p>Đặt thuộc tính Geometry <code class="docutils literal notranslate"><span class="pre">extra_cull_margin</span></code> lớn nhất có thể trong QuadMesh</p></li>
+</ol>
+<p>Lựa chọn thứ hai đảm bảo quad hiển thị trong trình chỉnh sửa, còn lựa chọn thứ nhất đảm bảo nó vẫn hiển thị ngay cả khi camera di chuyển ra ngoài cull margin. Bạn cũng có thể dùng cả hai.</p>
+</section>
+<section id="depth-texture">
+<h2>Texture độ sâu (depth texture)<a class="headerlink" href="#depth-texture" title="Link to this heading"></a></h2>
+<p>Để đọc từ depth texture, trước tiên chúng ta cần tạo một texture uniform gắn với depth buffer bằng cách dùng <code class="docutils literal notranslate"><span class="pre">hint_depth_texture</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">depth_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_depth_texture</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Sau khi khai báo, depth texture có thể được đọc bằng hàm <code class="docutils literal notranslate"><span class="pre">texture()</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">depth_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">x</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tương tự như truy cập screen texture, chỉ có thể truy cập depth texture khi đọc từ viewport hiện tại. Không thể truy cập depth texture từ một viewport khác mà bạn đã render vào.</p>
+</div>
+<p>Các giá trị trả về từ <code class="docutils literal notranslate"><span class="pre">depth_texture</span></code> nằm trong khoảng <code class="docutils literal notranslate"><span class="pre">1.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">0.0</span></code> (lần lượt tương ứng với near plane và far plane, do dùng depth buffer &quot;reverse-z&quot;) và là phi tuyến. Khi hiển thị trực tiếp độ sâu từ <code class="docutils literal notranslate"><span class="pre">depth_texture</span></code>, mọi thứ sẽ trông gần như đen trừ khi rất gần, do tính phi tuyến đó. Để giá trị độ sâu khớp với tọa độ world hoặc model, chúng ta cần tuyến tính hóa giá trị. Khi áp dụng ma trận chiếu lên vị trí vertex, giá trị z bị biến thành phi tuyến, nên để tuyến tính hóa, chúng ta nhân nó với nghịch đảo của ma trận chiếu, mà trong Godot có thể truy cập qua biến <code class="docutils literal notranslate"><span class="pre">INV_PROJECTION_MATRIX</span></code>.</p>
+<p>Trước tiên, lấy tọa độ screen space và biến đổi chúng thành tọa độ thiết bị chuẩn hóa (NDC). Khi dùng backend Vulkan, NDC chạy từ <code class="docutils literal notranslate"><span class="pre">-1.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">1.0</span></code> theo hướng <code class="docutils literal notranslate"><span class="pre">x</span></code> và <code class="docutils literal notranslate"><span class="pre">y</span></code>, và từ <code class="docutils literal notranslate"><span class="pre">0.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">1.0</span></code> theo hướng <code class="docutils literal notranslate"><span class="pre">z</span></code>. Dựng lại NDC bằng <code class="docutils literal notranslate"><span class="pre">SCREEN_UV</span></code> cho trục <code class="docutils literal notranslate"><span class="pre">x</span></code> và <code class="docutils literal notranslate"><span class="pre">y</span></code>, và giá trị độ sâu cho <code class="docutils literal notranslate"><span class="pre">z</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">depth_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">ndc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">SCREEN_UV</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bài hướng dẫn này giả định bạn dùng renderer Forward+ hoặc Mobile, cả hai đều dùng NDC của Vulkan với khoảng Z là <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code>. Ngược lại, renderer Compatibility dùng NDC của OpenGL với khoảng Z là <code class="docutils literal notranslate"><span class="pre">[-1.0,</span> <span class="pre">1.0]</span></code>. Với renderer Compatibility, hãy thay phép tính NDC bằng đoạn sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">vec3</span><span class="w"> </span><span class="n">ndc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">SCREEN_UV</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Bạn cũng có thể dùng các define built-in <code class="docutils literal notranslate"><span class="pre">CURRENT_RENDERER</span></code> và <code class="docutils literal notranslate"><span class="pre">RENDERER_COMPATIBILITY</span></code> để có một shader hoạt động trên mọi renderer:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#if CURRENT_RENDERER == RENDERER_COMPATIBILITY</span>
+<span class="kt">vec3</span><span class="w"> </span><span class="n">ndc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">SCREEN_UV</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="cp">#else</span>
+<span class="kt">vec3</span><span class="w"> </span><span class="n">ndc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">SCREEN_UV</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+<p>Chuyển NDC sang view space bằng cách nhân NDC với <code class="docutils literal notranslate"><span class="pre">INV_PROJECTION_MATRIX</span></code>. Nhớ rằng view space cho vị trí tương đối so với camera, nên giá trị <code class="docutils literal notranslate"><span class="pre">z</span></code> sẽ cho chúng ta khoảng cách đến điểm đó.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="w">  </span><span class="kt">vec4</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INV_PROJECTION_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">ndc</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">view</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">view</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">linear_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">view</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Vì camera hướng về chiều âm của <code class="docutils literal notranslate"><span class="pre">z</span></code>, vị trí sẽ có giá trị <code class="docutils literal notranslate"><span class="pre">z</span></code> âm. Để có giá trị độ sâu dùng được, chúng ta phải đổi dấu <code class="docutils literal notranslate"><span class="pre">view.z</span></code>.</p>
+<p>Vị trí world có thể được dựng lại từ depth buffer bằng đoạn mã sau, dùng <code class="docutils literal notranslate"><span class="pre">INV_VIEW_MATRIX</span></code> để biến đổi vị trí từ view space sang world space.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="w">  </span><span class="kt">vec4</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INV_VIEW_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">INV_PROJECTION_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">ndc</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">world_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">world</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">world</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-shader">
+<h2>Shader ví dụ<a class="headerlink" href="#example-shader" title="Link to this heading"></a></h2>
+<p>Khi thêm một dòng xuất ra <code class="docutils literal notranslate"><span class="pre">ALBEDO</span></code>, chúng ta có một shader hoàn chỉnh trông giống như sau. Shader này cho phép bạn trực quan hóa độ sâu tuyến tính hoặc tọa độ world space, tùy vào dòng nào được comment lại.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">spatial</span><span class="p">;</span>
+<span class="c1">// Prevent the quad from being affected by lighting and fog. This also improves performance.</span>
+<span class="n">render_mode</span><span class="w"> </span><span class="n">unshaded</span><span class="p">,</span><span class="w"> </span><span class="n">fog_disabled</span><span class="p">;</span>
+
+<span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">depth_texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">hint_depth_texture</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">vertex</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">POSITION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">depth_texture</span><span class="p">,</span><span class="w"> </span><span class="n">SCREEN_UV</span><span class="p">).</span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">ndc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">SCREEN_UV</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">vec4</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INV_PROJECTION_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">ndc</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">view</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">view</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">linear_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">view</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">vec4</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INV_VIEW_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">INV_PROJECTION_MATRIX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">ndc</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">world_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">world</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">world</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Visualize linear depth</span>
+<span class="w">  </span><span class="n">ALBEDO</span><span class="p">.</span><span class="n">rgb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">fract</span><span class="p">(</span><span class="n">linear_depth</span><span class="p">));</span>
+
+<span class="w">  </span><span class="c1">// Visualize world coordinates</span>
+<span class="w">  </span><span class="c1">//ALBEDO.rgb = fract(world_position).xyz;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="an-optimization">
+<h2>Một cách tối ưu<a class="headerlink" href="#an-optimization" title="Link to this heading"></a></h2>
+<p>Bạn có thể được lợi khi dùng một tam giác lớn duy nhất thay vì một quad toàn màn hình. Lý do được giải thích <a class="reference external" href="https://michaldrobot.com/2014/04/01/gcn-execution-patterns-in-full-screen-passes">tại đây</a>. Tuy nhiên, lợi ích khá nhỏ và chỉ đáng kể khi chạy các fragment shader đặc biệt phức tạp.</p>
+<p>Đặt Mesh trong MeshInstance3D thành một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_arraymesh.html" title="Class reference (English)"><span class="xref std std-ref">ArrayMesh</span></a>. ArrayMesh là một công cụ cho phép bạn dễ dàng dựng một Mesh từ các mảng vertex, normal, màu, v.v.</p>
+<p>Bây giờ, gắn một script vào MeshInstance3D và dùng đoạn mã sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">MeshInstance3D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">  </span><span class="c1"># Create a single triangle out of vertices:</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">verts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">()</span>
+<span class="w">  </span><span class="n">verts</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">))</span>
+<span class="w">  </span><span class="n">verts</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">))</span>
+<span class="w">  </span><span class="n">verts</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">))</span>
+
+<span class="w">  </span><span class="c1"># Create an array of arrays.</span>
+<span class="w">  </span><span class="c1"># This could contain normals, colors, UVs, etc.</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">mesh_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">  </span><span class="n">mesh_array</span><span class="o">.</span><span class="nf">resize</span><span class="p">(</span><span class="nb">Mesh</span><span class="o">.</span><span class="vi">ARRAY_MAX</span><span class="p">)</span><span class="w"> </span><span class="c1">#required size for ArrayMesh Array</span>
+<span class="w">  </span><span class="n">mesh_array</span><span class="p">[</span><span class="nb">Mesh</span><span class="o">.</span><span class="vi">ARRAY_VERTEX</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">verts</span><span class="w"> </span><span class="c1">#position of vertex array in ArrayMesh Array</span>
+
+<span class="w">  </span><span class="c1"># Create mesh from mesh_array:</span>
+<span class="w">  </span><span class="n">mesh</span><span class="o">.</span><span class="nf">add_surface_from_arrays</span><span class="p">(</span><span class="nb">Mesh</span><span class="o">.</span><span class="vi">PRIMITIVE_TRIANGLES</span><span class="p">,</span><span class="w"> </span><span class="n">mesh_array</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tam giác được chỉ định bằng tọa độ thiết bị chuẩn hóa. Nhớ rằng NDC chạy từ <code class="docutils literal notranslate"><span class="pre">-1.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">1.0</span></code> theo cả hướng <code class="docutils literal notranslate"><span class="pre">x</span></code> và <code class="docutils literal notranslate"><span class="pre">y</span></code>. Điều này khiến màn hình rộng <code class="docutils literal notranslate"><span class="pre">2</span></code> đơn vị và cao <code class="docutils literal notranslate"><span class="pre">2</span></code> đơn vị. Để phủ kín toàn bộ màn hình bằng một tam giác duy nhất, hãy dùng một tam giác rộng <code class="docutils literal notranslate"><span class="pre">4</span></code> đơn vị và cao <code class="docutils literal notranslate"><span class="pre">4</span></code> đơn vị, gấp đôi chiều cao và chiều rộng của màn hình.</p>
+</div>
+<p>Gán cùng vertex shader ở trên và mọi thứ sẽ trông giống hệt như trước.</p>
+<p>Nhược điểm duy nhất của việc dùng ArrayMesh thay cho QuadMesh là ArrayMesh không hiển thị trong trình chỉnh sửa, vì tam giác chỉ được dựng khi scene chạy. Để khắc phục, hãy dựng một Mesh tam giác đơn trong một chương trình dựng hình 3D và dùng nó trong MeshInstance3D.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom_postprocessing.html" class="btn btn-neutral float-left" title="Hậu xử lý tùy chỉnh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="making_trees.html" class="btn btn-neutral float-right" title="Tạo cây" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

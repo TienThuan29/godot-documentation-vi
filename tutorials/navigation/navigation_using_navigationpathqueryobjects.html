@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng NavigationPathQueryObjects" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/navigation/navigation_using_navigationpathqueryobjects.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="NavigationPathQueryObjects có thể được dùng cùng với NavigationServer.query_path() để lấy một đường đi navigation được tùy biến sâu, kèm theo metadata tùy chọn về đường đi. Cách này cần thiết lập n..." />
+<meta name="description" content="NavigationPathQueryObjects có thể được dùng cùng với NavigationServer.query_path() để lấy một đường đi navigation được tùy biến sâu, kèm theo metadata tùy chọn về đường đi. Cách này cần thiết lập n..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng NavigationPathQueryObjects &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng NavigationAgent" href="navigation_using_navigationagents.html" />
+    <link rel="prev" title="Sử dụng NavigationPath" href="navigation_using_navigationpaths.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/navigation/navigation_using_navigationpathqueryobjects" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Điều hướng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigation_introduction_2d.html">Tổng quan về navigation 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_introduction_3d.html">Tổng quan về navigation 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationservers.html">Sử dụng NavigationServer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationmaps.html">Sử dụng NavigationMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationregions.html">Sử dụng NavigationRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationmeshes.html">Sử dụng navigation mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationpaths.html">Sử dụng NavigationPath</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng NavigationPathQueryObjects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-basic-path-query">Tạo một path query cơ bản</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#path-postprocessing-options">Tùy chọn hậu xử lý đường đi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#path-simplification">Đơn giản hóa đường đi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#path-metadata">Metadata của đường đi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excluding-or-including-regions">Loại trừ hoặc bao gồm region</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#path-clipping-and-limits">Cắt ngắn đường đi và giới hạn</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationagents.html">Sử dụng NavigationAgent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationobstacles.html">Sử dụng NavigationObstacle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationlinks.html">Sử dụng NavigationLink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationlayers.html">Sử dụng NavigationLayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_debug_tools.html">Công cụ gỡ lỗi navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_connecting_navmesh.html">Kết nối các navigation mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_types.html">Hỗ trợ các loại actor khác nhau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_locomotion.html">Hỗ trợ các kiểu di chuyển khác nhau cho actor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_area_access.html">Hỗ trợ quyền truy cập khu vực khác nhau cho các actor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_optimizing_performance.html">Tối ưu hiệu năng navigation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Điều hướng</a></li>
+      <li class="breadcrumb-item active">Sử dụng NavigationPathQueryObjects</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-navigationpathqueryobjects">
+<span id="doc-navigation-using-navigationpathqueryobjects"></span><h1>Sử dụng NavigationPathQueryObjects<a class="headerlink" href="#using-navigationpathqueryobjects" title="Link to this heading"></a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Các tham số path query cung cấp nhiều tùy chọn để cải thiện hiệu năng tìm đường hoặc giảm mức tiêu thụ bộ nhớ.</p>
+<p>Chúng phục vụ các nhu cầu tìm đường nâng cao hơn mà các node cấp cao không phải lúc nào cũng đáp ứng được.</p>
+<p>Xem các phần tùy chọn tương ứng bên dưới.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">NavigationPathQueryObjects</span></code> có thể được dùng cùng với <code class="docutils literal notranslate"><span class="pre">NavigationServer.query_path()</span></code> để lấy một đường đi navigation được <strong>tùy biến</strong> sâu, kèm theo <strong>metadata</strong> tùy chọn về đường đi.</p>
+<p>Cách này cần thiết lập nhiều hơn so với lấy một NavigationPath thông thường, nhưng cho phép bạn điều chỉnh việc tìm đường và dữ liệu đường đi trả về theo các nhu cầu khác nhau của dự án.</p>
+<p>NavigationPathQueryObjects gồm một cặp đối tượng: một đối tượng <code class="docutils literal notranslate"><span class="pre">NavigationPathQueryParameters</span></code> chứa các tùy chọn tùy biến cho truy vấn và một <code class="docutils literal notranslate"><span class="pre">NavigationPathQueryResult</span></code> nhận các cập nhật (định kỳ) với đường đi kết quả và metadata từ truy vấn.</p>
+<p>Phiên bản 2D và 3D của <code class="docutils literal notranslate"><span class="pre">NavigationPathQueryParameters</span></code> lần lượt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpathqueryparameters2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPathQueryParameters2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpathqueryparameters3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPathQueryParameters3D</span></a>.</p>
+<p>Phiên bản 2D và 3D của <code class="docutils literal notranslate"><span class="pre">NavigationPathQueryResult</span></code> lần lượt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpathqueryresult2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPathQueryResult2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationpathqueryresult3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationPathQueryResult3D</span></a>.</p>
+<section id="creating-a-basic-path-query">
+<h2>Tạo một path query cơ bản<a class="headerlink" href="#creating-a-basic-path-query" title="Link to this heading"></a></h2>
+<p>Cả parameters và result đều được dùng theo cặp với hàm <code class="docutils literal notranslate"><span class="pre">NavigationServer.query_path()</span></code>.</p>
+<p>Về các tùy chọn tùy biến có sẵn, xem thêm bên dưới. Xem thêm phần mô tả của từng tham số trong tài liệu tham khảo lớp.</p>
+<p>Dù không phải yêu cầu bắt buộc, cả hai đối tượng đều nên được tạo một lần từ trước, lưu trong một biến lâu dài của agent và được tái sử dụng cho mọi path query tiếp theo với các tham số đã cập nhật.</p>
+<p>Tái sử dụng cùng các đối tượng giúp cải thiện hiệu năng so với việc thường xuyên tạo đối tượng hoặc cấp phát bộ nhớ.</p>
+<p>Script sau tạo các đối tượng và cung cấp hàm <code class="docutils literal notranslate"><span class="pre">query_path()</span></code> để tạo các đường đi navigation mới. Đường đi kết quả giống hệt với khi dùng <code class="docutils literal notranslate"><span class="pre">NavigationServer.map_get_path()</span></code> nhưng có tái sử dụng các đối tượng.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-MkQgR0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tab" tabindex="0">2D GDScript</button><button aria-controls="panel-0-M0QgR0RTY3JpcHQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tab" tabindex="-1">3D GDScript</button></div><div aria-labelledby="tab-0-MkQgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="c1"># Prepare query objects.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">query_parameters</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationPathQueryParameters2D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">query_result</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationPathQueryResult2D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">query_path</span><span class="p">(</span><span class="n">p_start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p_target_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p_navigation_layers</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nf">is_inside_tree</span><span class="p">():</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="nf">get_navigation_map</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">map_get_iteration_id</span><span class="p">(</span><span class="n">map</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># This map has never synced and is empty, no point in querying it.</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span>
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">start_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_start_position</span>
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">target_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_target_position</span>
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">navigation_layers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_navigation_layers</span>
+
+<span class="w">    </span><span class="nb">NavigationServer2D</span><span class="o">.</span><span class="nf">query_path</span><span class="p">(</span><span class="n">query_parameters</span><span class="p">,</span><span class="w"> </span><span class="n">query_result</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">path</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query_result</span><span class="o">.</span><span class="nf">get_path</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">path</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-M0QgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+<span class="c1"># Prepare query objects.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">query_parameters</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationPathQueryParameters3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">query_result</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationPathQueryResult3D</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">query_path</span><span class="p">(</span><span class="n">p_start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">,</span><span class="w"> </span><span class="n">p_target_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">,</span><span class="w"> </span><span class="n">p_navigation_layers</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nf">is_inside_tree</span><span class="p">():</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_3d</span><span class="p">()</span><span class="o">.</span><span class="nf">get_navigation_map</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">map_get_iteration_id</span><span class="p">(</span><span class="n">map</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># This map has never synced and is empty, no point in querying it.</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span>
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">start_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_start_position</span>
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">target_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_target_position</span>
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">navigation_layers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_navigation_layers</span>
+
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">query_path</span><span class="p">(</span><span class="n">query_parameters</span><span class="p">,</span><span class="w"> </span><span class="n">query_result</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">path</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query_result</span><span class="o">.</span><span class="nf">get_path</span><span class="p">()</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">path</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="path-postprocessing-options">
+<h2>Tùy chọn hậu xử lý đường đi<a class="headerlink" href="#path-postprocessing-options" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id1">
+<img alt="Khác biệt khi hậu xử lý đường đi tùy theo bố cục đa giác của navigation mesh" src="../../_images/path_postprocess_diff.webp" />
+<figcaption>
+<p><span class="caption-text">Khác biệt khi hậu xử lý đường đi tùy theo bố cục đa giác của navigation mesh.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Một lượt tìm kiếm path query đi từ cạnh đa giác navigation mesh gần nhất đến cạnh gần nhất dọc theo các đa giác có sẵn. Nếu có thể, nó xây dựng một hành lang đa giác (polygon corridor) hướng về đa giác chứa vị trí đích.</p>
+<p>Đường đi hành lang đa giác &quot;tìm kiếm&quot; thô này không được tối ưu lắm và thường không phù hợp để agent di chuyển theo. Ví dụ, điểm cạnh gần nhất trên một đa giác navigation mesh có thể khiến agent đi vòng rất xa trên các đa giác lớn. Để cải thiện chất lượng đường đi mà truy vấn trả về, có nhiều tùy chọn <code class="docutils literal notranslate"><span class="pre">path_postprocessing</span></code> khác nhau.</p>
+<ul>
+<li><p>Hậu xử lý <code class="docutils literal notranslate"><span class="pre">PATH_POSTPROCESSING_CORRIDORFUNNEL</span></code> rút ngắn đường đi bằng cách &quot;phễu hóa&quot; đường đi quanh các góc <strong>bên trong hành lang đa giác có sẵn</strong>.</p>
+<p>Đây là kiểu hậu xử lý mặc định và thường cũng hữu ích nhất vì nó cho kết quả đường đi ngắn nhất <strong>bên trong hành lang đa giác có sẵn</strong>. Nếu bản thân hành lang đa giác đã không tối ưu, ví dụ do bố cục navigation mesh chưa tốt, phễu có thể bám vào những góc đa giác không mong đợi và gây ra đường vòng.</p>
+</li>
+<li><p>Hậu xử lý <code class="docutils literal notranslate"><span class="pre">PATH_POSTPROCESSING_EDGECENTERED</span></code> buộc mọi điểm đường đi được đặt ở giữa các cạnh đa giác được đi qua <strong>bên trong hành lang đa giác có sẵn</strong>.</p>
+<p>Kiểu hậu xử lý này thường chỉ hữu ích khi dùng với các đa giác navigation mesh dạng ô vuông nghiêm ngặt, có kích thước đều nhau và việc đi theo đường đi cũng bị giới hạn vào tâm các ô, ví dụ game dạng lưới điển hình với chuyển động bị giới hạn vào tâm ô lưới.</p>
+</li>
+<li><p>Hậu xử lý <code class="docutils literal notranslate"><span class="pre">PATH_POSTPROCESSING_NONE</span></code> trả về đường đi nguyên trạng theo cách việc tìm đường đã đi <strong>bên trong hành lang đa giác có sẵn</strong>.</p>
+<p>Kiểu hậu xử lý này rất hữu ích để debug vì nó cho thấy lượt tìm đường đã đi từ điểm cạnh gần nhất đến điểm cạnh gần nhất như thế nào và đã chọn những đa giác nào. Rất nhiều kết quả đường đi bất ngờ hoặc không tối ưu có thể được giải thích ngay bằng cách nhìn vào đường đi thô và hành lang đa giác này.</p>
+</li>
+</ul>
+</section>
+<section id="path-simplification">
+<h2>Đơn giản hóa đường đi<a class="headerlink" href="#path-simplification" title="Link to this heading"></a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Đơn giản hóa đường đi có thể giúp các agent dạng steering hoặc các agent bị rung lắc trên các cạnh đa giác mỏng.</p>
+</div>
+<figure class="align-center" id="id2">
+<img alt="Khác biệt điểm đường đi khi có hoặc không đơn giản hóa đường đi" src="../../_images/path_simplification_diff.webp" />
+<figcaption>
+<p><span class="caption-text">Khác biệt điểm đường đi khi có hoặc không đơn giản hóa đường đi.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Nếu bật <code class="docutils literal notranslate"><span class="pre">simplify_path</span></code>, một biến thể của thuật toán đơn giản hóa đường đi Ramer-Douglas-Peucker sẽ được áp dụng cho đường đi. Thuật toán này làm thẳng đường đi bằng cách loại bỏ các điểm ít quan trọng hơn tùy theo giá trị <code class="docutils literal notranslate"><span class="pre">simplify_epsilon</span></code> được dùng.</p>
+<p>Đơn giản hóa đường đi giúp xử lý mọi loại vấn đề chuyển động của agent ở &quot;vùng trống&quot; gây ra bởi việc có quá nhiều cạnh đa giác không cần thiết. Ví dụ, một terrain mesh khi được bake thành navigation mesh có thể tạo ra số lượng đa giác quá lớn do tất cả những biến đổi độ cao nhỏ (nhưng gần như vô nghĩa đối với việc tìm đường) của địa hình.</p>
+<p>Đơn giản hóa đường đi cũng giúp ích cho các agent dạng &quot;steering&quot; vì chúng chỉ còn những điểm góc quan trọng hơn để nhắm tới.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Đơn giản hóa đường đi là một bước hậu xử lý cuối cùng bổ sung cho đường đi. Nó làm tăng chi phí hiệu năng của truy vấn nên chỉ bật khi thực sự cần.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đơn giản hóa đường đi được cung cấp trên NavigationServer dưới dạng một hàm tổng quát. Nó cũng có thể được dùng bên ngoài các truy vấn navigation cho mọi loại mảng vị trí.</p>
+</div>
+</section>
+<section id="path-metadata">
+<h2>Metadata của đường đi<a class="headerlink" href="#path-metadata" title="Link to this heading"></a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Tắt các tùy chọn metadata đường đi không cần thiết có thể cải thiện hiệu năng và giảm mức tiêu thụ bộ nhớ.</p>
+</div>
+<p>Một path query có thể trả về metadata bổ sung cho mỗi điểm đường đi.</p>
+<ul class="simple">
+<li><p>Cờ <code class="docutils literal notranslate"><span class="pre">PATH_METADATA_INCLUDE_TYPES</span></code> thu thập một mảng chứa thông tin primitive về chủ sở hữu của các điểm, ví dụ một điểm thuộc về region hay link.</p></li>
+<li><p>Cờ <code class="docutils literal notranslate"><span class="pre">PATH_METADATA_INCLUDE_RIDS</span></code> thu thập một mảng chứa các <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">RIDs</span></a> của chủ sở hữu các điểm. Tùy theo primitive của chủ sở hữu điểm, các RID này có thể được dùng với nhiều hàm NavigationServer liên quan đến region hoặc link.</p></li>
+<li><p>Cờ <code class="docutils literal notranslate"><span class="pre">PATH_METADATA_INCLUDE_OWNERS</span></code> thu thập một mảng chứa các <code class="docutils literal notranslate"><span class="pre">ObjectIDs</span></code> của chủ sở hữu các điểm. Các object ID này có thể được dùng với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-instance-from-id" title="Class reference (English)"><span class="xref std std-ref">&#64;GlobalScope.instance_from_id()</span></a> để lấy node đứng sau instance đối tượng đó, ví dụ một node NavigationRegion hoặc NavigationLink.</p></li>
+</ul>
+<p>Theo mặc định, mọi metadata đường đi đều được thu thập vì metadata này có thể rất cần thiết cho gameplay navigation nâng cao hơn.</p>
+<ul class="simple">
+<li><p>Ví dụ: để biết điểm đường đi nào tương ứng với đối tượng hoặc node chủ sở hữu nào trong SceneTree.</p></li>
+<li><p>Ví dụ: để biết một điểm đường đi có phải là điểm đầu hoặc cuối của một navigation link cần được script tiếp quản hay không.</p></li>
+</ul>
+<p>Với những cách dùng đường đi cơ bản nhất, metadata không phải lúc nào cũng cần. Việc thu thập metadata đường đi có thể được tắt có chọn lọc để tăng hiệu năng và giảm mức tiêu thụ bộ nhớ.</p>
+</section>
+<section id="excluding-or-including-regions">
+<h2>Loại trừ hoặc bao gồm region<a class="headerlink" href="#excluding-or-including-regions" title="Link to this heading"></a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Bộ lọc region có thể giúp ích rất nhiều cho hiệu năng trên các navigation map lớn được phân chia theo region.</p>
+</div>
+<p>Các tham số truy vấn cho phép giới hạn việc tìm đường vào navigation mesh của những region cụ thể.</p>
+<p>Nếu một navigation map lớn được phân chia tốt thành các region nhỏ hơn, điều này có thể giúp ích rất nhiều cho hiệu năng vì truy vấn có thể bỏ qua một số lượng lớn đa giác ở một trong những bước kiểm tra sớm nhất của việc tìm đường.</p>
+<ul class="simple">
+<li><p>Theo mặc định và nếu để trống, mọi region của navigation map được truy vấn đều được bao gồm.</p></li>
+<li><p>Nếu một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">RID</span></a> của region được thêm vào mảng <code class="docutils literal notranslate"><span class="pre">excluded_regions</span></code>, navigation mesh của region đó sẽ bị bỏ qua khi tìm đường.</p></li>
+<li><p>Nếu một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">RID</span></a> của region được thêm vào mảng <code class="docutils literal notranslate"><span class="pre">included_regions</span></code>, navigation mesh của region đó sẽ được xét đến khi tìm đường, đồng thời mọi region khác không được bao gồm cũng sẽ bị bỏ qua.</p></li>
+<li><p>Nếu một region vừa được bao gồm vừa bị loại trừ, nó được coi là bị loại trừ.</p></li>
+</ul>
+<p>Bộ lọc region rất hiệu quả về hiệu năng khi kết hợp với các chunk navigation region được căn theo lưới. Bằng cách này, bộ lọc có thể được đặt để chỉ bao gồm chunk chứa vị trí bắt đầu và các chunk xung quanh thay vì toàn bộ navigation map.</p>
+<p>Ngay cả khi đích có thể nằm ngoài các chunk xung quanh này (luôn có thể thêm nhiều &quot;vòng&quot; hơn), việc tìm đường sẽ cố tạo một đường đi đến đa giác gần đích nhất. Điều này thường tạo ra các nửa đường đi hướng về phía chung đủ tốt, tất cả chỉ với một phần nhỏ chi phí hiệu năng so với việc tìm kiếm trên toàn bộ map.</p>
+<p>Phần bổ sung sau cho script path query cơ bản minh họa ý tưởng cách tích hợp việc ánh xạ chunk region với các bộ lọc region. Đây không phải là một ví dụ hoạt động đầy đủ.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-MkQgR0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tab" tabindex="0">2D GDScript</button><button aria-controls="panel-1-M0QgR0RTY3JpcHQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tab" tabindex="-1">3D GDScript</button></div><div aria-labelledby="tab-1-MkQgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-MkQgR0RTY3JpcHQ=" name="MkQgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="c1"># ...</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">chunk_id_to_region_rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">Vector2i</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">query_path</span><span class="p">(</span><span class="n">p_start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p_target_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">,</span><span class="w"> </span><span class="n">p_navigation_layers</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="p">:</span>
+
+<span class="w">    </span><span class="c1"># ...</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">regions_around_start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">RID</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1"># Increase for very small regions or more quality.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">start_chunk_id</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">floor</span><span class="p">(</span><span class="n">p_start_position</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">))</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">,</span><span class="w"> </span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">):</span>
+<span class="w">        </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">,</span><span class="w"> </span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">):</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">chunk_id</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">chunk_id_to_region_rid</span><span class="o">.</span><span class="nf">has</span><span class="p">(</span><span class="n">chunk_id</span><span class="p">):</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">region</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chunk_id_to_region_rid</span><span class="p">[</span><span class="n">chunk_id</span><span class="p">]</span>
+<span class="w">                </span><span class="n">regions_around_start_position</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">included_regions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">regions_around_start_position</span>
+
+<span class="w">    </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-M0QgR0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-M0QgR0RTY3JpcHQ=" name="M0QgR0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+<span class="c1"># ...</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">chunk_id_to_region_rid</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">Vector3i</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">query_path</span><span class="p">(</span><span class="n">p_start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">,</span><span class="w"> </span><span class="n">p_target_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">,</span><span class="w"> </span><span class="n">p_navigation_layers</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">:</span>
+
+<span class="w">    </span><span class="c1"># ...</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">regions_around_start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">RID</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1"># Increase for very small regions or more quality.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">start_chunk_id</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">floor</span><span class="p">(</span><span class="n">p_start_position</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">))</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c1"># Assume a planar navigation map for simplicity.</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">z</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">,</span><span class="w"> </span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">):</span>
+<span class="w">        </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">,</span><span class="w"> </span><span class="n">start_chunk_id</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">chunk_rings</span><span class="p">):</span>
+<span class="w">            </span><span class="k">var</span><span class="w"> </span><span class="n">chunk_id</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3i</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">chunk_id_to_region_rid</span><span class="o">.</span><span class="nf">has</span><span class="p">(</span><span class="n">chunk_id</span><span class="p">):</span>
+<span class="w">                </span><span class="k">var</span><span class="w"> </span><span class="n">region</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chunk_id_to_region_rid</span><span class="p">[</span><span class="n">chunk_id</span><span class="p">]</span>
+<span class="w">                </span><span class="n">regions_around_start_position</span><span class="o">.</span><span class="nf">push_back</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">query_parameters</span><span class="o">.</span><span class="vi">included_regions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">regions_around_start_position</span>
+
+<span class="w">    </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="path-clipping-and-limits">
+<h2>Cắt ngắn đường đi và giới hạn<a class="headerlink" href="#path-clipping-and-limits" title="Link to this heading"></a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Các giới hạn được đặt hợp lý có thể giúp ích rất nhiều cho hiệu năng trên các navigation map lớn, đặc biệt khi đích hóa ra không thể đến được.</p>
+</div>
+<figure class="align-center" id="id3">
+<img alt="Cắt ngắn đường đi trả về theo các khoảng cách cụ thể" src="../../_images/path_clip_and_limits.gif" />
+<figcaption>
+<p><span class="caption-text">Cắt ngắn đường đi trả về theo các khoảng cách cụ thể.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Các tham số truy vấn cho phép cắt ngắn đường đi trả về theo các độ dài cụ thể. Các tùy chọn này cắt đường đi như một phần của bước hậu xử lý. Đường đi vẫn được tìm kiếm như với độ dài đầy đủ nên sẽ có cùng chất lượng. Cắt ngắn độ dài đường đi có thể hữu ích để tạo các đường đi phù hợp hơn với gameplay có giới hạn, ví dụ các game chiến thuật với phạm vi di chuyển hạn chế.</p>
+<ul class="simple">
+<li><p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">path_return_max_length</span></code> có thể được dùng để cắt ngắn đường đi trả về theo một độ dài tối đa cụ thể.</p></li>
+<li><p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">path_return_max_radius</span></code> có thể được dùng để cắt ngắn đường đi trả về trong phạm vi bán kính hình tròn (2D) hoặc hình cầu (3D) quanh vị trí bắt đầu.</p></li>
+</ul>
+<p>Các tham số truy vấn cho phép giới hạn việc tìm đường chỉ tìm đến một khoảng cách cụ thể hoặc một số lượng đa giác được tìm kiếm cụ thể. Các tùy chọn này phục vụ hiệu năng và ảnh hưởng trực tiếp đến việc tìm đường.</p>
+<ul class="simple">
+<li><p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">path_search_max_distance</span></code> có thể được dùng để dừng việc tìm đường khi vượt quá khoảng cách này tính từ vị trí bắt đầu.</p></li>
+<li><p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">path_search_max_polygons</span></code> có thể được dùng để dừng việc tìm đường khi vượt quá số lượng đa giác được tìm kiếm này.</p></li>
+</ul>
+<p>Khi việc tìm đường bị dừng do chạm giới hạn, đường đi được đặt lại và tạo một đường đi từ đa giác chứa vị trí bắt đầu đến đa giác gần vị trí đích nhất tìm được cho đến lúc đó.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Mặc dù tốt cho hiệu năng, nếu các giá trị giới hạn tìm đường được đặt quá thấp, chúng có thể ảnh hưởng rất tiêu cực đến chất lượng đường đi. Tùy theo bố cục đa giác và kiểu tìm kiếm, đường đi trả về có thể đi theo những hướng hoàn toàn sai thay vì hướng về phía đích.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="navigation_using_navigationpaths.html" class="btn btn-neutral float-left" title="Sử dụng NavigationPath" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="navigation_using_navigationagents.html" class="btn btn-neutral float-right" title="Sử dụng NavigationAgent" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

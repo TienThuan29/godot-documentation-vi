@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Kiểu tĩnh trong GDScript" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/gdscript/static_typing.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong bài hướng dẫn này, bạn sẽ học: cách dùng kiểu tĩnh trong GDScript;, rằng kiểu tĩnh có thể giúp bạn tránh lỗi;, rằng kiểu tĩnh cải thiện trải nghiệm của bạn với trình chỉnh sửa.. Việc dùng tín..." />
+<meta name="description" content="Trong bài hướng dẫn này, bạn sẽ học: cách dùng kiểu tĩnh trong GDScript;, rằng kiểu tĩnh có thể giúp bạn tránh lỗi;, rằng kiểu tĩnh cải thiện trải nghiệm của bạn với trình chỉnh sửa.. Việc dùng tín..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Kiểu tĩnh trong GDScript &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Hệ thống cảnh báo của GDScript" href="warning_system.html" />
+    <link rel="prev" title="Hướng dẫn phong cách GDScript" href="gdscript_styleguide.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/gdscript/static_typing" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">GDScript</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="gdscript_basics.html">Tham chiếu GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_advanced.html">GDScript: Giới thiệu về ngôn ngữ động</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_exports.html">Thuộc tính export trong GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_documentation_comments.html">Comment tài liệu trong GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_styleguide.html">Hướng dẫn phong cách GDScript</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Kiểu tĩnh trong GDScript</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-brief-look-at-static-typing">Sơ lược về kiểu tĩnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-use-static-typing">Cách dùng kiểu tĩnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#typed-or-dynamic-stick-to-one-style">Có kiểu hay động: hãy giữ một phong cách</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#warning-system">Hệ thống cảnh báo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-unsafe-operations-and-their-safe-counterparts">Các thao tác không an toàn thường gặp và cách làm an toàn tương ứng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cases-where-you-can-t-specify-types">Các trường hợp không thể chỉ định kiểu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Tóm tắt</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="warning_system.html">Hệ thống cảnh báo của GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gdscript_format_string.html">Chuỗi định dạng trong GDScript</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/index.html">C++ (godot-cpp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#core-features">Tính năng cốt lõi</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Lập trình script</a></li>
+          <li class="breadcrumb-item"><a href="index.html">GDScript</a></li>
+      <li class="breadcrumb-item active">Kiểu tĩnh trong GDScript</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="static-typing-in-gdscript">
+<span id="doc-gdscript-static-typing"></span><h1>Kiểu tĩnh trong GDScript<a class="headerlink" href="#static-typing-in-gdscript" title="Link to this heading"></a></h1>
+<p>Trong bài hướng dẫn này, bạn sẽ học:</p>
+<ul class="simple">
+<li><p>cách dùng kiểu tĩnh trong GDScript;</p></li>
+<li><p>rằng kiểu tĩnh có thể giúp bạn tránh lỗi;</p></li>
+<li><p>rằng kiểu tĩnh cải thiện trải nghiệm của bạn với trình chỉnh sửa.</p></li>
+</ul>
+<p>Việc dùng tính năng ngôn ngữ này ở đâu và như thế nào hoàn toàn tùy thuộc vào bạn: bạn có thể chỉ dùng nó trong một số file GDScript quan trọng, dùng ở mọi nơi, hoặc hoàn toàn không dùng.</p>
+<p>Kiểu tĩnh có thể được dùng cho biến, hằng số, hàm, tham số và kiểu trả về.</p>
+<section id="a-brief-look-at-static-typing">
+<h2>Sơ lược về kiểu tĩnh<a class="headerlink" href="#a-brief-look-at-static-typing" title="Link to this heading"></a></h2>
+<p>Với kiểu tĩnh, GDScript có thể phát hiện nhiều lỗi hơn mà thậm chí không cần chạy mã. Ngoài ra, type hint cung cấp thêm thông tin cho bạn và đồng đội trong khi làm việc, vì kiểu của các đối số sẽ hiện ra khi bạn gọi một phương thức. Kiểu tĩnh cải thiện tính năng tự động hoàn thành của trình chỉnh sửa và <a class="reference internal" href="gdscript_documentation_comments.html#doc-gdscript-documentation-comments"><span class="std std-ref">tài liệu</span></a> của script.</p>
+<p>Giả sử bạn đang lập trình một hệ thống túi đồ. Bạn viết một lớp <code class="docutils literal notranslate"><span class="pre">Item</span></code>, rồi một lớp <code class="docutils literal notranslate"><span class="pre">Inventory</span></code>. Để thêm vật phẩm vào túi đồ, những người làm việc với mã của bạn phải luôn truyền một <code class="docutils literal notranslate"><span class="pre">Item</span></code> vào phương thức <code class="docutils literal notranslate"><span class="pre">Inventory.add()</span></code>. Với kiểu, bạn có thể bắt buộc điều này:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="nc">Inventory</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">add</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span><span class="w"> </span><span class="nc">Item</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nf">find_item</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">item</span><span class="p">:</span>
+<span class="w">        </span><span class="n">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">_instance_item_from_db</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+<span class="w">    </span><span class="n">item</span><span class="o">.</span><span class="vi">amount</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">amount</span>
+</pre></div>
+</div>
+<p>Kiểu tĩnh cũng mang lại các gợi ý hoàn thành mã tốt hơn. Bên dưới, bạn có thể thấy sự khác biệt giữa các gợi ý hoàn thành với mã kiểu động và mã kiểu tĩnh.</p>
+<p>Có lẽ bạn đã từng gặp tình trạng không có gợi ý tự động hoàn thành sau dấu chấm:</p>
+<figure class="align-default">
+<img alt="Gợi ý hoàn thành cho mã kiểu động." src="../../../_images/typed_gdscript_code_completion_dynamic.webp" />
+</figure>
+<p>Điều này là do mã động. Godot không thể biết bạn đang truyền giá trị kiểu gì vào hàm. Tuy nhiên, nếu bạn viết kiểu một cách tường minh, bạn sẽ nhận được tất cả phương thức, thuộc tính, hằng số, v.v. của giá trị đó:</p>
+<figure class="align-default">
+<img alt="Gợi ý hoàn thành cho mã kiểu tĩnh." src="../../../_images/typed_gdscript_code_completion_typed.webp" />
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn thích kiểu tĩnh, chúng tôi khuyên bạn bật cài đặt trình chỉnh sửa <strong>Text Editor &gt; Completion &gt; Add Type Hints</strong>. Bạn cũng nên cân nhắc bật <a class="reference internal" href="#warning-system">một số cảnh báo</a> bị tắt theo mặc định.</p>
+</div>
+<p>Ngoài ra, GDScript có kiểu cải thiện hiệu năng nhờ dùng các opcode được tối ưu khi kiểu của toán hạng/đối số được biết tại thời điểm biên dịch. Nhiều tối ưu GDScript khác đã được lên kế hoạch trong tương lai, chẳng hạn như biên dịch JIT/AOT.</p>
+<p>Nhìn chung, lập trình có kiểu mang lại trải nghiệm có cấu trúc hơn. Nó giúp ngăn lỗi và cải thiện khả năng tự mô tả của script. Điều này đặc biệt hữu ích khi bạn làm việc theo nhóm hoặc trong một dự án dài hạn: các nghiên cứu cho thấy lập trình viên dành phần lớn thời gian để đọc mã của người khác, hoặc các script họ đã viết trước đây và đã quên. Mã càng rõ ràng và có cấu trúc thì càng nhanh hiểu, và bạn càng tiến nhanh hơn.</p>
+</section>
+<section id="how-to-use-static-typing">
+<h2>Cách dùng kiểu tĩnh<a class="headerlink" href="#how-to-use-static-typing" title="Link to this heading"></a></h2>
+<p>Để định nghĩa kiểu của một biến, tham số hoặc hằng số, hãy viết dấu hai chấm sau tên, tiếp theo là kiểu của nó. Ví dụ <code class="docutils literal notranslate"><span class="pre">var</span> <span class="pre">health:</span> <span class="pre">int</span></code>. Điều này buộc kiểu của biến luôn giữ nguyên:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">damage</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.5</span>
+<span class="k">const</span><span class="w"> </span><span class="n">MOVE_SPEED</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">50.0</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+</pre></div>
+</div>
+<p>Godot sẽ cố suy luận kiểu nếu bạn viết dấu hai chấm nhưng bỏ qua kiểu:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">damage</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mf">10.5</span>
+<span class="k">const</span><span class="w"> </span><span class="n">MOVE_SPEED</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mf">50.0</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">sum</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<ol class="arabic simple">
+<li><p>Với hằng số, không có sự khác biệt giữa <code class="docutils literal notranslate"><span class="pre">=</span></code> và <code class="docutils literal notranslate"><span class="pre">:=</span></code>.</p></li>
+<li><p>Bạn không cần viết type hint cho hằng số, vì Godot tự động đặt kiểu từ giá trị được gán. Nhưng bạn vẫn có thể làm vậy để ý định của mã rõ ràng hơn. Ngoài ra, điều này hữu ích với mảng có kiểu (như <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">A:</span> <span class="pre">Array[int]</span> <span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code>), vì mặc định mảng không có kiểu sẽ được dùng.</p></li>
+</ol>
+</div>
+<section id="what-can-be-a-type-hint">
+<h3>Những gì có thể làm type hint<a class="headerlink" href="#what-can-be-a-type-hint" title="Link to this heading"></a></h3>
+<p>Dưới đây là danh sách đầy đủ những gì có thể dùng làm type hint:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Variant</span></code>. Bất kỳ kiểu nào. Trong hầu hết trường hợp, điều này không khác mấy so với khai báo không có kiểu, nhưng giúp dễ đọc hơn. Khi làm kiểu trả về, nó buộc hàm phải trả về một giá trị một cách tường minh.</p></li>
+<li><p><em>(Chỉ kiểu trả về)</em> <code class="docutils literal notranslate"><span class="pre">void</span></code>. Cho biết hàm không trả về giá trị nào.</p></li>
+<li><p><a class="reference internal" href="gdscript_basics.html#doc-gdscript-builtin-types"><span class="std std-ref">Các kiểu có sẵn</span></a>.</p></li>
+<li><p>Các lớp native (<code class="docutils literal notranslate"><span class="pre">Object</span></code>, <code class="docutils literal notranslate"><span class="pre">Node</span></code>, <code class="docutils literal notranslate"><span class="pre">Area2D</span></code>, <code class="docutils literal notranslate"><span class="pre">Camera2D</span></code>, v.v.).</p></li>
+<li><p><a class="reference internal" href="gdscript_basics.html#doc-gdscript-basics-class-name"><span class="std std-ref">Lớp toàn cục</span></a>.</p></li>
+<li><p><a class="reference internal" href="gdscript_basics.html#doc-gdscript-basics-inner-classes"><span class="std std-ref">Lớp bên trong</span></a>.</p></li>
+<li><p>Các enum toàn cục, native và enum có tên tùy chỉnh. Lưu ý rằng kiểu enum chỉ là một <code class="docutils literal notranslate"><span class="pre">int</span></code>, không có gì đảm bảo giá trị thuộc tập giá trị của enum.</p></li>
+<li><p>Hằng số (kể cả hằng số cục bộ) nếu chúng chứa một lớp hoặc enum được preload.</p></li>
+</ol>
+<p>Bạn có thể dùng bất kỳ lớp nào, kể cả các lớp tùy chỉnh của bạn, làm kiểu. Có hai cách để dùng chúng trong script. Cách thứ nhất là preload script bạn muốn dùng làm kiểu vào một hằng số:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="nc">Rifle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">preload</span><span class="p">(</span><span class="s2">&quot;res://player/weapons/rifle.gd&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">my_rifle</span><span class="p">:</span><span class="w"> </span><span class="nc">Rifle</span>
+</pre></div>
+</div>
+<p>Cách thứ hai là dùng từ khóa <code class="docutils literal notranslate"><span class="pre">class_name</span></code> khi tạo script. Với ví dụ trên, file <code class="docutils literal notranslate"><span class="pre">rifle.gd</span></code> của bạn sẽ trông như sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="nc">Rifle</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+</pre></div>
+</div>
+<p>Nếu bạn dùng <code class="docutils literal notranslate"><span class="pre">class_name</span></code>, Godot sẽ đăng ký kiểu <code class="docutils literal notranslate"><span class="pre">Rifle</span></code> toàn cục trong trình chỉnh sửa, và bạn có thể dùng nó ở bất cứ đâu mà không cần preload vào một hằng số:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">my_rifle</span><span class="p">:</span><span class="w"> </span><span class="nc">Rifle</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-the-return-type-of-a-function-with-the-arrow">
+<h3>Chỉ định kiểu trả về của hàm bằng mũi tên <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code><a class="headerlink" href="#specify-the-return-type-of-a-function-with-the-arrow" title="Link to this heading"></a></h3>
+<p>Để định nghĩa kiểu trả về của một hàm, hãy viết dấu gạch ngang và dấu ngoặc nhọn phải <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> sau phần khai báo, tiếp theo là kiểu trả về:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+<p>Kiểu <code class="docutils literal notranslate"><span class="pre">void</span></code> nghĩa là hàm không trả về gì. Bạn có thể dùng bất kỳ kiểu nào, giống như với biến:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">hit</span><span class="p">(</span><span class="n">damage</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="n">health_points</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">damage</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">health_points</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Bạn cũng có thể dùng các lớp của riêng mình làm kiểu trả về:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adds an item to the inventory and returns it.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">add</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span><span class="w"> </span><span class="nc">Item</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">Item</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">item</span><span class="p">:</span><span class="w"> </span><span class="nc">Item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">find_item</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">item</span><span class="p">:</span>
+<span class="w">        </span><span class="n">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">ItemDatabase</span><span class="o">.</span><span class="nf">get_instance</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">item</span><span class="o">.</span><span class="vi">amount</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">amount</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">item</span>
+</pre></div>
+</div>
+</section>
+<section id="covariance-and-contravariance">
+<h3>Hiệp biến và nghịch biến<a class="headerlink" href="#covariance-and-contravariance" title="Link to this heading"></a></h3>
+<p>Khi kế thừa các phương thức của lớp cơ sở, bạn nên tuân theo <a class="reference external" href="https://en.wikipedia.org/wiki/Liskov_substitution_principle">nguyên lý thay thế Liskov</a>.</p>
+<p><strong>Hiệp biến (covariance):</strong> Khi kế thừa một phương thức, bạn có thể chỉ định kiểu trả về cụ thể hơn (<strong>kiểu con</strong>) so với phương thức cha.</p>
+<p><strong>Nghịch biến (contravariance):</strong> Khi kế thừa một phương thức, bạn có thể chỉ định kiểu tham số ít cụ thể hơn (<strong>kiểu cha</strong>) so với phương thức cha.</p>
+<p>Ví dụ:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="nc">Parent</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_property</span><span class="p">(</span><span class="n">param</span><span class="p">:</span><span class="w"> </span><span class="nb">Label</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb">Node</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="nc">Child</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nc">Parent</span>
+
+
+<span class="c1"># `Control` is a supertype of `Label`.</span>
+<span class="c1"># `Node2D` is a subtype of `Node`.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">get_property</span><span class="p">(</span><span class="n">param</span><span class="p">:</span><span class="w"> </span><span class="nb">Control</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb">Node2D</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="specify-the-element-type-of-an-array">
+<h3>Chỉ định kiểu phần tử của <code class="docutils literal notranslate"><span class="pre">Array</span></code><a class="headerlink" href="#specify-the-element-type-of-an-array" title="Link to this heading"></a></h3>
+<p>Để định nghĩa kiểu của một <code class="docutils literal notranslate"><span class="pre">Array</span></code>, đặt tên kiểu trong <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+<p>Kiểu của mảng áp dụng cho biến vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code>, cũng như một số toán tử như <code class="docutils literal notranslate"><span class="pre">[]</span></code>, <code class="docutils literal notranslate"><span class="pre">[...]</span> <span class="pre">=</span></code> (phép gán) và <code class="docutils literal notranslate"><span class="pre">+</span></code>. Các phương thức của mảng (như <code class="docutils literal notranslate"><span class="pre">push_back</span></code>) và các toán tử khác (như <code class="docutils literal notranslate"><span class="pre">==</span></code>) vẫn không có kiểu. Các kiểu có sẵn, lớp native và lớp tùy chỉnh, cùng enum đều có thể dùng làm kiểu phần tử. Kiểu mảng lồng nhau (như <code class="docutils literal notranslate"><span class="pre">Array[Array[int]]</span></code>) không được hỗ trợ.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">scores</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">int</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">]</span>
+<span class="k">var</span><span class="w"> </span><span class="n">vehicles</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb">Node</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sx">$Car</span><span class="p">,</span><span class="w"> </span><span class="sx">$Plane</span><span class="p">]</span>
+<span class="k">var</span><span class="w"> </span><span class="n">items</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nc">Item</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nc">Item</span><span class="o">.</span><span class="nf">new</span><span class="p">()]</span>
+<span class="k">var</span><span class="w"> </span><span class="n">array_of_arrays</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">Array</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[[],</span><span class="w"> </span><span class="p">[]]</span>
+<span class="c1"># var arrays: Array[Array[int]] -- disallowed</span>
+
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">scores</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># score has type `int`</span>
+
+<span class="c1"># The following would be errors:</span>
+<span class="n">scores</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">vehicles</span>
+<span class="k">var</span><span class="w"> </span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;lots&quot;</span>
+</pre></div>
+</div>
+<p>Từ Godot 4.2, bạn cũng có thể chỉ định kiểu cho biến vòng lặp trong vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code>. Ví dụ, bạn có thể viết:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Marta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Samantha&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Jimmy&quot;</span><span class="p">]</span>
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">names</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+<p>Mảng vẫn sẽ không có kiểu, nhưng biến <code class="docutils literal notranslate"><span class="pre">name</span></code> trong vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code> sẽ luôn có kiểu <code class="docutils literal notranslate"><span class="pre">String</span></code>.</p>
+</section>
+<section id="specify-the-element-type-of-a-dictionary">
+<h3>Chỉ định kiểu phần tử của <code class="docutils literal notranslate"><span class="pre">Dictionary</span></code><a class="headerlink" href="#specify-the-element-type-of-a-dictionary" title="Link to this heading"></a></h3>
+<p>Để định nghĩa kiểu khóa và giá trị của một <code class="docutils literal notranslate"><span class="pre">Dictionary</span></code>, đặt tên kiểu trong <code class="docutils literal notranslate"><span class="pre">[]</span></code> và tách kiểu khóa với kiểu giá trị bằng dấu phẩy.</p>
+<p>Kiểu giá trị của dictionary áp dụng cho biến vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code>, cũng như một số toán tử như <code class="docutils literal notranslate"><span class="pre">[]</span></code> và <code class="docutils literal notranslate"><span class="pre">[...]</span> <span class="pre">=</span></code> (phép gán). Các phương thức của dictionary trả về giá trị và các toán tử khác (như <code class="docutils literal notranslate"><span class="pre">==</span></code>) vẫn không có kiểu. Các kiểu có sẵn, lớp native và lớp tùy chỉnh, cùng enum đều có thể dùng làm kiểu phần tử. Các collection có kiểu lồng nhau (như <code class="docutils literal notranslate"><span class="pre">Dictionary[String,</span> <span class="pre">Dictionary[String,</span> <span class="pre">int]]</span></code>) không được hỗ trợ.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">fruit_costs</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">String</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;apple&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;orange&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">}</span>
+<span class="k">var</span><span class="w"> </span><span class="n">vehicles</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">String</span><span class="p">,</span><span class="w"> </span><span class="nb">Node</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;car&quot;</span><span class="p">:</span><span class="w"> </span><span class="sx">$Car</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;plane&quot;</span><span class="p">:</span><span class="w"> </span><span class="sx">$Plane</span><span class="w"> </span><span class="p">}</span>
+<span class="k">var</span><span class="w"> </span><span class="n">item_tiles</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">Vector2i</span><span class="p">,</span><span class="w"> </span><span class="nc">Item</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">):</span><span class="w"> </span><span class="nc">Item</span><span class="o">.</span><span class="nf">new</span><span class="p">(),</span><span class="w"> </span><span class="nb nb-Type">Vector2i</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">):</span><span class="w"> </span><span class="nc">Item</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+<span class="k">var</span><span class="w"> </span><span class="n">dictionary_of_dictionaries</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">[</span><span class="nb nb-Type">String</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="c1"># var dicts: Dictionary[String, Dictionary[String, int]] -- disallowed</span>
+
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">fruit</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">fruit_costs</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># `fruit` has type `String`</span>
+
+<span class="c1"># The following would be errors:</span>
+<span class="n">fruit_costs</span><span class="p">[</span><span class="s2">&quot;pear&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">vehicles</span>
+<span class="k">var</span><span class="w"> </span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fruit_costs</span><span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">]</span>
+<span class="n">fruit_costs</span><span class="p">[</span><span class="s2">&quot;orange&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;lots&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="type-casting">
+<h3>Ép kiểu<a class="headerlink" href="#type-casting" title="Link to this heading"></a></h3>
+<p>Ép kiểu là một khái niệm quan trọng trong các ngôn ngữ có kiểu. Ép kiểu là việc chuyển đổi một giá trị từ kiểu này sang kiểu khác.</p>
+<p>Giả sử trong game của bạn có một <code class="docutils literal notranslate"><span class="pre">Enemy</span></code> <code class="docutils literal notranslate"><span class="pre">extends</span> <span class="pre">Area2D</span></code>. Bạn muốn nó va chạm với <code class="docutils literal notranslate"><span class="pre">Player</span></code>, một <code class="docutils literal notranslate"><span class="pre">CharacterBody2D</span></code> có gắn script tên <code class="docutils literal notranslate"><span class="pre">PlayerController</span></code>. Bạn dùng signal <code class="docutils literal notranslate"><span class="pre">body_entered</span></code> để phát hiện va chạm. Với mã có kiểu, body mà bạn phát hiện được trong callback <code class="docutils literal notranslate"><span class="pre">_on_body_entered</span></code> sẽ là một <code class="docutils literal notranslate"><span class="pre">PhysicsBody2D</span></code> chung chung, không phải <code class="docutils literal notranslate"><span class="pre">PlayerController</span></code> của bạn.</p>
+<p>Bạn có thể kiểm tra xem <code class="docutils literal notranslate"><span class="pre">PhysicsBody2D</span></code> này có phải là <code class="docutils literal notranslate"><span class="pre">Player</span></code> của bạn hay không bằng từ khóa <code class="docutils literal notranslate"><span class="pre">as</span></code>, và dùng lại dấu hai chấm <code class="docutils literal notranslate"><span class="pre">:</span></code> để buộc biến dùng kiểu này. Điều này buộc biến giữ kiểu <code class="docutils literal notranslate"><span class="pre">PlayerController</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">:</span><span class="w"> </span><span class="nb">PhysicsBody2D</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">player</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="ow">as</span><span class="w"> </span><span class="nc">PlayerController</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">player</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span>
+
+<span class="w">    </span><span class="n">player</span><span class="o">.</span><span class="nf">damage</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Vì ta đang làm việc với một kiểu tùy chỉnh, nếu <code class="docutils literal notranslate"><span class="pre">body</span></code> không kế thừa <code class="docutils literal notranslate"><span class="pre">PlayerController</span></code>, biến <code class="docutils literal notranslate"><span class="pre">player</span></code> sẽ được đặt thành <code class="docutils literal notranslate"><span class="pre">null</span></code>. Ta có thể dùng điều này để kiểm tra body có phải là người chơi hay không. Nhờ phép ép kiểu đó, ta cũng sẽ có tự động hoàn thành đầy đủ cho biến player.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Từ khóa <code class="docutils literal notranslate"><span class="pre">as</span></code> âm thầm ép biến thành <code class="docutils literal notranslate"><span class="pre">null</span></code> khi kiểu không khớp lúc chạy, mà không có lỗi/cảnh báo nào. Dù điều này có thể tiện lợi trong một số trường hợp, nó cũng có thể gây ra lỗi. Chỉ dùng từ khóa <code class="docutils literal notranslate"><span class="pre">as</span></code> nếu bạn chủ ý muốn hành vi này. Một lựa chọn an toàn hơn là dùng từ khóa <code class="docutils literal notranslate"><span class="pre">is</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="n">body</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="nc">PlayerController</span><span class="p">):</span>
+<span class="w">    </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Bug: body is not PlayerController.&quot;</span><span class="p">)</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">player</span><span class="p">:</span><span class="w"> </span><span class="nc">PlayerController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">body</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">player</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span>
+
+<span class="n">player</span><span class="o">.</span><span class="nf">damage</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Bạn cũng có thể đơn giản hóa mã bằng toán tử <code class="docutils literal notranslate"><span class="pre">is</span> <span class="pre">not</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nc">PlayerController</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Bug: body is not PlayerController&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ngoài ra, bạn có thể dùng câu lệnh <code class="docutils literal notranslate"><span class="pre">assert()</span></code>:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nb nb-Function">assert</span><span class="p">(</span><span class="n">body</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="nc">PlayerController</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Bug: body is not PlayerController.&quot;</span><span class="p">)</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">player</span><span class="p">:</span><span class="w"> </span><span class="nc">PlayerController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">body</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">player</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span>
+
+<span class="n">player</span><span class="o">.</span><span class="nf">damage</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn ép sang một kiểu có sẵn và thất bại, Godot sẽ báo lỗi.</p>
+</div>
+<section id="safe-lines">
+<span id="doc-gdscript-static-typing-safe-lines"></span><h4>Dòng an toàn<a class="headerlink" href="#safe-lines" title="Link to this heading"></a></h4>
+<p>Bạn cũng có thể dùng ép kiểu để đảm bảo dòng an toàn. Dòng an toàn (safe line) là công cụ cho bạn biết khi nào các dòng mã mơ hồ là an toàn về kiểu. Vì bạn có thể trộn lẫn mã có kiểu và mã động, đôi khi Godot không có đủ thông tin để biết một lệnh có gây lỗi lúc chạy hay không.</p>
+<p>Điều này xảy ra khi bạn lấy một node con. Lấy timer làm ví dụ: với mã động, bạn có thể lấy node bằng <code class="docutils literal notranslate"><span class="pre">$Timer</span></code>. GDScript hỗ trợ <a class="reference external" href="https://stackoverflow.com/a/4205163/8125343">duck-typing</a>, vì vậy dù timer của bạn có kiểu <code class="docutils literal notranslate"><span class="pre">Timer</span></code>, nó cũng là một <code class="docutils literal notranslate"><span class="pre">Node</span></code> và một <code class="docutils literal notranslate"><span class="pre">Object</span></code>, hai lớp mà nó kế thừa. Với GDScript động, bạn cũng không cần quan tâm đến kiểu của node, miễn là nó có các phương thức bạn cần gọi.</p>
+<p>Bạn có thể dùng ép kiểu để cho Godot biết kiểu bạn mong đợi khi lấy một node: <code class="docutils literal notranslate"><span class="pre">($Timer</span> <span class="pre">as</span> <span class="pre">Timer)</span></code>, <code class="docutils literal notranslate"><span class="pre">($Player</span> <span class="pre">as</span> <span class="pre">CharacterBody2D)</span></code>, v.v. Godot sẽ kiểm tra kiểu có hợp lệ không, và nếu có, số dòng sẽ chuyển sang màu xanh lá ở bên trái trình soạn thảo script.</p>
+<figure class="align-default" id="id1">
+<img alt="Dòng không an toàn và dòng an toàn" src="../../../_images/typed_gdscript_safe_unsafe_line.webp" />
+<figcaption>
+<p><span class="caption-text">Dòng không an toàn (dòng 7) so với dòng an toàn (dòng 6 và 8)</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dòng an toàn không phải lúc nào cũng có nghĩa là mã tốt hơn hay đáng tin cậy hơn. Xem ghi chú ở trên về từ khóa <code class="docutils literal notranslate"><span class="pre">as</span></code>. Ví dụ:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@onready</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">node_1</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="sx">$Node1</span><span class="w"> </span><span class="ow">as</span><span class="w"> </span><span class="nc">Type1</span><span class="w"> </span><span class="c1"># Safe line.</span>
+<span class="nd">@onready</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">node_2</span><span class="p">:</span><span class="w"> </span><span class="nc">Type2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Node2</span><span class="w"> </span><span class="c1"># Unsafe line.</span>
+</pre></div>
+</div>
+<p>Mặc dù khai báo <code class="docutils literal notranslate"><span class="pre">node_2</span></code> bị đánh dấu là dòng không an toàn, nó vẫn đáng tin cậy hơn khai báo <code class="docutils literal notranslate"><span class="pre">node_1</span></code>. Bởi vì nếu bạn đổi kiểu node trong scene và vô tình quên đổi nó trong script, lỗi sẽ được phát hiện ngay khi scene được nạp. Khác với <code class="docutils literal notranslate"><span class="pre">node_1</span></code>, vốn sẽ âm thầm bị ép thành <code class="docutils literal notranslate"><span class="pre">null</span></code> và lỗi chỉ được phát hiện sau đó.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể tắt dòng an toàn hoặc đổi màu của chúng trong cài đặt trình chỉnh sửa.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="typed-or-dynamic-stick-to-one-style">
+<h2>Có kiểu hay động: hãy giữ một phong cách<a class="headerlink" href="#typed-or-dynamic-stick-to-one-style" title="Link to this heading"></a></h2>
+<p>GDScript có kiểu và GDScript động có thể cùng tồn tại trong một dự án. Nhưng bạn nên giữ một trong hai phong cách để codebase nhất quán và thuận tiện cho đồng nghiệp. Mọi người sẽ dễ làm việc cùng nhau hơn nếu tuân theo cùng nguyên tắc, và đọc hiểu mã của người khác nhanh hơn.</p>
+<p>Mã có kiểu cần viết nhiều hơn một chút, nhưng bạn sẽ có được những lợi ích đã nói ở trên. Dưới đây là ví dụ về cùng một script rỗng, theo phong cách động:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+<p>Và với kiểu tĩnh:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+<p>Như bạn thấy, bạn cũng có thể dùng kiểu với các phương thức ảo của engine. Các callback của signal, giống như mọi phương thức khác, cũng có thể dùng kiểu. Đây là signal <code class="docutils literal notranslate"><span class="pre">body_entered</span></code> theo phong cách động:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_area_2d_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+<p>Và cùng callback đó, có type hint:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_area_2d_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">:</span><span class="w"> </span><span class="nb">PhysicsBody2D</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="warning-system">
+<h2>Hệ thống cảnh báo<a class="headerlink" href="#warning-system" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tài liệu chi tiết về hệ thống cảnh báo GDScript đã được chuyển sang <a class="reference internal" href="warning_system.html#doc-gdscript-warning-system"><span class="std std-ref">Hệ thống cảnh báo của GDScript</span></a>.</p>
+</div>
+<p>Godot đưa ra cảnh báo về mã của bạn ngay khi bạn viết. Engine xác định các phần mã có thể gây vấn đề lúc chạy, nhưng để bạn quyết định có giữ nguyên mã hay không.</p>
+<p>Chúng tôi có một số cảnh báo dành riêng cho người dùng GDScript có kiểu. Theo mặc định, các cảnh báo này bị tắt, bạn có thể bật chúng trong Project Settings (<strong>Debug &gt; GDScript</strong>, hãy đảm bảo đã bật <strong>Advanced Settings</strong>).</p>
+<p>Bạn có thể bật cảnh báo <code class="docutils literal notranslate"><span class="pre">UNTYPED_DECLARATION</span></code> nếu muốn luôn dùng kiểu tĩnh. Ngoài ra, bạn có thể bật cảnh báo <code class="docutils literal notranslate"><span class="pre">INFERRED_DECLARATION</span></code> nếu thích cú pháp dễ đọc và đáng tin cậy hơn, dù dài dòng hơn.</p>
+<p>Các cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_*</span></code> làm các thao tác không an toàn dễ nhận thấy hơn so với dòng không an toàn. Hiện tại, các cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_*</span></code> chưa bao quát hết mọi trường hợp mà dòng không an toàn bao quát.</p>
+</section>
+<section id="common-unsafe-operations-and-their-safe-counterparts">
+<h2>Các thao tác không an toàn thường gặp và cách làm an toàn tương ứng<a class="headerlink" href="#common-unsafe-operations-and-their-safe-counterparts" title="Link to this heading"></a></h2>
+<section id="global-scope-methods">
+<h3>Các phương thức global scope<a class="headerlink" href="#global-scope-methods" title="Link to this heading"></a></h3>
+<p>Các phương thức global scope sau không có kiểu tĩnh, nhưng có các phiên bản tương ứng có kiểu. Các phương thức này trả về giá trị có kiểu tĩnh:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Phương thức</p></th>
+<th class="head"><p>Phiên bản tương đương có kiểu tĩnh</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-abs" title="Class reference (English)"><span class="xref std std-ref">abs()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-absf" title="Class reference (English)"><span class="xref std std-ref">absf()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-absi" title="Class reference (English)"><span class="xref std std-ref">absi()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-abs" title="Class reference (English)"><span class="xref std std-ref">Vector2.abs()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2i.html#class-vector2i-method-abs" title="Class reference (English)"><span class="xref std std-ref">Vector2i.abs()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-abs" title="Class reference (English)"><span class="xref std std-ref">Vector3.abs()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3i.html#class-vector3i-method-abs" title="Class reference (English)"><span class="xref std std-ref">Vector3i.abs()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-abs" title="Class reference (English)"><span class="xref std std-ref">Vector4.abs()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4i.html#class-vector4i-method-abs" title="Class reference (English)"><span class="xref std std-ref">Vector4i.abs()</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-ceil" title="Class reference (English)"><span class="xref std std-ref">ceil()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-ceilf" title="Class reference (English)"><span class="xref std std-ref">ceilf()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-ceili" title="Class reference (English)"><span class="xref std std-ref">ceili()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-ceil" title="Class reference (English)"><span class="xref std std-ref">Vector2.ceil()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-ceil" title="Class reference (English)"><span class="xref std std-ref">Vector3.ceil()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-ceil" title="Class reference (English)"><span class="xref std std-ref">Vector4.ceil()</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-clamp" title="Class reference (English)"><span class="xref std std-ref">clamp()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-clampf" title="Class reference (English)"><span class="xref std std-ref">clampf()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-clampi" title="Class reference (English)"><span class="xref std std-ref">clampi()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Vector2.clamp()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2i.html#class-vector2i-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Vector2i.clamp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Vector3.clamp()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3i.html#class-vector3i-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Vector3i.clamp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Vector4.clamp()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4i.html#class-vector4i-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Vector4i.clamp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html#class-color-method-clamp" title="Class reference (English)"><span class="xref std std-ref">Color.clamp()</span></a></div>
+<div class="line">(<code class="docutils literal notranslate"><span class="pre">clamp()</span></code> không có kiểu không hoạt động với Color)</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-floor" title="Class reference (English)"><span class="xref std std-ref">floor()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-floorf" title="Class reference (English)"><span class="xref std std-ref">floorf()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-floori" title="Class reference (English)"><span class="xref std std-ref">floori()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-floor" title="Class reference (English)"><span class="xref std std-ref">Vector2.floor()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-floor" title="Class reference (English)"><span class="xref std std-ref">Vector3.floor()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-floor" title="Class reference (English)"><span class="xref std std-ref">Vector4.floor()</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-lerp" title="Class reference (English)"><span class="xref std std-ref">lerp()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-lerpf" title="Class reference (English)"><span class="xref std std-ref">lerpf()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-lerp" title="Class reference (English)"><span class="xref std std-ref">Vector2.lerp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-lerp" title="Class reference (English)"><span class="xref std std-ref">Vector3.lerp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-lerp" title="Class reference (English)"><span class="xref std std-ref">Vector4.lerp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html#class-color-method-lerp" title="Class reference (English)"><span class="xref std std-ref">Color.lerp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_quaternion.html#class-quaternion-method-slerp" title="Class reference (English)"><span class="xref std std-ref">Quaternion.slerp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html#class-basis-method-slerp" title="Class reference (English)"><span class="xref std std-ref">Basis.slerp()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html#class-transform2d-method-interpolate-with" title="Class reference (English)"><span class="xref std std-ref">Transform2D.interpolate_with()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html#class-transform3d-method-interpolate-with" title="Class reference (English)"><span class="xref std std-ref">Transform3D.interpolate_with()</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-round" title="Class reference (English)"><span class="xref std std-ref">round()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-roundf" title="Class reference (English)"><span class="xref std std-ref">roundf()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-roundi" title="Class reference (English)"><span class="xref std std-ref">roundi()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-round" title="Class reference (English)"><span class="xref std std-ref">Vector2.round()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-round" title="Class reference (English)"><span class="xref std std-ref">Vector3.round()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-round" title="Class reference (English)"><span class="xref std std-ref">Vector4.round()</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-sign" title="Class reference (English)"><span class="xref std std-ref">sign()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-signf" title="Class reference (English)"><span class="xref std std-ref">signf()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-signi" title="Class reference (English)"><span class="xref std std-ref">signi()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-sign" title="Class reference (English)"><span class="xref std std-ref">Vector2.sign()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2i.html#class-vector2i-method-sign" title="Class reference (English)"><span class="xref std std-ref">Vector2i.sign()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-sign" title="Class reference (English)"><span class="xref std std-ref">Vector3.sign()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3i.html#class-vector3i-method-sign" title="Class reference (English)"><span class="xref std std-ref">Vector3i.sign()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-sign" title="Class reference (English)"><span class="xref std std-ref">Vector4.sign()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4i.html#class-vector4i-method-sign" title="Class reference (English)"><span class="xref std std-ref">Vector4i.sign()</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-snapped" title="Class reference (English)"><span class="xref std std-ref">snapped()</span></a></p></td>
+<td><div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-snappedf" title="Class reference (English)"><span class="xref std std-ref">snappedf()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-snappedi" title="Class reference (English)"><span class="xref std std-ref">snappedi()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html#class-vector2-method-snapped" title="Class reference (English)"><span class="xref std std-ref">Vector2.snapped()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2i.html#class-vector2i-method-snapped" title="Class reference (English)"><span class="xref std std-ref">Vector2i.snapped()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html#class-vector3-method-snapped" title="Class reference (English)"><span class="xref std std-ref">Vector3.snapped()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3i.html#class-vector3i-method-snapped" title="Class reference (English)"><span class="xref std std-ref">Vector3i.snapped()</span></a></div>
+<div class="line"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4.html#class-vector4-method-snapped" title="Class reference (English)"><span class="xref std std-ref">Vector4.snapped()</span></a>,
+<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector4i.html#class-vector4i-method-snapped" title="Class reference (English)"><span class="xref std std-ref">Vector4i.snapped()</span></a></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Khi dùng kiểu tĩnh, hãy dùng các phương thức global scope có kiểu bất cứ khi nào có thể. Điều này đảm bảo bạn có dòng an toàn và hưởng lợi từ các lệnh có kiểu để có hiệu năng tốt hơn.</p>
+</section>
+<section id="unsafe-property-access-and-unsafe-method-access-warnings">
+<h3>Cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_PROPERTY_ACCESS</span></code> và <code class="docutils literal notranslate"><span class="pre">UNSAFE_METHOD_ACCESS</span></code><a class="headerlink" href="#unsafe-property-access-and-unsafe-method-access-warnings" title="Link to this heading"></a></h3>
+<p>Trong ví dụ này, ta muốn đặt một thuộc tính và gọi một phương thức trên một đối tượng có gắn script với <code class="docutils literal notranslate"><span class="pre">class_name</span> <span class="pre">MyScript</span></code> và <code class="docutils literal notranslate"><span class="pre">extends</span> <span class="pre">Node2D</span></code>. Nếu ta có tham chiếu đến đối tượng dưới dạng <code class="docutils literal notranslate"><span class="pre">Node2D</span></code> (chẳng hạn khi nó được hệ thống vật lý truyền cho ta), trước tiên ta có thể kiểm tra thuộc tính và phương thức có tồn tại không, rồi đặt và gọi chúng nếu có:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="s2">&quot;some_property&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">node_2d</span><span class="p">:</span>
+<span class="w">    </span><span class="n">node_2d</span><span class="o">.</span><span class="vi">some_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w">  </span><span class="c1"># Produces UNSAFE_PROPERTY_ACCESS warning.</span>
+
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">node_2d</span><span class="o">.</span><span class="nf">has_method</span><span class="p">(</span><span class="s2">&quot;some_function&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="n">node_2d</span><span class="o">.</span><span class="nf">some_function</span><span class="p">()</span><span class="w">  </span><span class="c1"># Produces UNSAFE_METHOD_ACCESS warning.</span>
+</pre></div>
+</div>
+<p>Tuy nhiên, đoạn mã này sẽ tạo ra cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_PROPERTY_ACCESS</span></code> và <code class="docutils literal notranslate"><span class="pre">UNSAFE_METHOD_ACCESS</span></code> vì thuộc tính và phương thức không có trong kiểu được tham chiếu - trong trường hợp này là <code class="docutils literal notranslate"><span class="pre">Node2D</span></code>. Để các thao tác này an toàn, trước tiên bạn có thể kiểm tra đối tượng có kiểu <code class="docutils literal notranslate"><span class="pre">MyScript</span></code> không bằng từ khóa <code class="docutils literal notranslate"><span class="pre">is</span></code>, rồi khai báo một biến có kiểu <code class="docutils literal notranslate"><span class="pre">MyScript</span></code> để đặt thuộc tính và gọi phương thức trên đó:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">node_2d</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="nc">MyScript</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">my_script</span><span class="p">:</span><span class="w"> </span><span class="nc">MyScript</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node_2d</span>
+<span class="w">    </span><span class="n">my_script</span><span class="o">.</span><span class="vi">some_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span>
+<span class="w">    </span><span class="n">my_script</span><span class="o">.</span><span class="nf">some_function</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Ngoài ra, bạn có thể khai báo một biến và dùng toán tử <code class="docutils literal notranslate"><span class="pre">as</span></code> để thử ép kiểu đối tượng. Sau đó, bạn nên kiểm tra phép ép kiểu có thành công không bằng cách xác nhận biến đã được gán:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">my_script</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">node_2d</span><span class="w"> </span><span class="ow">as</span><span class="w"> </span><span class="nc">MyScript</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">my_script</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">    </span><span class="n">my_script</span><span class="o">.</span><span class="vi">some_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span>
+<span class="w">    </span><span class="n">my_script</span><span class="o">.</span><span class="nf">some_function</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="unsafe-cast-warning">
+<h3>Cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_CAST</span></code><a class="headerlink" href="#unsafe-cast-warning" title="Link to this heading"></a></h3>
+<p>Trong ví dụ này, ta muốn label gắn với một đối tượng đi vào vùng va chạm của ta hiển thị tên của vùng đó. Khi đối tượng đi vào vùng va chạm, hệ thống vật lý gửi một signal kèm đối tượng <code class="docutils literal notranslate"><span class="pre">Node2D</span></code>, và giải pháp đơn giản nhất (nhưng không có kiểu tĩnh) để làm điều ta muốn có thể như sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">:</span><span class="w"> </span><span class="nb">Node2D</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="n">body</span><span class="o">.</span><span class="vi">label</span><span class="o">.</span><span class="vi">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="w">  </span><span class="c1"># Produces UNSAFE_PROPERTY_ACCESS warning.</span>
+</pre></div>
+</div>
+<p>Đoạn mã này tạo ra cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_PROPERTY_ACCESS</span></code> vì <code class="docutils literal notranslate"><span class="pre">label</span></code> không được định nghĩa trong <code class="docutils literal notranslate"><span class="pre">Node2D</span></code>. Để giải quyết, trước tiên ta có thể kiểm tra thuộc tính <code class="docutils literal notranslate"><span class="pre">label</span></code> có tồn tại không và ép nó sang kiểu <code class="docutils literal notranslate"><span class="pre">Label</span></code> trước khi đặt thuộc tính text của nó, như sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">:</span><span class="w"> </span><span class="nb">Node2D</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="s2">&quot;label&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">body</span><span class="p">:</span>
+<span class="w">        </span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="vi">label</span><span class="w"> </span><span class="ow">as</span><span class="w"> </span><span class="nb">Label</span><span class="p">)</span><span class="o">.</span><span class="vi">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="w">  </span><span class="c1"># Produces UNSAFE_CAST warning.</span>
+</pre></div>
+</div>
+<p>Tuy nhiên, điều này tạo ra cảnh báo <code class="docutils literal notranslate"><span class="pre">UNSAFE_CAST</span></code> vì <code class="docutils literal notranslate"><span class="pre">body.label</span></code> có kiểu <code class="docutils literal notranslate"><span class="pre">Variant</span></code>. Để lấy thuộc tính theo kiểu bạn muốn một cách an toàn, bạn có thể dùng phương thức <code class="docutils literal notranslate"><span class="pre">Object.get()</span></code>, phương thức này trả về đối tượng dưới dạng giá trị <code class="docutils literal notranslate"><span class="pre">Variant</span></code> hoặc trả về <code class="docutils literal notranslate"><span class="pre">null</span></code> nếu thuộc tính không tồn tại. Sau đó bạn có thể xác định thuộc tính có chứa đối tượng đúng kiểu không bằng từ khóa <code class="docutils literal notranslate"><span class="pre">is</span></code>, và cuối cùng khai báo một biến có kiểu tĩnh với đối tượng đó:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_body_entered</span><span class="p">(</span><span class="n">body</span><span class="p">:</span><span class="w"> </span><span class="nb">Node2D</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">label_variant</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Variant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">body</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">label_variant</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="nb">Label</span><span class="p">:</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">label</span><span class="p">:</span><span class="w"> </span><span class="nb">Label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label_variant</span>
+<span class="w">        </span><span class="n">label</span><span class="o">.</span><span class="vi">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cases-where-you-can-t-specify-types">
+<h2>Các trường hợp không thể chỉ định kiểu<a class="headerlink" href="#cases-where-you-can-t-specify-types" title="Link to this heading"></a></h2>
+<p>Để kết thúc phần giới thiệu này, hãy điểm qua các trường hợp bạn không thể dùng type hint. Những trường hợp này sẽ gây ra <strong>lỗi cú pháp</strong>.</p>
+<ol class="arabic simple">
+<li><p>Bạn không thể chỉ định kiểu cho từng phần tử riêng lẻ trong một mảng hoặc dictionary:</p></li>
+</ol>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">enemies</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sx">$Goblin</span><span class="p">:</span><span class="w"> </span><span class="nc">Enemy</span><span class="p">,</span><span class="w"> </span><span class="sx">$Zombie</span><span class="p">:</span><span class="w"> </span><span class="nc">Enemy</span><span class="p">]</span>
+<span class="k">var</span><span class="w"> </span><span class="n">character</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Richard&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">money</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">    </span><span class="n">inventory</span><span class="p">:</span><span class="w"> </span><span class="nc">Inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Inventory</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Hiện tại kiểu lồng nhau chưa được hỗ trợ:</p></li>
+</ol>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">teams</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nb nb-Type">Array</span><span class="p">[</span><span class="nc">Character</span><span class="p">]]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+</pre></div>
+</div>
+</section>
+<section id="summary">
+<h2>Tóm tắt<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>GDScript có kiểu là một công cụ mạnh mẽ. Nó giúp bạn viết mã có cấu trúc hơn, tránh các lỗi thường gặp và tạo ra các hệ thống có khả năng mở rộng và đáng tin cậy. Kiểu tĩnh cải thiện hiệu năng GDScript và nhiều tối ưu hơn đã được lên kế hoạch cho tương lai.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gdscript_styleguide.html" class="btn btn-neutral float-left" title="Hướng dẫn phong cách GDScript" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="warning_system.html" class="btn btn-neutral float-right" title="Hệ thống cảnh báo của GDScript" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

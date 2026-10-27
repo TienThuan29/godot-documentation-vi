@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Occlusion culling" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/occlusion_culling.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong một engine kết xuất 3D, occlusion culling là quá trình loại bỏ hình học bị che khuất. Trong trang này, bạn sẽ học: Ưu điểm và những điểm cần lưu ý của occlusion culling., Cách thiết lập occlu..." />
+<meta name="description" content="Trong một engine kết xuất 3D, occlusion culling là quá trình loại bỏ hình học bị che khuất. Trong trang này, bạn sẽ học: Ưu điểm và những điểm cần lưu ý của occlusion culling., Cách thiết lập occlu..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Occlusion culling &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Co giãn độ phân giải" href="resolution_scaling.html" />
+    <link rel="prev" title="Visibility range (HLOD)" href="visibility_ranges.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/occlusion_culling" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="using_multi_mesh_instance.html">Sử dụng MultiMeshInstance3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_lod.html">Mức độ chi tiết của mesh (LOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visibility_ranges.html">Visibility range (HLOD)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Occlusion culling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-use-occlusion-culling">Tại sao nên dùng occlusion culling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-occlusion-culling-works-in-godot">Cách occlusion culling hoạt động trong Godot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-up-occlusion-culling">Thiết lập occlusion culling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#previewing-occlusion-culling">Xem trước occlusion culling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performance-considerations">Lưu ý về hiệu năng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Khắc phục sự cố</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="resolution_scaling.html">Co giãn độ phân giải</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable_rate_shading.html">Variable rate shading</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Occlusion culling</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="occlusion-culling">
+<span id="doc-occlusion-culling"></span><h1>Occlusion culling<a class="headerlink" href="#occlusion-culling" title="Link to this heading"></a></h1>
+<p>Trong một engine kết xuất 3D, <strong>occlusion culling</strong> là quá trình loại bỏ hình học bị che khuất.</p>
+<p>Trong trang này, bạn sẽ học:</p>
+<ul class="simple">
+<li><p>Ưu điểm và những điểm cần lưu ý của occlusion culling.</p></li>
+<li><p>Cách thiết lập occlusion culling trong Godot.</p></li>
+<li><p>Khắc phục các sự cố thường gặp với occlusion culling.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem occlusion culling hoạt động thực tế bằng <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/occlusion_culling_mesh_lod">dự án demo Occlusion Culling và Mesh LOD</a>.</p>
+</div>
+<section id="why-use-occlusion-culling">
+<h2>Tại sao nên dùng occlusion culling<a class="headerlink" href="#why-use-occlusion-culling" title="Link to this heading"></a></h2>
+<p>Trong scene ví dụ này với hàng trăm căn phòng xếp cạnh nhau, một vật thể động (quả cầu đỏ) bị che sau bức tường trong căn phòng được chiếu sáng (bên trái cửa ra vào):</p>
+<figure class="align-center" id="id1">
+<img alt="Scene ví dụ với bố cục thân thiện với occlusion culling" src="../../_images/occlusion_culling_scene_example.png" />
+<figcaption>
+<p><span class="caption-text">Scene ví dụ với bố cục thân thiện với occlusion culling</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi tắt occlusion culling, tất cả các phòng phía sau căn phòng được chiếu sáng đều phải được kết xuất. Vật thể động cũng phải được kết xuất:</p>
+<figure class="align-center" id="id2">
+<img alt="Scene ví dụ khi tắt occlusion culling (wireframe)" src="../../_images/occlusion_culling_disabled.png" />
+<figcaption>
+<p><span class="caption-text">Scene ví dụ khi <strong>tắt</strong> occlusion culling (wireframe)</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi bật occlusion culling, chỉ những căn phòng thực sự nhìn thấy được mới phải kết xuất. Vật thể động cũng bị bức tường che khuất, nên không còn phải kết xuất nữa:</p>
+<figure class="align-center" id="id3">
+<img alt="Scene ví dụ khi bật occlusion culling (wireframe)" src="../../_images/occlusion_culling_enabled.png" />
+<figcaption>
+<p><span class="caption-text">Scene ví dụ khi <strong>bật</strong> occlusion culling (wireframe)</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Vì engine có ít việc phải làm hơn (ít đỉnh cần kết xuất hơn và ít draw call hơn), hiệu năng sẽ tăng miễn là scene có đủ cơ hội cho occlusion culling. Điều này có nghĩa là occlusion culling hiệu quả nhất trong các scene trong nhà, tốt nhất là với nhiều phòng nhỏ thay vì ít phòng lớn. Kết hợp điều này với <a class="reference internal" href="mesh_lod.html#doc-mesh-lod"><span class="std std-ref">Mức độ chi tiết của mesh (LOD)</span></a> và <a class="reference internal" href="visibility_ranges.html#doc-visibility-ranges"><span class="std std-ref">Visibility range (HLOD)</span></a> để tăng thêm lợi ích hiệu năng.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi dùng bộ kết xuất Forward+, engine đã thực hiện sẵn một <em>depth prepass</em>. Việc này bao gồm kết xuất một phiên bản chỉ có độ sâu của scene trước khi kết xuất các material thực sự của scene. Điều này được dùng để đảm bảo mỗi pixel đục chỉ được shading một lần, giảm đáng kể chi phí overdraw.</p>
+<p>Lợi ích hiệu năng lớn nhất có thể thấy được khi dùng bộ kết xuất Mobile, vì nó không có depth prepass vì lý do hiệu năng. Do đó, occlusion culling sẽ chủ động giảm overdraw khi shading với bộ kết xuất đó.</p>
+<p>Dù vậy, ngay cả khi dùng depth prepass, occlusion culling vẫn mang lại lợi ích đáng kể trong các scene 3D phức tạp. Tuy nhiên, trong các scene có ít cơ hội cho occlusion culling, occlusion culling có thể không đáng với công sức thiết lập thêm và mức sử dụng CPU.</p>
+</div>
+</section>
+<section id="how-occlusion-culling-works-in-godot">
+<h2>Cách occlusion culling hoạt động trong Godot<a class="headerlink" href="#how-occlusion-culling-works-in-godot" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>&quot;occluder&quot; chỉ hình dạng chắn tầm nhìn, còn &quot;occludee&quot; chỉ vật thể bị che khuất.</p>
+</div>
+<p>Trong Godot, occlusion culling hoạt động bằng cách raster hóa hình học occluder của scene vào một buffer độ phân giải thấp trên CPU. Việc này được thực hiện bằng thư viện raytracing phần mềm <a class="reference external" href="https://github.com/embree/embree">Embree</a>.</p>
+<p>Sau đó, engine dùng buffer độ phân giải thấp này để kiểm tra <abbr title="Axis-Aligned Bounding Box">AABB</abbr> của occludee với các hình dạng occluder. <abbr title="Axis-Aligned Bounding Box">AABB</abbr> của occludee phải bị hình dạng occluder <em>che khuất hoàn toàn</em> thì mới bị loại bỏ.</p>
+<p>Do đó, các vật thể nhỏ có nhiều khả năng bị loại bỏ hiệu quả hơn các vật thể lớn. Các occluder lớn (như tường) cũng có xu hướng hiệu quả hơn nhiều so với các occluder nhỏ (như đồ vật trang trí).</p>
+</section>
+<section id="setting-up-occlusion-culling">
+<h2>Thiết lập occlusion culling<a class="headerlink" href="#setting-up-occlusion-culling" title="Link to this heading"></a></h2>
+<p>Bước đầu tiên để dùng occlusion culling là bật cài đặt dự án <strong>Rendering &gt; Occlusion Culling &gt; Use Occlusion Culling</strong>. (Hãy đảm bảo nút gạt <strong>Advanced</strong> đã được bật trong hộp thoại Project Settings để có thể thấy nó.)</p>
+<p>Cài đặt dự án này có hiệu lực ngay lập tức, vì vậy bạn không cần khởi động lại trình chỉnh sửa.</p>
+<p>Sau khi bật cài đặt dự án, bạn vẫn cần tạo một số occluder. Vì lý do hiệu năng, engine không tự động dùng toàn bộ hình học nhìn thấy được làm cơ sở cho occlusion culling. Thay vào đó, engine yêu cầu bake một biểu diễn đơn giản hóa của scene chỉ gồm các vật thể tĩnh.</p>
+<p>Có hai cách thiết lập occluder trong scene:</p>
+<section id="automatically-baking-occluders-recommended">
+<span id="doc-occlusion-culling-baking"></span><h3>Tự động bake occluder (khuyến nghị)<a class="headerlink" href="#automatically-baking-occluders-recommended" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hiện tại chỉ các node MeshInstance3D được tính đến trong quá trình bake <em>occluder</em>. Các node MultiMeshInstance3D, GPUParticles3D, CPUParticles3D và CSG <strong>không</strong> được tính đến khi bake occluder. Nếu bạn muốn chúng được xem là occluder, bạn phải tạo thủ công các hình dạng occluder khớp (tương đối) với hình học của chúng.</p>
+<p>Kể từ Godot 4.4, các node CSG có thể được tính đến trong quá trình bake nếu chúng được <a class="reference internal" href="csg_tools.html#doc-csg-tools-converting-to-mesh-instance-3d"><span class="std std-ref">chuyển đổi thành MeshInstance3D</span></a> trước khi bake occluder.</p>
+<p>Hạn chế này không áp dụng cho <em>occludee</em>. Mọi loại node kế thừa từ GeometryInstance3D đều có thể bị che khuất.</p>
+</div>
+<p>Sau khi bật cài đặt dự án occlusion culling nêu trên, hãy thêm một node OccluderInstance3D vào scene chứa level 3D của bạn.</p>
+<p>Chọn node OccluderInstance3D, rồi nhấn <strong>Bake Occluders</strong> ở phía trên viewport của trình chỉnh sửa 3D. Sau khi bake, node OccluderInstance3D sẽ chứa một resource Occluder3D lưu phiên bản đơn giản hóa của hình học level. Hình học occluder này hiển thị dưới dạng các đường wireframe màu tím trong khung nhìn 3D (miễn là <strong>View Gizmos</strong> được bật trong menu <strong>Perspective</strong>). Hình học này sau đó được dùng để cung cấp occlusion culling cho cả occludee tĩnh và động.</p>
+<p>Sau khi bake, bạn có thể nhận thấy các vật thể động (như người chơi, kẻ địch, v.v.) bị đưa vào mesh đã bake. Để ngăn điều này, hãy đặt thuộc tính <strong>Bake &gt; Cull Mask</strong> trên OccluderInstance3D để loại trừ một số visual layer khỏi việc bake.</p>
+<p>Ví dụ, bạn có thể tắt layer 2 trên cull mask, rồi cấu hình các node MeshInstance3D của vật thể động nằm trên visual layer 2 (thay vì layer 1). Để làm vậy, hãy chọn node MeshInstance3D tương ứng, rồi trong thuộc tính <strong>VisualInstance3D &gt; Layers</strong>, bỏ chọn layer 1 và chọn layer 2. Sau khi cấu hình cả cull mask và layer, hãy bake lại occluder theo quy trình ở trên.</p>
+</section>
+<section id="manually-placing-occluders">
+<h3>Đặt occluder thủ công<a class="headerlink" href="#manually-placing-occluders" title="Link to this heading"></a></h3>
+<p>Cách tiếp cận này phù hợp hơn cho các trường hợp sử dụng chuyên biệt, như tạo occlusion cho các thiết lập MultiMeshInstance3D hoặc node CSG (do hạn chế đã nêu ở trên).</p>
+<p>Sau khi bật cài đặt dự án occlusion culling nêu trên, hãy thêm một node OccluderInstance3D vào scene chứa level 3D của bạn. Chọn node OccluderInstance3D, rồi chọn một loại occluder để thêm vào thuộc tính <strong>Occluder</strong>:</p>
+<ul class="simple">
+<li><p>QuadOccluder3D (một mặt phẳng đơn)</p></li>
+<li><p>BoxOccluder3D (một hình hộp)</p></li>
+<li><p>SphereOccluder3D (một occluder hình cầu)</p></li>
+<li><p>PolygonOccluder3D (một đa giác 2D với số điểm tùy ý)</p></li>
+</ul>
+<p>Ngoài ra còn có ArrayOccluder3D, các điểm của nó không thể chỉnh sửa trong trình chỉnh sửa nhưng có thể hữu ích cho việc tạo thủ tục (procedural generation) từ script.</p>
+</section>
+</section>
+<section id="previewing-occlusion-culling">
+<span id="doc-occlusion-culling-preview"></span><h2>Xem trước occlusion culling<a class="headerlink" href="#previewing-occlusion-culling" title="Link to this heading"></a></h2>
+<p>Bạn có thể bật một chế độ debug draw để xem trước những gì occlusion culling thực sự &quot;nhìn thấy&quot;. Ở góc trên bên trái của viewport trình chỉnh sửa 3D, nhấn nút <strong>Perspective</strong> (hoặc <strong>Orthogonal</strong> tùy theo chế độ camera hiện tại), rồi chọn <strong>Display Advanced… &gt; Occlusion Culling Buffer</strong>. Thao tác này sẽ hiển thị buffer độ phân giải thấp mà engine dùng cho occlusion culling.</p>
+<p>Trong cùng menu đó, bạn cũng có thể bật <strong>View Information</strong> và <strong>View Frame Time</strong> để xem số draw call và primitive được kết xuất (đỉnh + chỉ số) ở góc dưới bên phải, cùng với số khung hình mỗi giây được kết xuất ở góc trên bên phải.</p>
+<p>Nếu bạn bật/tắt occlusion culling trong cài đặt dự án trong khi thông tin này đang hiển thị, bạn có thể thấy occlusion culling cải thiện hiệu năng trong scene đến mức nào. Lưu ý rằng lợi ích hiệu năng phụ thuộc nhiều vào góc nhìn của camera trình chỉnh sửa 3D, vì occlusion culling chỉ hiệu quả nếu có occluder ở phía trước camera.</p>
+<p>Để bật/tắt occlusion culling khi đang chạy, hãy đặt <code class="docutils literal notranslate"><span class="pre">use_occlusion_culling</span></code> trên viewport gốc như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">root</span><span class="o">.</span><span class="vi">use_occlusion_culling</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">GetTree</span><span class="p">().</span><span class="n">Root</span><span class="p">.</span><span class="n">UseOcclusionCulling</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bật/tắt occlusion culling khi đang chạy rất hữu ích để so sánh hiệu năng trên một dự án đang chạy.</p>
+</section>
+<section id="performance-considerations">
+<h2>Lưu ý về hiệu năng<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<section id="design-your-levels-to-take-advantage-of-occlusion-culling">
+<h3>Thiết kế level để tận dụng occlusion culling<a class="headerlink" href="#design-your-levels-to-take-advantage-of-occlusion-culling" title="Link to this heading"></a></h3>
+<p><strong>Đây là nguyên tắc quan trọng nhất.</strong> Một thiết kế level tốt không chỉ là đáp ứng yêu cầu của gameplay; nó cũng nên được xây dựng với việc che khuất (occlusion) trong đầu.</p>
+<p>Với môi trường trong nhà, hãy thêm các bức tường đục để &quot;cắt&quot; tầm nhìn theo những khoảng đều đặn và đảm bảo không nhìn thấy quá nhiều phần của scene cùng lúc.</p>
+<p>Với các scene ngoài trời rộng lớn, hãy dùng cấu trúc dạng kim tự tháp cho độ cao của địa hình khi có thể. Cấu trúc này mang lại nhiều cơ hội culling nhất so với bất kỳ hình dạng địa hình nào khác.</p>
+</section>
+<section id="avoid-moving-occluderinstance3d-nodes-during-gameplay">
+<h3>Tránh di chuyển node OccluderInstance3D trong khi chơi<a class="headerlink" href="#avoid-moving-occluderinstance3d-nodes-during-gameplay" title="Link to this heading"></a></h3>
+<p>Điều này bao gồm cả việc di chuyển node cha của các node OccluderInstance3D, vì việc đó sẽ khiến chính các node này di chuyển trong không gian toàn cục, do đó yêu cầu xây dựng lại <abbr title="Bounding Volume Hierarchy">BVH</abbr>.</p>
+<p>Bật/tắt khả năng hiển thị của OccluderInstance3D (hoặc của một trong các node cha của nó) không tốn kém bằng, vì việc cập nhật chỉ cần diễn ra một lần (thay vì liên tục).</p>
+<p>Ví dụ, nếu bạn có một cánh cửa trượt hoặc xoay, bạn có thể để node OccluderInstance3D không phải là node con của chính cánh cửa (để occluder không bao giờ di chuyển), nhưng bạn có thể ẩn OccluderInstance3D khi cửa bắt đầu mở. Sau đó, bạn có thể hiển thị lại OccluderInstance3D khi cửa đã đóng hoàn toàn.</p>
+<p>Nếu bạn bắt buộc phải di chuyển một node OccluderInstance3D trong khi chơi, hãy dùng một hình dạng Occluder3D cơ bản cho nó thay vì một hình dạng bake phức tạp.</p>
+</section>
+<section id="use-the-simplest-possible-occluder-shapes">
+<h3>Dùng hình dạng occluder đơn giản nhất có thể<a class="headerlink" href="#use-the-simplest-possible-occluder-shapes" title="Link to this heading"></a></h3>
+<p>Nếu bạn nhận thấy hiệu năng thấp hoặc giật trong các scene 3D phức tạp, có thể CPU đang bị quá tải do phải kết xuất các occluder chi tiết. Hãy chọn node OccluderInstance3D, tăng thuộc tính <strong>Bake &gt; Simplification</strong> rồi bake lại occluder.</p>
+<p>Hãy nhớ giữ giá trị đơn giản hóa ở mức hợp lý. Giá trị quá cao so với hình học của level có thể khiến occlusion culling diễn ra không chính xác, như trong <a class="reference internal" href="#doc-occlusion-culling-troubleshooting-false-negative"><span class="std std-ref">Occludee của tôi bị loại bỏ khi lẽ ra không nên</span></a>.</p>
+<p>Nếu điều này vẫn không giảm đủ mức sử dụng CPU, bạn có thể thử điều chỉnh cài đặt dự án <strong>Rendering &gt; Occlusion Culling &gt; BVH Build Quality</strong> và/hoặc giảm <strong>Rendering &gt; Occlusion Culling &gt; Occlusion Rays Per Thread</strong>. Bạn cần bật nút gạt <strong>Advanced</strong> trong hộp thoại Project Settings để thấy các cài đặt đó.</p>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Khắc phục sự cố<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="my-occludee-isn-t-being-culled-when-it-should-be">
+<h3>Occludee của tôi không bị loại bỏ khi lẽ ra phải bị loại bỏ<a class="headerlink" href="#my-occludee-isn-t-being-culled-when-it-should-be" title="Link to this heading"></a></h3>
+<p><strong>Về phía occluder:</strong></p>
+<p>Trước tiên, hãy kiểm tra lại rằng thuộc tính <strong>Bake &gt; Cull Mask</strong> trong OccluderInstance3D được đặt để cho phép bake các mesh bạn muốn. Visibility layer của các node MeshInstance3D phải có mặt trong cull mask thì mesh mới được đưa vào quá trình bake.</p>
+<p>Cũng lưu ý rằng việc bake occluder chỉ tính đến các mesh có material <em>đục</em>. Các bề mặt có material <em>trong suốt</em> sẽ <strong>không</strong> được đưa vào quá trình bake, ngay cả khi texture áp lên chúng hoàn toàn đục.</p>
+<p>Cuối cùng, hãy nhớ rằng các node MultiMeshInstance3D, GPUParticles3D, CPUParticles3D và CSG <strong>không</strong> được tính đến khi bake occluder. Để khắc phục, bạn có thể thêm thủ công các node OccluderInstance3D cho chúng.</p>
+<p><strong>Về phía occludee:</strong></p>
+<p>Hãy đảm bảo <strong>Extra Cull Margin</strong> được đặt thấp nhất có thể (thường nên là <code class="docutils literal notranslate"><span class="pre">0.0</span></code>), và <strong>Ignore Occlusion Culling</strong> được tắt trong mục GeometryInstance3D của đối tượng.</p>
+<p>Ngoài ra, hãy kiểm tra kích thước của AABB (được biểu diễn bằng một hộp màu cam khi chọn node). Hộp bao căn theo trục này phải bị các hình dạng occluder che khuất <em>hoàn toàn</em> thì occludee mới bị ẩn.</p>
+</section>
+<section id="my-occludee-is-being-culled-when-it-shouldn-t-be">
+<span id="doc-occlusion-culling-troubleshooting-false-negative"></span><h3>Occludee của tôi bị loại bỏ khi lẽ ra không nên<a class="headerlink" href="#my-occludee-is-being-culled-when-it-shouldn-t-be" title="Link to this heading"></a></h3>
+<p>Nguyên nhân có khả năng nhất là các vật thể được đưa vào quá trình bake occluder đã bị di chuyển sau khi bake. Ví dụ, điều này có thể xảy ra khi di chuyển hình học của level hoặc sắp xếp lại bố cục của nó. Để khắc phục, hãy chọn node OccluderInstance3D và bake lại occluder.</p>
+<p>Điều này cũng có thể xảy ra do các vật thể động đã bị đưa vào quá trình bake, dù lẽ ra không nên. Hãy dùng <a class="reference internal" href="#doc-occlusion-culling-preview"><span class="std std-ref">chế độ debug draw của occlusion culling</span></a> để tìm các hình dạng occluder không nên có mặt, rồi <a class="reference internal" href="#doc-occlusion-culling-baking"><span class="std std-ref">điều chỉnh cull mask khi bake cho phù hợp</span></a>.</p>
+<p>Nguyên nhân khả dĩ cuối cùng là việc đơn giản hóa mesh quá mạnh tay trong quá trình bake occluder. Hãy chọn node OccluderInstance3D, giảm thuộc tính <strong>Bake &gt; Simplification</strong> rồi bake lại occluder.</p>
+<p>Như giải pháp cuối cùng, bạn có thể bật thuộc tính <strong>Ignore Occlusion Culling</strong> trên occludee. Việc này sẽ triệt tiêu lợi ích hiệu năng của occlusion culling cho đối tượng đó, nhưng hợp lý khi làm vậy với các đối tượng không bao giờ bị loại bỏ (như view model ở góc nhìn thứ nhất).</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visibility_ranges.html" class="btn btn-neutral float-left" title="Visibility range (HLOD)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="resolution_scaling.html" class="btn btn-neutral float-right" title="Co giãn độ phân giải" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Xử lý việc phá vỡ tương thích" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/handling_compatibility_breakages.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Vậy là bạn đã thêm một tham số mới vào một phương thức, thay đổi kiểu trả về, thay đổi kiểu của một tham số hoặc thay đổi giá trị mặc định của nó, và giờ hệ thống kiểm thử tự động báo lỗi phá vỡ tư..." />
+<meta name="description" content="Vậy là bạn đã thêm một tham số mới vào một phương thức, thay đổi kiểu trả về, thay đổi kiểu của một tham số hoặc thay đổi giá trị mặc định của nó, và giờ hệ thống kiểm thử tự động báo lỗi phá vỡ tư..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Xử lý việc phá vỡ tương thích &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Phát triển trình chỉnh sửa" href="../editor/index.html" />
+    <link rel="prev" title="VerySleepy" href="profiling/very_sleepy.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/handling_compatibility_breakages" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compiling/index.html">Build từ mã nguồn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debugging/index.html">Debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="profiling/index.html">Sử dụng profiler C++</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Xử lý việc phá vỡ tương thích</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-practical-example">Một ví dụ thực tế</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Phát triển engine</a></li>
+      <li class="breadcrumb-item active">Xử lý việc phá vỡ tương thích</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="handling-compatibility-breakages">
+<span id="doc-handling-compatibility-breakages"></span><h1>Xử lý việc phá vỡ tương thích<a class="headerlink" href="#handling-compatibility-breakages" title="Link to this heading"></a></h1>
+<p>Vậy là bạn đã thêm một tham số mới vào một phương thức, thay đổi kiểu trả về, thay đổi kiểu của một tham số hoặc thay đổi giá trị mặc định của nó, và giờ hệ thống kiểm thử tự động báo lỗi phá vỡ tương thích?</p>
+<p>Nên tránh phá vỡ tương thích, nhưng khi cần thiết, đã có sẵn các hệ thống để xử lý việc này sao cho quá trình chuyển đổi diễn ra suôn sẻ nhất có thể.</p>
+<section id="a-practical-example">
+<h2>Một ví dụ thực tế<a class="headerlink" href="#a-practical-example" title="Link to this heading"></a></h2>
+<p>Những thay đổi này được lấy từ <a class="reference external" href="https://github.com/godotengine/godot/pull/88047">pull request #88047</a>, vốn đã thêm các tùy chọn tìm đường mới cho <code class="docutils literal notranslate"><span class="pre">AStarGrid2D</span></code> và các lớp AStar khác. Trong số các thay đổi khác, những phương thức sau đã được sửa đổi trong <code class="docutils literal notranslate"><span class="pre">core/math/a_star_grid_2d.h</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">Vector2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">get_point_path</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to</span><span class="p">);</span>
+<span class="n">TypedArray</span><span class="o">&lt;</span><span class="n">Vector2i</span><span class="o">&gt;</span><span class="w"> </span><span class="n">get_id_path</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Thành:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">Vector2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">get_point_path</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">p_allow_partial_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">TypedArray</span><span class="o">&lt;</span><span class="n">Vector2i</span><span class="o">&gt;</span><span class="w"> </span><span class="n">get_id_path</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">p_allow_partial_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Điều này có nghĩa là phải thêm các binding phương thức tương thích mới vào tệp, nằm trong phần <code class="docutils literal notranslate"><span class="pre">protected</span></code> của mã, thường được đặt cạnh <code class="docutils literal notranslate"><span class="pre">_bind_methods()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef DISABLE_DEPRECATED</span>
+<span class="w">    </span><span class="n">TypedArray</span><span class="o">&lt;</span><span class="n">Vector2i</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_get_id_path_bind_compat_88047</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">Vector2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_get_point_path_bind_compat_88047</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to</span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">_bind_compatibility_methods</span><span class="p">();</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Chúng nên bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">_</span></code> để cho biết chúng là nội bộ, và kết thúc bằng <code class="docutils literal notranslate"><span class="pre">_bind_compat_</span></code> theo sau là số PR đã đưa ra thay đổi (<code class="docutils literal notranslate"><span class="pre">88047</span></code> trong ví dụ này). Các phương thức tương thích này cần được triển khai trong một tệp riêng, như <code class="docutils literal notranslate"><span class="pre">core/math/a_star_grid_2d.compat.inc</span></code> trong trường hợp này:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">core/math/a_star_grid_2d.compat.inc</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/**************************************************************************/</span>
+<span class="cm">/*  a_star_grid_2d.compat.inc                                             */</span>
+<span class="cm">/**************************************************************************/</span>
+<span class="cm">/*                         This file is part of:                          */</span>
+<span class="cm">/*                             GODOT ENGINE                               */</span>
+<span class="cm">/*                        https://godotengine.org                         */</span>
+<span class="cm">/**************************************************************************/</span>
+<span class="cm">/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */</span>
+<span class="cm">/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */</span>
+<span class="cm">/*                                                                        */</span>
+<span class="cm">/* Permission is hereby granted, free of charge, to any person obtaining  */</span>
+<span class="cm">/* a copy of this software and associated documentation files (the        */</span>
+<span class="cm">/* &quot;Software&quot;), to deal in the Software without restriction, including    */</span>
+<span class="cm">/* without limitation the rights to use, copy, modify, merge, publish,    */</span>
+<span class="cm">/* distribute, sublicense, and/or sell copies of the Software, and to     */</span>
+<span class="cm">/* permit persons to whom the Software is furnished to do so, subject to  */</span>
+<span class="cm">/* the following conditions:                                              */</span>
+<span class="cm">/*                                                                        */</span>
+<span class="cm">/* The above copyright notice and this permission notice shall be         */</span>
+<span class="cm">/* included in all copies or substantial portions of the Software.        */</span>
+<span class="cm">/*                                                                        */</span>
+<span class="cm">/* THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,        */</span>
+<span class="cm">/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */</span>
+<span class="cm">/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */</span>
+<span class="cm">/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */</span>
+<span class="cm">/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */</span>
+<span class="cm">/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */</span>
+<span class="cm">/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */</span>
+<span class="cm">/**************************************************************************/</span>
+
+<span class="cp">#ifndef DISABLE_DEPRECATED</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/variant/typed_array.h&quot;</span>
+
+<span class="n">TypedArray</span><span class="o">&lt;</span><span class="n">Vector2i</span><span class="o">&gt;</span><span class="w"> </span><span class="n">AStarGrid2D</span><span class="o">::</span><span class="n">_get_id_path_bind_compat_88047</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from_id</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to_id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">get_id_path</span><span class="p">(</span><span class="n">p_from_id</span><span class="p">,</span><span class="w"> </span><span class="n">p_to_id</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Vector</span><span class="o">&lt;</span><span class="n">Vector2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">AStarGrid2D</span><span class="o">::</span><span class="n">_get_point_path_bind_compat_88047</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_from_id</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Vector2i</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_to_id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">get_point_path</span><span class="p">(</span><span class="n">p_from_id</span><span class="p">,</span><span class="w"> </span><span class="n">p_to_id</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">AStarGrid2D</span><span class="o">::</span><span class="n">_bind_compatibility_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_compatibility_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;get_id_path&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;from_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;to_id&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">AStarGrid2D</span><span class="o">::</span><span class="n">_get_id_path_bind_compat_88047</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_compatibility_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;get_point_path&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;from_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;to_id&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">AStarGrid2D</span><span class="o">::</span><span class="n">_get_point_path_bind_compat_88047</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cp">#endif </span><span class="c1">// DISABLE_DEPRECATED</span>
+</pre></div>
+</div>
+</div>
+<p>Trừ khi thay đổi về tương thích phức tạp, phương thức tương thích nên gọi trực tiếp phương thức đã sửa đổi thay vì sao chép lại phương thức đó. Hãy đảm bảo khớp các tham số mặc định của phương thức đó (trong ví dụ trên là <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+<p>Tệp này luôn phải được đặt cạnh tệp gốc và có đuôi <code class="docutils literal notranslate"><span class="pre">.compat.inc</span></code> thay vì <code class="docutils literal notranslate"><span class="pre">.cpp</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.h</span></code>. Tiếp theo, tệp này cần được include trong tệp <code class="docutils literal notranslate"><span class="pre">.cpp</span></code> mà ta đang thêm phương thức tương thích, tức là <code class="docutils literal notranslate"><span class="pre">core/math/a_star_grid_2d.cpp</span></code>:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">core/math/a_star_grid_2d.cpp</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;a_star_grid_2d.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;a_star_grid_2d.compat.inc&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/variant/typed_array.h&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Cuối cùng, cần ghi lại các thay đổi API GDExtension. Để làm điều này, trước tiên hãy biên dịch Godot trên nhánh <code class="docutils literal notranslate"><span class="pre">master</span></code>, rồi chạy nó với cờ <code class="docutils literal notranslate"><span class="pre">--dump-extension-api</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>switch<span class="w"> </span>master
+scons
+godot<span class="w"> </span>--dump-extension-api
+</pre></div>
+</div>
+<p>Thao tác này sẽ tạo một tệp tên <code class="docutils literal notranslate"><span class="pre">extension_api.json</span></code> trong thư mục hiện tại. Chuyển sang nhánh tính năng của bạn, biên dịch lại Godot, rồi chạy nó với cờ <code class="docutils literal notranslate"><span class="pre">--validate-extension-api</span></code> theo sau là đường dẫn đến tệp <code class="docutils literal notranslate"><span class="pre">extension_api.json</span></code> vừa tạo:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>switch<span class="w"> </span>my-feature-branch
+scons
+godot<span class="w"> </span>--validate-extension-api<span class="w"> </span>/path/to/extension_api.json
+</pre></div>
+</div>
+<p>Thao tác này sẽ tạo ra một số dòng bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">Validate</span> <span class="pre">extension</span> <span class="pre">JSON</span></code> như sau:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Validate extension JSON: Error: Field &#39;classes/AStar2D/methods/get_id_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStar2D/methods/get_point_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStar3D/methods/get_id_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStar3D/methods/get_point_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStarGrid2D/methods/get_id_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStarGrid2D/methods/get_point_path/arguments&#39;: size changed value in new API, from 2 to 3.
+</pre></div>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Chú ý</p>
+<p>Nếu bạn gặp lỗi <code class="docutils literal notranslate"><span class="pre">Hash</span> <span class="pre">changed</span></code> cho một phương thức, điều đó có nghĩa là binding tương thích bị thiếu hoặc không đúng. Những dòng như vậy không nên được thêm vào tệp validation, mà cần được sửa bằng cách bind đúng phương thức tương thích. Hãy kiểm tra kỹ những điều sau:</p>
+<ul class="simple">
+<li><p>Đối với phương thức tương thích (phương thức có tên kết thúc bằng số PR), kiểu, tên và giá trị mặc định của các tham số phải giống hệt phiên bản của phương thức trước khi bạn thay đổi.</p></li>
+<li><p>Trong <code class="docutils literal notranslate"><span class="pre">_bind_compatibility_methods()</span></code>, tên tham số được truyền cho macro <code class="docutils literal notranslate"><span class="pre">D_METHOD()</span></code> trong <code class="docutils literal notranslate"><span class="pre">ClassDB::bind_compatibility_method()</span></code> phải giống hệt tên trong lời gọi <code class="docutils literal notranslate"><span class="pre">ClassDB::bind_method()</span></code> của phương thức gốc.</p></li>
+</ul>
+</div>
+<p>Thêm các dòng này, kèm theo một comment giải thích thay đổi API là gì và các biện pháp đã thực hiện để tránh phá vỡ tương thích, vào một tệp validation được đặt tên theo ID pull request trên GitHub và đặt trong thư mục của phiên bản Godot mà thay đổi đó lẽ ra đã phá vỡ tương thích.</p>
+<p>Vì ví dụ này là cho PR #88047, tên tệp sẽ là <code class="docutils literal notranslate"><span class="pre">GH-88047.txt</span></code>, và vì thay đổi được thực hiện trong quá trình phát triển 4.3 (tức là thay đổi so với 4.2), tệp sẽ nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">misc/extension_api_validation/4.2-stable/</span></code>.</p>
+<p>Xem bên dưới để có ví dụ đầy đủ về một tệp như vậy cho PR này:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">misc/extension_api_validation/4.2-stable/GH-88047.txt</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>GH-88047
+--------
+Validate extension JSON: Error: Field &#39;classes/AStar2D/methods/get_id_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStar2D/methods/get_point_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStar3D/methods/get_id_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStar3D/methods/get_point_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStarGrid2D/methods/get_id_path/arguments&#39;: size changed value in new API, from 2 to 3.
+Validate extension JSON: Error: Field &#39;classes/AStarGrid2D/methods/get_point_path/arguments&#39;: size changed value in new API, from 2 to 3.
+
+Added optional &quot;allow_partial_path&quot; argument to get_id_path and get_point_path methods in AStar classes.
+Compatibility methods registered.
+</pre></div>
+</div>
+</div>
+<p>Vậy là xong! Bạn có thể gặp những trường hợp phức tạp hơn một chút, như sắp xếp lại tham số, thay đổi kiểu trả về, v.v., nhưng phần này đã bao quát những điều cơ bản về cách dùng hệ thống này.</p>
+<p>Để biết thêm thông tin, xem <a class="reference external" href="https://github.com/godotengine/godot/pull/76446">pull request #76446</a>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="profiling/very_sleepy.html" class="btn btn-neutral float-left" title="VerySleepy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../editor/index.html" class="btn btn-neutral float-right" title="Phát triển trình chỉnh sửa" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

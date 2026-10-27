@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/vertex_animation/animating_thousands_of_fish.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Bài hướng dẫn này tìm hiểu một kỹ thuật được dùng trong trò chơi ABZU để kết xuất và tạo hoạt ảnh cho hàng nghìn con cá bằng vertex animation và instancing mesh tĩnh. Trong Godot, điều này có thể t..." />
+<meta name="description" content="Bài hướng dẫn này tìm hiểu một kỹ thuật được dùng trong trò chơi ABZU để kết xuất và tạo hoạt ảnh cho hàng nghìn con cá bằng vertex animation và instancing mesh tĩnh. Trong Godot, điều này có thể t..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Điều khiển hàng nghìn con cá bằng Particles" href="controlling_thousands_of_fish.html" />
+    <link rel="prev" title="Tạo hoạt ảnh cho hàng nghìn đối tượng" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/vertex_animation/animating_thousands_of_fish" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#cpu">CPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#gpu">GPU</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#d">3D</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../optimizing_3d_performance.html">Tối ưu hiệu năng 3D</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tạo hoạt ảnh cho hàng nghìn đối tượng</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="controlling_thousands_of_fish.html">Điều khiển hàng nghìn con cá bằng Particles</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Hiệu năng</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tạo hoạt ảnh cho hàng nghìn đối tượng</a></li>
+      <li class="breadcrumb-item active">Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="animating-thousands-of-fish-with-multimeshinstance3d">
+<span id="doc-animating-thousands-of-fish"></span><h1>Tạo hoạt ảnh cho hàng nghìn con cá với MultiMeshInstance3D<a class="headerlink" href="#animating-thousands-of-fish-with-multimeshinstance3d" title="Link to this heading"></a></h1>
+<p>Bài hướng dẫn này tìm hiểu một kỹ thuật được dùng trong trò chơi <a class="reference external" href="https://www.gdcvault.com/play/1024409/Creating-the-Art-of-ABZ">ABZU</a> để kết xuất và tạo hoạt ảnh cho hàng nghìn con cá bằng vertex animation và instancing mesh tĩnh.</p>
+<p>Trong Godot, điều này có thể thực hiện bằng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shader.html" title="Class reference (English)"><span class="xref std std-ref">Shader</span></a> tùy chỉnh và một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_multimeshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MultiMeshInstance3D</span></a>. Với kỹ thuật sau, bạn có thể kết xuất hàng nghìn đối tượng có hoạt ảnh, ngay cả trên phần cứng cấu hình thấp.</p>
+<p>Chúng ta sẽ bắt đầu bằng việc tạo hoạt ảnh cho một con cá. Sau đó, chúng ta sẽ xem cách mở rộng hoạt ảnh đó cho hàng nghìn con cá.</p>
+<section id="animating-one-fish">
+<h2>Tạo hoạt ảnh cho một con cá<a class="headerlink" href="#animating-one-fish" title="Link to this heading"></a></h2>
+<p>Chúng ta sẽ bắt đầu với một con cá duy nhất. Tải model cá của bạn vào một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a> và thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html" title="Class reference (English)"><span class="xref std std-ref">ShaderMaterial</span></a> mới.</p>
+<p>Đây là con cá chúng ta sẽ dùng cho các hình minh họa, bạn có thể dùng bất kỳ model cá nào bạn thích.</p>
+<img alt="../../../_images/fish.png" src="../../../_images/fish.png" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Model cá trong bài hướng dẫn này được tạo bởi <a class="reference external" href="https://quaternius.com">QuaterniusDev</a> và được chia sẻ theo giấy phép creative commons. CC0 1.0 Universal (CC0 1.0) Public Domain Dedication <a class="reference external" href="https://creativecommons.org/publicdomain/zero/1.0/">https://creativecommons.org/publicdomain/zero/1.0/</a></p>
+</div>
+<p>Thông thường, bạn sẽ dùng xương (bone) và một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_skeleton3d.html" title="Class reference (English)"><span class="xref std std-ref">Skeleton3D</span></a> để tạo hoạt ảnh cho đối tượng. Tuy nhiên, xương được tính hoạt ảnh trên CPU nên bạn phải tính hàng nghìn phép toán mỗi frame, và việc có hàng nghìn đối tượng trở nên bất khả thi. Bằng cách dùng vertex animation trong vertex shader, bạn tránh được việc dùng xương và thay vào đó có thể tính toàn bộ hoạt ảnh chỉ trong vài dòng code và hoàn toàn trên GPU.</p>
+<p>Hoạt ảnh sẽ gồm bốn chuyển động chính:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Chuyển động lắc sang hai bên</p></li>
+<li><p>Chuyển động xoay quanh tâm con cá</p></li>
+<li><p>Chuyển động sóng lan dọc thân</p></li>
+<li><p>Chuyển động vặn xoắn lan dọc thân</p></li>
+</ol>
+</div></blockquote>
+<p>Toàn bộ code cho hoạt ảnh sẽ nằm trong vertex shader, với các uniform điều khiển mức độ chuyển động. Chúng ta dùng uniform để điều khiển cường độ chuyển động để bạn có thể tinh chỉnh hoạt ảnh trong trình chỉnh sửa và thấy kết quả theo thời gian thực mà shader không cần biên dịch lại.</p>
+<p>Tất cả chuyển động sẽ được tạo bằng các sóng cosin áp dụng lên <code class="docutils literal notranslate"><span class="pre">VERTEX</span></code> trong không gian model. Chúng ta muốn các đỉnh nằm trong không gian model để chuyển động luôn tương đối với hướng của con cá. Ví dụ, chuyển động lắc ngang sẽ luôn di chuyển con cá qua lại theo hướng trái-phải của chính nó, thay vì trên trục <code class="docutils literal notranslate"><span class="pre">x</span></code> theo hướng của thế giới.</p>
+<p>Để điều khiển tốc độ hoạt ảnh, chúng ta sẽ bắt đầu bằng việc định nghĩa biến thời gian riêng dựa trên <code class="docutils literal notranslate"><span class="pre">TIME</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//time_scale is a uniform float</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TIME</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time_scale</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Chuyển động đầu tiên chúng ta sẽ triển khai là chuyển động lắc sang hai bên. Có thể tạo nó bằng cách dịch <code class="docutils literal notranslate"><span class="pre">VERTEX.x</span></code> một lượng bằng <code class="docutils literal notranslate"><span class="pre">cos</span></code> của <code class="docutils literal notranslate"><span class="pre">TIME</span></code>. Mỗi lần mesh được kết xuất, tất cả các đỉnh sẽ dịch sang bên một lượng <code class="docutils literal notranslate"><span class="pre">cos(time)</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//side_to_side is a uniform float</span>
+<span class="n">VERTEX</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">side_to_side</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Hoạt ảnh thu được sẽ trông giống như thế này:</p>
+<img alt="../../../_images/sidetoside.gif" src="../../../_images/sidetoside.gif" />
+<p>Tiếp theo, chúng ta thêm chuyển động xoay. Vì con cá được đặt tâm tại (0, 0), tất cả những gì cần làm là nhân <code class="docutils literal notranslate"><span class="pre">VERTEX</span></code> với một ma trận xoay để nó xoay quanh tâm con cá.</p>
+<p>Chúng ta tạo ma trận xoay như sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//angle is scaled by 0.1 so that the fish only pivots and doesn&#39;t rotate all the way around</span>
+<span class="c1">//pivot is a uniform float</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">pivot_angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pivot</span><span class="p">;</span>
+<span class="kt">mat2</span><span class="w"> </span><span class="n">rotation_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">mat2</span><span class="p">(</span><span class="kt">vec2</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">pivot_angle</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">pivot_angle</span><span class="p">)),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">pivot_angle</span><span class="p">),</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">pivot_angle</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>Sau đó áp dụng nó trên các trục <code class="docutils literal notranslate"><span class="pre">x</span></code> và <code class="docutils literal notranslate"><span class="pre">z</span></code> bằng cách nhân nó với <code class="docutils literal notranslate"><span class="pre">VERTEX.xz</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rotation_matrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xz</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Khi chỉ áp dụng chuyển động xoay, bạn sẽ thấy kết quả giống như thế này:</p>
+<img alt="../../../_images/pivot.gif" src="../../../_images/pivot.gif" />
+<p>Hai chuyển động tiếp theo cần lan dọc theo xương sống con cá. Để làm điều đó, chúng ta cần một biến mới, <code class="docutils literal notranslate"><span class="pre">body</span></code>. <code class="docutils literal notranslate"><span class="pre">body</span></code> là một số thực có giá trị <code class="docutils literal notranslate"><span class="pre">0</span></code> ở đuôi cá và <code class="docutils literal notranslate"><span class="pre">1</span></code> ở đầu cá.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">VERTEX</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span><span class="w"> </span><span class="c1">//for a fish centered at (0, 0) with a length of 2</span>
+</pre></div>
+</div>
+<p>Chuyển động tiếp theo là một sóng cosin di chuyển dọc chiều dài con cá. Để nó di chuyển dọc xương sống, chúng ta dịch đầu vào của <code class="docutils literal notranslate"><span class="pre">cos</span></code> theo vị trí dọc xương sống, chính là biến <code class="docutils literal notranslate"><span class="pre">body</span></code> đã định nghĩa ở trên.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//wave is a uniform float</span>
+<span class="n">VERTEX</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">body</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">wave</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Đoạn này trông rất giống chuyển động lắc ngang đã định nghĩa ở trên, nhưng ở đây, nhờ dùng <code class="docutils literal notranslate"><span class="pre">body</span></code> để dịch <code class="docutils literal notranslate"><span class="pre">cos</span></code>, mỗi đỉnh dọc xương sống có một vị trí khác nhau trên sóng, khiến nó trông như có một làn sóng đang di chuyển dọc thân cá.</p>
+<img alt="../../../_images/wave.gif" src="../../../_images/wave.gif" />
+<p>Chuyển động cuối cùng là vặn xoắn, tức một chuyển động lăn lan dọc xương sống. Tương tự như chuyển động xoay, trước tiên chúng ta tạo một ma trận xoay.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//twist is a uniform float</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">twist_angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">body</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">twist</span><span class="p">;</span>
+<span class="kt">mat2</span><span class="w"> </span><span class="n">twist_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">mat2</span><span class="p">(</span><span class="kt">vec2</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">twist_angle</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">twist_angle</span><span class="p">)),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">twist_angle</span><span class="p">),</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">twist_angle</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>Chúng ta áp dụng phép xoay trên các trục <code class="docutils literal notranslate"><span class="pre">xy</span></code> để con cá trông như đang lăn quanh xương sống của nó. Để điều này hoạt động, xương sống của cá cần được đặt tâm trên trục <code class="docutils literal notranslate"><span class="pre">z</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">twist_matrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Đây là con cá khi áp dụng vặn xoắn:</p>
+<img alt="../../../_images/twist.gif" src="../../../_images/twist.gif" />
+<p>Nếu áp dụng lần lượt tất cả các chuyển động này, chúng ta sẽ có một chuyển động uyển chuyển như thạch.</p>
+<img alt="../../../_images/all_motions.gif" src="../../../_images/all_motions.gif" />
+<p>Cá bình thường bơi chủ yếu bằng nửa sau thân. Do đó, chúng ta cần giới hạn các chuyển động lan dọc thân ở nửa sau con cá. Để làm điều này, chúng ta tạo một biến mới, <code class="docutils literal notranslate"><span class="pre">mask</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mask</span></code> là một số thực đi từ <code class="docutils literal notranslate"><span class="pre">0</span></code> ở phần đầu con cá đến <code class="docutils literal notranslate"><span class="pre">1</span></code> ở phần cuối, dùng <code class="docutils literal notranslate"><span class="pre">smoothstep</span></code> để điều khiển điểm mà tại đó diễn ra chuyển tiếp từ <code class="docutils literal notranslate"><span class="pre">0</span></code> sang <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//mask_black and mask_white are uniforms</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smoothstep</span><span class="p">(</span><span class="n">mask_black</span><span class="p">,</span><span class="w"> </span><span class="n">mask_white</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">body</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Dưới đây là hình con cá với <code class="docutils literal notranslate"><span class="pre">mask</span></code> được dùng làm <code class="docutils literal notranslate"><span class="pre">COLOR</span></code>:</p>
+<img alt="../../../_images/mask.png" src="../../../_images/mask.png" />
+<p>Với chuyển động sóng, chúng ta nhân chuyển động với <code class="docutils literal notranslate"><span class="pre">mask</span></code> để giới hạn nó ở nửa sau.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//wave motion with mask</span>
+<span class="n">VERTEX</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">body</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">wave</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Để áp dụng mask cho chuyển động vặn xoắn, chúng ta dùng <code class="docutils literal notranslate"><span class="pre">mix</span></code>. <code class="docutils literal notranslate"><span class="pre">mix</span></code> cho phép trộn vị trí đỉnh giữa một đỉnh được xoay hoàn toàn và một đỉnh không xoay. Chúng ta cần dùng <code class="docutils literal notranslate"><span class="pre">mix</span></code> thay vì nhân <code class="docutils literal notranslate"><span class="pre">mask</span></code> với <code class="docutils literal notranslate"><span class="pre">VERTEX</span></code> đã xoay vì chúng ta không cộng chuyển động vào <code class="docutils literal notranslate"><span class="pre">VERTEX</span></code> mà đang thay thế <code class="docutils literal notranslate"><span class="pre">VERTEX</span></code> bằng phiên bản đã xoay. Nếu nhân nó với <code class="docutils literal notranslate"><span class="pre">mask</span></code>, con cá sẽ bị thu nhỏ lại.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//twist motion with mask</span>
+<span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="n">twist_matrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">VERTEX</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="n">mask</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Kết hợp bốn chuyển động lại với nhau cho chúng ta hoạt ảnh cuối cùng.</p>
+<img alt="../../../_images/all_motions_mask.gif" src="../../../_images/all_motions_mask.gif" />
+<p>Hãy thử nghịch các uniform để thay đổi chu kỳ bơi của con cá. Bạn sẽ thấy có thể tạo ra rất nhiều kiểu bơi khác nhau chỉ với bốn chuyển động này.</p>
+</section>
+<section id="making-a-school-of-fish">
+<h2>Tạo một đàn cá<a class="headerlink" href="#making-a-school-of-fish" title="Link to this heading"></a></h2>
+<p>Godot giúp việc kết xuất hàng nghìn đối tượng giống nhau trở nên dễ dàng bằng node MultiMeshInstance3D.</p>
+<p>Node MultiMeshInstance3D được tạo và sử dụng giống như cách bạn tạo node MeshInstance3D. Trong bài hướng dẫn này, chúng ta sẽ đặt tên node MultiMeshInstance3D là <code class="docutils literal notranslate"><span class="pre">School</span></code>, vì nó sẽ chứa một đàn cá.</p>
+<p>Khi đã có MultiMeshInstance3D, hãy thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_multimesh.html" title="Class reference (English)"><span class="xref std std-ref">MultiMesh</span></a>, rồi thêm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_mesh.html" title="Class reference (English)"><span class="xref std std-ref">Mesh</span></a> của bạn cùng shader ở trên vào MultiMesh đó.</p>
+<p>MultiMesh vẽ Mesh của bạn với ba thuộc tính bổ sung cho mỗi instance: Transform (xoay, tịnh tiến, tỉ lệ), Color và Custom. Custom được dùng để truyền vào 4 biến đa dụng bằng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html" title="Class reference (English)"><span class="xref std std-ref">Color</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">instance_count</span></code> chỉ định số instance của mesh mà bạn muốn vẽ. Hiện tại, hãy để <code class="docutils literal notranslate"><span class="pre">instance_count</span></code> ở <code class="docutils literal notranslate"><span class="pre">0</span></code> vì bạn không thể thay đổi bất kỳ tham số nào khác khi <code class="docutils literal notranslate"><span class="pre">instance_count</span></code> lớn hơn <code class="docutils literal notranslate"><span class="pre">0</span></code>. Chúng ta sẽ đặt <code class="docutils literal notranslate"><span class="pre">instance</span> <span class="pre">count</span></code> bằng GDScript sau.</p>
+<p><code class="docutils literal notranslate"><span class="pre">transform_format</span></code> chỉ định transform được dùng là 3D hay 2D. Trong bài hướng dẫn này, hãy chọn 3D.</p>
+<p>Với cả <code class="docutils literal notranslate"><span class="pre">color_format</span></code> và <code class="docutils literal notranslate"><span class="pre">custom_data_format</span></code>, bạn có thể chọn giữa <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">Byte</span></code> và <code class="docutils literal notranslate"><span class="pre">Float</span></code>. <code class="docutils literal notranslate"><span class="pre">None</span></code> nghĩa là bạn sẽ không truyền dữ liệu đó (biến <code class="docutils literal notranslate"><span class="pre">COLOR</span></code> cho mỗi instance, hoặc <code class="docutils literal notranslate"><span class="pre">INSTANCE_CUSTOM</span></code>) vào shader. <code class="docutils literal notranslate"><span class="pre">Byte</span></code> nghĩa là mỗi số cấu thành màu bạn truyền vào sẽ được lưu bằng 8 bit, còn <code class="docutils literal notranslate"><span class="pre">Float</span></code> nghĩa là mỗi số sẽ được lưu bằng một số thực dấu phẩy động (32 bit). <code class="docutils literal notranslate"><span class="pre">Float</span></code> chậm hơn nhưng chính xác hơn, <code class="docutils literal notranslate"><span class="pre">Byte</span></code> tốn ít bộ nhớ và nhanh hơn, nhưng bạn có thể thấy một số lỗi hiển thị (artifact).</p>
+<p>Bây giờ, đặt <code class="docutils literal notranslate"><span class="pre">instance_count</span></code> bằng số lượng cá mà bạn muốn có.</p>
+<p>Tiếp theo, chúng ta cần đặt transform cho từng instance.</p>
+<p>Có hai cách để đặt transform cho từng instance của MultiMesh. Cách thứ nhất thực hiện hoàn toàn trong trình chỉnh sửa và được mô tả trong <a class="reference internal" href="../../3d/using_multi_mesh_instance.html#doc-using-multi-mesh-instance"><span class="std std-ref">bài hướng dẫn MultiMeshInstance3D</span></a>.</p>
+<p>Cách thứ hai là lặp qua tất cả các instance và đặt transform của chúng trong code. Dưới đây, chúng ta dùng GDScript để lặp qua tất cả các instance và đặt transform của chúng tại một vị trí ngẫu nhiên.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="sx">$School</span><span class="o">.</span><span class="vi">multimesh</span><span class="o">.</span><span class="vi">instance_count</span><span class="p">):</span>
+<span class="w">  </span><span class="k">var</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">()</span>
+<span class="w">  </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="o">.</span><span class="nf">translated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="nb nb-Function">randf</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">25</span><span class="p">))</span>
+<span class="w">  </span><span class="sx">$School</span><span class="o">.</span><span class="vi">multimesh</span><span class="o">.</span><span class="nf">set_instance_transform</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Chạy script này sẽ đặt các con cá tại các vị trí ngẫu nhiên trong một hộp quanh vị trí của MultiMeshInstance3D.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu hiệu năng là vấn đề với bạn, hãy thử chạy scene với ít cá hơn.</p>
+</div>
+<p>Bạn có để ý rằng tất cả các con cá đều ở cùng một vị trí trong chu kỳ bơi không? Điều đó khiến chúng trông rất máy móc. Bước tiếp theo là cho mỗi con cá một vị trí khác nhau trong chu kỳ bơi để cả đàn trông tự nhiên hơn.</p>
+</section>
+<section id="animating-a-school-of-fish">
+<h2>Tạo hoạt ảnh cho một đàn cá<a class="headerlink" href="#animating-a-school-of-fish" title="Link to this heading"></a></h2>
+<p>Một trong những lợi ích của việc tạo hoạt ảnh cho cá bằng các hàm <code class="docutils literal notranslate"><span class="pre">cos</span></code> là chúng được điều khiển bởi một tham số duy nhất, <code class="docutils literal notranslate"><span class="pre">time</span></code>. Để mỗi con cá có một vị trí riêng trong chu kỳ bơi, chúng ta chỉ cần dịch <code class="docutils literal notranslate"><span class="pre">time</span></code>.</p>
+<p>Chúng ta làm điều đó bằng cách cộng giá trị custom của từng instance <code class="docutils literal notranslate"><span class="pre">INSTANCE_CUSTOM</span></code> vào <code class="docutils literal notranslate"><span class="pre">time</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TIME</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time_scale</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mf">6.28318</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">INSTANCE_CUSTOM</span><span class="p">.</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Tiếp theo, chúng ta cần truyền một giá trị vào <code class="docutils literal notranslate"><span class="pre">INSTANCE_CUSTOM</span></code>. Chúng ta làm điều đó bằng cách thêm một dòng vào vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code> ở trên. Trong vòng lặp <code class="docutils literal notranslate"><span class="pre">for</span></code>, chúng ta gán cho mỗi instance một bộ bốn số thực ngẫu nhiên để sử dụng.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="sx">$School</span><span class="o">.</span><span class="vi">multimesh</span><span class="o">.</span><span class="nf">set_instance_custom_data</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="nb nb-Function">randf</span><span class="p">(),</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">(),</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">(),</span><span class="w"> </span><span class="nb nb-Function">randf</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p>Giờ đây tất cả các con cá đều có vị trí riêng trong chu kỳ bơi. Bạn có thể tạo thêm chút cá tính cho chúng bằng cách dùng <code class="docutils literal notranslate"><span class="pre">INSTANCE_CUSTOM</span></code> để khiến chúng bơi nhanh hơn hoặc chậm hơn bằng cách nhân với <code class="docutils literal notranslate"><span class="pre">TIME</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">//set speed from 50% - 150% of regular speed</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TIME</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">INSTANCE_CUSTOM</span><span class="p">.</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time_scale</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mf">6.28318</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">INSTANCE_CUSTOM</span><span class="p">.</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Bạn thậm chí có thể thử nghiệm thay đổi màu của từng instance theo cùng cách bạn đã thay đổi giá trị custom của từng instance.</p>
+<p>Một vấn đề bạn sẽ gặp phải lúc này là các con cá có hoạt ảnh nhưng không di chuyển. Bạn có thể di chuyển chúng bằng cách cập nhật transform của từng instance cho mỗi con cá ở mỗi frame. Mặc dù làm vậy sẽ nhanh hơn việc di chuyển hàng nghìn MeshInstance3D mỗi frame, nhưng có lẽ vẫn sẽ chậm.</p>
+<p>Trong bài hướng dẫn tiếp theo, chúng ta sẽ tìm hiểu cách dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticles3d.html" title="Class reference (English)"><span class="xref std std-ref">GPUParticles3D</span></a> để tận dụng GPU và di chuyển từng con cá riêng lẻ mà vẫn hưởng lợi ích của instancing.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Tạo hoạt ảnh cho hàng nghìn đối tượng" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="controlling_thousands_of_fish.html" class="btn btn-neutral float-right" title="Điều khiển hàng nghìn con cá bằng Particles" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tải và lưu file khi chạy" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/io/runtime_file_loading_and_saving.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Đôi khi, xuất pack, patch và mod không phải là lựa chọn lý tưởng khi bạn muốn người chơi có thể tải nội dung do người dùng tạo vào dự án. Cách đó yêu cầu người dùng tạo file PCK hoặc ZIP qua trình ..." />
+<meta name="description" content="Đôi khi, xuất pack, patch và mod không phải là lựa chọn lý tưởng khi bạn muốn người chơi có thể tải nội dung do người dùng tạo vào dự án. Cách đó yêu cầu người dùng tạo file PCK hoặc ZIP qua trình ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tải và lưu file khi chạy &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="API tuần tự hóa nhị phân" href="binary_serialization_api.html" />
+    <link rel="prev" title="Lưu game" href="saving_games.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/io/runtime_file_loading_and_saving" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Nhập/xuất file và dữ liệu</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="background_loading.html">Tải nền</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_paths.html">Đường dẫn file trong dự án Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saving_games.html">Lưu game</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tải và lưu file khi chạy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plain-text-and-binary-files">File văn bản thuần và file nhị phân</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#images">Hình ảnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#audio-video-files">File âm thanh/video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-scenes">Scene 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fonts">Phông chữ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zip-archives">File nén ZIP</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="binary_serialization_api.html">API tuần tự hóa nhị phân</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Nhập/xuất file và dữ liệu</a></li>
+      <li class="breadcrumb-item active">Tải và lưu file khi chạy</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="runtime-file-loading-and-saving">
+<span id="doc-runtime-loading-and-saving"></span><h1>Tải và lưu file khi chạy<a class="headerlink" href="#runtime-file-loading-and-saving" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="saving_games.html#doc-saving-games"><span class="std std-ref">Lưu game</span></a> để biết thông tin về việc lưu và tải tiến trình game.</p>
+</div>
+<p>Đôi khi, <a class="reference internal" href="../export/exporting_pcks.html#doc-exporting-pcks"><span class="std std-ref">xuất pack, patch và mod</span></a> không phải là lựa chọn lý tưởng khi bạn muốn người chơi có thể tải nội dung do người dùng tạo vào dự án. Cách đó yêu cầu người dùng tạo file PCK hoặc ZIP qua trình chỉnh sửa Godot, chứa các resource đã được Godot import.</p>
+<p>Một số ví dụ về trường hợp sử dụng việc tải và lưu file lúc runtime:</p>
+<ul class="simple">
+<li><p>Tải các gói texture được thiết kế cho game.</p></li>
+<li><p>Tải các bản nhạc do người dùng cung cấp và phát chúng trên một đài radio trong game.</p></li>
+<li><p>Tải các màn chơi tùy chỉnh hoặc mô hình 3D có thể được thiết kế bằng bất kỳ phần mềm DCC 3D nào có khả năng xuất sang glTF hoặc FBX (bao gồm cả các scene glTF do Godot lưu lúc runtime).</p></li>
+<li><p>Sử dụng font do người dùng cung cấp cho menu và HUD.</p></li>
+<li><p>Lưu/tải một định dạng file có thể chứa nhiều file nhưng vẫn dễ dàng được các ứng dụng khác đọc (ZIP).</p></li>
+<li><p>Tải các file được tạo bởi một game hoặc chương trình khác, thậm chí là các file dữ liệu game từ một game khác không được làm bằng Godot.</p></li>
+</ul>
+<p>Việc tải file lúc runtime có thể kết hợp với <a class="reference internal" href="../networking/http_request_class.html#doc-http-request-class"><span class="std std-ref">HTTP request</span></a> để tải resource trực tiếp từ Internet.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p><strong>Không</strong> sử dụng cách tải lúc runtime này để tải các resource thuộc dự án, vì nó kém hiệu quả hơn và không cho phép tận dụng chức năng xử lý resource của Godot (chẳng hạn như translation remap). Xem <a class="reference internal" href="../assets_pipeline/import_process.html#doc-import-process"><span class="std std-ref">Quy trình import</span></a> để biết chi tiết.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem cách lưu và tải hoạt động trong thực tế qua <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/blob/master/loading/runtime_save_load">dự án demo Run-time File Saving and Loading (Serialization)</a>.</p>
+</div>
+<section id="plain-text-and-binary-files">
+<h2>File văn bản thuần và file nhị phân<a class="headerlink" href="#plain-text-and-binary-files" title="Link to this heading"></a></h2>
+<p>Lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fileaccess.html" title="Class reference (English)"><span class="xref std std-ref">class_FileAccess</span></a> của Godot cung cấp các phương thức để truy cập file trên hệ thống file nhằm đọc và ghi:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">save_file</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="s2">&quot;/path/to/file.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="vi">WRITE</span><span class="p">)</span>
+<span class="w">    </span><span class="n">file</span><span class="o">.</span><span class="nf">store_string</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">load_file</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="s2">&quot;/path/to/file.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="vi">READ</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">.</span><span class="nf">get_as_text</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">content</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">SaveFile</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">content</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FileAccess</span><span class="p">.</span><span class="n">Open</span><span class="p">(</span><span class="s">&quot;/Path/To/File.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FileAccess</span><span class="p">.</span><span class="n">ModeFlags</span><span class="p">.</span><span class="n">Write</span><span class="p">);</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">StoreString</span><span class="p">(</span><span class="n">content</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="nf">LoadFile</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FileAccess</span><span class="p">.</span><span class="n">Open</span><span class="p">(</span><span class="s">&quot;/Path/To/File.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FileAccess</span><span class="p">.</span><span class="n">ModeFlags</span><span class="p">.</span><span class="n">Read</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">GetAsText</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">content</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để xử lý các định dạng nhị phân tùy chỉnh (chẳng hạn như tải các định dạng file mà Godot không hỗ trợ), <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fileaccess.html" title="Class reference (English)"><span class="xref std std-ref">class_FileAccess</span></a> cung cấp nhiều phương thức để đọc/ghi số nguyên, số thực, chuỗi và nhiều kiểu khác. Các phương thức FileAccess này có tên bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">get_</span></code> và <code class="docutils literal notranslate"><span class="pre">store_</span></code>.</p>
+<p>Nếu bạn cần kiểm soát nhiều hơn khi đọc file nhị phân hoặc cần đọc các luồng nhị phân không thuộc một file, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedbytearray.html" title="Class reference (English)"><span class="xref std std-ref">class_PackedByteArray</span></a> cung cấp nhiều phương thức hỗ trợ để giải mã/mã hóa chuỗi byte thành số nguyên, số thực, chuỗi và nhiều kiểu khác. Các phương thức PackedByteArray này có tên bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">decode_</span></code> và <code class="docutils literal notranslate"><span class="pre">encode_</span></code>. Xem thêm <a class="reference internal" href="binary_serialization_api.html#doc-binary-serialization-api"><span class="std std-ref">API tuần tự hóa nhị phân</span></a>.</p>
+</section>
+<section id="images">
+<span id="doc-runtime-file-loading-and-saving-images"></span><h2>Hình ảnh<a class="headerlink" href="#images" title="Link to this heading"></a></h2>
+<p>Phương thức tĩnh <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-from-file" title="Class reference (English)"><span class="xref std std-ref">Image.load_from_file</span></a> của Image xử lý mọi thứ, từ việc nhận diện định dạng dựa trên phần mở rộng file cho đến việc đọc file từ ổ đĩa.</p>
+<p>Nếu bạn cần xử lý lỗi hoặc kiểm soát nhiều hơn (chẳng hạn như thay đổi tỉ lệ khi tải một file SVG), hãy dùng một trong các phương thức sau tùy theo định dạng file:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-jpg-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_jpg_from_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-ktx-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_ktx_from_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-png-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_png_from_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-svg-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_svg_from_buffer</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-svg-from-string" title="Class reference (English)"><span class="xref std std-ref">Image.load_svg_from_string</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-tga-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_tga_from_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-webp-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_webp_from_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-load-exr-from-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.load_exr_from_buffer</span></a></p></li>
+</ul>
+<p>Godot cũng có thể lưu một số định dạng hình ảnh khi đang chạy bằng các phương thức sau:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-png" title="Class reference (English)"><span class="xref std std-ref">Image.save_png</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-png-to-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.save_png_to_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-webp" title="Class reference (English)"><span class="xref std std-ref">Image.save_webp</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-webp-to-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.save_webp_to_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-jpg" title="Class reference (English)"><span class="xref std std-ref">Image.save_jpg</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-jpg-to-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.save_jpg_to_buffer</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-exr" title="Class reference (English)"><span class="xref std std-ref">Image.save_exr</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-save-exr-to-buffer" title="Class reference (English)"><span class="xref std std-ref">Image.save_exr_to_buffer</span></a></p></li>
+</ul>
+<p>Các phương thức có hậu tố <code class="docutils literal notranslate"><span class="pre">to_buffer</span></code> lưu hình ảnh vào một PackedByteArray thay vì vào hệ thống file. Điều này hữu ích khi gửi hình ảnh qua mạng hoặc vào một file nén ZIP mà không cần ghi nó ra hệ thống file. Cách này có thể tăng hiệu năng nhờ giảm mức sử dụng I/O.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu hiển thị hình ảnh đã tải lên một bề mặt 3D, hãy nhớ gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html#class-image-method-generate-mipmaps" title="Class reference (English)"><span class="xref std std-ref">Image.generate_mipmaps</span></a> để texture không bị lấm tấm hạt khi nhìn từ xa. Điều này cũng hữu ích trong 2D khi làm theo hướng dẫn về <a class="reference internal" href="../rendering/multiple_resolutions.html#doc-multiple-resolutions-reducing-aliasing-on-downsampling"><span class="std std-ref">giảm răng cưa khi downsampling</span></a>.</p>
+</div>
+<p>Ví dụ về việc tải một hình ảnh và hiển thị nó trong node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_texturerect.html" title="Class reference (English)"><span class="xref std std-ref">class_TextureRect</span></a> (cần chuyển đổi sang <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_imagetexture.html" title="Class reference (English)"><span class="xref std std-ref">class_ImageTexture</span></a>):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load an image of any format supported by Godot from the filesystem.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Image</span><span class="o">.</span><span class="nf">load_from_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="c1"># Optionally, generate mipmaps if displaying the texture on a 3D surface</span>
+<span class="c1"># so that the texture doesn&#39;t look grainy when viewed at a distance.</span>
+<span class="c1">#image.generate_mipmaps()</span>
+<span class="sx">$TextureRect</span><span class="o">.</span><span class="vi">texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ImageTexture</span><span class="o">.</span><span class="nf">create_from_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+<span class="c1"># Save the loaded Image to a PNG image.</span>
+<span class="n">image</span><span class="o">.</span><span class="nf">save_png</span><span class="p">(</span><span class="s2">&quot;/path/to/file.png&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save the converted ImageTexture to a PNG image.</span>
+<span class="sx">$TextureRect</span><span class="o">.</span><span class="vi">texture</span><span class="o">.</span><span class="nf">get_image</span><span class="p">()</span><span class="o">.</span><span class="nf">save_png</span><span class="p">(</span><span class="s2">&quot;/path/to/file.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Load an image of any format supported by Godot from the filesystem.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Image</span><span class="p">.</span><span class="n">LoadFromFile</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="c1">// Optionally, generate mipmaps if displaying the texture on a 3D surface</span>
+<span class="c1">// so that the texture doesn&#39;t look grainy when viewed at a distance.</span>
+<span class="c1">// image.GenerateMipmaps();</span>
+<span class="n">GetNode</span><span class="o">&lt;</span><span class="n">TextureRect</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;TextureRect&quot;</span><span class="p">).</span><span class="n">Texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImageTexture</span><span class="p">.</span><span class="n">CreateFromImage</span><span class="p">(</span><span class="n">image</span><span class="p">);</span>
+
+<span class="c1">// Save the loaded Image to a PNG image.</span>
+<span class="n">image</span><span class="p">.</span><span class="n">SavePng</span><span class="p">(</span><span class="s">&quot;/Path/To/File.png&quot;</span><span class="p">);</span>
+
+<span class="c1">// Save the converted ImageTexture to a PNG image.</span>
+<span class="n">GetNode</span><span class="o">&lt;</span><span class="n">TextureRect</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;TextureRect&quot;</span><span class="p">).</span><span class="n">Texture</span><span class="p">.</span><span class="n">GetImage</span><span class="p">().</span><span class="n">SavePng</span><span class="p">(</span><span class="s">&quot;/Path/To/File.png&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="audio-video-files">
+<span id="doc-runtime-file-loading-and-saving-audio-video-files"></span><h2>File âm thanh/video<a class="headerlink" href="#audio-video-files" title="Link to this heading"></a></h2>
+<p>Godot hỗ trợ tải âm thanh Ogg Vorbis, MP3 và WAV lúc runtime. Lưu ý rằng không phải <em>tất cả</em> các file có phần mở rộng <code class="docutils literal notranslate"><span class="pre">.ogg</span></code> đều là file Ogg Vorbis. Một số có thể là video Ogg Theora, hoặc chứa âm thanh Opus bên trong container Ogg. Các file này sẽ <strong>không</strong> được tải đúng như file âm thanh trong Godot.</p>
+<p>Ví dụ về việc tải một file âm thanh Ogg Vorbis trong node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audiostreamplayer.html" title="Class reference (English)"><span class="xref std std-ref">class_AudioStreamPlayer</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="sx">$AudioStreamPlayer</span><span class="o">.</span><span class="vi">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">AudioStreamOggVorbis</span><span class="o">.</span><span class="nf">load_from_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AudioStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;AudioStreamPlayer&quot;</span><span class="p">).</span><span class="n">Stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AudioStreamOggVorbis</span><span class="p">.</span><span class="n">LoadFromFile</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ví dụ về việc tải một file video Ogg Theora trong node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_videostreamplayer.html" title="Class reference (English)"><span class="xref std std-ref">class_VideoStreamPlayer</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">video_stream_theora</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">VideoStreamTheora</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="c1"># File extension is ignored, so it is possible to load Ogg Theora videos</span>
+<span class="c1"># that have a `.ogg` extension this way.</span>
+<span class="n">video_stream_theora</span><span class="o">.</span><span class="vi">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/path/to/file.ogv&quot;</span>
+<span class="sx">$VideoStreamPlayer</span><span class="o">.</span><span class="vi">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">video_stream_theora</span>
+
+<span class="c1"># VideoStreamPlayer&#39;s Autoplay property won&#39;t work if the stream is empty</span>
+<span class="c1"># before this property is set, so call `play()` after setting `stream`.</span>
+<span class="sx">$VideoStreamPlayer</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">videoStreamTheora</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">VideoStreamTheora</span><span class="p">();</span>
+<span class="c1">// File extension is ignored, so it is possible to load Ogg Theora videos</span>
+<span class="c1">// that have a `.ogg` extension this way.</span>
+<span class="n">videoStreamTheora</span><span class="p">.</span><span class="n">File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/Path/To/File.ogv&quot;</span><span class="p">;</span>
+<span class="n">GetNode</span><span class="o">&lt;</span><span class="n">VideoStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;VideoStreamPlayer&quot;</span><span class="p">).</span><span class="n">Stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">videoStreamTheora</span><span class="p">;</span>
+
+<span class="c1">// VideoStreamPlayer&#39;s Autoplay property won&#39;t work if the stream is empty</span>
+<span class="c1">// before this property is set, so call `Play()` after setting `Stream`.</span>
+<span class="n">GetNode</span><span class="o">&lt;</span><span class="n">VideoStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;VideoStreamPlayer&quot;</span><span class="p">).</span><span class="n">Play</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="d-scenes">
+<span id="doc-runtime-file-loading-and-saving-3d-scenes"></span><h2>Scene 3D<a class="headerlink" href="#d-scenes" title="Link to this heading"></a></h2>
+<p>Godot hỗ trợ glTF 2.0 ở mức hàng đầu, cả trong trình chỉnh sửa lẫn trong các dự án đã xuất. Kết hợp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gltfdocument.html" title="Class reference (English)"><span class="xref std std-ref">class_gltfdocument</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gltfstate.html" title="Class reference (English)"><span class="xref std std-ref">class_gltfstate</span></a>, Godot có thể tải và lưu file glTF trong các dự án đã xuất, ở cả định dạng văn bản (<code class="docutils literal notranslate"><span class="pre">.gltf</span></code>) và nhị phân (<code class="docutils literal notranslate"><span class="pre">.glb</span></code>). Nên ưu tiên định dạng nhị phân vì ghi nhanh hơn và kích thước nhỏ hơn, nhưng định dạng văn bản thì dễ debug hơn.</p>
+<p>Kể từ Godot 4.3, các scene FBX cũng có thể được tải (nhưng không thể lưu) lúc runtime bằng các lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fbxdocument.html" title="Class reference (English)"><span class="xref std std-ref">class_fbxdocument</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fbxstate.html" title="Class reference (English)"><span class="xref std std-ref">class_fbxstate</span></a>. Code để làm việc này giống với glTF, nhưng bạn cần thay tất cả <code class="docutils literal notranslate"><span class="pre">GLTFDocument</span></code> và <code class="docutils literal notranslate"><span class="pre">GLTFState</span></code> bằng <code class="docutils literal notranslate"><span class="pre">FBXDocument</span></code> và <code class="docutils literal notranslate"><span class="pre">FBXState</span></code> trong các đoạn code mẫu bên dưới.</p>
+<p>Ví dụ về việc tải một scene glTF và thêm node gốc của nó vào scene:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load an existing glTF scene.</span>
+<span class="c1"># GLTFState is used by GLTFDocument to store the loaded scene&#39;s state.</span>
+<span class="c1"># GLTFDocument is the class that handles actually loading glTF data into a Godot node tree,</span>
+<span class="c1"># which means it supports glTF features such as lights and cameras.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">gltf_document_load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">GLTFDocument</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">gltf_state_load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">GLTFState</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gltf_document_load</span><span class="o">.</span><span class="nf">append_from_file</span><span class="p">(</span><span class="s2">&quot;/path/to/file.gltf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">gltf_state_load</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OK</span><span class="p">:</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">gltf_scene_root_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gltf_document_load</span><span class="o">.</span><span class="nf">generate_scene</span><span class="p">(</span><span class="n">gltf_state_load</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">gltf_scene_root_node</span><span class="p">)</span>
+<span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">show_error</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t load glTF scene (error code: </span><span class="si">%s</span><span class="s2">).&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="nb nb-Function">error_string</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+
+<span class="c1"># Save a new glTF scene.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">gltf_document_save</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">GLTFDocument</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">gltf_state_save</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">GLTFState</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">gltf_document_save</span><span class="o">.</span><span class="nf">append_from_scene</span><span class="p">(</span><span class="n">gltf_scene_root_node</span><span class="p">,</span><span class="w"> </span><span class="n">gltf_state_save</span><span class="p">)</span>
+<span class="c1"># The file extension in the output `path` (`.gltf` or `.glb`) determines</span>
+<span class="c1"># whether the output uses text or binary format.</span>
+<span class="c1"># `GLTFDocument.generate_buffer()` is also available for saving to memory.</span>
+<span class="n">gltf_document_save</span><span class="o">.</span><span class="nf">write_to_filesystem</span><span class="p">(</span><span class="n">gltf_state_save</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Load an existing glTF scene.</span>
+<span class="c1">// GLTFState is used by GLTFDocument to store the loaded scene&#39;s state.</span>
+<span class="c1">// GLTFDocument is the class that handles actually loading glTF data into a Godot node tree,</span>
+<span class="c1">// which means it supports glTF features such as lights and cameras.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">gltfDocumentLoad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GltfDocument</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">gltfStateLoad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GltfState</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gltfDocumentLoad</span><span class="p">.</span><span class="n">AppendFromFile</span><span class="p">(</span><span class="s">&quot;/Path/To/File.gltf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">gltfStateLoad</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Error</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">gltfSceneRootNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gltfDocumentLoad</span><span class="p">.</span><span class="n">GenerateScene</span><span class="p">(</span><span class="n">gltfStateLoad</span><span class="p">);</span>
+<span class="w">    </span><span class="n">AddChild</span><span class="p">(</span><span class="n">gltfSceneRootNode</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">PrintErr</span><span class="p">(</span><span class="s">$&quot;Couldn&#39;t load glTF scene (error code: {error}).&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Save a new glTF scene.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">gltfDocumentSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GltfDocument</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">gltfStateSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GltfState</span><span class="p">();</span>
+<span class="n">gltfDocumentSave</span><span class="p">.</span><span class="n">AppendFromScene</span><span class="p">(</span><span class="n">gltfSceneRootNode</span><span class="p">,</span><span class="w"> </span><span class="n">gltfStateSave</span><span class="p">);</span>
+<span class="c1">// The file extension in the output `path` (`.gltf` or `.glb`) determines</span>
+<span class="c1">// whether the output uses text or binary format.</span>
+<span class="c1">// `GltfDocument.GenerateBuffer()` is also available for saving to memory.</span>
+<span class="n">gltfDocumentSave</span><span class="p">.</span><span class="n">WriteToFilesystem</span><span class="p">(</span><span class="n">gltfStateSave</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi tải một scene glTF, cần thiết lập một <em>base path</em> để các resource bên ngoài như texture có thể được tải đúng. Khi tải từ file, base path sẽ tự động được đặt thành thư mục chứa file. Khi tải từ buffer, base path này phải được đặt thủ công vì Godot không có cách nào suy ra đường dẫn này.</p>
+<p>Để thiết lập base path, hãy đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gltfstate.html#class-gltfstate-property-base-path" title="Class reference (English)"><span class="xref std std-ref">GLTFState.base_path</span></a> trên instance GLTFState của bạn <em>trước khi</em> gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gltfdocument.html#class-gltfdocument-method-append-from-buffer" title="Class reference (English)"><span class="xref std std-ref">GLTFDocument.append_from_buffer</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gltfdocument.html#class-gltfdocument-method-append-from-file" title="Class reference (English)"><span class="xref std std-ref">GLTFDocument.append_from_file</span></a>.</p>
+</div>
+</section>
+<section id="fonts">
+<span id="doc-runtime-file-loading-and-saving-fonts"></span><h2>Phông chữ<a class="headerlink" href="#fonts" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fontfile.html#class-fontfile-method-load-bitmap-font" title="Class reference (English)"><span class="xref std std-ref">FontFile.load_dynamic_font</span></a> hỗ trợ các định dạng file font sau: TTF, OTF, WOFF, WOFF2, PFB, PFM</p>
+<p>Mặt khác, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fontfile.html#class-fontfile-method-load-bitmap-font" title="Class reference (English)"><span class="xref std std-ref">FontFile.load_bitmap_font</span></a> hỗ trợ định dạng <a class="reference external" href="https://www.angelcode.com/products/bmfont/">BMFont</a> (<code class="docutils literal notranslate"><span class="pre">.fnt</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.font</span></code>).</p>
+<p>Ngoài ra, bạn có thể tải bất kỳ font nào được cài trên hệ thống nhờ khả năng hỗ trợ <a class="reference internal" href="../ui/gui_using_fonts.html#doc-using-fonts-system-fonts"><span class="std std-ref">Phông chữ hệ thống</span></a> của Godot.</p>
+<p>Ví dụ về việc tải một file font tự động theo phần mở rộng file, sau đó thêm nó làm theme override cho node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_label.html" title="Class reference (English)"><span class="xref std std-ref">class_Label</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/path/to/font.ttf&quot;</span>
+<span class="k">var</span><span class="w"> </span><span class="n">path_lower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">path</span><span class="o">.</span><span class="nf">to_lower</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">font_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FontFile</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.ttf&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="ow">or</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.otf&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="ow">or</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.woff&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="ow">or</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.woff2&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="ow">or</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.pfb&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="ow">or</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.pfm&quot;</span><span class="p">)</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="n">font_file</span><span class="o">.</span><span class="nf">load_dynamic_font</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.fnt&quot;</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">path_lower</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;.font&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="n">font_file</span><span class="o">.</span><span class="nf">load_bitmap_font</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Invalid font file format.&quot;</span><span class="p">)</span>
+
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">font_file</span><span class="o">.</span><span class="vi">data</span><span class="o">.</span><span class="nf">is_empty</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># If font was loaded successfully, add it as a theme override.</span>
+<span class="w">    </span><span class="sx">$Label</span><span class="o">.</span><span class="nf">add_theme_font_override</span><span class="p">(</span><span class="s2">&quot;font&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">font_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/Path/To/Font.ttf&quot;</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">fontFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FontFile</span><span class="p">();</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.ttf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.otf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.woff&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.woff2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.pfb&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.pfm&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">fontFile</span><span class="p">.</span><span class="n">LoadDynamicFont</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.fnt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;.font&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">fontFile</span><span class="p">.</span><span class="n">LoadBitmapFont</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">PrintErr</span><span class="p">(</span><span class="s">&quot;Invalid font file format.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">fontFile</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">IsEmpty</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// If font was loaded successfully, add it as a theme override.</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Label</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Label&quot;</span><span class="p">).</span><span class="n">AddThemeFontOverride</span><span class="p">(</span><span class="s">&quot;font&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fontFile</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="zip-archives">
+<h2>File nén ZIP<a class="headerlink" href="#zip-archives" title="Link to this heading"></a></h2>
+<p>Godot hỗ trợ đọc và ghi file nén ZIP bằng các lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_zipreader.html" title="Class reference (English)"><span class="xref std std-ref">class_zipreader</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_zippacker.html" title="Class reference (English)"><span class="xref std std-ref">class_zippacker</span></a>. Tính năng này hỗ trợ mọi file ZIP, kể cả các file được tạo bởi chức năng &quot;Export PCK/ZIP&quot; của Godot (dù các file này sẽ chứa resource Godot đã được import thay vì các file gốc của dự án).</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-method-load-resource-pack" title="Class reference (English)"><span class="xref std std-ref">ProjectSettings.load_resource_pack</span></a> để tải các file PCK hoặc ZIP do Godot xuất làm <a class="reference internal" href="../export/exporting_pcks.html#doc-exporting-pcks"><span class="std std-ref">gói dữ liệu bổ sung</span></a>. Cách này được ưu tiên cho DLC, vì nó giúp việc tương tác với các gói dữ liệu bổ sung trở nên liền mạch (hệ thống file ảo).</p>
+</div>
+<p>Khả năng hỗ trợ file nén ZIP này có thể kết hợp với việc tải hình ảnh, scene 3D và âm thanh lúc runtime để mang lại trải nghiệm modding liền mạch mà không yêu cầu người dùng phải dùng trình chỉnh sửa Godot để tạo file PCK/ZIP.</p>
+<p>Ví dụ liệt kê các file trong một file nén ZIP vào node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_itemlist.html" title="Class reference (English)"><span class="xref std std-ref">class_ItemList</span></a>, sau đó ghi nội dung đọc được vào một file nén ZIP mới (về cơ bản là nhân bản file nén):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load an existing ZIP archive.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">zip_reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ZIPReader</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">zip_reader</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zip_reader</span><span class="o">.</span><span class="nf">get_files</span><span class="p">()</span>
+<span class="c1"># The list of files isn&#39;t sorted by default. Sort it for more consistent processing.</span>
+<span class="n">files</span><span class="o">.</span><span class="nf">sort</span><span class="p">()</span>
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">files</span><span class="p">:</span>
+<span class="w">    </span><span class="sx">$ItemList</span><span class="o">.</span><span class="nf">add_item</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="l">null</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Make folders disabled in the list.</span>
+<span class="w">    </span><span class="sx">$ItemList</span><span class="o">.</span><span class="nf">set_item_disabled</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">.</span><span class="nf">ends_with</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">))</span>
+
+<span class="c1"># Save a new ZIP archive.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">zip_packer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ZIPPacker</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zip_packer</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">OK</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t open path for saving ZIP archive (error code: </span><span class="si">%s</span><span class="s2">).&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="nb nb-Function">error_string</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span>
+
+<span class="c1"># Reuse the above ZIPReader instance to read files from an existing ZIP archive.</span>
+<span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">zip_reader</span><span class="o">.</span><span class="nf">get_files</span><span class="p">():</span>
+<span class="w">    </span><span class="n">zip_packer</span><span class="o">.</span><span class="nf">start_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="w">    </span><span class="n">zip_packer</span><span class="o">.</span><span class="nf">write_file</span><span class="p">(</span><span class="n">zip_reader</span><span class="o">.</span><span class="nf">read_file</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+<span class="w">    </span><span class="n">zip_packer</span><span class="o">.</span><span class="nf">close_file</span><span class="p">()</span>
+
+<span class="n">zip_packer</span><span class="o">.</span><span class="nf">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Load an existing ZIP archive.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">zipReader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ZipReader</span><span class="p">();</span>
+<span class="n">zipReader</span><span class="p">.</span><span class="n">Open</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zipReader</span><span class="p">.</span><span class="n">GetFiles</span><span class="p">();</span>
+<span class="c1">// The list of files isn&#39;t sorted by default. Sort it for more consistent processing.</span>
+<span class="n">Array</span><span class="p">.</span><span class="n">Sort</span><span class="p">(</span><span class="n">files</span><span class="p">);</span>
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">files</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">ItemList</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;ItemList&quot;</span><span class="p">).</span><span class="n">AddItem</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Make folders disabled in the list.</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">ItemList</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;ItemList&quot;</span><span class="p">).</span><span class="n">SetItemDisabled</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="sc">&#39;/&#39;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// Save a new ZIP archive.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">zipPacker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ZipPacker</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zipPacker</span><span class="p">.</span><span class="n">Open</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Error</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">PrintErr</span><span class="p">(</span><span class="s">$&quot;Couldn&#39;t open path for saving ZIP archive (error code: {error}).&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Reuse the above ZIPReader instance to read files from an existing ZIP archive.</span>
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">zipReader</span><span class="p">.</span><span class="n">GetFiles</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">zipPacker</span><span class="p">.</span><span class="n">StartFile</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zipPacker</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="n">zipReader</span><span class="p">.</span><span class="n">ReadFile</span><span class="p">(</span><span class="n">file</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zipPacker</span><span class="p">.</span><span class="n">CloseFile</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">zipPacker</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="saving_games.html" class="btn btn-neutral float-left" title="Lưu game" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="binary_serialization_api.html" class="btn btn-neutral float-right" title="API tuần tự hóa nhị phân" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

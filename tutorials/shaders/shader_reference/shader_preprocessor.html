@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Bộ tiền xử lý shader" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/shader_reference/shader_preprocessor.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Tại sao nên dùng bộ tiền xử lý shader?: Trong các ngôn ngữ lập trình, bộ tiền xử lý(preprocessor) cho phép thay đổi mã trước khi trình biên dịch đọc nó. Khác với trình biên dịch, bộ tiền xử lý khôn..." />
+<meta name="description" content="Tại sao nên dùng bộ tiền xử lý shader?: Trong các ngôn ngữ lập trình, bộ tiền xử lý(preprocessor) cho phép thay đổi mã trước khi trình biên dịch đọc nó. Khác với trình biên dịch, bộ tiền xử lý khôn..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Bộ tiền xử lý shader &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Spatial shader" href="spatial_shader.html" />
+    <link rel="prev" title="Các hàm shader dựng sẵn" href="shader_functions.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/shader_reference/shader_preprocessor" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Tham chiếu shading</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="shading_language.html">Ngôn ngữ shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shader_functions.html">Các hàm shader dựng sẵn</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Bộ tiền xử lý shader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-use-a-shader-preprocessor">Tại sao nên dùng bộ tiền xử lý shader?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#directives">Chỉ thị</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#built-in-defines">Các define tích hợp sẵn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spatial_shader.html">Spatial shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="canvas_item_shader.html">Shader CanvasItem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particle_shader.html">Particle shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sky_shader.html">Sky shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fog_shader.html">Fog shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="texture_blit_shader.html">Texture blit shader</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visual_shaders.html">Sử dụng VisualShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compute_shaders.html">Sử dụng compute shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../screen-reading_shaders.html">Shader đọc màn hình</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_viewport_as_texture.html">Dùng SubViewport làm texture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced_postprocessing.html">Hậu xử lý nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Shader</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tham chiếu shading</a></li>
+      <li class="breadcrumb-item active">Bộ tiền xử lý shader</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="shader-preprocessor">
+<span id="doc-shader-preprocessor"></span><h1>Bộ tiền xử lý shader<a class="headerlink" href="#shader-preprocessor" title="Link to this heading"></a></h1>
+<section id="why-use-a-shader-preprocessor">
+<h2>Tại sao nên dùng bộ tiền xử lý shader?<a class="headerlink" href="#why-use-a-shader-preprocessor" title="Link to this heading"></a></h2>
+<p>Trong các ngôn ngữ lập trình, <em>bộ tiền xử lý</em> (preprocessor) cho phép thay đổi mã trước khi trình biên dịch đọc nó. Khác với trình biên dịch, bộ tiền xử lý không quan tâm cú pháp của mã được tiền xử lý có hợp lệ hay không. Bộ tiền xử lý luôn thực hiện những gì các <em>chỉ thị</em> (directive) yêu cầu. Chỉ thị là một câu lệnh bắt đầu bằng ký hiệu thăng (<code class="docutils literal notranslate"><span class="pre">#</span></code>). Nó không phải là một <em>từ khóa</em> của ngôn ngữ shader (như <code class="docutils literal notranslate"><span class="pre">if</span></code> hay <code class="docutils literal notranslate"><span class="pre">for</span></code>), mà là một loại token đặc biệt trong ngôn ngữ.</p>
+<p>Để tránh lặp lại và tăng khả năng tái sử dụng mã, bạn có thể dùng bộ tiền xử lý shader trong các shader dạng văn bản. Cú pháp tương tự những gì hầu hết các trình biên dịch shader GLSL hỗ trợ (vốn cũng tương tự bộ tiền xử lý C/C++).</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bộ tiền xử lý shader không khả dụng trong <a class="reference internal" href="../visual_shaders.html#doc-visual-shaders"><span class="std std-ref">visual shader</span></a>. Nếu cần thêm các câu lệnh tiền xử lý vào một visual shader, bạn có thể chuyển nó thành shader dạng văn bản bằng tùy chọn <strong>Convert to Shader</strong> trong menu thả xuống của resource VisualShader trên Inspector. Việc chuyển đổi này chỉ một chiều; shader dạng văn bản không thể chuyển ngược lại thành visual shader.</p>
+</div>
+</section>
+<section id="directives">
+<h2>Chỉ thị<a class="headerlink" href="#directives" title="Link to this heading"></a></h2>
+<section id="general-syntax">
+<h3>Cú pháp chung<a class="headerlink" href="#general-syntax" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Chỉ thị tiền xử lý không dùng dấu ngoặc nhọn (<code class="docutils literal notranslate"><span class="pre">{}</span></code>), nhưng có thể dùng dấu ngoặc đơn.</p></li>
+<li><p>Chỉ thị tiền xử lý <strong>không bao giờ</strong> kết thúc bằng dấu chấm phẩy (ngoại trừ <code class="docutils literal notranslate"><span class="pre">#define</span></code>, nơi điều này được phép nhưng có thể gây nguy hiểm).</p></li>
+<li><p>Chỉ thị tiền xử lý có thể trải dài nhiều dòng bằng cách kết thúc mỗi dòng bằng dấu gạch chéo ngược (<code class="docutils literal notranslate"><span class="pre">\</span></code>). Lần xuống dòng đầu tiên <em>không</em> có dấu gạch chéo ngược sẽ kết thúc câu lệnh tiền xử lý.</p></li>
+</ul>
+</section>
+<section id="define">
+<h3>#define<a class="headerlink" href="#define" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#define</span> <span class="pre">&lt;identifier&gt;</span> <span class="pre">[replacement_code]</span></code>.</p>
+<p>Định nghĩa định danh đứng sau chỉ thị này là một macro, và thay thế mọi lần xuất hiện tiếp theo của nó bằng mã thay thế được cung cấp trong shader. Việc thay thế được thực hiện theo &quot;nguyên từ&quot;, nghĩa là sẽ không thay thế nếu chuỗi là một phần của chuỗi khác (không có khoảng trắng hay toán tử ngăn cách).</p>
+<p>Các define có mã thay thế cũng có thể có một hoặc nhiều <em>đối số</em>, có thể truyền vào khi tham chiếu đến define đó (tương tự lời gọi hàm).</p>
+<p>Nếu mã thay thế không được định nghĩa, định danh chỉ có thể được dùng với các chỉ thị <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">#ifndef</span></code>.</p>
+<p>Nếu ký hiệu <em>nối</em> (<code class="docutils literal notranslate"><span class="pre">##</span></code>) xuất hiện trong mã thay thế, nó sẽ bị loại bỏ khi chèn macro, cùng với mọi khoảng trắng xung quanh, và nối các từ cũng như đối số xung quanh thành một token mới.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2D</span><span class="w"> </span><span class="n">material0</span><span class="p">;</span>
+
+<span class="cp">#define SAMPLE(N) vec4 tex##N = texture(material##N, UV)</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SAMPLE</span><span class="p">(</span><span class="mo">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tex0</span><span class="p">.</span><span class="n">rgb</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>So với hằng số (<code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">CONSTANT</span> <span class="pre">=</span> <span class="pre">value;</span></code>), <code class="docutils literal notranslate"><span class="pre">#define</span></code> có thể được dùng ở bất kỳ đâu trong shader (kể cả trong uniform hint). <code class="docutils literal notranslate"><span class="pre">#define</span></code> cũng có thể dùng để chèn mã shader tùy ý vào bất kỳ vị trí nào, điều mà hằng số không làm được.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">spatial</span><span class="p">;</span>
+
+<span class="c1">// Notice the lack of semicolon at the end of the line, as the replacement text</span>
+<span class="c1">// shouldn&#39;t insert a semicolon on its own.</span>
+<span class="c1">// If the directive ends with a semicolon, the semicolon is inserted in every usage</span>
+<span class="c1">// of the directive, even when this causes a syntax error.</span>
+<span class="cp">#define USE_MY_COLOR</span>
+<span class="cp">#define MY_COLOR vec3(1, 0, 0)</span>
+
+<span class="c1">// Replacement with arguments.</span>
+<span class="c1">// All arguments are required (no default values can be provided).</span>
+<span class="cp">#define BRIGHTEN_COLOR(r, g, b) vec3(r + 0.5, g + 0.5, b + 0.5)</span>
+
+<span class="c1">// Multiline replacement using backslashes for continuation:</span>
+<span class="cp">#define SAMPLE(param1, param2, param3, param4) long_function_call( \</span>
+<span class="cp">        param1, \</span>
+<span class="cp">        param2, \</span>
+<span class="cp">        param3, \</span>
+<span class="cp">        param4 \</span>
+<span class="cp">)</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#ifdef USE_MY_COLOR</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MY_COLOR</span><span class="p">;</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Dùng <code class="docutils literal notranslate"><span class="pre">#define</span></code> cho một định danh đã được định nghĩa sẽ gây lỗi. Để tránh điều này, hãy dùng <code class="docutils literal notranslate"><span class="pre">#undef</span> <span class="pre">&lt;identifier&gt;</span></code>.</p>
+</section>
+<section id="undef">
+<h3>#undef<a class="headerlink" href="#undef" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#undef</span> <span class="pre">identifier</span></code></p>
+<p>Chỉ thị <code class="docutils literal notranslate"><span class="pre">#undef</span></code> có thể được dùng để hủy một chỉ thị <code class="docutils literal notranslate"><span class="pre">#define</span></code> đã định nghĩa trước đó:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define MY_COLOR vec3(1, 0, 0)</span>
+
+<span class="kt">vec3</span><span class="w"> </span><span class="n">get_red_color</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">MY_COLOR</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cp">#undef MY_COLOR</span>
+<span class="cp">#define MY_COLOR vec3(0, 1, 0)</span>
+
+<span class="kt">vec3</span><span class="w"> </span><span class="n">get_green_color</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">MY_COLOR</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Like in most preprocessors, undefining a define that was not previously defined is allowed</span>
+<span class="c1">// (and won&#39;t print any warning or error).</span>
+<span class="cp">#undef THIS_DOES_NOT_EXIST</span>
+</pre></div>
+</div>
+<p>Nếu không có <code class="docutils literal notranslate"><span class="pre">#undef</span></code> trong ví dụ trên, sẽ xảy ra lỗi định nghĩa lại macro.</p>
+</section>
+<section id="if">
+<h3>#if<a class="headerlink" href="#if" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">&lt;condition&gt;</span></code></p>
+<p>Chỉ thị <code class="docutils literal notranslate"><span class="pre">#if</span></code> kiểm tra xem <code class="docutils literal notranslate"><span class="pre">condition</span></code> có thỏa mãn hay không. Nếu nó được đánh giá thành một giá trị khác 0, khối mã sẽ được đưa vào, ngược lại sẽ bị bỏ qua.</p>
+<p>Để được đánh giá đúng, điều kiện phải là một biểu thức cho ra kết quả đơn giản kiểu số thực, số nguyên hoặc boolean. Có thể có nhiều khối điều kiện nối với nhau bằng toán tử <code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code> (AND) hoặc <code class="docutils literal notranslate"><span class="pre">||</span></code> (OR). Nó có thể được tiếp nối bởi một khối <code class="docutils literal notranslate"><span class="pre">#else</span></code>, nhưng <strong>bắt buộc</strong> phải kết thúc bằng chỉ thị <code class="docutils literal notranslate"><span class="pre">#endif</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define VAR 3</span>
+<span class="cp">#define USE_LIGHT 0 // Evaluates to `false`.</span>
+<span class="cp">#define USE_COLOR 1 // Evaluates to `true`.</span>
+
+<span class="cp">#if VAR == 3 &amp;&amp; (USE_LIGHT || USE_COLOR)</span>
+<span class="c1">// Condition is `true`. Include this portion in the final shader.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Với <em>hàm tiền xử lý</em> <code class="docutils literal notranslate"><span class="pre">defined()</span></code>, bạn có thể kiểm tra xem định danh được truyền vào đã được định nghĩa bởi một <code class="docutils literal notranslate"><span class="pre">#define</span></code> đặt phía trên chỉ thị đó hay chưa. Điều này hữu ích để tạo nhiều phiên bản shader trong cùng một file. Nó có thể được tiếp nối bởi một khối <code class="docutils literal notranslate"><span class="pre">#else</span></code>, nhưng phải kết thúc bằng chỉ thị <code class="docutils literal notranslate"><span class="pre">#endif</span></code>.</p>
+<p>Kết quả của hàm <code class="docutils literal notranslate"><span class="pre">defined()</span></code> có thể được phủ định bằng cách đặt ký hiệu <code class="docutils literal notranslate"><span class="pre">!</span></code> (boolean NOT) phía trước. Cách này dùng để kiểm tra xem một define <em>chưa</em> được đặt.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define USE_LIGHT</span>
+<span class="cp">#define USE_COLOR</span>
+
+<span class="c1">// Correct syntax:</span>
+<span class="cp">#if defined(USE_LIGHT) || defined(USE_COLOR) || !defined(USE_REFRACTION)</span>
+<span class="c1">// Condition is `true`. Include this portion in the final shader.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Hãy cẩn thận, vì <code class="docutils literal notranslate"><span class="pre">defined()</span></code> chỉ được bao một định danh duy nhất trong dấu ngoặc đơn, không bao giờ nhiều hơn:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">// Incorrect syntax (parentheses are not placed where they should be):</span>
+<span class="cp">#if defined(USE_LIGHT || USE_COLOR || !USE_REFRACTION)</span>
+<span class="c1">// This will cause an error or not behave as expected.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Trong trình chỉnh sửa shader, các nhánh tiền xử lý được đánh giá là <code class="docutils literal notranslate"><span class="pre">false</span></code> (và do đó bị loại khỏi shader được biên dịch cuối cùng) sẽ hiển thị màu xám. Điều này không áp dụng cho các câu lệnh <code class="docutils literal notranslate"><span class="pre">if</span></code> lúc runtime.</p>
+</div>
+<p><strong>Tiền xử lý #if so với câu lệnh if: Lưu ý về hiệu năng</strong></p>
+<p><a class="reference internal" href="shading_language.html#doc-shading-language"><span class="std std-ref">Ngôn ngữ shader</span></a> hỗ trợ các câu lệnh <code class="docutils literal notranslate"><span class="pre">if</span></code> lúc runtime:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="k">uniform</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">USE_LIGHT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">USE_LIGHT</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// This part is included in the compiled shader, and always run.</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// This part is included in the compiled shader, but never run.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Nếu uniform không bao giờ thay đổi, cách này hoạt động giống hệt cách dùng câu lệnh tiền xử lý <code class="docutils literal notranslate"><span class="pre">#if</span></code> sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define USE_LIGHT</span>
+
+<span class="cp">#if defined(USE_LIGHT)</span>
+<span class="c1">// This part is included in the compiled shader, and always run.</span>
+<span class="cp">#else</span>
+<span class="c1">// This part is *not* included in the compiled shader (and therefore never run).</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Tuy nhiên, biến thể <code class="docutils literal notranslate"><span class="pre">#if</span></code> có thể nhanh hơn trong một số trường hợp. Lý do là mọi nhánh runtime trong shader vẫn được biên dịch và các biến trong những nhánh đó vẫn có thể chiếm không gian thanh ghi, ngay cả khi chúng không bao giờ thực sự được chạy.</p>
+<p>Các GPU hiện đại <a class="reference external" href="https://medium.com/&#64;jasonbooth_86226/branching-on-a-gpu-18bfc83694f2">khá hiệu quả</a> trong việc thực hiện rẽ nhánh &quot;tĩnh&quot;. Rẽ nhánh &quot;tĩnh&quot; là các câu lệnh <code class="docutils literal notranslate"><span class="pre">if</span></code> mà <em>tất cả</em> pixel/vertex đều cho cùng một kết quả trong một lần gọi shader nhất định. Tuy nhiên, lượng <abbr title="Vector General-Purpose Register">VGPRs</abbr> lớn (có thể do có quá nhiều nhánh) vẫn có thể làm chậm đáng kể việc thực thi shader.</p>
+</section>
+<section id="elif">
+<h3>#elif<a class="headerlink" href="#elif" title="Link to this heading"></a></h3>
+<p>Chỉ thị <code class="docutils literal notranslate"><span class="pre">#elif</span></code> có nghĩa là &quot;else if&quot; và kiểm tra điều kiện được truyền vào nếu <code class="docutils literal notranslate"><span class="pre">#if</span></code> phía trên được đánh giá là <code class="docutils literal notranslate"><span class="pre">false</span></code>. <code class="docutils literal notranslate"><span class="pre">#elif</span></code> chỉ có thể được dùng bên trong một khối <code class="docutils literal notranslate"><span class="pre">#if</span></code>. Có thể dùng nhiều câu lệnh <code class="docutils literal notranslate"><span class="pre">#elif</span></code> sau một câu lệnh <code class="docutils literal notranslate"><span class="pre">#if</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define VAR 2</span>
+
+<span class="cp">#if VAR == 0</span>
+<span class="c1">// Not included.</span>
+<span class="cp">#elif VAR == 1</span>
+<span class="c1">// Not included.</span>
+<span class="cp">#elif VAR == 2</span>
+<span class="c1">// Condition is `true`. Include this portion in the final shader.</span>
+<span class="cp">#else</span>
+<span class="c1">// Not included.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Giống như với <code class="docutils literal notranslate"><span class="pre">#if</span></code>, có thể dùng hàm tiền xử lý <code class="docutils literal notranslate"><span class="pre">defined()</span></code>:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SHADOW_QUALITY_MEDIUM</span>
+
+<span class="cp">#if defined(SHADOW_QUALITY_HIGH)</span>
+<span class="c1">// High shadow quality.</span>
+<span class="cp">#elif defined(SHADOW_QUALITY_MEDIUM)</span>
+<span class="c1">// Medium shadow quality.</span>
+<span class="cp">#else</span>
+<span class="c1">// Low shadow quality.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="ifdef">
+<h3>#ifdef<a class="headerlink" href="#ifdef" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#ifdef</span> <span class="pre">&lt;identifier&gt;</span></code></p>
+<p>Đây là cách viết tắt của <code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">defined(...)</span></code>. Kiểm tra xem định danh được truyền vào đã được định nghĩa bởi <code class="docutils literal notranslate"><span class="pre">#define</span></code> đặt phía trên chỉ thị đó hay chưa. Điều này hữu ích để tạo nhiều phiên bản shader trong cùng một file. Nó có thể được tiếp nối bởi một khối <code class="docutils literal notranslate"><span class="pre">#else</span></code>, nhưng phải kết thúc bằng chỉ thị <code class="docutils literal notranslate"><span class="pre">#endif</span></code>.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define USE_LIGHT</span>
+
+<span class="cp">#ifdef USE_LIGHT</span>
+<span class="c1">// USE_LIGHT is defined. Include this portion in the final shader.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Bộ tiền xử lý <em>không</em> hỗ trợ <code class="docutils literal notranslate"><span class="pre">#elifdef</span></code> như một cách viết tắt của <code class="docutils literal notranslate"><span class="pre">#elif</span> <span class="pre">defined(...)</span></code>. Thay vào đó, hãy dùng chuỗi <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code> và <code class="docutils literal notranslate"><span class="pre">#else</span></code> sau khi bạn cần nhiều hơn hai nhánh:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SHADOW_QUALITY_MEDIUM</span>
+
+<span class="cp">#ifdef SHADOW_QUALITY_HIGH</span>
+<span class="c1">// High shadow quality.</span>
+<span class="cp">#else</span>
+<span class="cp">#ifdef SHADOW_QUALITY_MEDIUM</span>
+<span class="c1">// Medium shadow quality.</span>
+<span class="cp">#else</span>
+<span class="c1">// Low shadow quality.</span>
+<span class="cp">#endif // This ends `SHADOW_QUALITY_MEDIUM`&#39;s branch.</span>
+<span class="cp">#endif // This ends `SHADOW_QUALITY_HIGH`&#39;s branch.</span>
+</pre></div>
+</div>
+</section>
+<section id="ifndef">
+<h3>#ifndef<a class="headerlink" href="#ifndef" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#ifndef</span> <span class="pre">&lt;identifier&gt;</span></code></p>
+<p>Đây là cách viết tắt của <code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">!defined(...)</span></code>. Tương tự <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code>, nhưng kiểm tra xem định danh được truyền vào <strong>chưa</strong> được định nghĩa bởi <code class="docutils literal notranslate"><span class="pre">#define</span></code> trước chỉ thị đó.</p>
+<p>Đây là phép ngược hoàn toàn của <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code>; nó sẽ luôn khớp trong những trường hợp mà <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code> không bao giờ khớp, và ngược lại.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define USE_LIGHT</span>
+
+<span class="cp">#ifndef USE_LIGHT</span>
+<span class="c1">// Evaluates to `false`. This portion won&#39;t be included in the final shader.</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifndef USE_COLOR</span>
+<span class="c1">// Evaluates to `true`. This portion will be included in the final shader.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="else">
+<h3>#else<a class="headerlink" href="#else" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#else</span></code></p>
+<p>Định nghĩa khối tùy chọn được đưa vào khi chỉ thị <code class="docutils literal notranslate"><span class="pre">#if</span></code>, <code class="docutils literal notranslate"><span class="pre">#elif</span></code>, <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">#ifndef</span></code> trước đó được đánh giá là false.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">spatial</span><span class="p">;</span>
+
+<span class="cp">#define MY_COLOR vec3(1.0, 0, 0)</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#ifdef MY_COLOR</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MY_COLOR</span><span class="p">;</span>
+<span class="cp">#else</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mo">0</span><span class="p">,</span><span class="w"> </span><span class="mo">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="endif">
+<h3>#endif<a class="headerlink" href="#endif" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#endif</span></code></p>
+<p>Dùng để kết thúc các chỉ thị <code class="docutils literal notranslate"><span class="pre">#if</span></code>, <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code>, <code class="docutils literal notranslate"><span class="pre">#ifndef</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">#else</span></code> theo sau.</p>
+</section>
+<section id="error">
+<h3>#error<a class="headerlink" href="#error" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#error</span> <span class="pre">&lt;message&gt;</span></code></p>
+<p>Chỉ thị <code class="docutils literal notranslate"><span class="pre">#error</span></code> buộc bộ tiền xử lý phát ra một lỗi kèm thông báo tùy chọn. Ví dụ, nó hữu ích khi dùng trong khối <code class="docutils literal notranslate"><span class="pre">#if</span></code> để giới hạn chặt chẽ giá trị được định nghĩa.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#define MAX_LOD 3</span>
+<span class="cp">#define LOD 4</span>
+
+<span class="cp">#if LOD &gt; MAX_LOD</span>
+<span class="cp">#error LOD exceeds MAX_LOD</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="include">
+<h3>#include<a class="headerlink" href="#include" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;path&quot;</span></code></p>
+<p>Chỉ thị <code class="docutils literal notranslate"><span class="pre">#include</span></code> đưa <em>toàn bộ</em> nội dung của một file shader include vào shader. <code class="docutils literal notranslate"><span class="pre">&quot;path&quot;</span></code> có thể là đường dẫn tuyệt đối <code class="docutils literal notranslate"><span class="pre">res://</span></code> hoặc đường dẫn tương đối so với file shader hiện tại. Đường dẫn tương đối chỉ được phép trong các shader được lưu thành file <code class="docutils literal notranslate"><span class="pre">.gdshader</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.gdshaderinc</span></code>, còn đường dẫn tuyệt đối có thể dùng trong các shader được nhúng vào file scene/resource.</p>
+<p>Bạn có thể tạo shader include mới bằng tùy chọn menu <strong>File &gt; Create Shader Include</strong> của trình chỉnh sửa shader, hoặc bằng cách tạo một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shaderinclude.html" title="Class reference (English)"><span class="xref std std-ref">ShaderInclude</span></a> mới trong FileSystem dock.</p>
+<p>Shader include có thể được include từ bên trong bất kỳ shader nào, hoặc shader include khác, tại bất kỳ vị trí nào trong file.</p>
+<p>Khi include shader include trong phạm vi toàn cục của shader, bạn nên đặt nó sau câu lệnh <code class="docutils literal notranslate"><span class="pre">shader_type</span></code> ban đầu.</p>
+<p>Bạn cũng có thể include shader include từ bên trong thân một hàm. Lưu ý rằng trình chỉnh sửa shader nhiều khả năng sẽ báo lỗi cho mã trong shader include của bạn, vì mã đó có thể không hợp lệ bên ngoài ngữ cảnh mà nó được viết cho. Bạn có thể chọn bỏ qua các lỗi này (shader vẫn sẽ biên dịch bình thường), hoặc bọc phần include trong một khối <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code> kiểm tra một define từ shader của bạn.</p>
+<p><code class="docutils literal notranslate"><span class="pre">#include</span></code> hữu ích để tạo thư viện các hàm trợ giúp (hoặc macro) và giảm trùng lặp mã. Khi dùng <code class="docutils literal notranslate"><span class="pre">#include</span></code>, hãy cẩn thận với xung đột tên, vì không được phép định nghĩa lại hàm hoặc macro.</p>
+<p><code class="docutils literal notranslate"><span class="pre">#include</span></code> chịu một số hạn chế:</p>
+<ul class="simple">
+<li><p>Chỉ có thể include các resource shader include (có đuôi <code class="docutils literal notranslate"><span class="pre">.gdshaderinc</span></code>). File <code class="docutils literal notranslate"><span class="pre">.gdshader</span></code> không thể được include bởi shader khác, nhưng một file <code class="docutils literal notranslate"><span class="pre">.gdshaderinc</span></code> có thể include các file <code class="docutils literal notranslate"><span class="pre">.gdshaderinc</span></code> khác.</p></li>
+<li><p>Phụ thuộc vòng <strong>không</strong> được phép và sẽ gây lỗi.</p></li>
+<li><p>Để tránh đệ quy vô hạn, độ sâu include được giới hạn ở 25 cấp.</p></li>
+</ul>
+<p>Ví dụ file shader include:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">// fancy_color.gdshaderinc</span>
+
+<span class="c1">// While technically allowed, there is usually no `shader_type` declaration in include files.</span>
+
+<span class="kt">vec3</span><span class="w"> </span><span class="n">get_fancy_color</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Ví dụ shader cơ sở (dùng file include đã tạo ở trên):</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="c1">// material.gdshader</span>
+
+<span class="n">shader_type</span><span class="w"> </span><span class="n">spatial</span><span class="p">;</span>
+
+<span class="cp">#include &quot;res://fancy_color.gdshaderinc&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// No error, as we&#39;ve included a definition for `get_fancy_color()` via the shader include.</span>
+<span class="w">    </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_fancy_color</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="pragma">
+<h3>#pragma<a class="headerlink" href="#pragma" title="Link to this heading"></a></h3>
+<p><strong>Cú pháp:</strong> <code class="docutils literal notranslate"><span class="pre">#pragma</span> <span class="pre">value</span></code></p>
+<p>Chỉ thị <code class="docutils literal notranslate"><span class="pre">#pragma</span></code> cung cấp thông tin bổ sung cho bộ tiền xử lý hoặc trình biên dịch.</p>
+<p>Hiện tại, nó chỉ có thể có một giá trị: <code class="docutils literal notranslate"><span class="pre">disable_preprocessor</span></code>. Nếu bạn không cần bộ tiền xử lý, hãy dùng chỉ thị đó để tăng tốc biên dịch shader bằng cách bỏ qua bước tiền xử lý.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma disable_preprocessor</span>
+
+<span class="cp">#if USE_LIGHT</span>
+<span class="c1">// This causes a shader compilation error, as the `#if USE_LIGHT` and `#endif`</span>
+<span class="c1">// are included as-is in the final shader code.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="built-in-defines">
+<h2>Các define tích hợp sẵn<a class="headerlink" href="#built-in-defines" title="Link to this heading"></a></h2>
+<section id="current-renderer">
+<h3>Renderer hiện tại<a class="headerlink" href="#current-renderer" title="Link to this heading"></a></h3>
+<p>Kể từ Godot 4.4, bạn có thể kiểm tra renderer nào đang được dùng bằng các define tích hợp sẵn <code class="docutils literal notranslate"><span class="pre">CURRENT_RENDERER</span></code>, <code class="docutils literal notranslate"><span class="pre">RENDERER_COMPATIBILITY</span></code>, <code class="docutils literal notranslate"><span class="pre">RENDERER_MOBILE</span></code> và <code class="docutils literal notranslate"><span class="pre">RENDERER_FORWARD_PLUS</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CURRENT_RENDERER</span></code> được đặt thành <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">2</span></code> tùy theo renderer hiện tại.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RENDERER_COMPATIBILITY</span></code> luôn là <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RENDERER_MOBILE</span></code> luôn là <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RENDERER_FORWARD_PLUS</span></code> luôn là <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+</ul>
+<p>Ví dụ, shader này đặt <code class="docutils literal notranslate"><span class="pre">ALBEDO</span></code> thành một màu khác nhau trong mỗi renderer:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">spatial</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#if CURRENT_RENDERER == RENDERER_COMPATIBILITY</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="cp">#elif CURRENT_RENDERER == RENDERER_MOBILE</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="cp">#else // CURRENT_RENDERER == RENDERER_FORWARD_PLUS</span>
+<span class="w">    </span><span class="n">ALBEDO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="shader_functions.html" class="btn btn-neutral float-left" title="Các hàm shader dựng sẵn" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="spatial_shader.html" class="btn btn-neutral float-right" title="Spatial shader" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

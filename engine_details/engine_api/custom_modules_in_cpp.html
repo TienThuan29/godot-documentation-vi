@@ -1,0 +1,753 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Module tùy chỉnh bằng C++" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/engine_api/custom_modules_in_cpp.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Module: Godot cho phép mở rộng engine theo cách module hóa. Các module mới có thể được tạo rồi bật/tắt. Điều này cho phép thêm chức năng mới cho engine ở mọi cấp độ mà không cần sửa phần lõi, và có..." />
+<meta name="description" content="Module: Godot cho phép mở rộng engine theo cách module hóa. Các module mới có thể được tạo rồi bật/tắt. Điều này cho phép thêm chức năng mới cho engine ở mọi cấp độ mà không cần sửa phần lõi, và có..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Module tùy chỉnh bằng C++ &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Vendor Runtime Module" href="vendor_runtime_module.html" />
+    <link rel="prev" title="Các API mở rộng engine" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/engine_api/custom_modules_in_cpp" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Các API mở rộng engine</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Module tùy chỉnh bằng C++</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modules">Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-for">Để làm gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-new-module">Tạo một module mới</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-module">Sử dụng module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling-a-module-externally">Biên dịch module từ bên ngoài</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#customizing-module-types-initialization">Tùy chỉnh việc khởi tạo các kiểu của module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-custom-documentation">Viết tài liệu tùy chỉnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-custom-unit-tests">Viết unit test tùy chỉnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-custom-editor-icons">Thêm biểu tượng tùy chỉnh cho trình chỉnh sửa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summing-up">Tổng kết</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vendor_runtime_module.html">Vendor Runtime Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gdextension/index.html">Hệ thống GDExtension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binding_to_external_libraries.html">Liên kết với thư viện bên ngoài</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_resource_format_loaders.html">Trình tải định dạng resource tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_audiostreams.html">AudioStream tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_platform_ports.html">Port nền tảng tùy chỉnh</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Các API mở rộng engine</a></li>
+      <li class="breadcrumb-item active">Module tùy chỉnh bằng C++</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="custom-modules-in-c">
+<span id="doc-custom-modules-in-cpp"></span><h1>Module tùy chỉnh bằng C++<a class="headerlink" href="#custom-modules-in-c" title="Link to this heading"></a></h1>
+<section id="modules">
+<h2>Module<a class="headerlink" href="#modules" title="Link to this heading"></a></h2>
+<p>Godot cho phép mở rộng engine theo cách module hóa. Các module mới có thể được tạo rồi bật/tắt. Điều này cho phép thêm chức năng mới cho engine ở mọi cấp độ mà không cần sửa phần lõi, và có thể tách ra để dùng và tái sử dụng trong các module khác nhau.</p>
+<p>Các module nằm trong thư mục con <code class="docutils literal notranslate"><span class="pre">modules/</span></code> của hệ thống build. Mặc định có hàng chục module được bật, chẳng hạn GDScript (đúng vậy, nó không phải là một phần của engine cơ sở), hỗ trợ GridMap, module biểu thức chính quy và nhiều module khác. Bạn có thể tạo và kết hợp bao nhiêu module mới tùy thích. Hệ thống build SCons sẽ xử lý việc đó một cách trong suốt.</p>
+</section>
+<section id="what-for">
+<h2>Để làm gì?<a class="headerlink" href="#what-for" title="Link to this heading"></a></h2>
+<p>Mặc dù nên viết phần lớn game bằng script (vì nó tiết kiệm rất nhiều thời gian), hoàn toàn có thể dùng C++ thay thế. Thêm module C++ có thể hữu ích trong các tình huống sau:</p>
+<ul class="simple">
+<li><p>Liên kết một thư viện bên ngoài vào Godot (như PhysX, FMOD, v.v.).</p></li>
+<li><p>Tối ưu các phần quan trọng của game.</p></li>
+<li><p>Thêm chức năng mới cho engine và/hoặc trình chỉnh sửa.</p></li>
+<li><p>Port một game có sẵn sang Godot.</p></li>
+<li><p>Viết toàn bộ một game mới bằng C++ vì bạn không thể sống thiếu C++.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Mặc dù có thể dùng module cho logic game tùy chỉnh, <a class="reference internal" href="gdextension/index.html#doc-gdextension"><span class="std std-ref">GDExtension</span></a> thường phù hợp hơn vì nó không yêu cầu biên dịch lại engine sau mỗi lần thay đổi mã.</p>
+<p>Module C++ chủ yếu cần thiết khi GDExtension không đủ và cần tích hợp sâu hơn với engine.</p>
+</div>
+</section>
+<section id="creating-a-new-module">
+<span id="doc-creating-custom-modules-in-cpp"></span><h2>Tạo một module mới<a class="headerlink" href="#creating-a-new-module" title="Link to this heading"></a></h2>
+<p>Trước khi tạo module, hãy nhớ <a class="reference internal" href="../development/compiling/index.html#toc-devel-compiling"><span class="std std-ref">tải mã nguồn Godot và biên dịch nó</span></a>.</p>
+<p>Để tạo module mới, bước đầu tiên là tạo một thư mục bên trong <code class="docutils literal notranslate"><span class="pre">modules/</span></code>. Nếu muốn duy trì module riêng biệt, bạn có thể checkout một VCS khác vào modules và sử dụng nó.</p>
+<p>Module ví dụ sẽ có tên &quot;summator&quot; (<code class="docutils literal notranslate"><span class="pre">godot/modules/summator</span></code>). Bên trong, chúng ta sẽ tạo một lớp summator:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/summator.h</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/object/ref_counted.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Summator</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">RefCounted</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">Summator</span><span class="p">,</span><span class="w"> </span><span class="n">RefCounted</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">();</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_value</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">reset</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">get_total</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Summator</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<p>Sau đó là file cpp.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/summator.cpp</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;summator.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/object/class_db.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">Summator::add</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">count</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">p_value</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">Summator::reset</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">Summator::get_total</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">Summator::_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Summator</span><span class="o">::</span><span class="n">add</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;reset&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Summator</span><span class="o">::</span><span class="n">reset</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;get_total&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Summator</span><span class="o">::</span><span class="n">get_total</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Summator</span><span class="o">::</span><span class="n">Summator</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>Tiếp theo, lớp mới cần được đăng ký bằng cách nào đó, nên cần tạo thêm hai file nữa:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>register_types.h
+register_types.cpp
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Quan trọng</p>
+<p>Các file này phải nằm ở thư mục cấp cao nhất của module (cạnh các file <code class="docutils literal notranslate"><span class="pre">SCsub</span></code> và <code class="docutils literal notranslate"><span class="pre">config.py</span></code>) để module được đăng ký đúng cách.</p>
+</div>
+<p>Các file này nên chứa nội dung sau:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/register_types.h</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules/register_module_types.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">initialize_summator_module</span><span class="p">(</span><span class="n">ModuleInitializationLevel</span><span class="w"> </span><span class="n">p_level</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">uninitialize_summator_module</span><span class="p">(</span><span class="n">ModuleInitializationLevel</span><span class="w"> </span><span class="n">p_level</span><span class="p">);</span>
+<span class="cm">/* yes, the word in the middle must be the same as the module folder name */</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/register_types.cpp</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;register_types.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/object/class_db.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;summator.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">initialize_summator_module</span><span class="p">(</span><span class="n">ModuleInitializationLevel</span><span class="w"> </span><span class="n">p_level</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p_level</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">MODULE_INITIALIZATION_LEVEL_SCENE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">register_class</span><span class="o">&lt;</span><span class="n">Summator</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">uninitialize_summator_module</span><span class="p">(</span><span class="n">ModuleInitializationLevel</span><span class="w"> </span><span class="n">p_level</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p_level</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">MODULE_INITIALIZATION_LEVEL_SCENE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">   </span><span class="c1">// Nothing to do here in this example.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>Tiếp theo, chúng ta cần tạo file <code class="docutils literal notranslate"><span class="pre">SCsub</span></code> để hệ thống build biên dịch module này:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/SCsub</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCsub</span>
+
+<span class="n">Import</span><span class="p">(</span><span class="s1">&#39;env&#39;</span><span class="p">)</span>
+
+<span class="n">env</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">modules_sources</span><span class="p">,</span> <span class="s2">&quot;*.cpp&quot;</span><span class="p">)</span> <span class="c1"># Add all cpp files to the build</span>
+</pre></div>
+</div>
+</div>
+<p>Với nhiều file nguồn, bạn cũng có thể thêm từng file riêng lẻ vào một danh sách chuỗi Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">src_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;summator.cpp&quot;</span><span class="p">,</span> <span class="s2">&quot;other.cpp&quot;</span><span class="p">,</span> <span class="s2">&quot;etc.cpp&quot;</span><span class="p">]</span>
+<span class="n">env</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">modules_sources</span><span class="p">,</span> <span class="n">src_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Điều này mở ra nhiều khả năng mạnh mẽ khi dùng Python để xây dựng danh sách file bằng vòng lặp và câu lệnh logic. Hãy xem một số module đi kèm Godot mặc định để có ví dụ.</p>
+<p>Để thêm các thư mục include cho trình biên dịch tìm kiếm, bạn có thể nối chúng vào các đường dẫn của environment:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">CPPPATH</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mylib/include&quot;</span><span class="p">])</span> <span class="c1"># this is a relative path</span>
+<span class="n">env</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">CPPPATH</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#myotherlib/include&quot;</span><span class="p">])</span> <span class="c1"># this is an &#39;absolute&#39; path</span>
+</pre></div>
+</div>
+<p>Nếu bạn muốn thêm các cờ trình biên dịch tùy chỉnh khi build module, bạn cần clone <code class="docutils literal notranslate"><span class="pre">env</span></code> trước, để nó không thêm các cờ đó vào toàn bộ bản build Godot (có thể gây lỗi). Ví dụ <code class="docutils literal notranslate"><span class="pre">SCsub</span></code> với cờ tùy chỉnh:</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/SCsub</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Import</span><span class="p">(</span><span class="s1">&#39;env&#39;</span><span class="p">)</span>
+
+<span class="n">module_env</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">Clone</span><span class="p">()</span>
+<span class="n">module_env</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">modules_sources</span><span class="p">,</span> <span class="s2">&quot;*.cpp&quot;</span><span class="p">)</span>
+<span class="c1"># Append CCFLAGS flags for both C and C++ code.</span>
+<span class="n">module_env</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">CCFLAGS</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-O2&#39;</span><span class="p">])</span>
+<span class="c1"># If you need to, you can:</span>
+<span class="c1"># - Append CFLAGS for C code only.</span>
+<span class="c1"># - Append CXXFLAGS for C++ code only.</span>
+</pre></div>
+</div>
+</div>
+<p>Và cuối cùng là file cấu hình của module, đây là một script Python phải có tên <code class="docutils literal notranslate"><span class="pre">config.py</span></code>:</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/config.py</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># config.py</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">can_build</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">platform</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+<p>Module được hỏi liệu có thể build cho một nền tảng cụ thể hay không (trong trường hợp này, <code class="docutils literal notranslate"><span class="pre">True</span></code> nghĩa là nó sẽ build cho mọi nền tảng).</p>
+<p>Vậy là xong. Hy vọng nó không quá phức tạp! Module của bạn sẽ trông như sau:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>godot/modules/summator/config.py
+godot/modules/summator/summator.h
+godot/modules/summator/summator.cpp
+godot/modules/summator/register_types.h
+godot/modules/summator/register_types.cpp
+godot/modules/summator/SCsub
+</pre></div>
+</div>
+<p>Sau đó bạn có thể nén nó lại và chia sẻ module với mọi người. Khi build cho mọi nền tảng (hướng dẫn ở các phần trước), module của bạn sẽ được đưa vào.</p>
+</section>
+<section id="using-the-module">
+<h2>Sử dụng module<a class="headerlink" href="#using-the-module" title="Link to this heading"></a></h2>
+<p>Giờ bạn có thể dùng module vừa tạo từ bất kỳ script nào:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Summator</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="nf">get_total</span><span class="p">())</span>
+<span class="n">s</span><span class="o">.</span><span class="nf">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<p>Kết quả đầu ra sẽ là <code class="docutils literal notranslate"><span class="pre">60</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Ví dụ Summator ở trên rất phù hợp cho các module tùy chỉnh nhỏ, nhưng nếu bạn muốn dùng một thư viện bên ngoài lớn hơn thì sao? Xem <a class="reference internal" href="binding_to_external_libraries.html#doc-binding-to-external-libraries"><span class="std std-ref">Liên kết với thư viện bên ngoài</span></a> để biết chi tiết về việc liên kết với thư viện bên ngoài.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu module của bạn cần được truy cập từ dự án đang chạy (không chỉ từ trình chỉnh sửa), bạn cũng phải biên dịch lại mọi export template định dùng, rồi chỉ định đường dẫn tới template tùy chỉnh trong từng export preset. Nếu không, bạn sẽ gặp lỗi khi chạy dự án vì module không được biên dịch vào export template. Xem các trang <a class="reference internal" href="../development/compiling/index.html#toc-devel-compiling"><span class="std std-ref">Biên dịch</span></a> để biết thêm thông tin.</p>
+</div>
+</section>
+<section id="compiling-a-module-externally">
+<h2>Biên dịch module từ bên ngoài<a class="headerlink" href="#compiling-a-module-externally" title="Link to this heading"></a></h2>
+<p>Biên dịch module đòi hỏi di chuyển mã nguồn của module trực tiếp vào thư mục <code class="docutils literal notranslate"><span class="pre">modules/</span></code> của engine. Mặc dù đây là cách đơn giản nhất để biên dịch module, có một vài lý do khiến cách này có thể không thực tế:</p>
+<ol class="arabic simple">
+<li><p>Phải sao chép thủ công mã nguồn module mỗi khi muốn biên dịch engine có hoặc không có module, hoặc phải làm thêm các bước để tắt module thủ công khi biên dịch bằng một tùy chọn build tương tự <code class="docutils literal notranslate"><span class="pre">module_summator_enabled=no</span></code>. Tạo symbolic link cũng có thể là một giải pháp, nhưng bạn có thể cần vượt qua thêm các hạn chế của hệ điều hành, như cần quyền tạo symbolic link nếu làm việc này bằng script.</p></li>
+<li><p>Tùy vào việc bạn có phải làm việc với mã nguồn engine hay không, các file module thêm trực tiếp vào <code class="docutils literal notranslate"><span class="pre">modules/</span></code> sẽ thay đổi working tree đến mức việc dùng VCS (như <code class="docutils literal notranslate"><span class="pre">git</span></code>) trở nên rườm rà, vì bạn cần đảm bảo chỉ mã liên quan đến engine được commit bằng cách lọc các thay đổi.</p></li>
+</ol>
+<p>Vì vậy, nếu bạn thấy cần cấu trúc độc lập cho các module tùy chỉnh, hãy lấy module &quot;summator&quot; của chúng ta và chuyển nó ra thư mục cha của engine:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>../modules
+mv<span class="w"> </span>modules/summator<span class="w"> </span>../modules
+</pre></div>
+</div>
+<p>Biên dịch engine cùng module của chúng ta bằng cách cung cấp tùy chọn build <code class="docutils literal notranslate"><span class="pre">custom_modules</span></code>, tùy chọn này nhận một danh sách đường dẫn thư mục chứa các module C++ tùy chỉnh, phân tách bằng dấu phẩy, tương tự như sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">custom_modules</span><span class="o">=</span>../modules
+</pre></div>
+</div>
+<p>Hệ thống build sẽ phát hiện tất cả module trong thư mục <code class="docutils literal notranslate"><span class="pre">../modules</span></code> và biên dịch chúng tương ứng, bao gồm cả module &quot;summator&quot; của chúng ta.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Mọi đường dẫn truyền vào <code class="docutils literal notranslate"><span class="pre">custom_modules</span></code> sẽ được chuyển nội bộ thành đường dẫn tuyệt đối để phân biệt giữa module tùy chỉnh và module có sẵn. Điều này có nghĩa là những việc như sinh tài liệu cho module có thể phụ thuộc vào một cấu trúc đường dẫn cụ thể trên máy của bạn.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference internal" href="../development/compiling/introduction_to_the_buildsystem.html#doc-buildsystem-custom-modules"><span class="std std-ref">Giới thiệu về hệ thống build - Tùy chọn build module tùy chỉnh</span></a>.</p>
+</div>
+</section>
+<section id="customizing-module-types-initialization">
+<h2>Tùy chỉnh việc khởi tạo các kiểu của module<a class="headerlink" href="#customizing-module-types-initialization" title="Link to this heading"></a></h2>
+<p>Module có thể tương tác với các lớp có sẵn khác của engine trong lúc chạy và thậm chí ảnh hưởng đến cách các kiểu lõi được khởi tạo. Cho đến giờ, chúng ta đã dùng <code class="docutils literal notranslate"><span class="pre">register_summator_types</span></code> để đưa các lớp của module vào sử dụng trong engine.</p>
+<p>Thứ tự thiết lập engine có thể được tóm tắt sơ bộ thành danh sách các phương thức đăng ký kiểu sau:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">preregister_module_types</span><span class="p">();</span>
+<span class="n">preregister_server_types</span><span class="p">();</span>
+<span class="n">register_core_singletons</span><span class="p">();</span>
+<span class="n">register_server_types</span><span class="p">();</span>
+<span class="n">register_scene_types</span><span class="p">();</span>
+<span class="n">EditorNode</span><span class="o">::</span><span class="n">register_editor_types</span><span class="p">();</span>
+<span class="n">register_platform_apis</span><span class="p">();</span>
+<span class="n">register_module_types</span><span class="p">();</span>
+<span class="n">initialize_physics</span><span class="p">();</span>
+<span class="n">initialize_navigation_server</span><span class="p">();</span>
+<span class="n">register_server_singletons</span><span class="p">();</span>
+<span class="n">register_driver_types</span><span class="p">();</span>
+<span class="n">ScriptServer</span><span class="o">::</span><span class="n">init_languages</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Lớp <code class="docutils literal notranslate"><span class="pre">Summator</span></code> của chúng ta được khởi tạo trong lời gọi <code class="docutils literal notranslate"><span class="pre">register_module_types()</span></code>. Hãy hình dung chúng ta cần đáp ứng một số phụ thuộc runtime chung của module (như singleton), hoặc cho phép override các callback phương thức hiện có của engine trước khi chính engine gán chúng. Trong trường hợp đó, chúng ta muốn đảm bảo các lớp của module được đăng ký <em>trước</em> mọi kiểu có sẵn khác.</p>
+<p>Đây là lúc chúng ta có thể định nghĩa một phương thức tùy chọn <code class="docutils literal notranslate"><span class="pre">preregister_summator_types()</span></code>, phương thức này sẽ được gọi trước mọi thứ khác trong giai đoạn thiết lập engine <code class="docutils literal notranslate"><span class="pre">preregister_module_types()</span></code>.</p>
+<p>Giờ chúng ta cần thêm phương thức này vào file header và file nguồn <code class="docutils literal notranslate"><span class="pre">register_types</span></code>:</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/register_types.h</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define MODULE_SUMMATOR_HAS_PREREGISTER</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">preregister_summator_types</span><span class="p">();</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">register_summator_types</span><span class="p">();</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">unregister_summator_types</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Không giống các phương thức đăng ký khác, chúng ta phải định nghĩa tường minh <code class="docutils literal notranslate"><span class="pre">MODULE_SUMMATOR_HAS_PREREGISTER</span></code> để hệ thống build biết cần đưa những lời gọi phương thức nào vào lúc biên dịch. Tên module cũng phải được chuyển thành chữ hoa.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/register_types.cpp</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;register_types.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;core/object/class_db.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;summator.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">preregister_summator_types</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Called before any other core types are registered.</span>
+<span class="w">    </span><span class="c1">// Nothing to do here in this example.</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">register_summator_types</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">register_class</span><span class="o">&lt;</span><span class="n">Summator</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">unregister_summator_types</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="c1">// Nothing to do here in this example.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="writing-custom-documentation">
+<h2>Viết tài liệu tùy chỉnh<a class="headerlink" href="#writing-custom-documentation" title="Link to this heading"></a></h2>
+<p>Viết tài liệu có vẻ là một việc nhàm chán, nhưng rất nên viết tài liệu cho module mới tạo để người dùng dễ tận dụng nó hơn. Chưa kể đoạn mã bạn viết một năm trước có thể trở nên khó phân biệt với mã do người khác viết, vì vậy hãy tử tế với chính mình trong tương lai!</p>
+<p>Có một số bước để thiết lập tài liệu tùy chỉnh cho module:</p>
+<ol class="arabic">
+<li><p>Tạo một thư mục mới ở gốc của module. Tên thư mục có thể là bất kỳ, nhưng chúng ta sẽ dùng tên <code class="docutils literal notranslate"><span class="pre">doc_classes</span></code> xuyên suốt phần này.</p></li>
+<li><p>Bây giờ, chúng ta cần sửa <code class="docutils literal notranslate"><span class="pre">config.py</span></code>, thêm đoạn mã sau:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_doc_path</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;doc_classes&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_doc_classes</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="s2">&quot;Summator&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">get_doc_path()</span></code> được hệ thống build dùng để xác định vị trí của tài liệu. Trong trường hợp này, chúng sẽ nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">modules/summator/doc_classes</span></code>. Nếu bạn không định nghĩa hàm này, đường dẫn tài liệu cho module sẽ quay về thư mục chính <code class="docutils literal notranslate"><span class="pre">doc/classes</span></code>.</p>
+<p>Phương thức <code class="docutils literal notranslate"><span class="pre">get_doc_classes()</span></code> cần thiết để hệ thống build biết những lớp đã đăng ký nào thuộc về module. Bạn cần liệt kê tất cả các lớp của mình ở đây. Những lớp bạn không liệt kê sẽ nằm trong thư mục chính <code class="docutils literal notranslate"><span class="pre">doc/classes</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Bạn có thể dùng Git để kiểm tra xem mình có bỏ sót lớp nào không bằng cách xem các file chưa được theo dõi với <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code>. Ví dụ:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">git</span><span class="w"> </span><span class="n">status</span>
+</pre></div>
+</div>
+<p>Ví dụ kết quả đầu ra:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nc">Untracked</span><span class="w"> </span><span class="n">files</span><span class="p">:</span>
+<span class="w">    </span><span class="p">(</span><span class="n">use</span><span class="w"> </span><span class="s2">&quot;git add &lt;file&gt;...&quot;</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">committed</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">doc</span><span class="o">/</span><span class="n">classes</span><span class="o">/</span><span class="n">MyClass2D</span><span class="o">.</span><span class="vi">xml</span>
+<span class="w">    </span><span class="n">doc</span><span class="o">/</span><span class="n">classes</span><span class="o">/</span><span class="n">MyClass4D</span><span class="o">.</span><span class="vi">xml</span>
+<span class="w">    </span><span class="n">doc</span><span class="o">/</span><span class="n">classes</span><span class="o">/</span><span class="n">MyClass5D</span><span class="o">.</span><span class="vi">xml</span>
+<span class="w">    </span><span class="n">doc</span><span class="o">/</span><span class="n">classes</span><span class="o">/</span><span class="n">MyClass6D</span><span class="o">.</span><span class="vi">xml</span>
+<span class="w">    </span><span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Bây giờ chúng ta có thể tạo tài liệu:</p></li>
+</ol>
+<p>Chúng ta có thể làm việc này bằng cách chạy doctool của Godot, tức là <code class="docutils literal notranslate"><span class="pre">godot</span> <span class="pre">--doctool</span> <span class="pre">&lt;path&gt;</span></code>, lệnh này sẽ xuất tài liệu tham khảo API của engine ra <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> đã cho ở định dạng XML.</p>
+<p>Trong trường hợp của chúng ta, ta sẽ trỏ nó tới gốc của repository đã clone. Bạn có thể trỏ nó tới một thư mục khác, rồi chỉ sao chép những file bạn cần.</p>
+<p>Chạy lệnh:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">bin</span><span class="o">/&lt;</span><span class="n">godot_binary</span><span class="o">&gt;</span><span class="w"> </span><span class="o">--</span><span class="n">doctool</span><span class="w"> </span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Bây giờ nếu bạn vào thư mục <code class="docutils literal notranslate"><span class="pre">godot/modules/summator/doc_classes</span></code>, bạn sẽ thấy nó chứa file <code class="docutils literal notranslate"><span class="pre">Summator.xml</span></code>, hoặc các lớp khác mà bạn đã tham chiếu trong hàm <code class="docutils literal notranslate"><span class="pre">get_doc_classes</span></code>.</p>
+<p>Chỉnh sửa (các) file theo <a class="reference external" href="https://docs.godotengine.org/en/latest/engine_details/class_reference/index.html">hướng dẫn cơ bản về class reference</a> rồi biên dịch lại engine.</p>
+<p>Khi quá trình biên dịch hoàn tất, tài liệu sẽ có thể truy cập được trong hệ thống tài liệu tích hợp của engine.</p>
+<p>Để tài liệu luôn được cập nhật, từ giờ trở đi bạn chỉ cần sửa một trong các file XML và biên dịch lại engine.</p>
+<p>Nếu bạn thay đổi API của module, bạn cũng có thể trích xuất lại tài liệu, chúng sẽ chứa những nội dung bạn đã thêm trước đó. Tất nhiên, nếu bạn trỏ nó tới thư mục godot của mình, hãy đảm bảo không làm mất công sức bằng cách trích xuất tài liệu cũ từ một bản build engine cũ hơn đè lên tài liệu mới hơn.</p>
+<p>Lưu ý rằng nếu bạn không có quyền ghi vào <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code> đã cung cấp, bạn có thể gặp lỗi tương tự như sau:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ERROR: Can&#39;t write doc file: docs/doc/classes/@GDScript.xml</span>
+<span class="go">   At: editor/doc/doc_data.cpp:956</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-custom-unit-tests">
+<span id="doc-custom-module-unit-tests"></span><h2>Viết unit test tùy chỉnh<a class="headerlink" href="#writing-custom-unit-tests" title="Link to this heading"></a></h2>
+<p>Có thể viết các unit test độc lập như một phần của module C++. Nếu bạn chưa quen với quy trình unit test trong Godot, hãy xem <a class="reference internal" href="../architecture/unit_testing.html#doc-unit-testing"><span class="std std-ref">Unit test</span></a>.</p>
+<p>Quy trình như sau:</p>
+<ol class="arabic simple">
+<li><p>Tạo một thư mục mới tên <code class="docutils literal notranslate"><span class="pre">tests/</span></code> dưới gốc của module:</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd modules/summator</span>
+<span class="go">mkdir tests</span>
+<span class="go">cd tests</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Tạo một test suite mới: <code class="docutils literal notranslate"><span class="pre">test_summator.h</span></code>. Header phải có tiền tố <code class="docutils literal notranslate"><span class="pre">test_</span></code> để hệ thống build có thể thu thập và đưa nó vào <code class="docutils literal notranslate"><span class="pre">tests/test_main.cpp</span></code>, nơi các test được chạy.</p></li>
+<li><p>Viết một vài test case. Đây là một ví dụ:</p></li>
+</ol>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">godot/modules/summator/tests/test_summator.h</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tests/test_macros.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;modules/summator/summator.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">TestSummator</span><span class="w"> </span><span class="p">{</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&quot;[Modules][Summator] Adding numbers&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">Summator</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">memnew</span><span class="p">(</span><span class="n">Summator</span><span class="p">);</span>
+<span class="w">    </span><span class="n">CHECK</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">get_total</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">add</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">    </span><span class="n">CHECK</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">get_total</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">add</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">CHECK</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">get_total</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">add</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<span class="w">    </span><span class="n">CHECK</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">get_total</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">60</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+<span class="w">    </span><span class="n">CHECK</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">get_total</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace TestSummator</span>
+</pre></div>
+</div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Biên dịch engine với <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">tests=yes</span></code>, rồi chạy các test bằng lệnh sau:</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./bin/&lt;godot_binary&gt; --test --source-file=&quot;*test_summator*&quot; --success</span>
+</pre></div>
+</div>
+<p>Bây giờ bạn sẽ thấy các assertion vượt qua.</p>
+</section>
+<section id="adding-custom-editor-icons">
+<span id="doc-custom-module-icons"></span><h2>Thêm biểu tượng tùy chỉnh cho trình chỉnh sửa<a class="headerlink" href="#adding-custom-editor-icons" title="Link to this heading"></a></h2>
+<p>Tương tự như cách viết tài liệu độc lập bên trong module, bạn cũng có thể tạo biểu tượng tùy chỉnh của riêng mình cho các lớp để hiển thị trong trình chỉnh sửa.</p>
+<p>Về quy trình thực tế để tạo biểu tượng trình chỉnh sửa tích hợp vào engine, trước tiên hãy xem <a class="reference internal" href="../editor/creating_icons.html#doc-editor-icons"><span class="std std-ref">Biểu tượng trình chỉnh sửa</span></a>.</p>
+<p>Sau khi đã tạo (các) biểu tượng, hãy tiếp tục với các bước sau:</p>
+<ol class="arabic simple">
+<li><p>Tạo một thư mục mới tên <code class="docutils literal notranslate"><span class="pre">icons</span></code> ở gốc của module. Đây là đường dẫn mặc định mà engine tìm biểu tượng trình chỉnh sửa của module.</p></li>
+<li><p>Di chuyển các biểu tượng <code class="docutils literal notranslate"><span class="pre">svg</span></code> vừa tạo (đã tối ưu hay chưa) vào thư mục đó.</p></li>
+<li><p>Biên dịch lại engine và chạy trình chỉnh sửa. Giờ (các) biểu tượng sẽ xuất hiện trong giao diện trình chỉnh sửa ở những chỗ phù hợp.</p></li>
+</ol>
+<p>Nếu bạn muốn lưu biểu tượng ở chỗ khác trong module, hãy thêm đoạn mã sau vào <code class="docutils literal notranslate"><span class="pre">config.py</span></code> để ghi đè đường dẫn mặc định:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_icons_path</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;path/to/icons&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="summing-up">
+<h2>Tổng kết<a class="headerlink" href="#summing-up" title="Link to this heading"></a></h2>
+<p>Hãy nhớ:</p>
+<ul class="simple">
+<li><p>Dùng macro <code class="docutils literal notranslate"><span class="pre">GDCLASS</span></code> cho kế thừa, để Godot có thể bao bọc (wrap) nó.</p></li>
+<li><p>Dùng <code class="docutils literal notranslate"><span class="pre">_bind_methods</span></code> để liên kết các hàm của bạn với scripting, và cho phép chúng hoạt động như callback cho signal.</p></li>
+<li><p><strong>Tránh đa kế thừa cho các lớp được expose cho Godot</strong>, vì <code class="docutils literal notranslate"><span class="pre">GDCLASS</span></code> không hỗ trợ điều này. Bạn vẫn có thể dùng đa kế thừa trong các lớp của riêng mình, miễn là chúng không được expose cho API scripting của Godot.</p></li>
+</ul>
+<p>Nhưng chưa hết, tùy vào việc bạn làm, bạn sẽ gặp một số bất ngờ (hy vọng là tích cực).</p>
+<ul class="simple">
+<li><p>Nếu bạn kế thừa từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html" title="Class reference (English)"><span class="xref std std-ref">class_Node</span></a> (hoặc bất kỳ kiểu node dẫn xuất nào, như Sprite2D), lớp mới của bạn sẽ xuất hiện trong trình chỉnh sửa, trong cây kế thừa của hộp thoại &quot;Add Node&quot;.</p></li>
+<li><p>Nếu bạn kế thừa từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resource.html" title="Class reference (English)"><span class="xref std std-ref">class_Resource</span></a>, nó sẽ xuất hiện trong danh sách resource, và mọi thuộc tính được expose đều có thể được tuần tự hóa khi lưu/tải.</p></li>
+<li><p>Theo cùng logic đó, bạn có thể mở rộng trình chỉnh sửa và gần như mọi khu vực của engine.</p></li>
+</ul>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Các API mở rộng engine" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="vendor_runtime_module.html" class="btn btn-neutral float-right" title="Vendor Runtime Module" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tối ưu hóa CPU" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/cpu_optimization.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Đo hiệu năng: Chúng ta phải biết &quot;điểm nghẽn&quot; nằm ở đâu thì mới biết cách tăng tốc chương trình. Điểm nghẽn là những phần chậm nhất của chương trình, giới hạn tốc độ tiến triển của mọi th..." />
+<meta name="description" content="Đo hiệu năng: Chúng ta phải biết &quot;điểm nghẽn&quot; nằm ở đâu thì mới biết cách tăng tốc chương trình. Điểm nghẽn là những phần chậm nhất của chương trình, giới hạn tốc độ tiến triển của mọi th..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tối ưu hóa CPU &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tối ưu hóa GPU" href="gpu_optimization.html" />
+    <link rel="prev" title="Tối ưu bằng Server" href="using_servers.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/cpu_optimization" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#cpu">CPU</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tối ưu hóa CPU</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#measuring-performance">Đo hiệu năng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cpu-profilers">CPU profiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-profilers">Profiler bên ngoài</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#manually-timing-functions">Tự đo thời gian các hàm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#caches">Cache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#languages">Ngôn ngữ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#threads">Luồng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scenetree">SceneTree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physics">Vật lý</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gpu">GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Tối ưu hóa CPU</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="cpu-optimization">
+<span id="doc-cpu-optimization"></span><h1>Tối ưu hóa CPU<a class="headerlink" href="#cpu-optimization" title="Link to this heading"></a></h1>
+<section id="measuring-performance">
+<h2>Đo hiệu năng<a class="headerlink" href="#measuring-performance" title="Link to this heading"></a></h2>
+<p>Chúng ta phải biết &quot;điểm nghẽn&quot; nằm ở đâu thì mới biết cách tăng tốc chương trình. Điểm nghẽn là những phần chậm nhất của chương trình, giới hạn tốc độ tiến triển của mọi thứ. Tập trung vào điểm nghẽn giúp chúng ta dồn công sức tối ưu vào những phần mang lại cải thiện tốc độ lớn nhất, thay vì tốn nhiều thời gian tối ưu các hàm chỉ đem lại cải thiện hiệu năng nhỏ.</p>
+<p>Với CPU, cách dễ nhất để xác định điểm nghẽn là dùng profiler.</p>
+</section>
+<section id="cpu-profilers">
+<h2>CPU profiler<a class="headerlink" href="#cpu-profilers" title="Link to this heading"></a></h2>
+<p>Profiler chạy song song với chương trình của bạn và đo thời gian để tính ra tỷ lệ thời gian dành cho mỗi hàm.</p>
+<p>IDE của Godot có sẵn một profiler tích hợp tiện lợi. Nó không chạy mỗi khi bạn khởi động dự án: bạn phải tự bật và tắt nó. Lý do là, giống như hầu hết các profiler, việc ghi lại các số đo thời gian này có thể làm dự án của bạn chậm đi đáng kể.</p>
+<p>Sau khi profile, bạn có thể xem lại kết quả cho từng frame.</p>
+<figure class="align-center" id="id2">
+<img alt="Ảnh chụp màn hình profiler của Godot" src="../../_images/godot_profiler.png" />
+<figcaption>
+<p><span class="caption-text">Kết quả profile của một trong các dự án demo.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chúng ta có thể thấy chi phí của các tiến trình tích hợp sẵn như vật lý và âm thanh, cũng như chi phí của các hàm script của chính chúng ta ở phía dưới.</p>
+<p>Thời gian chờ các server tích hợp sẵn khác nhau có thể không được tính trong profiler. Đây là một lỗi đã biết.</p>
+</div>
+<p>Khi dự án chạy chậm, bạn thường sẽ thấy một hàm hoặc tiến trình rõ ràng tốn nhiều thời gian hơn hẳn những cái khác. Đây là điểm nghẽn chính của bạn, và thường bạn có thể tăng tốc bằng cách tối ưu phần này.</p>
+<p>Để biết thêm về cách dùng profiler tích hợp của Godot, xem <a class="reference internal" href="../scripting/debug/debugger_panel.html#doc-debugger-panel"><span class="std std-ref">Bảng Debugger</span></a>.</p>
+</section>
+<section id="external-profilers">
+<h2>Profiler bên ngoài<a class="headerlink" href="#external-profilers" title="Link to this heading"></a></h2>
+<p>Mặc dù profiler của IDE Godot rất tiện lợi và hữu ích, đôi khi bạn cần nhiều sức mạnh hơn, và khả năng profile chính mã nguồn của Godot engine.</p>
+<p>Bạn có thể <a class="reference internal" href="../../engine_details/development/profiling/index.html#doc-using-cpp-profilers"><span class="std std-ref">dùng một số profiler C++ của bên thứ ba</span></a> để làm việc này.</p>
+<figure class="align-default" id="id3">
+<img alt="Ảnh chụp màn hình Callgrind" src="../../_images/valgrind.png" />
+<figcaption>
+<p><span class="caption-text">Kết quả ví dụ từ Callgrind, một phần của Valgrind.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Từ trái sang, Callgrind liệt kê tỷ lệ thời gian trong một hàm và các hàm con của nó (Inclusive), tỷ lệ thời gian dành cho bản thân hàm đó, không tính các hàm con (Self), số lần hàm được gọi, tên hàm, và tệp hoặc module.</p>
+<p>Trong ví dụ này, chúng ta có thể thấy gần như toàn bộ thời gian nằm dưới hàm <code class="docutils literal notranslate"><span class="pre">Main::iteration()</span></code>. Đây là hàm chủ trong mã nguồn Godot được gọi lặp đi lặp lại. Nó khiến các frame được vẽ, các tick vật lý được mô phỏng, và các node cùng script được cập nhật. Phần lớn thời gian dành cho các hàm kết xuất canvas (66%), vì ví dụ này dùng một benchmark 2D. Bên dưới, chúng ta thấy gần 50% thời gian nằm ngoài code Godot, trong <code class="docutils literal notranslate"><span class="pre">libglapi</span></code> và <code class="docutils literal notranslate"><span class="pre">i965_dri</span></code> (driver đồ họa). Điều này cho thấy một phần lớn thời gian CPU đang bị tiêu tốn trong driver đồ họa.</p>
+<p>Đây thực ra là một ví dụ tuyệt vời vì, trong một thế giới lý tưởng, chỉ một phần rất nhỏ thời gian được dành cho driver đồ họa. Đây là dấu hiệu cho thấy có vấn đề với việc quá nhiều giao tiếp và công việc được thực hiện trong graphics API. Chính lần profile cụ thể này đã dẫn đến việc phát triển 2D batching, giúp tăng tốc đáng kể việc kết xuất 2D bằng cách giảm điểm nghẽn ở khu vực này.</p>
+</section>
+<section id="manually-timing-functions">
+<h2>Tự đo thời gian các hàm<a class="headerlink" href="#manually-timing-functions" title="Link to this heading"></a></h2>
+<p>Một kỹ thuật tiện dụng khác, đặc biệt khi bạn đã xác định được điểm nghẽn bằng profiler, là tự đo thời gian của hàm hoặc phần đang kiểm tra. Chi tiết khác nhau tùy theo ngôn ngữ, nhưng trong GDScript, bạn sẽ làm như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">time_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+
+<span class="c1"># Your function you want to time</span>
+<span class="nf">update_enemies</span><span class="p">()</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">time_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;update_enemies() took </span><span class="si">%d</span><span class="s2"> microseconds&quot;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="n">time_end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">time_start</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">timeStart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="n">GetTicksUsec</span><span class="p">();</span>
+
+<span class="c1">// Your function you want to time.</span>
+<span class="n">UpdateEnemies</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">timeEnd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="n">GetTicksUsec</span><span class="p">();</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">$&quot;UpdateEnemies() took {timeEnd - timeStart} microseconds&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi tự đo thời gian các hàm, thường nên chạy hàm nhiều lần (1.000 lần trở lên), thay vì chỉ một lần (trừ khi đó là một hàm rất chậm). Lý do là bộ đếm thời gian thường có độ chính xác hạn chế. Hơn nữa, CPU lập lịch các tiến trình một cách thất thường. Vì vậy, giá trị trung bình qua một loạt lần chạy chính xác hơn một lần đo duy nhất.</p>
+<p>Khi bạn cố gắng tối ưu các hàm, hãy nhớ profile hoặc đo thời gian chúng lặp lại trong suốt quá trình. Điều này sẽ cho bạn phản hồi quan trọng về việc tối ưu có hiệu quả (hay không).</p>
+</section>
+<section id="caches">
+<h2>Cache<a class="headerlink" href="#caches" title="Link to this heading"></a></h2>
+<p>Cache của CPU là một thứ khác cần đặc biệt lưu ý, nhất là khi so sánh kết quả đo thời gian của hai phiên bản khác nhau của một hàm. Kết quả có thể phụ thuộc rất nhiều vào việc dữ liệu có nằm trong cache CPU hay không. CPU không tải dữ liệu trực tiếp từ RAM hệ thống, dù RAM lớn hơn rất nhiều so với cache CPU (vài gigabyte so với vài megabyte). Đó là vì truy cập RAM hệ thống rất chậm. Thay vào đó, CPU tải dữ liệu từ một vùng bộ nhớ nhỏ hơn, nhanh hơn gọi là cache. Tải dữ liệu từ cache rất nhanh, nhưng mỗi khi bạn cố tải một địa chỉ bộ nhớ không nằm trong cache, cache phải đi đến bộ nhớ chính và chậm chạp tải một ít dữ liệu vào. Độ trễ này có thể khiến CPU ngồi không trong một thời gian dài, và được gọi là &quot;cache miss&quot;.</p>
+<p>Điều này có nghĩa là lần đầu bạn chạy một hàm, nó có thể chạy chậm vì dữ liệu chưa có trong cache CPU. Lần thứ hai và các lần sau, nó có thể chạy nhanh hơn nhiều vì dữ liệu đã nằm trong cache. Do đó, hãy luôn dùng giá trị trung bình khi đo thời gian, và lưu ý đến ảnh hưởng của cache.</p>
+<p>Hiểu về cache cũng rất quan trọng đối với việc tối ưu CPU. Nếu bạn có một thuật toán (routine) tải các mẩu dữ liệu nhỏ từ những vùng rải rác ngẫu nhiên trong bộ nhớ chính, điều này có thể dẫn đến rất nhiều cache miss, và phần lớn thời gian CPU sẽ ngồi chờ dữ liệu thay vì làm việc. Ngược lại, nếu bạn có thể làm cho việc truy cập dữ liệu mang tính cục bộ, hoặc tốt hơn nữa, truy cập bộ nhớ theo cách tuyến tính (như một danh sách liên tục), thì cache sẽ hoạt động tối ưu và CPU sẽ có thể làm việc nhanh nhất có thể.</p>
+<p>Godot thường lo những chi tiết cấp thấp như vậy thay bạn. Ví dụ, các Server API đảm bảo dữ liệu đã được tối ưu cho cache đối với những thứ như kết xuất và vật lý. Dù vậy, bạn vẫn nên đặc biệt lưu ý đến cache khi viết GDExtension.</p>
+</section>
+<section id="languages">
+<h2>Ngôn ngữ<a class="headerlink" href="#languages" title="Link to this heading"></a></h2>
+<p>Godot hỗ trợ nhiều ngôn ngữ khác nhau, và cần nhớ rằng mỗi lựa chọn đều có đánh đổi. Một số ngôn ngữ được thiết kế để dễ dùng nhưng phải trả giá về tốc độ, số khác thì nhanh hơn nhưng khó làm việc hơn.</p>
+<p>Các hàm tích hợp sẵn của engine chạy với cùng tốc độ bất kể bạn chọn ngôn ngữ script nào. Nếu dự án của bạn thực hiện nhiều phép tính trong code của chính nó, hãy cân nhắc chuyển những phép tính đó sang một ngôn ngữ nhanh hơn.</p>
+<section id="gdscript">
+<h3>GDScript<a class="headerlink" href="#gdscript" title="Link to this heading"></a></h3>
+<p><a class="reference internal" href="../scripting/gdscript/index.html#doc-gdscript"><span class="std std-ref">GDScript</span></a> được thiết kế để dễ dùng và dễ lặp lại (iterate), và rất phù hợp để làm nhiều loại game. Tuy nhiên, trong ngôn ngữ này, sự dễ dùng được coi trọng hơn hiệu năng. Nếu bạn cần thực hiện các phép tính nặng, hãy cân nhắc chuyển một phần dự án sang một trong các ngôn ngữ khác.</p>
+</section>
+<section id="c">
+<h3>C#<a class="headerlink" href="#c" title="Link to this heading"></a></h3>
+<p><a class="reference internal" href="../scripting/c_sharp/index.html#doc-c-sharp"><span class="std std-ref">C#</span></a> phổ biến và được hỗ trợ hạng nhất trong Godot. Nó mang lại sự cân bằng tốt giữa tốc độ và sự dễ dùng. Tuy nhiên, hãy cẩn thận với các khoảng dừng do garbage collection và rò rỉ bộ nhớ có thể xảy ra trong lúc chơi. Một cách phổ biến để khắc phục vấn đề garbage collection là dùng <em>object pooling</em>, nằm ngoài phạm vi của hướng dẫn này.</p>
+</section>
+<section id="other-languages">
+<h3>Các ngôn ngữ khác<a class="headerlink" href="#other-languages" title="Link to this heading"></a></h3>
+<p>Bên thứ ba cung cấp hỗ trợ cho một số ngôn ngữ khác, bao gồm <a class="reference external" href="https://github.com/godot-rust/gdext">Rust</a>.</p>
+</section>
+<section id="id1">
+<h3>C++<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Godot được viết bằng C++. Dùng C++ thường sẽ cho ra code nhanh nhất. Tuy nhiên, trên thực tế, đây là lựa chọn khó triển khai nhất đến máy của người dùng cuối trên các nền tảng khác nhau. Các lựa chọn để dùng C++ bao gồm GDExtension và <a class="reference internal" href="../../engine_details/engine_api/custom_modules_in_cpp.html#doc-custom-modules-in-cpp"><span class="std std-ref">module tùy chỉnh</span></a>.</p>
+</section>
+</section>
+<section id="threads">
+<h2>Luồng<a class="headerlink" href="#threads" title="Link to this heading"></a></h2>
+<p>Hãy cân nhắc dùng thread khi thực hiện nhiều phép tính có thể chạy song song với nhau. CPU hiện đại có nhiều nhân, mỗi nhân có khả năng thực hiện một lượng công việc giới hạn. Bằng cách chia công việc ra nhiều thread, bạn có thể tiến gần hơn đến hiệu suất CPU tối đa.</p>
+<p>Nhược điểm của thread là bạn phải cực kỳ cẩn thận. Vì mỗi nhân CPU hoạt động độc lập, chúng có thể cùng lúc cố truy cập vào cùng một vùng bộ nhớ. Một thread có thể đang đọc một biến trong khi thread khác đang ghi: đây được gọi là <em>race condition</em>. Trước khi dùng thread, hãy chắc chắn bạn hiểu các nguy cơ và cách cố gắng ngăn chặn các race condition này. Thread có thể khiến việc gỡ lỗi khó khăn hơn đáng kể.</p>
+<p>Để biết thêm về thread, xem <a class="reference internal" href="using_multiple_threads.html#doc-using-multiple-threads"><span class="std std-ref">Sử dụng nhiều luồng</span></a>.</p>
+</section>
+<section id="scenetree">
+<h2>SceneTree<a class="headerlink" href="#scenetree" title="Link to this heading"></a></h2>
+<p>Mặc dù node là một khái niệm cực kỳ mạnh mẽ và linh hoạt, hãy lưu ý rằng mỗi node đều có chi phí. Các hàm tích hợp như <code class="docutils literal notranslate"><span class="pre">_process()</span></code> và <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code> lan truyền qua cây. Công việc quản lý này có thể làm giảm hiệu năng khi bạn có số lượng node rất lớn (chính xác bao nhiêu phụ thuộc vào nền tảng đích và có thể từ hàng nghìn đến hàng chục nghìn, vì vậy hãy đảm bảo bạn profile hiệu năng trên tất cả các nền tảng đích trong quá trình phát triển).</p>
+<p>Mỗi node được xử lý riêng lẻ trong renderer của Godot. Vì vậy, dùng ít node hơn nhưng mỗi node chứa nhiều hơn có thể mang lại hiệu năng tốt hơn.</p>
+<p>Một điểm đặc biệt của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a> là đôi khi bạn có thể đạt hiệu năng tốt hơn nhiều bằng cách gỡ node khỏi SceneTree, thay vì tạm dừng hoặc ẩn chúng. Bạn không cần phải xóa một node đã được tách ra. Ví dụ, bạn có thể giữ một tham chiếu đến node, tách nó khỏi cây scene bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-remove-child" title="Class reference (English)"><span class="xref std std-ref">Node.remove_child(node)</span></a>, rồi gắn lại sau bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-add-child" title="Class reference (English)"><span class="xref std std-ref">Node.add_child(node)</span></a>. Điều này có thể rất hữu ích, chẳng hạn để thêm và gỡ các khu vực khỏi game.</p>
+<p>Bạn có thể bỏ qua hoàn toàn SceneTree bằng cách dùng Server API. Để biết thêm thông tin, xem <a class="reference internal" href="using_servers.html#doc-using-servers"><span class="std std-ref">Tối ưu bằng Server</span></a>.</p>
+</section>
+<section id="physics">
+<h2>Vật lý<a class="headerlink" href="#physics" title="Link to this heading"></a></h2>
+<p>Trong một số trường hợp, vật lý có thể trở thành điểm nghẽn. Điều này đặc biệt đúng với các thế giới phức tạp và số lượng lớn đối tượng vật lý.</p>
+<p>Dưới đây là một số kỹ thuật để tăng tốc vật lý:</p>
+<ul class="simple">
+<li><p>Hãy thử dùng các phiên bản đơn giản hóa của hình học được kết xuất làm collision shape. Thường thì người dùng cuối sẽ không nhận ra điều này, nhưng nó có thể tăng hiệu năng đáng kể.</p></li>
+<li><p>Hãy thử gỡ các đối tượng khỏi hệ thống vật lý khi chúng nằm ngoài tầm nhìn / ngoài khu vực hiện tại, hoặc tái sử dụng các đối tượng vật lý (ví dụ bạn cho phép 8 quái vật mỗi khu vực và tái sử dụng chúng).</p></li>
+</ul>
+<p>Một khía cạnh quan trọng khác của vật lý là tần suất tick vật lý. Trong một số game, bạn có thể giảm đáng kể tần suất tick, chẳng hạn thay vì cập nhật vật lý 60 lần mỗi giây, bạn có thể chỉ cập nhật 30 hoặc thậm chí 20 lần mỗi giây. Điều này có thể giảm đáng kể tải CPU.</p>
+<p>Nhược điểm của việc thay đổi tần suất tick vật lý là bạn có thể gặp chuyển động giật hoặc jitter khi tốc độ cập nhật vật lý không khớp với số khung hình mỗi giây được kết xuất. Ngoài ra, giảm tần suất tick vật lý sẽ làm tăng độ trễ đầu vào. Bạn nên giữ tần suất tick vật lý mặc định (60 Hz) trong hầu hết các game có chuyển động người chơi theo thời gian thực.</p>
+<p>Giải pháp cho jitter là dùng <em>fixed timestep interpolation</em>, tức là làm mượt vị trí và góc xoay được kết xuất qua nhiều frame để khớp với vật lý. Godot có sẵn tính năng physics interpolation mà bạn có thể đọc <a class="reference internal" href="../physics/interpolation/index.html#doc-physics-interpolation"><span class="std std-ref">tại đây</span></a>. Về mặt hiệu năng, nội suy là một thao tác rất rẻ so với việc chạy một tick vật lý. Nó nhanh hơn nhiều bậc, nên có thể mang lại lợi ích hiệu năng đáng kể đồng thời giảm jitter.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_servers.html" class="btn btn-neutral float-left" title="Tối ưu bằng Server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="gpu_optimization.html" class="btn btn-neutral float-right" title="Tối ưu hóa GPU" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

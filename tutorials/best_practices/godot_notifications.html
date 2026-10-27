@@ -1,0 +1,650 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Notification trong Godot" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/best_practices/godot_notifications.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Mọi Object trong Godot đều triển khai phương thức_notification. Mục đích của nó là cho phép Object phản hồi nhiều callback cấp engine có thể liên quan đến nó. Ví dụ, nếu engine bảo một CanvasItem&q..." />
+<meta name="description" content="Mọi Object trong Godot đều triển khai phương thức_notification. Mục đích của nó là cho phép Object phản hồi nhiều callback cấp engine có thể liên quan đến nó. Ví dụ, nếu engine bảo một CanvasItem&q..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Notification trong Godot &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Lựa chọn cấu trúc dữ liệu" href="data_preferences.html" />
+    <link rel="prev" title="Giao tiếp giữa các đối tượng trong Godot" href="godot_interfaces.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/best_practices/godot_notifications" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Thực hành tốt nhất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_best_practices.html">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="what_are_godot_classes.html">Áp dụng nguyên tắc hướng đối tượng trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scene_organization.html">Tổ chức scene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scenes_versus_scripts.html">Khi nào dùng scene, khi nào dùng script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoloads_versus_regular_nodes.html">Autoload so với node thông thường</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_alternatives.html">Khi nào và làm thế nào để tránh dùng node cho mọi thứ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_interfaces.html">Giao tiếp giữa các đối tượng trong Godot</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Notification trong Godot</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#process-vs-physics-process-vs-input">_process so với _physics_process so với *_input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#init-vs-initialization-vs-export">_init so với khởi tạo so với export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ready-vs-enter-tree-vs-notification-parented">_ready so với _enter_tree so với NOTIFICATION_PARENTED</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data_preferences.html">Lựa chọn cấu trúc dữ liệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic_preferences.html">Lựa chọn về logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_organization.html">Tổ chức dự án</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version_control_systems.html">Hệ thống quản lý phiên bản</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Thực hành tốt nhất</a></li>
+      <li class="breadcrumb-item active">Notification trong Godot</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="godot-notifications">
+<span id="doc-godot-notifications"></span><h1>Notification trong Godot<a class="headerlink" href="#godot-notifications" title="Link to this heading"></a></h1>
+<p>Mọi Object trong Godot đều triển khai phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-notification" title="Class reference (English)"><span class="xref std std-ref">_notification</span></a>. Mục đích của nó là cho phép Object phản hồi nhiều callback cấp engine có thể liên quan đến nó. Ví dụ, nếu engine bảo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">CanvasItem</span></a> &quot;vẽ&quot;, nó sẽ gọi <code class="docutils literal notranslate"><span class="pre">_notification(NOTIFICATION_DRAW)</span></code>.</p>
+<p>Một số notification này, như draw, rất hữu ích để ghi đè trong script. Hữu ích đến mức Godot công khai nhiều notification trong số đó bằng các hàm chuyên dụng:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_ready()</span></code>: <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_READY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_enter_tree()</span></code>: <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_ENTER_TREE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_exit_tree()</span></code>: <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_EXIT_TREE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_process(delta)</span></code>: <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_PROCESS</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_physics_process(delta)</span></code>: <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_PHYSICS_PROCESS</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_draw()</span></code>: <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_DRAW</span></code></p></li>
+</ul>
+<p>Điều mà người dùng có thể <em>không</em> nhận ra là notification tồn tại cho cả những kiểu khác ngoài Node, ví dụ:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-constant-notification-postinitialize" title="Class reference (English)"><span class="xref std std-ref">Object::NOTIFICATION_POSTINITIALIZE</span></a>: một callback được kích hoạt trong quá trình khởi tạo đối tượng. Script không truy cập được.</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-constant-notification-predelete" title="Class reference (English)"><span class="xref std std-ref">Object::NOTIFICATION_PREDELETE</span></a>: một callback được kích hoạt trước khi engine xóa một Object, tức là một &quot;hàm hủy&quot; (destructor).</p></li>
+</ul>
+<p>Và nhiều callback <em>có</em> tồn tại trong Node không có phương thức chuyên dụng nào, nhưng vẫn khá hữu ích.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-constant-notification-parented" title="Class reference (English)"><span class="xref std std-ref">Node::NOTIFICATION_PARENTED</span></a>: một callback được kích hoạt mỗi khi bạn thêm một node con vào một node khác.</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-constant-notification-unparented" title="Class reference (English)"><span class="xref std std-ref">Node::NOTIFICATION_UNPARENTED</span></a>: một callback được kích hoạt mỗi khi bạn gỡ một node con khỏi một node khác.</p></li>
+</ul>
+<p>Phương thức chung <code class="docutils literal notranslate"><span class="pre">_notification()</span></code> cho phép truy cập tất cả các notification tùy chỉnh này.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các phương thức trong tài liệu được đánh dấu là &quot;virtual&quot; cũng được thiết kế để script ghi đè.</p>
+<p>Một ví dụ kinh điển là phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-init" title="Class reference (English)"><span class="xref std std-ref">_init</span></a> trong Object. Dù nó không có notification <code class="docutils literal notranslate"><span class="pre">NOTIFICATION_*</span></code> tương đương, engine vẫn gọi phương thức này. Hầu hết các ngôn ngữ (trừ C#) dựa vào nó như một hàm khởi tạo (constructor).</p>
+</div>
+<p>Vậy, khi nào bạn nên dùng từng notification hoặc hàm virtual này?</p>
+<section id="process-vs-physics-process-vs-input">
+<h2>_process so với _physics_process so với *_input<a class="headerlink" href="#process-vs-physics-process-vs-input" title="Link to this heading"></a></h2>
+<p>Dùng <code class="docutils literal notranslate"><span class="pre">_process()</span></code> khi bạn cần delta time giữa các khung hình phụ thuộc vào framerate. Nếu code cập nhật dữ liệu đối tượng cần cập nhật thường xuyên nhất có thể, thì đây là chỗ phù hợp. Các bước kiểm tra logic lặp lại và việc lưu đệm dữ liệu thường thực thi ở đây, nhưng điều đó còn tùy vào tần suất cần cập nhật các phép đánh giá. Nếu chúng không cần thực thi mỗi khung hình, thì triển khai một vòng lặp Timer-timeout là một lựa chọn khác.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-0-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allows for recurring operations that don&#39;t trigger script logic</span>
+<span class="c1"># every frame (or even every fixed frame).</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Timer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">timer</span><span class="o">.</span><span class="vi">autostart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+<span class="w">    </span><span class="n">timer</span><span class="o">.</span><span class="vi">wait_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span>
+<span class="w">    </span><span class="nf">add_child</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+<span class="w">    </span><span class="n">timer</span><span class="o">.</span><span class="vi">timeout</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="k">func</span><span class="p">():</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;This block runs every 0.5 seconds&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Allows for recurring operations that don&#39;t trigger script logic</span>
+<span class="w">    </span><span class="c1">// every frame (or even every fixed frame).</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Timer</span><span class="p">();</span>
+<span class="w">        </span><span class="n">timer</span><span class="p">.</span><span class="n">Autostart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">timer</span><span class="p">.</span><span class="n">WaitTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<span class="w">        </span><span class="n">AddChild</span><span class="p">(</span><span class="n">timer</span><span class="p">);</span>
+<span class="w">        </span><span class="n">timer</span><span class="p">.</span><span class="n">Timeout</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;This block runs every 0.5 seconds&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">MyNode</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">)</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Allows for recurring operations that don&#39;t trigger script logic</span>
+<span class="w">    </span><span class="c1">// every frame (or even every fixed frame).</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_ready</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Timer</span><span class="w"> </span><span class="o">*</span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">memnew</span><span class="p">(</span><span class="n">Timer</span><span class="p">);</span>
+<span class="w">        </span><span class="n">timer</span><span class="o">-&gt;</span><span class="n">set_autostart</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+<span class="w">        </span><span class="n">timer</span><span class="o">-&gt;</span><span class="n">set_wait_time</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
+<span class="w">        </span><span class="n">add_child</span><span class="p">(</span><span class="n">timer</span><span class="p">);</span>
+<span class="w">        </span><span class="n">timer</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;timeout&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyNode</span><span class="o">::</span><span class="n">run</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">run</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;This block runs every 0.5 seconds.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dùng <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code> khi bạn cần delta time giữa các khung hình không phụ thuộc vào framerate. Nếu code cần cập nhật đều đặn theo thời gian, bất kể thời gian trôi nhanh hay chậm, thì đây là chỗ phù hợp. Các thao tác kinematic và biến đổi transform của đối tượng lặp lại nên thực thi ở đây.</p>
+<p>Dù có thể làm được, để đạt hiệu năng tốt nhất, bạn nên tránh kiểm tra input trong các callback này. <code class="docutils literal notranslate"><span class="pre">_process()</span></code> và <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code> sẽ kích hoạt ở mọi cơ hội (mặc định chúng không &quot;nghỉ&quot;). Ngược lại, các callback <code class="docutils literal notranslate"><span class="pre">*_input()</span></code> chỉ kích hoạt ở những khung hình mà engine thực sự phát hiện có input.</p>
+<p>Bạn vẫn có thể kiểm tra các input action trong các callback input như thường. Nếu muốn dùng delta time, bạn có thể lấy nó từ các phương thức delta time liên quan khi cần.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-1-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Called every frame, even when the engine detects no input.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_just_pressed</span><span class="p">(</span><span class="s2">&quot;ui_select&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+
+<span class="c1"># Called during every input event.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_unhandled_input</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">match</span><span class="w"> </span><span class="n">event</span><span class="o">.</span><span class="nf">get_class</span><span class="p">():</span>
+<span class="w">        </span><span class="s2">&quot;InputEventKey&quot;</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_just_pressed</span><span class="p">(</span><span class="s2">&quot;ui_accept&quot;</span><span class="p">):</span>
+<span class="w">                </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="nf">get_process_delta_time</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// Called every frame, even when the engine detects no input.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionJustPressed</span><span class="p">(</span><span class="s">&quot;ui_select&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">delta</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Called during every input event. Equally true for _input().</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_UnhandledInput</span><span class="p">(</span><span class="n">InputEvent</span><span class="w"> </span><span class="n">@event</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">@event</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">InputEventKey</span><span class="p">:</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionJustPressed</span><span class="p">(</span><span class="s">&quot;ui_accept&quot;</span><span class="p">))</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">GetProcessDeltaTime</span><span class="p">());</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">MyNode</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">)</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Called every frame, even when the engine detects no input.</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">p_delta</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="o">::</span><span class="n">get_singleton</span><span class="o">-&gt;</span><span class="n">is_action_just_pressed</span><span class="p">(</span><span class="s">&quot;ui_select&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">p_delta</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Called during every input event. Equally true for _input().</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_unhandled_input</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">InputEvent</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p_event</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">InputEventKey</span><span class="o">&gt;</span><span class="w"> </span><span class="n">key_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">key_event</span><span class="p">.</span><span class="n">is_valid</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Input</span><span class="o">::</span><span class="n">get_singleton</span><span class="o">-&gt;</span><span class="n">is_action_just_pressed</span><span class="p">(</span><span class="s">&quot;ui_accept&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">get_process_delta_time</span><span class="p">());</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="init-vs-initialization-vs-export">
+<h2>_init so với khởi tạo so với export<a class="headerlink" href="#init-vs-initialization-vs-export" title="Link to this heading"></a></h2>
+<p>Nếu script tự khởi tạo cây con node của riêng nó, mà không có scene, thì code đó nên thực thi trong <code class="docutils literal notranslate"><span class="pre">_init()</span></code>. Các khởi tạo khác cho thuộc tính hoặc không phụ thuộc SceneTree cũng nên chạy ở đây.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tương đương trong C# của phương thức <code class="docutils literal notranslate"><span class="pre">_init()</span></code> trong GDScript là hàm khởi tạo (constructor).</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">_init()</span></code> kích hoạt trước <code class="docutils literal notranslate"><span class="pre">_enter_tree()</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">_ready()</span></code>, nhưng sau khi script tạo và khởi tạo các thuộc tính của nó. Khi tạo instance một scene, giá trị thuộc tính sẽ được thiết lập theo trình tự sau:</p>
+<ol class="arabic simple">
+<li><p><strong>Gán giá trị ban đầu:</strong> thuộc tính được gán giá trị khởi tạo của nó, hoặc giá trị mặc định nếu không được chỉ định. Nếu có setter, setter không được dùng.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_init()</span></code> <strong>gán giá trị:</strong> giá trị thuộc tính được thay thế bởi mọi phép gán thực hiện trong <code class="docutils literal notranslate"><span class="pre">_init()</span></code>, và kích hoạt setter.</p></li>
+<li><p><strong>Gán giá trị export:</strong> giá trị của thuộc tính được export lại được thay thế bởi bất kỳ giá trị nào được đặt trong Inspector, và kích hoạt setter.</p></li>
+</ol>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-2-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># test is initialized to &quot;one&quot;, without triggering the setter.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">test</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;one&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;!&quot;</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_init</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Triggers the setter, changing test&#39;s value from &quot;one&quot; to &quot;two!&quot;.</span>
+<span class="w">    </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;two&quot;</span>
+
+<span class="c1"># If you set test to &quot;three&quot; from the Inspector, it would trigger</span>
+<span class="c1"># the setter, changing test&#39;s value from &quot;two!&quot; to &quot;three!&quot;.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">_test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;one&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Test</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">_test</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="k">set</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">_test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;{value}!&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">MyNode</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Triggers the setter, changing _test&#39;s value from &quot;one&quot; to &quot;two!&quot;.</span>
+<span class="w">        </span><span class="n">Test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;two&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// If you set Test to &quot;three&quot; in the Inspector, it would trigger</span>
+<span class="w">    </span><span class="c1">// the setter, changing _test&#39;s value from &quot;two!&quot; to &quot;three!&quot;.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">MyNode</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;one&quot;</span><span class="p">;</span>
+
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_bind_methods</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;get_test&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyNode</span><span class="o">::</span><span class="n">get_test</span><span class="p">);</span>
+<span class="w">        </span><span class="n">ClassDB</span><span class="o">::</span><span class="n">bind_method</span><span class="p">(</span><span class="n">D_METHOD</span><span class="p">(</span><span class="s">&quot;set_test&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyNode</span><span class="o">::</span><span class="n">set_test</span><span class="p">);</span>
+<span class="w">        </span><span class="n">ADD_PROPERTY</span><span class="p">(</span><span class="n">PropertyInfo</span><span class="p">(</span><span class="n">Variant</span><span class="o">::</span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;set_test&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;get_test&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">get_test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">test</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">set_test</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">p_test</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_test</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;!&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">MyNode</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Triggers the setter, changing _test&#39;s value from &quot;one&quot; to &quot;two!&quot;.</span>
+<span class="w">        </span><span class="n">set_test</span><span class="p">(</span><span class="s">&quot;two&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// If you set test to &quot;three&quot; in the Inspector, it would trigger</span>
+<span class="w">    </span><span class="c1">// the setter, changing test&#39;s value from &quot;two!&quot; to &quot;three!&quot;.</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></div>
+<p>Do đó, tạo instance một script so với một scene có thể ảnh hưởng đến cả quá trình khởi tạo <em>lẫn</em> số lần engine gọi setter.</p>
+</section>
+<section id="ready-vs-enter-tree-vs-notification-parented">
+<h2>_ready so với _enter_tree so với NOTIFICATION_PARENTED<a class="headerlink" href="#ready-vs-enter-tree-vs-notification-parented" title="Link to this heading"></a></h2>
+<p>Khi tạo instance một scene được kết nối với scene thực thi đầu tiên, Godot sẽ tạo instance các node đi xuống cây (gọi <code class="docutils literal notranslate"><span class="pre">_init()</span></code>) và xây dựng cây đi xuống từ gốc. Điều này khiến các lời gọi <code class="docutils literal notranslate"><span class="pre">_enter_tree()</span></code> lan dần xuống cây. Khi cây đã hoàn chỉnh, các node lá gọi <code class="docutils literal notranslate"><span class="pre">_ready</span></code>. Một node sẽ gọi phương thức này khi tất cả các node con đã gọi xong phương thức của chúng. Điều này tạo ra một chuỗi lan ngược đi lên trở lại gốc của cây.</p>
+<p>Khi tạo instance một script hoặc một scene độc lập, các node không được thêm vào SceneTree ngay khi được tạo, nên không có callback <code class="docutils literal notranslate"><span class="pre">_enter_tree()</span></code> nào kích hoạt. Thay vào đó, chỉ có lời gọi <code class="docutils literal notranslate"><span class="pre">_init()</span></code> xảy ra. Khi scene được thêm vào SceneTree, các lời gọi <code class="docutils literal notranslate"><span class="pre">_enter_tree()</span></code> và <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> mới xảy ra.</p>
+<p>Nếu bạn cần kích hoạt hành vi xảy ra khi node được gắn làm con của node khác, bất kể việc đó diễn ra trong scene chính/đang hoạt động hay không, bạn có thể dùng notification <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-constant-notification-parented" title="Class reference (English)"><span class="xref std std-ref">PARENTED</span></a>. Ví dụ, đây là một đoạn code kết nối phương thức của một node với một signal tùy chỉnh trên node cha mà không bị lỗi. Hữu ích với các node tập trung vào dữ liệu có thể được tạo lúc chạy.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button><button aria-controls="panel-3-Qysr" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Qysr" name="Qysr" role="tab" tabindex="-1">C++</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">parent_cache</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">connection_check</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">parent_cache</span><span class="o">.</span><span class="nf">has_user_signal</span><span class="p">(</span><span class="s2">&quot;interacted_with&quot;</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_notification</span><span class="p">(</span><span class="n">what</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">match</span><span class="w"> </span><span class="n">what</span><span class="p">:</span>
+<span class="w">        </span><span class="n">NOTIFICATION_PARENTED</span><span class="p">:</span>
+<span class="w">            </span><span class="n">parent_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_parent</span><span class="p">()</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nf">connection_check</span><span class="p">():</span>
+<span class="w">                </span><span class="n">parent_cache</span><span class="o">.</span><span class="vi">interacted_with</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_parent_interacted_with</span><span class="p">)</span>
+<span class="w">        </span><span class="n">NOTIFICATION_UNPARENTED</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nf">connection_check</span><span class="p">():</span>
+<span class="w">                </span><span class="n">parent_cache</span><span class="o">.</span><span class="vi">interacted_with</span><span class="o">.</span><span class="nf">disconnect</span><span class="p">(</span><span class="n">_on_parent_interacted_with</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_parent_interacted_with</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m reacting to my parent&#39;s interaction!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="n">_parentCache</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">ConnectionCheck</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">_parentCache</span><span class="p">.</span><span class="n">HasUserSignal</span><span class="p">(</span><span class="s">&quot;InteractedWith&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">what</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">((</span><span class="kt">long</span><span class="p">)</span><span class="n">what</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">NotificationParented</span><span class="p">:</span>
+<span class="w">                </span><span class="n">_parentCache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetParent</span><span class="p">();</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ConnectionCheck</span><span class="p">())</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">_parentCache</span><span class="p">.</span><span class="n">Connect</span><span class="p">(</span><span class="s">&quot;InteractedWith&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">OnParentInteractedWith</span><span class="p">));</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">NotificationUnparented</span><span class="p">:</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ConnectionCheck</span><span class="p">())</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">_parentCache</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">(</span><span class="s">&quot;InteractedWith&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Callable</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">OnParentInteractedWith</span><span class="p">));</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnParentInteractedWith</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;I&#39;m reacting to my parent&#39;s interaction!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-Qysr" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Qysr" name="Qysr" role="tabpanel" tabindex="0"><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">godot</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyNode</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">GDCLASS</span><span class="p">(</span><span class="n">MyNode</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">parent_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">on_parent_interacted_with</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;I&#39;m reacting to my parent&#39;s interaction!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">connection_check</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">parent_cache</span><span class="o">-&gt;</span><span class="n">has_user_signal</span><span class="p">(</span><span class="s">&quot;interacted_with&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">_notification</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">p_what</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_PARENTED</span><span class="p">:</span>
+<span class="w">                </span><span class="n">parent_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_parent</span><span class="p">();</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">connection_check</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">parent_cache</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;interacted_with&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyNode</span><span class="o">::</span><span class="n">on_parent_interacted_with</span><span class="p">));</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="no">NOTIFICATION_UNPARENTED</span><span class="p">:</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">connection_check</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">parent_cache</span><span class="o">-&gt;</span><span class="n">disconnect</span><span class="p">(</span><span class="s">&quot;interacted_with&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">callable_mp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyNode</span><span class="o">::</span><span class="n">on_parent_interacted_with</span><span class="p">));</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="godot_interfaces.html" class="btn btn-neutral float-left" title="Giao tiếp giữa các đối tượng trong Godot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="data_preferences.html" class="btn btn-neutral float-right" title="Lựa chọn cấu trúc dữ liệu" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

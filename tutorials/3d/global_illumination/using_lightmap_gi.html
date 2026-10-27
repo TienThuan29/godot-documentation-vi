@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Dùng chiếu sáng toàn cục bằng lightmap" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/global_illumination/using_lightmap_gi.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Lightmap đã bake là một quy trình để thêm chiếu sáng gián tiếp (hoặc bake hoàn toàn) vào scene. Khác với cách tiếp cận VoxelGI và SDFGI, lightmap đã bake chạy tốt trên PC cấu hình thấp và thiết bị ..." />
+<meta name="description" content="Lightmap đã bake là một quy trình để thêm chiếu sáng gián tiếp (hoặc bake hoàn toàn) vào scene. Khác với cách tiếp cận VoxelGI và SDFGI, lightmap đã bake chạy tốt trên PC cấu hình thấp và thiết bị ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Dùng chiếu sáng toàn cục bằng lightmap &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Reflection probe" href="reflection_probes.html" />
+    <link rel="prev" title="Chiếu sáng toàn cục bằng signed distance field (SDFGI)" href="using_sdfgi.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/global_illumination/using_lightmap_gi" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Chiếu sáng toàn cục (Global illumination)</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="introduction_to_global_illumination.html">Giới thiệu về chiếu sáng toàn cục</a></li>
+<li class="toctree-l4"><a class="reference internal" href="using_voxel_gi.html">Sử dụng chiếu sáng toàn cục Voxel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="using_sdfgi.html">Chiếu sáng toàn cục bằng signed distance field (SDFGI)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Dùng chiếu sáng toàn cục bằng lightmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection_probes.html">Reflection probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="faking_global_illumination.html">Giả lập chiếu sáng toàn cục</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">3D</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+      <li class="breadcrumb-item active">Dùng chiếu sáng toàn cục bằng lightmap</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-lightmap-global-illumination">
+<span id="doc-using-lightmap-gi"></span><h1>Dùng chiếu sáng toàn cục bằng lightmap<a class="headerlink" href="#using-lightmap-global-illumination" title="Link to this heading"></a></h1>
+<p>Lightmap đã bake là một quy trình để thêm chiếu sáng gián tiếp (hoặc bake hoàn toàn) vào scene. Khác với cách tiếp cận <a class="reference internal" href="using_voxel_gi.html#doc-using-voxel-gi"><span class="std std-ref">VoxelGI</span></a> và <a class="reference internal" href="using_sdfgi.html#doc-using-sdfgi"><span class="std std-ref">SDFGI</span></a>, lightmap đã bake chạy tốt trên PC cấu hình thấp và thiết bị di động, vì chúng gần như không tốn tài nguyên lúc chạy. Cũng khác với VoxelGI và SDFGI, lightmap đã bake có thể tùy chọn dùng để lưu chiếu sáng trực tiếp, giúp tăng hiệu năng hơn nữa.</p>
+<p>Khác với VoxelGI và SDFGI, lightmap đã bake hoàn toàn tĩnh. Một khi đã bake, chúng không thể thay đổi được nữa. Chúng cũng không cung cấp phản xạ cho scene, vì vậy bắt buộc phải dùng kèm <a class="reference internal" href="reflection_probes.html#doc-reflection-probes"><span class="std std-ref">Reflection probe</span></a> ở không gian trong nhà (hoặc dùng Sky ở ngoài trời) để có chất lượng tốt.</p>
+<p>Vì được bake sẵn, chúng ít gặp vấn đề rò sáng (light bleeding) hơn VoxelGI và SDFGI, và ánh sáng gián tiếp thường trông đẹp hơn. Nhược điểm là bake lightmap mất nhiều thời gian hơn so với bake VoxelGI. Trong khi bake VoxelGI chỉ mất vài giây, bake lightmap có thể mất vài phút, thậm chí lâu hơn. Điều này có thể làm chậm đáng kể tốc độ lặp, vì vậy bạn chỉ nên bake lightmap khi thực sự cần xem thay đổi về chiếu sáng. Lightmap được bake trên GPU, nên việc bake sẽ nhanh hơn nếu bạn có GPU rời tầm trung hoặc cao cấp.</p>
+<p>Bake lightmap cũng sẽ chiếm slot UV2 của các material được bake, nghĩa là bạn không còn dùng được slot này cho mục đích khác trong material (dù là <a class="reference internal" href="../standard_material_3d.html#doc-standard-material-3d"><span class="std std-ref">Standard Material 3D và ORM Material 3D</span></a> có sẵn hay shader tùy chỉnh).</p>
+<p>Dù kém linh hoạt, lightmap đã bake thường mang lại cả chất lượng <em>lẫn</em> hiệu năng tốt nhất cùng lúc trong các scene (phần lớn) tĩnh. Vì vậy lightmap vẫn phổ biến trong phát triển game, dù đây là kỹ thuật chiếu sáng toàn cục lâu đời nhất trong trò chơi điện tử.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Không chắc LightmapGI có phù hợp với nhu cầu của bạn? Xem <a class="reference internal" href="introduction_to_global_illumination.html#doc-introduction-to-global-illumination-comparison"><span class="std std-ref">Nên dùng kỹ thuật chiếu sáng toàn cục nào?</span></a> để so sánh các kỹ thuật GI có trong Godot 4.</p>
+</div>
+<section id="visual-comparison">
+<h2>So sánh trực quan<a class="headerlink" href="#visual-comparison" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id1">
+<img alt="Tắt LightmapGI." src="../../../_images/gi_none.webp" />
+<figcaption>
+<p><span class="caption-text">Tắt LightmapGI.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<img alt="Bật LightmapGI (chỉ bake ánh sáng gián tiếp)." src="../../../_images/gi_lightmap_gi_indirect_only.webp" />
+<figcaption>
+<p><span class="caption-text">Bật LightmapGI (chỉ bake ánh sáng gián tiếp). Ánh sáng trực tiếp vẫn là thời gian thực, cho phép những thay đổi nhỏ trong lúc chơi.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id3">
+<img alt="Bật LightmapGI (bake cả ánh sáng trực tiếp và gián tiếp)." src="../../../_images/gi_lightmap_gi_direct_and_indirect.webp" />
+<figcaption>
+<p><span class="caption-text">Bật LightmapGI (bake cả ánh sáng trực tiếp và gián tiếp). Hiệu năng tốt nhất nhưng chất lượng hình ảnh thấp hơn. Hãy để ý bóng mặt trời mờ hơn ở góc trên bên phải.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Dưới đây là một số so sánh giữa LightmapGI và VoxelGI. Lưu ý rằng lightmap chính xác hơn, nhưng cũng chịu hạn chế do chiếu sáng nằm trên một texture đã unwrap, nên phần chuyển tiếp và độ phân giải có thể không tốt lắm. VoxelGI trông kém chính xác hơn (vì đây là phép xấp xỉ), nhưng nhìn chung mượt hơn.</p>
+<img alt="../../../_images/lightmap_gi_comparison.png" src="../../../_images/lightmap_gi_comparison.png" />
+<p>SDFGI cũng kém chính xác hơn so với LightmapGI. Tuy nhiên, SDFGI có thể hỗ trợ thế giới mở rộng lớn mà không cần bake.</p>
+</section>
+<section id="setting-up">
+<h2>Thiết lập<a class="headerlink" href="#setting-up" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Không hỗ trợ bake lightmap trong trình chỉnh sửa web do giới hạn của graphics API. Trên nền tảng web, chỉ hỗ trợ <em>kết xuất</em> lightmap đã được bake trên nền tảng khác.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Node LightmapGI chỉ bake các node ở cùng cấp với node LightmapGI (anh em), hoặc các node là con của node LightmapGI. Nhờ đó bạn có thể dùng nhiều node LightmapGI để bake các phần khác nhau của scene một cách độc lập với nhau.</p>
+</div>
+<p>Trước hết, trước khi lightmapper làm được gì, các vật thể cần bake phải có một lớp UV2 và kích thước texture. Lớp UV2 là một bộ tọa độ texture thứ cấp đảm bảo mỗi mặt của vật thể có vị trí riêng trong UV map. Các mặt không được dùng chung pixel trong texture.</p>
+<p>Có vài cách để đảm bảo vật thể của bạn có lớp UV2 riêng và kích thước texture:</p>
+<section id="unwrap-on-scene-import-recommended">
+<h3>Unwrap khi import scene (khuyến nghị)<a class="headerlink" href="#unwrap-on-scene-import-recommended" title="Link to this heading"></a></h3>
+<p>Trong hầu hết trường hợp, đây là cách tốt nhất. Nhược điểm duy nhất là với các model lớn, việc unwrap có thể mất một lúc khi import. Dù vậy, Godot sẽ cache UV2 qua các lần reimport, nên nó chỉ được tạo lại khi cần.</p>
+<p>Chọn scene đã import trong FileSystem dock, rồi chuyển sang dock <strong>Import</strong>. Tại đó, bạn có thể thay đổi tùy chọn sau:</p>
+<img alt="../../../_images/lightmap_gi_import.webp" src="../../../_images/lightmap_gi_import.webp" />
+<p>Tùy chọn <strong>Meshes &gt; Light Baking</strong> phải được đặt là <strong>Static Lightmaps (VoxelGI/SDFGI/LightmapGI)</strong>:</p>
+<img alt="../../../_images/lightmap_gi_mesh_import_meshes.webp" src="../../../_images/lightmap_gi_mesh_import_meshes.webp" />
+<p>Khi unwrap lúc import, bạn có thể điều chỉnh kích thước texture bằng tùy chọn <strong>Meshes &gt; Lightmap Texel Size</strong>. Giá trị <em>thấp hơn</em> sẽ cho lightmap chi tiết hơn, có thể nâng chất lượng hình ảnh, đổi lại thời gian bake lâu hơn và tệp lightmap lớn hơn. Giá trị mặc định <code class="docutils literal notranslate"><span class="pre">0.2</span></code> phù hợp với scene nhỏ/vừa, nhưng bạn có thể muốn tăng lên <code class="docutils literal notranslate"><span class="pre">0.5</span></code> hoặc hơn nữa cho scene lớn. Điều này đặc biệt đúng khi bạn chỉ bake chiếu sáng gián tiếp, vì ánh sáng gián tiếp là dữ liệu tần số thấp (nghĩa là không cần texture độ phân giải cao để biểu diễn chính xác).</p>
+<p>Khi đặt tùy chọn này, mọi mesh trong scene sẽ được tạo UV2 map đúng cách.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Khi dùng lại một mesh trong scene, hãy nhớ rằng UV sẽ được tạo cho instance đầu tiên tìm thấy. Nếu mesh được dùng lại với tỷ lệ khác nhau (và chênh lệch lớn, hơn một nửa hoặc gấp đôi), lightmap sẽ kém hiệu quả. Để tránh điều này, hãy điều chỉnh thuộc tính <strong>Lightmap Scale</strong> trong mục GeometryInstance3D của node MeshInstance3D. Thuộc tính này cho phép bạn <em>tăng</em> mức chi tiết lightmap cho từng node MeshInstance3D cụ thể (nhưng không giảm được).</p>
+<p>Ngoài ra, <em>không</em> nên bỏ qua các tệp <code class="docutils literal notranslate"><span class="pre">*.unwrap_cache</span></code> trong hệ thống quản lý phiên bản, vì các tệp này đảm bảo việc reimport UV2 nhất quán giữa các nền tảng và phiên bản engine.</p>
+</div>
+</section>
+<section id="unwrap-from-within-godot">
+<h3>Unwrap ngay trong Godot<a class="headerlink" href="#unwrap-from-within-godot" title="Link to this heading"></a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu dùng thao tác trong menu Mesh này trên một scene 3D đã import, UV2 được tạo sẽ bị mất khi scene được tải lại.</p>
+</div>
+<p>Godot có tùy chọn unwrap mesh và hiển thị các kênh UV. Sau khi chọn một node MeshInstance3D, bạn có thể tìm thấy tùy chọn này trong menu <strong>Mesh</strong> ở phía trên viewport của trình chỉnh sửa 3D:</p>
+<img alt="../../../_images/lightmap_gi_mesh_menu.webp" src="../../../_images/lightmap_gi_mesh_menu.webp" />
+<p>Thao tác này sẽ tạo bộ tọa độ UV2 thứ hai có thể dùng để bake. Nó cũng tự động đặt kích thước texture.</p>
+</section>
+<section id="unwrap-from-your-3d-modeling-software">
+<h3>Unwrap từ phần mềm dựng hình 3D<a class="headerlink" href="#unwrap-from-your-3d-modeling-software" title="Link to this heading"></a></h3>
+<p>Lựa chọn cuối cùng là thực hiện trong ứng dụng 3D yêu thích của bạn. Cách này thường <strong>không được khuyến nghị</strong>, nhưng được giải thích để bạn biết là có. Ưu điểm chính là với các vật thể phức tạp mà bạn có thể phải re-import nhiều lần, quá trình tạo texture trong Godot có thể khá tốn kém, nên unwrap sẵn trước khi import có thể nhanh hơn.</p>
+<p>Chỉ cần unwrap trên lớp UV2 thứ hai.</p>
+<img alt="../../../_images/lightmap_gi_blender.webp" src="../../../_images/lightmap_gi_blender.webp" />
+<p>Sau đó import scene 3D như bình thường. Hãy nhớ rằng bạn sẽ cần đặt kích thước texture trên mesh sau khi import.</p>
+<img alt="../../../_images/lightmap_gi_lmsize.webp" src="../../../_images/lightmap_gi_lmsize.webp" />
+<p>Nếu bạn dùng mesh ngoài khi import, kích thước sẽ được giữ nguyên. Lưu ý rằng hầu hết các công cụ unwrap trong phần mềm dựng hình 3D không hướng đến chất lượng, vì chúng được thiết kế để chạy nhanh. Phần lớn trường hợp bạn sẽ cần dùng seam hoặc các kỹ thuật khác để unwrap tốt hơn.</p>
+</section>
+<section id="generating-uv2-for-primitive-meshes">
+<h3>Tạo UV2 cho primitive mesh<a class="headerlink" href="#generating-uv2-for-primitive-meshes" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tùy chọn này chỉ có cho các primitive mesh như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_boxmesh.html" title="Class reference (English)"><span class="xref std std-ref">class_BoxMesh</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_cylindermesh.html" title="Class reference (English)"><span class="xref std std-ref">class_CylinderMesh</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_planemesh.html" title="Class reference (English)"><span class="xref std std-ref">class_PlaneMesh</span></a>, v.v.</p>
+</div>
+<p>Bật UV2 trên primitive mesh cho phép chúng nhận và đóng góp vào chiếu sáng đã bake. Điều này có thể hữu ích trong một số thiết lập chiếu sáng. Ví dụ, bạn có thể ẩn một hình xuyến (torus) có material phát sáng sau khi bake lightmap để tạo một area light theo hình dạng hình xuyến.</p>
+<p>Theo mặc định, primitive mesh không được tạo UV2 để tiết kiệm tài nguyên (vì các mesh này có thể được tạo trong lúc chơi). Bạn có thể chỉnh primitive mesh trong Inspector và bật <strong>Add UV2</strong> để engine tạo UV2 theo thủ tục cho primitive mesh đó. Giá trị <strong>UV2 Padding</strong> mặc định đã được tinh chỉnh để tránh phần lớn hiện tượng rò lightmap mà không lãng phí quá nhiều không gian ở các cạnh. Nếu bạn thấy rò lightmap chỉ trên một primitive mesh cụ thể, có thể bạn phải tăng <strong>UV2 Padding</strong>.</p>
+<p><strong>Lightmap Size Hint</strong> biểu thị kích thước mà một mesh chiếm trên texture lightmap, thay đổi tùy theo các thuộc tính kích thước của mesh và giá trị <strong>UV2 Padding</strong>. Không nên thay đổi <strong>Lightmap Size Hint</strong> thủ công, vì mọi thay đổi sẽ bị mất khi scene được tải lại.</p>
+</section>
+<section id="generating-uv2-for-csg-nodes">
+<h3>Tạo UV2 cho node CSG<a class="headerlink" href="#generating-uv2-for-csg-nodes" title="Link to this heading"></a></h3>
+<p>Từ Godot 4.4, bạn có thể <a class="reference internal" href="../csg_tools.html#doc-csg-tools-converting-to-mesh-instance-3d"><span class="std std-ref">chuyển một node CSG và các node con của nó thành MeshInstance3D</span></a>. Có thể dùng cách này để bake lightmap trên node CSG theo các bước sau:</p>
+<ul class="simple">
+<li><p>Chọn node CSG gốc và chọn <strong>CSG &gt; Bake Mesh Instance</strong> ở phía trên viewport của trình chỉnh sửa 3D.</p></li>
+<li><p>Ẩn node CSG gốc vừa được bake (nó không tự động bị ẩn).</p></li>
+<li><p>Chọn node MeshInstance3D vừa được tạo và chọn <strong>Mesh &gt; Unwrap UV2 for Lightmap/AO</strong>.</p></li>
+<li><p>Bake lightmap.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Hãy nhớ giữ node CSG gốc trong cây scene để bạn có thể thay đổi hình học sau này nếu cần. Để thay đổi hình học, hãy xóa node MeshInstance3D và cho node CSG gốc hiển thị trở lại.</p>
+</div>
+</section>
+<section id="checking-uv2">
+<h3>Kiểm tra UV2<a class="headerlink" href="#checking-uv2" title="Link to this heading"></a></h3>
+<p>Trong menu <strong>Mesh</strong> đã nhắc ở trên, bạn có thể hiển thị tọa độ texture UV2. Nếu có gì không ổn, hãy kiểm tra lại xem các mesh đã có tọa độ UV2 này chưa:</p>
+<img alt="../../../_images/lightmap_gi_uvchannel.webp" src="../../../_images/lightmap_gi_uvchannel.webp" />
+</section>
+</section>
+<section id="setting-up-the-scene">
+<h2>Thiết lập scene<a class="headerlink" href="#setting-up-the-scene" title="Link to this heading"></a></h2>
+<p>Trước khi làm bất cứ điều gì, cần thêm một node <strong>LightmapGI</strong> vào scene. Node này sẽ bật tính năng bake ánh sáng cho mọi node (và node con) trong scene đó, kể cả các scene được tạo instance.</p>
+<img alt="../../../_images/lightmap_gi_scene.webp" src="../../../_images/lightmap_gi_scene.webp" />
+<p>Một sub-scene có thể được tạo instance nhiều lần, vì baker hỗ trợ điều này. Mỗi instance sẽ được gán một lightmap riêng. Để tránh vấn đề tỷ lệ texel lightmap không nhất quán, hãy tuân thủ quy tắc về tỷ lệ mesh đã nêu ở trên.</p>
+<section id="setting-up-meshes">
+<h3>Thiết lập mesh<a class="headerlink" href="#setting-up-meshes" title="Link to this heading"></a></h3>
+<p>Để một node <strong>MeshInstance3D</strong> tham gia vào quá trình bake, chế độ bake của nó cần được đặt là <strong>Static</strong>. Các mesh có chế độ bake là <strong>Disabled</strong> hoặc <strong>Dynamic</strong> sẽ bị lightmapper bỏ qua.</p>
+<img alt="../../../_images/lightmap_gi_use.webp" src="../../../_images/lightmap_gi_use.webp" />
+<p>Khi tự động tạo lightmap lúc import scene, tùy chọn này được bật tự động.</p>
+</section>
+<section id="setting-up-lights">
+<h3>Thiết lập đèn<a class="headerlink" href="#setting-up-lights" title="Link to this heading"></a></h3>
+<p>Theo mặc định, đèn chỉ được bake ánh sáng gián tiếp. Nghĩa là shadowmapping và chiếu sáng vẫn là động và ảnh hưởng đến các vật thể chuyển động, nhưng ánh sáng nảy (bounce) từ đèn đó sẽ được bake.</p>
+<p>Đèn có thể bị tắt (không bake) hoặc được bake hoàn toàn (trực tiếp và gián tiếp). Có thể kiểm soát điều này từ menu <strong>Bake Mode</strong> của đèn:</p>
+<img alt="../../../_images/lightmap_gi_bake_mode.webp" src="../../../_images/lightmap_gi_bake_mode.webp" />
+<p>Các chế độ gồm:</p>
+</section>
+<section id="disabled">
+<h3>Disabled<a class="headerlink" href="#disabled" title="Link to this heading"></a></h3>
+<p>Đèn bị bỏ qua khi bake lightmap. Đây là chế độ dùng cho các hiệu ứng chiếu sáng động như vụ nổ và hiệu ứng vũ khí.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Ẩn một đèn không ảnh hưởng gì đến kết quả bake lightmap. Nghĩa là bạn phải dùng chế độ bake Disabled thay vì ẩn node Light bằng cách tắt thuộc tính <strong>Visible</strong> của nó.</p>
+</div>
+</section>
+<section id="dynamic">
+<h3>Dynamic<a class="headerlink" href="#dynamic" title="Link to this heading"></a></h3>
+<p>Đây là chế độ mặc định, là sự dung hòa giữa hiệu năng và khả năng thay đổi thời gian thực. Chỉ chiếu sáng gián tiếp được bake. Ánh sáng trực tiếp và bóng vẫn là thời gian thực, giống như khi không có LightmapGI.</p>
+<p>Chế độ này cho phép thực hiện những thay đổi <em>nhỏ</em> về màu, năng lượng và vị trí của đèn mà vẫn trông khá đúng. Ví dụ, bạn có thể dùng nó để tạo những ngọn đuốc tĩnh lập lòe có ánh sáng gián tiếp đã được bake.</p>
+<p>Tùy theo giá trị của <strong>Shadowmask Mode</strong>, bạn vẫn có thể có bóng đã bake ở xa cho DirectionalLight3D. Nhờ đó bóng ở gần là thời gian thực và hiển thị được vật thể động, trong khi các vật thể tĩnh ở xa vẫn đổ bóng.</p>
+</section>
+<section id="static">
+<h3>Static<a class="headerlink" href="#static" title="Link to this heading"></a></h3>
+<p>Cả chiếu sáng gián tiếp và trực tiếp đều được bake. Vì các bề mặt tĩnh có thể bỏ qua hoàn toàn việc tính toán chiếu sáng và bóng, chế độ này cho hiệu năng tốt nhất cùng với bóng mềm không bao giờ mờ dần theo khoảng cách. Đèn thời gian thực sẽ không còn ảnh hưởng đến các bề mặt đã bake, nhưng vẫn ảnh hưởng đến vật thể động. Khi dùng chế độ bake <strong>All</strong> cho một đèn, vật thể động sẽ không đổ bóng thời gian thực lên bề mặt đã bake, nên bạn cần dùng cách khác như blob shadow. Có thể triển khai blob shadow bằng node Decal.</p>
+<p>Đèn hoàn toàn không thể điều chỉnh trong lúc chơi. Di chuyển đèn hoặc đổi màu (hoặc năng lượng) của nó sẽ không có tác dụng gì với các bề mặt tĩnh.</p>
+<p>Vì có thể điều chỉnh chế độ bake cho từng đèn, bạn có thể tạo thiết lập chiếu sáng bake kết hợp. Một lựa chọn phổ biến là dùng DirectionalLight thời gian thực với chế độ bake <strong>Dynamic</strong>, và dùng chế độ bake <strong>Static</strong> cho OmniLight và SpotLight. Cách này cho hiệu năng tốt mà vẫn cho phép vật thể động đổ bóng thời gian thực ở khu vực ngoài trời.</p>
+<p>Đèn được bake hoàn toàn cũng có thể tận dụng thuộc tính <strong>Size</strong> (omni/spot) hoặc <strong>Angular Distance</strong> (directional) của node đèn. Nhờ đó bóng có vùng nửa tối (penumbra) chân thực, lớn dần khi khoảng cách giữa vật đổ bóng và bóng tăng lên. Cách này cũng tốn ít hiệu năng hơn so với bóng PCSS thời gian thực, vì chỉ vật thể động mới được kết xuất bóng thời gian thực.</p>
+<img alt="../../../_images/lightmap_gi_omnilight_size.png" src="../../../_images/lightmap_gi_omnilight_size.png" />
+</section>
+</section>
+<section id="baking">
+<h2>Bake<a class="headerlink" href="#baking" title="Link to this heading"></a></h2>
+<p>Để bắt đầu quá trình bake, hãy nhấn nút <strong>Bake Lightmaps</strong> ở phía trên viewport của trình chỉnh sửa 3D khi đang chọn node LightmapGI:</p>
+<img alt="../../../_images/lightmap_gi_bake.webp" src="../../../_images/lightmap_gi_bake.webp" />
+<p>Quá trình này có thể mất từ vài giây đến vài phút (hoặc vài giờ) tùy theo kích thước scene, phương pháp bake và chất lượng được chọn.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Bake lightmap là quá trình có thể cần nhiều bộ nhớ video, đặc biệt nếu texture tạo ra lớn. Do giới hạn nội bộ, engine cũng có thể bị crash nếu kích thước texture tạo ra quá lớn (kể cả trên hệ thống có nhiều bộ nhớ video).</p>
+<p>Để tránh crash, hãy đảm bảo kích thước texel lightmap trong dock Import được đặt ở giá trị đủ cao.</p>
+</div>
+<section id="tweaks">
+<h3>Tinh chỉnh<a class="headerlink" href="#tweaks" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Quality:</strong> Có bốn chế độ chất lượng bake: Low, Medium, High và Ultra. Chất lượng cao hơn tốn nhiều thời gian hơn, nhưng cho lightmap đẹp hơn và ít nhiễu hơn. Khác biệt đặc biệt rõ với material phát sáng hoặc những khu vực nhận ít hoặc không có ánh sáng trực tiếp. Mỗi chế độ chất lượng bake có thể được điều chỉnh thêm trong Project Settings.</p></li>
+<li><p><strong>Supersampling:</strong> Tạo lightmap ở độ phân giải cao hơn rồi giảm mẫu (downsample). Việc này giảm nhiễu và rò sáng, đồng thời cho bóng tốt hơn với các chi tiết nhỏ. Tuy nhiên, dùng tùy chọn này sẽ tăng thời gian bake và mức dùng bộ nhớ trong khi bake lightmap. <strong>Supersampling Factor</strong> thay đổi kích thước lightmap được kết xuất trước khi giảm mẫu.</p></li>
+<li><p><strong>Bounces:</strong> Số lần nảy dùng cho chiếu sáng gián tiếp. Giá trị mặc định (<code class="docutils literal notranslate"><span class="pre">3</span></code>) là sự dung hòa tốt giữa thời gian bake và chất lượng. Giá trị cao hơn sẽ khiến ánh sáng nảy nhiều lần hơn trước khi dừng, làm chiếu sáng gián tiếp trông mượt hơn (nhưng cũng có thể sáng hơn tùy theo material và hình học).</p></li>
+<li><p><strong>Bounce Indirect Energy:</strong> Hệ số nhân toàn cục dùng khi bake năng lượng gián tiếp của đèn. Hệ số này nhân với giá trị <strong>Indirect Energy</strong> riêng của từng đèn. Các giá trị khác <code class="docutils literal notranslate"><span class="pre">1.0</span></code> không chính xác về mặt vật lý, nhưng có thể dùng cho mục đích nghệ thuật.</p></li>
+<li><p><strong>Directional:</strong> Nếu bật, lưu thông tin hướng cho lightmap. Điều này cải thiện diện mạo của các material dùng normal map trên bề mặt đã bake, đặc biệt với đèn được bake hoàn toàn (vì chúng cũng bake cả ánh sáng trực tiếp). Nhược điểm là lightmap có hướng tốn kém hơn một chút khi kết xuất. Chúng cũng cần nhiều thời gian bake hơn và tạo ra tệp lớn hơn.</p></li>
+<li><p><strong>Shadowmask Mode:</strong> Nếu đặt ở chế độ khác <strong>None</strong>, DirectionalLight3D đầu tiên trong scene có chế độ chiếu sáng toàn cục <strong>Dynamic</strong> sẽ được bake bóng tĩnh vào một texture riêng gọi là <em>shadowmask</em>. Có thể dùng để cho phép các vật thể tĩnh ở xa đổ bóng lên các vật thể tĩnh khác bất kể khoảng cách tới camera. Xem <a class="reference internal" href="#doc-using-lightmap-gi-shadowmask"><span class="std std-ref">phần về shadowmasking</span></a> để biết thêm chi tiết.</p></li>
+<li><p><strong>Interior:</strong> Nếu bật, sẽ không lấy chiếu sáng môi trường. Dùng tùy chọn này cho scene hoàn toàn trong nhà để tránh rò sáng.</p></li>
+<li><p><strong>Use Texture for Bounces:</strong> Nếu bật, một texture chứa thông tin chiếu sáng sẽ được tạo để tăng tốc việc tạo chiếu sáng gián tiếp, đổi lại giảm đôi chút độ chính xác. Hình học có thể xuất hiện thêm lỗi rò sáng khi dùng lightmap độ phân giải thấp hoặc UV kéo giãn lightmap đáng kể trên bề mặt. Nếu không chắc, hãy để tùy chọn này bật.</p></li>
+<li><p><strong>Use Denoiser:</strong> Nếu bật, dùng thuật toán khử nhiễu để giảm nhiễu lightmap đáng kể. Việc này tăng thời gian bake và đôi khi có thể gây lỗi hình ảnh, nhưng kết quả thường rất đáng. Xem <a class="reference internal" href="#doc-using-lightmap-gi-denoising"><span class="std std-ref">Khử nhiễu</span></a> để biết thêm thông tin.</p></li>
+<li><p><strong>Denoiser Strength:</strong> Cường độ của bước khử nhiễu áp dụng lên lightmap được tạo. Giá trị cao hơn khử nhiễu hiệu quả hơn, nhưng có thể làm giảm chi tiết của bóng tĩnh. Chỉ có tác dụng nếu bật khử nhiễu và phương pháp khử nhiễu là <abbr title="Non-Local Means with Joint Filtering">JNLM</abbr> (<abbr title="Open Image Denoise">OIDN</abbr> không có cài đặt cường độ khử nhiễu).</p></li>
+<li><p><strong>Bias:</strong> Giá trị độ lệch dùng cho bóng, tính theo đơn vị 3D. Thông thường bạn không cần đổi giá trị này, trừ khi gặp vấn đề rò sáng hoặc đốm tối trong lightmap sau khi bake. Cài đặt này không ảnh hưởng đến bóng thời gian thực đổ lên bề mặt đã bake (với đèn có chế độ bake <strong>Dynamic</strong>).</p></li>
+<li><p><strong>Max Texture Size:</strong> Kích thước texture tối đa cho texture atlas được tạo. Giá trị cao hơn sẽ tạo ít lát cắt hơn, nhưng có thể không chạy được trên mọi phần cứng do giới hạn phần cứng về kích thước texture. Nếu không chắc, hãy để ở giá trị mặc định <code class="docutils literal notranslate"><span class="pre">16384</span></code>.</p></li>
+<li><p><strong>Environment &gt; Mode:</strong> Kiểm soát cách lấy chiếu sáng môi trường khi bake lightmap. Giá trị mặc định <strong>Scene</strong> phù hợp với màn chơi có phần ngoài trời nhìn thấy được. Với scene hoàn toàn trong nhà, hãy đặt là <strong>Disabled</strong> để tránh rò sáng và tăng tốc bake. Bạn cũng có thể đặt là <strong>Custom Sky</strong> hoặc <strong>Custom Color</strong> để dùng chiếu sáng môi trường khác với bầu trời môi trường thực của scene.</p></li>
+<li><p><strong>Gen Probes &gt; Subdiv:</strong> Xem <a class="reference internal" href="#doc-using-lightmap-gi-dynamic-objects"><span class="std std-ref">Vật thể động</span></a>.</p></li>
+<li><p><strong>Data &gt; Light Data:</strong> Xem <a class="reference internal" href="#doc-using-lightmap-gi-data"><span class="std std-ref">Dữ liệu lightmap</span></a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="using-shadowmasking-for-distant-directional-shadows">
+<span id="doc-using-lightmap-gi-shadowmask"></span><h2>Dùng shadowmasking cho bóng directional ở xa<a class="headerlink" href="#using-shadowmasking-for-distant-directional-shadows" title="Link to this heading"></a></h2>
+<p>Khi dùng DirectionalLight3D, khoảng cách tối đa mà nó vẽ được bóng thời gian thực bị giới hạn bởi thuộc tính <strong>Shadow Max Distance</strong>. Điều này có thể là vấn đề trong scene lớn, vì các vật thể ở xa sẽ không có bóng nào từ DirectionalLight3D. Dù có thể giải quyết bằng cách dùng chế độ chiếu sáng toàn cục <strong>Static</strong> cho DirectionalLight3D, cách này có một số nhược điểm:</p>
+<ul class="simple">
+<li><p>Vì cả ánh sáng trực tiếp và gián tiếp đều được bake, không có cách nào để vật thể động đổ bóng lên bề mặt tĩnh một cách chân thực. Trong trường hợp này Godot bỏ qua hoàn toàn việc lấy mẫu bóng để tránh lỗi hình ảnh &quot;chiếu sáng kép&quot;.</p></li>
+<li><p>Bóng tĩnh ở gần thiếu chi tiết, vì chúng chỉ dựa vào texture lightmap chứ không dựa vào shadow cascade thời gian thực.</p></li>
+</ul>
+<p>Chúng ta có thể tránh các nhược điểm này mà vẫn có bóng ở xa bằng cách dùng <em>shadowmasking</em>. Dù vật thể động sẽ không nhận bóng từ shadowmask, nó vẫn cải thiện hình ảnh đáng kể vì phần lớn scene chủ yếu gồm các vật thể tĩnh.</p>
+<p>Vì riêng texture lightmap không chứa thông tin bóng, chúng ta có thể bake thông tin bóng này vào một texture riêng gọi là <em>shadowmask</em>.</p>
+<p>Shadowmasking chỉ ảnh hưởng đến DirectionalLight3D đầu tiên trong scene (xác định theo thứ tự cây) có chế độ chiếu sáng toàn cục <strong>Dynamic</strong>. Không thể dùng shadowmasking với chế độ chiếu sáng toàn cục <strong>Static</strong>, vì chế độ này bỏ qua hoàn toàn việc lấy mẫu bóng trên vật thể tĩnh. Lý do là chế độ chiếu sáng toàn cục Static bake cả ánh sáng trực tiếp và gián tiếp.</p>
+<p>Có ba chế độ shadowmasking:</p>
+<ul class="simple">
+<li><p><strong>None (mặc định):</strong> Không bake texture shadowmask. Bóng directional sẽ không hiển thị bên ngoài phạm vi chỉ định bởi thuộc tính <strong>Shadow Max Distance</strong> của DirectionalLight3D.</p></li>
+<li><p><strong>Replace:</strong> Bake texture shadowmask và dùng nó để vẽ bóng directional khi nằm ngoài phạm vi chỉ định bởi thuộc tính <strong>Shadow Max Distance</strong> của DirectionalLight3D. Bóng trong phạm vi này vẫn hoàn toàn thời gian thực. Tùy chọn này nhìn chung hợp lý nhất cho hầu hết scene, vì nó xử lý tốt các vật thể tĩnh có chuyển động nhẹ (ví dụ bóng của tán lá).</p></li>
+<li><p><strong>Overlay:</strong> Bake texture shadowmask và dùng nó để vẽ bóng directional bất kể khoảng cách tới camera. Bóng trong phạm vi thuộc tính <strong>Shadow Max Distance</strong> của DirectionalLight3D sẽ được phủ thêm bóng thời gian thực. Điều này giúp chuyển tiếp giữa bóng thời gian thực và bóng đã bake bớt gượng hơn, đổi lại có hiệu ứng &quot;nhòe&quot; trên bóng của vật thể tĩnh tùy theo mật độ texel lightmap. Ngoài ra, chế độ này không xử lý tốt bằng các vật thể tĩnh có chuyển động nhẹ (như tán lá), vì bóng đã bake không thể tạo hoạt ảnh theo thời gian. Dù vậy, với scene mà camera di chuyển nhanh, đây có thể là lựa chọn tốt hơn <strong>Replace</strong>.</p></li>
+</ul>
+<p>Dưới đây là so sánh trực quan các chế độ shadowmask trong một scene mà <strong>Shadow Max Distance</strong> được đặt rất thấp để tiện so sánh. Các hộp màu xanh dương là vật thể động, còn phần còn lại của scene là vật thể tĩnh. Chỉ có một DirectionalLight3D duy nhất trong scene với chế độ chiếu sáng toàn cục Dynamic:</p>
+<figure class="align-center" id="id4">
+<img alt="So sánh giữa các chế độ shadowmask" src="../../../_images/lightmap_gi_shadowmask.webp" />
+<figcaption>
+<p><span class="caption-text">So sánh giữa các chế độ shadowmask</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể chuyển đổi giữa chế độ shadowmask <strong>Replace</strong> và <strong>Overlay</strong> mà không cần bake lại lightmap.</p>
+</div>
+</section>
+<section id="balancing-bake-times-with-quality">
+<h2>Cân bằng giữa thời gian bake và chất lượng<a class="headerlink" href="#balancing-bake-times-with-quality" title="Link to this heading"></a></h2>
+<p>Vì bake chất lượng cao có thể mất rất lâu (đến hàng chục phút với scene lớn và phức tạp), bạn nên dùng cài đặt chất lượng thấp hơn lúc đầu. Sau đó, khi đã hài lòng với thiết lập chiếu sáng của scene, hãy nâng cài đặt chất lượng và thực hiện lần bake &quot;cuối cùng&quot; trước khi xuất (export) dự án.</p>
+<p>Giảm độ phân giải lightmap bằng cách tăng <strong>Lightmap Texel Size</strong> trên các scene 3D đã import cũng sẽ tăng tốc bake đáng kể. Tuy nhiên, bạn sẽ phải reimport tất cả các scene 3D dùng lightmap trước khi có thể bake lại lightmap.</p>
+</section>
+<section id="denoising">
+<span id="doc-using-lightmap-gi-denoising"></span><h2>Khử nhiễu<a class="headerlink" href="#denoising" title="Link to this heading"></a></h2>
+<p>Vì bake lightmap dựa trên raytracing, lightmap &quot;thô&quot; sau khi bake luôn có nhiễu thấy rõ. Nhiễu đặc biệt rõ ở những khu vực ánh sáng nảy khó tới, như khu vực trong nhà có ô cửa nhỏ để ánh nắng lọt vào. Có thể giảm nhiễu bằng cách tăng chất lượng bake, nhưng làm vậy sẽ tăng thời gian bake đáng kể.</p>
+<figure class="align-center" id="id5">
+<img alt="So sánh giữa tắt và bật khử nhiễu" src="../../../_images/lightmap_gi_denoiser_comparison.webp" />
+<figcaption>
+<p><span class="caption-text">So sánh giữa tắt và bật khử nhiễu (với bộ khử nhiễu JNLM mặc định).</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Để xử lý nhiễu mà không tăng thời gian bake quá nhiều, có thể dùng bộ khử nhiễu (denoiser). Bộ khử nhiễu là một thuật toán chạy trên lightmap đã bake hoàn chỉnh, phát hiện các mẫu nhiễu và làm mềm chúng trong khi cố gắng giữ chi tiết tốt nhất có thể. Godot cung cấp hai thuật toán khử nhiễu:</p>
+<section id="jnlm-non-local-means-with-joint-filtering">
+<h3>JNLM (Non-Local Means with Joint Filtering)<a class="headerlink" href="#jnlm-non-local-means-with-joint-filtering" title="Link to this heading"></a></h3>
+<p>JNLM là phương pháp khử nhiễu mặc định và có sẵn trong Godot. Nó dùng một thuật toán khử nhiễu đơn giản nhưng hiệu quả gọi là <em>non-local means</em>. JNLM chạy trên GPU bằng compute shader, và tương thích với mọi GPU chạy được các renderer dựa trên RenderingDevice của Godot 4. Không cần thiết lập thêm gì.</p>
+<p>Có thể điều chỉnh khử nhiễu của JNLM bằng thuộc tính <strong>Denoiser Strength</strong>, hiển thị khi bật <strong>Use Denoiser</strong>. Giá trị cao hơn có thể khử nhiễu hiệu quả hơn, đổi lại làm mất chi tiết của bóng tĩnh.</p>
+<figure class="align-center" id="id6">
+<img alt="So sánh giữa các giá trị cường độ khử nhiễu JNLM" src="../../../_images/lightmap_gi_denoiser_jnlm_strength.webp" />
+<figcaption>
+<p><span class="caption-text">So sánh giữa các giá trị cường độ khử nhiễu JNLM. Giá trị cao hơn có thể làm giảm chi tiết.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="oidn-open-image-denoise">
+<h3>OIDN (Open Image Denoise)<a class="headerlink" href="#oidn-open-image-denoise" title="Link to this heading"></a></h3>
+<p>Khác với JNLM, OIDN dùng cách tiếp cận học máy để khử nhiễu lightmap. Nó có một model được huấn luyện riêng để loại bỏ nhiễu khỏi lightmap, đồng thời giữ được nhiều chi tiết bóng hơn so với JNLM trong hầu hết scene.</p>
+<p>OIDN có thể chạy trên GPU nếu đã cấu hình tăng tốc phần cứng. Với GPU cao cấp hiện đại, cách này có thể nhanh hơn 50× so với khử nhiễu bằng CPU:</p>
+<ul class="simple">
+<li><p>Trên GPU AMD, phải cài đặt và cấu hình HIP.</p></li>
+<li><p>Trên GPU NVIDIA, phải cài đặt và cấu hình CUDA. Việc này có thể được trình cài đặt NVIDIA thực hiện tự động, nhưng trên Linux, thư viện CUDA có thể không được cài theo mặc định. Hãy kiểm tra lại xem các gói CUDA từ bản phân phối Linux của bạn đã được cài chưa.</p></li>
+<li><p>Trên GPU Intel, phải cài đặt và cấu hình SYCL.</p></li>
+</ul>
+<p>Nếu không có tăng tốc phần cứng, OIDN sẽ chuyển sang khử nhiễu đa luồng bằng CPU. Để xác nhận khử nhiễu bằng GPU có hoạt động hay không, hãy dùng công cụ theo dõi mức sử dụng GPU khi bake lightmap và xem phần trăm sử dụng GPU cũng như mức dùng VRAM trong lúc trình chỉnh sửa Godot hiển thị bước khử nhiễu. Công cụ dòng lệnh <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code> có thể hữu ích cho việc này.</p>
+<p>OIDN không đi kèm Godot do dung lượng tải về tương đối lớn. Bạn có thể tải các gói nhị phân OIDN đã biên dịch sẵn từ <a class="reference external" href="https://www.openimagedenoise.org/downloads.html">trang web</a> của nó. Giải nén gói vào một vị trí trên máy, rồi chỉ định đường dẫn tới tệp thực thi <code class="docutils literal notranslate"><span class="pre">oidnDenoise</span></code> trong Editor Settings (<strong>FileSystem &gt; Tools &gt; OIDN &gt; OIDN Denoise Path</strong>). Tệp thực thi này nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">bin</span></code> của gói nhị phân bạn đã giải nén.</p>
+<p>Sau khi chỉ định đường dẫn tới tệp thực thi khử nhiễu OIDN, hãy đổi phương pháp khử nhiễu trong cài đặt dự án bằng cách đặt <strong>Rendering &gt; Lightmapping &gt; Denoiser</strong> thành <strong>OIDN</strong>. Thay đổi này sẽ ảnh hưởng đến mọi lần bake lightmap trong dự án sau khi cài đặt được đổi.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Phương pháp khử nhiễu được cấu hình trong cài đặt dự án thay vì cài đặt trình chỉnh sửa. Điều này đảm bảo các thành viên khác nhau cùng làm trên một dự án sẽ dùng chung phương pháp khử nhiễu để có kết quả nhất quán.</p>
+</div>
+<figure class="align-center" id="id7">
+<img alt="So sánh giữa bộ khử nhiễu JNLM và OIDN" src="../../../_images/lightmap_gi_denoiser_jnlm_vs_oidn.webp" />
+<figcaption>
+<p><span class="caption-text">So sánh giữa bộ khử nhiễu JNLM và OIDN. Hãy để ý OIDN giữ chi tiết tốt hơn và giảm đường nối (seam) giữa các vật thể khác nhau.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="dynamic-objects">
+<span id="doc-using-lightmap-gi-dynamic-objects"></span><h2>Vật thể động<a class="headerlink" href="#dynamic-objects" title="Link to this heading"></a></h2>
+<p>Khác với VoxelGI và SDFGI, vật thể động nhận chiếu sáng gián tiếp theo cách khác so với vật thể tĩnh. Lý do là lightmapping chỉ được thực hiện trên vật thể tĩnh.</p>
+<p>Để hiển thị chiếu sáng gián tiếp trên vật thể động, một hệ thống probe 3D được sử dụng, với các light probe trải khắp scene. Khi bake lightmap, lightmapper sẽ tính lượng ánh sáng <em>gián tiếp</em> mà probe nhận được. Ánh sáng trực tiếp không được lưu trong light probe, kể cả với đèn có chế độ bake là <strong>Static</strong> (vì vật thể động vẫn tiếp tục được chiếu sáng theo thời gian thực).</p>
+<p>Có 2 cách thêm light probe vào scene:</p>
+<ul class="simple">
+<li><p><strong>Automatic:</strong> Đặt <strong>Gen Probes &gt; Subdiv</strong> thành giá trị khác <strong>Disabled</strong>, rồi bake lightmap. Mặc định là <code class="docutils literal notranslate"><span class="pre">8</span></code>, nhưng bạn có thể chọn giá trị lớn hơn để cải thiện độ chính xác, đổi lại thời gian bake lâu hơn và tệp đầu ra lớn hơn.</p></li>
+<li><p><strong>Manual:</strong> Ngoài việc tạo probe tự động hoặc thay cho cách đó, bạn có thể thêm light probe thủ công bằng cách thêm các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_lightmapprobe.html" title="Class reference (English)"><span class="xref std std-ref">class_LightmapProbe</span></a> vào scene. Có thể dùng cách này để cải thiện chi tiết chiếu sáng ở những khu vực vật thể động thường xuyên đi qua. Sau khi đặt các node LightmapProbe trong scene, bạn phải bake lại lightmap để chúng có hiệu lực.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Sau khi bake lightmap, bạn sẽ thấy các quả cầu trắng trong scene 3D thể hiện cách chiếu sáng đã bake ảnh hưởng đến vật thể động. Các quả cầu này <strong>không</strong> xuất hiện khi chạy dự án.</p>
+<p>Nếu muốn ẩn các quả cầu này trong trình chỉnh sửa, hãy bật/tắt <strong>View &gt; Gizmos &gt; LightmapGI</strong> ở phía trên trình chỉnh sửa 3D (biểu tượng &quot;mắt nhắm&quot; cho biết gizmo đang bị ẩn).</p>
+</div>
+</section>
+<section id="lightmap-data">
+<span id="doc-using-lightmap-gi-data"></span><h2>Dữ liệu lightmap<a class="headerlink" href="#lightmap-data" title="Link to this heading"></a></h2>
+<p>Thuộc tính <strong>Data &gt; Light Data</strong> trong node LightmapGI chứa dữ liệu lightmap sau khi bake. Texture được lưu xuống đĩa, nhưng thuộc tính này còn chứa dữ liệu capture cho vật thể động, vốn có thể khá nặng. Nếu bạn dùng scene ở định dạng <code class="docutils literal notranslate"><span class="pre">.tscn</span></code>, bạn nên lưu resource này ra một tệp nhị phân <code class="docutils literal notranslate"><span class="pre">.lmbake</span></code> bên ngoài để tránh làm phình scene <code class="docutils literal notranslate"><span class="pre">.tscn</span></code> bằng dữ liệu nhị phân mã hóa Base64.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Tệp EXR được tạo có thể xem và thậm chí chỉnh sửa bằng trình chỉnh sửa ảnh để hậu kỳ nếu cần. Tuy nhiên, hãy nhớ rằng các thay đổi trên tệp EXR sẽ bị mất khi bake lại lightmap.</p>
+</div>
+</section>
+<section id="reducing-lightmapgi-artifacts">
+<h2>Giảm lỗi hình ảnh của LightmapGI<a class="headerlink" href="#reducing-lightmapgi-artifacts" title="Link to this heading"></a></h2>
+<p>Nếu bạn thấy các node LightmapGI lúc hiện lúc mất khi camera di chuyển, nhiều khả năng là do engine đang kết xuất quá nhiều instance LightmapGI cùng lúc. Godot chỉ kết xuất tối đa 8 node LightmapGI cùng lúc, nghĩa là có thể có tối đa 8 instance trong khung nhìn camera trước khi một số bắt đầu nhấp nháy.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_sdfgi.html" class="btn btn-neutral float-left" title="Chiếu sáng toàn cục bằng signed distance field (SDFGI)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="reflection_probes.html" class="btn btn-neutral float-right" title="Reflection probe" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

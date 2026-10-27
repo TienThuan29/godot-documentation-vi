@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng SoftBody3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/physics/soft_body.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Soft body (hay động lực học vật mềm) mô phỏng chuyển động, sự thay đổi hình dạng và các thuộc tính vật lý khác của vật thể có thể biến dạng. Ví dụ, có thể dùng nó để mô phỏng vải hoặc tạo các nhân ..." />
+<meta name="description" content="Soft body (hay động lực học vật mềm) mô phỏng chuyển động, sự thay đổi hình dạng và các thuộc tính vật lý khác của vật thể có thể biến dạng. Ví dụ, có thể dùng nó để mô phỏng vải hoặc tạo các nhân ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng SoftBody3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Hình dạng va chạm (2D)" href="collision_shapes_2d.html" />
+    <link rel="prev" title="Nhân vật kinematic (2D)" href="kinematic_character_2d.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/physics/soft_body" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Vật lý</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="physics_introduction.html">Giới thiệu về vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_jolt_physics.html">Sử dụng Jolt Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigid_body.html">Sử dụng RigidBody</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_area_2d.html">Sử dụng Area2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_character_body_2d.html">Sử dụng CharacterBody2D/3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ray-casting.html">Ray-casting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ragdoll_system.html">Hệ thống ragdoll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematic_character_2d.html">Nhân vật kinematic (2D)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng SoftBody3D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#physics-engine-considerations">Những lưu ý về engine vật lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-setup">Thiết lập cơ bản</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cloak-simulation">Mô phỏng áo choàng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-imported-meshes">Sử dụng mesh được import</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_2d.html">Hình dạng va chạm (2D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_shapes_3d.html">Hình dạng va chạm (3D)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="large_world_coordinates.html">Tọa độ thế giới lớn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation/index.html">Nội suy vật lý</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_physics_issues.html">Khắc phục sự cố vật lý</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Vật lý</a></li>
+      <li class="breadcrumb-item active">Sử dụng SoftBody3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-softbody3d">
+<span id="doc-soft-body"></span><h1>Sử dụng SoftBody3D<a class="headerlink" href="#using-softbody3d" title="Link to this heading"></a></h1>
+<p>Soft body (hay <em>động lực học vật mềm</em>) mô phỏng chuyển động, sự thay đổi hình dạng và các thuộc tính vật lý khác của vật thể có thể biến dạng. Ví dụ, có thể dùng nó để mô phỏng vải hoặc tạo các nhân vật chân thực hơn.</p>
+<section id="physics-engine-considerations">
+<h2>Những lưu ý về engine vật lý<a class="headerlink" href="#physics-engine-considerations" title="Link to this heading"></a></h2>
+<p>Hỗ trợ soft body nhìn chung ổn định hơn trong Jolt Physics so với GodotPhysics3D. Bạn có thể chuyển engine vật lý bằng cách thay đổi <strong>Physics &gt; 3D &gt; Physics Engine</strong> trong Project Settings. Các dự án tạo trong Godot 4.6 trở về sau dùng Jolt Physics theo mặc định, còn các dự án có sẵn sẽ phải chuyển đổi thủ công.</p>
+<p>Ngoài ra, <a class="reference internal" href="interpolation/index.html#doc-physics-interpolation"><span class="std std-ref">physics interpolation</span></a> hiện không ảnh hưởng đến soft body. Nếu muốn mô phỏng soft body trông mượt hơn ở framerate cao, bạn sẽ phải tăng cài đặt dự án <strong>Physics &gt; Common &gt; Physics Ticks per Second</strong>, điều này sẽ tốn hiệu năng.</p>
+</section>
+<section id="basic-setup">
+<h2>Thiết lập cơ bản<a class="headerlink" href="#basic-setup" title="Link to this heading"></a></h2>
+<p>Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_softbody3d.html" title="Class reference (English)"><span class="xref std std-ref">SoftBody3D</span></a> được dùng cho mô phỏng soft body. Khác với các node physics body khác như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rigidbody3d.html" title="Class reference (English)"><span class="xref std std-ref">RigidBody3D</span></a> hay <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody3d.html" title="Class reference (English)"><span class="xref std std-ref">StaticBody3D</span></a>, nó <strong>không</strong> có node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">CollisionShape3D</span></a> hay <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a>. Thay vào đó, collision shape được suy ra từ mesh gán cho node. Mesh này cũng được dùng trực tiếp để kết xuất, nghĩa là bạn không cần tạo node con nào để có một thiết lập hoạt động và hiển thị được.</p>
+<p>Chúng ta sẽ tạo một khối lập phương đàn hồi để minh họa cách thiết lập soft body.</p>
+<p>Tạo một scene mới với node gốc là Node3D. Sau đó, tạo một node SoftBody3D. Thêm một BoxMesh vào thuộc tính <strong>Mesh</strong> của node trong inspector và tăng mức chia nhỏ (subdivision) của mesh để mô phỏng.</p>
+<p>Mức subdivision quyết định độ chính xác của biến dạng; giá trị càng cao cho phép biến dạng càng nhỏ và chi tiết, nhưng tốn hiệu năng hơn. Trong ví dụ này, chúng ta sẽ đặt nó là 3 trên mỗi trục:</p>
+<figure class="align-center" id="id1">
+<img alt="Điều chỉnh thuộc tính BoxMesh trong inspector" src="../../_images/soft_body_box_mesh.webp" />
+<figcaption>
+<p><span class="caption-text">Điều chỉnh thuộc tính BoxMesh trong inspector</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Bây giờ, hãy đặt các tham số để có loại soft body bạn mong muốn. Cố giữ <strong>Simulation Precision</strong> trên 5; nếu không, soft body có thể bị sụp.</p>
+<figure class="align-center" id="id2">
+<img alt="Điều chỉnh thuộc tính mô phỏng của SoftBody3D trong inspector" src="../../_images/soft_body_inspector.webp" />
+<figcaption>
+<p><span class="caption-text">Điều chỉnh thuộc tính mô phỏng của SoftBody3D trong inspector</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hãy cẩn thận với một số tham số, vì vài giá trị có thể dẫn đến kết quả kỳ lạ. Ví dụ, nếu shape không khép kín hoàn toàn và bạn đặt áp suất lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>, soft body sẽ bay lung tung như túi nilon trước gió mạnh.</p>
+</div>
+<p>Chạy scene để xem mô phỏng. Đây là ví dụ về kết quả bạn sẽ thấy:</p>
+<div  class="sphinx-contrib-video-container align-default"><video autoplay="True" controls="True" loop="True" muted="True" preload="auto" width="100%"><source src="../../_images/soft_body_box_simulation.webm" type="video/webm">Soft body box simulation example</video></div><div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để cải thiện kết quả mô phỏng, hãy tăng <strong>Simulation Precision</strong>. Điều này có thể cải thiện đáng kể nhưng tốn hiệu năng.</p>
+<p>Ngoài ra, bạn có thể tăng cài đặt dự án <strong>Physics &gt; Common &gt; Physics Ticks per Second</strong>, điều này cũng ảnh hưởng đến chất lượng mô phỏng soft body.</p>
+</div>
+</section>
+<section id="cloak-simulation">
+<h2>Mô phỏng áo choàng<a class="headerlink" href="#cloak-simulation" title="Link to this heading"></a></h2>
+<p>Hãy làm một chiếc áo choàng trong demo Platformer 3D.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn có thể tải demo Platformer 3D trên <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/3d/platformer">GitHub</a> hoặc <a class="reference external" href="https://godotengine.org/asset-library/asset/2748">Asset Library</a>.</p>
+</div>
+<p>Mở scene <code class="docutils literal notranslate"><span class="pre">player/player.tscn</span></code>, thêm một node <code class="docutils literal notranslate"><span class="pre">SoftBody3D</span></code> bên dưới node gốc, rồi gán một resource PlaneMesh cho thuộc tính <strong>Mesh</strong> của nó.</p>
+<p>Mở các thuộc tính của PlaneMesh và đặt kích thước là <code class="docutils literal notranslate"><span class="pre">(0.5,</span> <span class="pre">1.0)</span></code>, rồi đặt <strong>Subdivide Width</strong> và <strong>Subdivide Depth</strong> thành <code class="docutils literal notranslate"><span class="pre">5</span></code>. Điều chỉnh vị trí và góc xoay của node SoftBody3D sao cho mặt phẳng nằm sát lưng nhân vật. Bạn sẽ có kết quả tương tự như sau:</p>
+<figure class="align-center" id="id3">
+<img alt="Chia nhỏ PlaneMesh và đặt nó lên lưng nhân vật" src="../../_images/soft_body_cloak_subdivide.webp" />
+<figcaption>
+<p><span class="caption-text">Chia nhỏ PlaneMesh và đặt nó lên lưng nhân vật</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Subdivision tạo ra mesh có nhiều lưới tam giác hơn để mô phỏng tốt hơn. Tuy nhiên, mức subdivision cao hơn sẽ ảnh hưởng đến hiệu năng. Hãy tìm điểm cân bằng giữa hiệu năng và chất lượng. Điều này phụ thuộc vào số lượng mô phỏng soft body bạn dự kiến hoạt động cùng lúc, cũng như khoảng cách giữa camera và soft body.</p>
+</div>
+<p>Thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_boneattachment3d.html" title="Class reference (English)"><span class="xref std std-ref">BoneAttachment3D</span></a> dưới node skeleton và chọn xương Neck để gắn áo choàng vào skeleton của nhân vật.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Node BoneAttachment3D được dùng để gắn đối tượng vào một xương của armature. Đối tượng được gắn sẽ đi theo chuyển động của xương. Ví dụ, vũ khí nhân vật cầm có thể được gắn theo cách này.</p>
+<p>Hiện tại <strong>không</strong> di chuyển node SoftBody3D vào dưới node BoneAttachment3D. Thay vào đó, chúng ta sẽ cấu hình các <em>điểm ghim</em> (pinned points) của nó để đi theo node BoneAttachment3D.</p>
+</div>
+<figure class="align-center" id="id4">
+<img alt="Cấu hình node BoneAttachment3D trong inspector" src="../../_images/soft_body_cloak_bone_attach.webp" />
+<figcaption>
+<p><span class="caption-text">Cấu hình node BoneAttachment3D trong inspector</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Để tạo điểm ghim, hãy chọn các đỉnh phía trên trong node SoftBody3D. Điểm ghim hiển thị màu xanh lam trong viewport của trình chỉnh sửa 3D:</p>
+<figure class="align-center" id="id5">
+<img alt="Ghim các điểm của SoftBody3D trong inspector" src="../../_images/soft_body_cloak_pinned.webp" />
+<figcaption>
+<p><span class="caption-text">Ghim các điểm của SoftBody3D trong inspector</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Các khớp ghim nằm trong mục <strong>Attachments</strong> của SoftBody3D, bên dưới mục <strong>Collision</strong> mà bạn phải mở rộng trước. Chọn node BoneAttachment3D làm <strong>Spatial Attachment Path</strong> cho từng khớp ghim. Giờ các khớp ghim đã được gắn vào cổ.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Để gán thuộc tính nhanh hơn, bạn có thể kéo thả node BoneAttachment3D từ Scene dock vào ô thuộc tính <strong>Spatial Attachment Path</strong>.</p>
+</div>
+<p>Lưu ý rằng bạn có thể phải bỏ chọn rồi chọn lại node SoftBody3D để mục <strong>Attachments</strong> hiện ra.</p>
+<figure class="align-center" id="id6">
+<img alt="Cấu hình các điểm ghim gắn vào node BoneAttachment3D trong inspector của SoftBody3D" src="../../_images/soft_body_cloak_pinned_attach.webp" />
+<figcaption>
+<p><span class="caption-text">Cấu hình các điểm ghim gắn vào node BoneAttachment3D trong inspector của SoftBody3D</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Bước cuối cùng là tránh hiện tượng xuyên mesh bằng cách thêm CharacterBody3D <code class="docutils literal notranslate"><span class="pre">Player</span></code> (node gốc của scene) vào thuộc tính <strong>Parent Collision Ignore</strong> của SoftBody3D.</p>
+<figure class="align-center" id="id7">
+<img alt="Thiết lập ngoại lệ va chạm trong inspector của SoftBody3D" src="../../_images/soft_body_cloak_ignore.webp" />
+<figcaption>
+<p><span class="caption-text">Thiết lập ngoại lệ va chạm trong inspector của SoftBody3D</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Chạy scene và áo choàng sẽ được mô phỏng chính xác.</p>
+<figure class="align-center" id="id8">
+<img alt="Kết quả cuối cùng khi chạy scene chính của dự án" src="../../_images/soft_body_cloak_finish.webp" />
+<figcaption>
+<p><span class="caption-text">Kết quả cuối cùng khi chạy scene chính của dự án</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Phần này đã bao quát các cài đặt cơ bản của mô phỏng soft body. Hãy thử nghiệm với các tham số để đạt được hiệu ứng bạn muốn khi làm game.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Áo choàng sẽ không hiển thị khi nhìn từ một số góc do backface culling. Để khắc phục, bạn có thể tắt backface culling bằng cách gán một StandardMaterial3D mới, rồi đặt cull mode của nó thành <strong>Disabled</strong>. Điều này sẽ khiến material kết xuất cả hai mặt của mặt phẳng.</p>
+</div>
+</section>
+<section id="using-imported-meshes">
+<h2>Sử dụng mesh được import<a class="headerlink" href="#using-imported-meshes" title="Link to this heading"></a></h2>
+<p>Tùy chọn <strong>Save to File</strong> trong hộp thoại Advanced Import Settings cho phép bạn lưu mesh thành một file resource riêng, sau đó có thể gắn vào các node SoftBody3D.</p>
+<p>Bạn cũng có thể muốn tắt việc tạo LOD hoặc thay đổi tùy chọn tạo LOD khi import mesh để dùng với SoftBody3D. Cài đặt import mặc định sẽ tạo ra LOD gộp các mặt kề nhau gần như phẳng với nhau, ngay cả ở khoảng cách kết xuất rất gần. Điều này hoạt động tốt với mesh tĩnh, nhưng thường không mong muốn khi dùng với SoftBody3D nếu bạn muốn các mặt này có thể uốn cong và di chuyển tương đối với nhau, thay vì được kết xuất như một mặt phẳng duy nhất.</p>
+<p>Xem <a class="reference internal" href="../assets_pipeline/importing_3d_scenes/import_configuration.html#doc-importing-3d-scenes-import-configuration"><span class="std std-ref">Cấu hình import</span></a> và <a class="reference internal" href="../3d/mesh_lod.html#doc-mesh-lod"><span class="std std-ref">Mức độ chi tiết của mesh (LOD)</span></a> để biết thêm chi tiết.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kinematic_character_2d.html" class="btn btn-neutral float-left" title="Nhân vật kinematic (2D)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="collision_shapes_2d.html" class="btn btn-neutral float-right" title="Hình dạng va chạm (2D)" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

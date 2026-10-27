@@ -1,0 +1,742 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Một script khởi động XR tốt hơn" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/xr/a_better_xr_start_script.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong Thiết lập XR, chúng ta đã giới thiệu một script khởi động để khởi tạo thiết lập, được dùng làm script cho node chính. Script này thực hiện các bước tối thiểu cần thiết cho bất kỳ interface nà..." />
+<meta name="description" content="Trong Thiết lập XR, chúng ta đã giới thiệu một script khởi động để khởi tạo thiết lập, được dùng làm script cho node chính. Script này thực hiện các bước tối thiểu cần thiết cho bất kỳ interface nà..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Một script khởi động XR tốt hơn &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Triển khai lên Android" href="deploying_to_android.html" />
+    <link rel="prev" title="Đi tiếp từ đây" href="xr_next_steps.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/xr/a_better_xr_start_script" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XR</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xr_terminology.html">Thuật ngữ XR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Bắt đầu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#xr-interfaces">Các XR interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#openxr">OpenXR</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Một script khởi động XR tốt hơn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploying_to_android.html">Triển khai lên Android</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_settings.html">Cài đặt OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xr_action_map.html">XR action map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_composition_layers.html">Composition layer trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_hand_tracking.html">Theo dõi bàn tay (hand tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_body_tracking.html">Theo dõi cơ thể (body tracking) trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_render_models.html">Render model trong OpenXR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openxr_spatial_entities.html">Spatial entities trong OpenXR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#webxr">WebXR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#others">Khác</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#godot-xr-tools">Godot XR Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Chủ đề nâng cao</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">XR</a></li>
+      <li class="breadcrumb-item active">Một script khởi động XR tốt hơn</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="a-better-xr-start-script">
+<span id="doc-a-better-xr-start-script"></span><h1>Một script khởi động XR tốt hơn<a class="headerlink" href="#a-better-xr-start-script" title="Link to this heading"></a></h1>
+<p>Trong <a class="reference internal" href="setting_up_xr.html#doc-setting-up-xr"><span class="std std-ref">Thiết lập XR</span></a>, chúng ta đã giới thiệu một script khởi động để khởi tạo thiết lập, được dùng làm script cho node chính. Script này thực hiện các bước tối thiểu cần thiết cho bất kỳ interface nào.</p>
+<p>Khi dùng OpenXR, có một số cải tiến mà chúng ta nên thực hiện ở đây. Vì vậy, chúng tôi đã tạo một script khởi động chi tiết hơn. Bạn sẽ thấy script này được dùng trong các dự án demo của chúng tôi.</p>
+<p>Ngoài ra, nếu bạn đang dùng XR Tools (xem <a class="reference internal" href="introducing_xr_tools.html#doc-introducing-xr-tools"><span class="std std-ref">Giới thiệu XR Tools</span></a>), bộ công cụ này có sẵn một phiên bản của script này, được cập nhật thêm một số tính năng liên quan đến XR Tools.</p>
+<p>Dưới đây, chúng ta sẽ trình bày chi tiết script được dùng trong các demo và giải thích những phần được bổ sung.</p>
+<section id="signals-for-our-script">
+<h2>Các signal cho script<a class="headerlink" href="#signals-for-our-script" title="Link to this heading"></a></h2>
+<p>Chúng ta thêm 3 signal vào script để game có thể bổ sung logic:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">focus_lost</span></code> được phát ra khi người chơi tháo headset hoặc khi người chơi vào hệ thống menu của headset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">focus_gained</span></code> được phát ra khi người chơi đeo lại headset hoặc thoát khỏi hệ thống menu và quay lại game.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pose_recentered</span></code> được phát ra khi headset yêu cầu đặt lại vị trí của người chơi.</p></li>
+</ul>
+<p>Game của chúng ta cần phản hồi phù hợp với các signal này.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+<span class="k">signal</span><span class="w"> </span><span class="n">focus_lost</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">focus_gained</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">pose_recentered</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">FocusLostEventHandler</span><span class="p">();</span>
+
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">FocusGainedEventHandler</span><span class="p">();</span>
+
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">PoseRecenteredEventHandler</span><span class="p">();</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="variables-for-our-script">
+<h2>Các biến cho script<a class="headerlink" href="#variables-for-our-script" title="Link to this heading"></a></h2>
+<p>Chúng ta cũng thêm một vài biến mới vào script:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">maximum_refresh_rate</span></code> sẽ điều khiển tần số làm mới của headset nếu headset hỗ trợ.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xr_interface</span></code> giữ tham chiếu đến XR interface của chúng ta. Biến này đã có từ trước, nhưng giờ chúng ta khai báo kiểu cho nó để có toàn quyền truy cập API <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrinterface.html" title="Class reference (English)"><span class="xref std std-ref">XRInterface</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xr_is_focussed</span></code> sẽ được đặt thành true mỗi khi game của chúng ta có focus.</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">maximum_refresh_rate</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">90</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">xr_interface</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">OpenXRInterface</span>
+<span class="k">var</span><span class="w"> </span><span class="n">xr_is_focussed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">MaximumRefreshRate</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">90</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">OpenXRInterface</span><span class="w"> </span><span class="n">_xrInterface</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">_xrIsFocused</span><span class="p">;</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="our-updated-ready-function">
+<h2>Hàm ready được cập nhật<a class="headerlink" href="#our-updated-ready-function" title="Link to this heading"></a></h2>
+<p>Chúng ta thêm một vài thứ vào hàm ready.</p>
+<p>Nếu đang dùng renderer mobile hoặc forward+, chúng ta đặt <code class="docutils literal notranslate"><span class="pre">vrs_mode</span></code> của viewport thành <code class="docutils literal notranslate"><span class="pre">VRS_XR</span></code>. Trên các nền tảng hỗ trợ, thao tác này sẽ bật kết xuất foveated.</p>
+<p>Nếu đang dùng renderer compatibility, chúng ta kiểm tra xem cài đặt kết xuất foveated của OpenXR đã được cấu hình chưa; nếu chưa, chúng ta xuất ra một cảnh báo. Xem <a class="reference internal" href="openxr_settings.html#doc-openxr-settings"><span class="std std-ref">Cài đặt OpenXR</span></a> để biết thêm chi tiết.</p>
+<p>Chúng ta kết nối một số signal sẽ được phát ra bởi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrinterface.html" title="Class reference (English)"><span class="xref std std-ref">XRInterface</span></a>. Chúng ta sẽ giải thích chi tiết hơn về các signal này khi triển khai chúng.</p>
+<p>Chúng ta cũng thoát ứng dụng nếu không khởi tạo được OpenXR. Đây có thể là một lựa chọn tùy bạn. Nếu bạn làm game ở chế độ hỗn hợp, bạn thiết lập chế độ VR của game khi khởi tạo thành công và thiết lập chế độ không VR khi thất bại. Tuy nhiên, khi chạy một ứng dụng chỉ dành cho VR trên headset độc lập, thoát ra khi thất bại sẽ tốt hơn là làm treo hệ thống.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Called when the node enters the scene tree for the first time.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">xr_interface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">XRServer</span><span class="o">.</span><span class="nf">find_interface</span><span class="p">(</span><span class="s2">&quot;OpenXR&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">xr_interface</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">xr_interface</span><span class="o">.</span><span class="nf">is_initialized</span><span class="p">():</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR instantiated successfully.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">vp</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">Viewport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_viewport</span><span class="p">()</span>
+
+<span class="w">        </span><span class="c1"># Enable XR on our viewport</span>
+<span class="w">        </span><span class="n">vp</span><span class="o">.</span><span class="vi">use_xr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+
+<span class="w">        </span><span class="c1"># Make sure v-sync is off, v-sync is handled by OpenXR</span>
+<span class="w">        </span><span class="nb">DisplayServer</span><span class="o">.</span><span class="nf">window_set_vsync_mode</span><span class="p">(</span><span class="nb">DisplayServer</span><span class="o">.</span><span class="vi">VSYNC_DISABLED</span><span class="p">)</span>
+
+<span class="w">        </span><span class="c1"># Enable VRS</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">get_rendering_device</span><span class="p">():</span>
+<span class="w">            </span><span class="n">vp</span><span class="o">.</span><span class="vi">vrs_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Viewport</span><span class="o">.</span><span class="vi">VRS_XR</span>
+<span class="w">        </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">(</span><span class="nb">ProjectSettings</span><span class="o">.</span><span class="nf">get_setting</span><span class="p">(</span><span class="s2">&quot;xr/openxr/foveation_level&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">            </span><span class="nb nb-Function">push_warning</span><span class="p">(</span><span class="s2">&quot;OpenXR: Recommend setting Foveation level to High in Project Settings&quot;</span><span class="p">)</span>
+
+<span class="w">        </span><span class="c1"># Connect the OpenXR events</span>
+<span class="w">        </span><span class="n">xr_interface</span><span class="o">.</span><span class="vi">session_begun</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_openxr_session_begun</span><span class="p">)</span>
+<span class="w">        </span><span class="n">xr_interface</span><span class="o">.</span><span class="vi">session_visible</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_openxr_visible_state</span><span class="p">)</span>
+<span class="w">        </span><span class="n">xr_interface</span><span class="o">.</span><span class="vi">session_focussed</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_openxr_focused_state</span><span class="p">)</span>
+<span class="w">        </span><span class="n">xr_interface</span><span class="o">.</span><span class="vi">session_stopping</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_openxr_stopping</span><span class="p">)</span>
+<span class="w">        </span><span class="n">xr_interface</span><span class="o">.</span><span class="vi">pose_recentered</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_openxr_pose_recentered</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># We couldn&#39;t start OpenXR.</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR not instantiated!&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">quit</span><span class="p">()</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">    </span><span class="c1">/// Called when the node enters the scene tree for the first time.</span>
+<span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_xrInterface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">OpenXRInterface</span><span class="p">)</span><span class="n">XRServer</span><span class="p">.</span><span class="n">FindInterface</span><span class="p">(</span><span class="s">&quot;OpenXR&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_xrInterface</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">IsInitialized</span><span class="p">())</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR instantiated successfully.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">vp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewport</span><span class="p">();</span>
+
+<span class="w">            </span><span class="c1">// Enable XR on our viewport</span>
+<span class="w">            </span><span class="n">vp</span><span class="p">.</span><span class="n">UseXR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c1">// Make sure v-sync is off, v-sync is handled by OpenXR</span>
+<span class="w">            </span><span class="n">DisplayServer</span><span class="p">.</span><span class="n">WindowSetVsyncMode</span><span class="p">(</span><span class="n">DisplayServer</span><span class="p">.</span><span class="n">VSyncMode</span><span class="p">.</span><span class="n">Disabled</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// Enable VRS</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">GetRenderingDevice</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">vp</span><span class="p">.</span><span class="n">VrsMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Viewport</span><span class="p">.</span><span class="n">VrsModeEnum</span><span class="p">.</span><span class="n">XR</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">ProjectSettings</span><span class="p">.</span><span class="n">GetSetting</span><span class="p">(</span><span class="s">&quot;xr/openxr/foveation_level&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">GD</span><span class="p">.</span><span class="n">PushWarning</span><span class="p">(</span><span class="s">&quot;OpenXR: Recommend setting Foveation level to High in Project Settings&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">            </span><span class="c1">// Connect the OpenXR events</span>
+<span class="w">            </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">SessionBegun</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnOpenXRSessionBegun</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">SessionVisible</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnOpenXRVisibleState</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">SessionFocussed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnOpenXRFocusedState</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">SessionStopping</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnOpenXRStopping</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">PoseRecentered</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnOpenXRPoseRecentered</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// We couldn&#39;t start OpenXR.</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR not instantiated!&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Quit</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="on-session-begun">
+<h2>Khi session bắt đầu<a class="headerlink" href="#on-session-begun" title="Link to this heading"></a></h2>
+<p>Signal này được OpenXR phát ra khi session của chúng ta đã được thiết lập. Điều này có nghĩa là headset đã thiết lập xong mọi thứ và sẵn sàng nhận nội dung từ chúng ta. Chỉ đến lúc này, nhiều thông tin khác nhau mới thực sự khả dụng.</p>
+<p>Việc chính chúng ta làm ở đây là kiểm tra tần số làm mới của headset. Chúng ta cũng kiểm tra các tần số làm mới khả dụng do XR runtime báo cáo để quyết định có nên đặt headset sang tần số làm mới cao hơn hay không.</p>
+<p>Cuối cùng, chúng ta khớp tốc độ cập nhật vật lý với tốc độ cập nhật của headset. Mặc định Godot chạy vật lý với tốc độ 60 lần cập nhật mỗi giây, trong khi headset chạy tối thiểu 72, và các headset hiện đại thường lên đến 144 khung hình mỗi giây. Nếu không khớp tốc độ cập nhật vật lý, hình ảnh sẽ bị giật vì có những khung hình được kết xuất mà vật thể không di chuyển.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Handle OpenXR session ready</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_openxr_session_begun</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Get the reported refresh rate</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">current_refresh_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xr_interface</span><span class="o">.</span><span class="nf">get_display_refresh_rate</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">current_refresh_rate</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR: Refresh rate reported as &quot;</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Function">str</span><span class="p">(</span><span class="n">current_refresh_rate</span><span class="p">))</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR: No refresh rate given by XR runtime&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># See if we have a better refresh rate available</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">new_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_refresh_rate</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">available_rates</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xr_interface</span><span class="o">.</span><span class="nf">get_available_display_refresh_rates</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">available_rates</span><span class="o">.</span><span class="nf">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR: Target does not support refresh rate extension&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">elif</span><span class="w"> </span><span class="n">available_rates</span><span class="o">.</span><span class="nf">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Only one available, so use it</span>
+<span class="w">        </span><span class="n">new_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">available_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">available_rates</span><span class="p">:</span>
+<span class="w">            </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">new_rate</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">maximum_refresh_rate</span><span class="p">:</span>
+<span class="w">                </span><span class="n">new_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate</span>
+
+<span class="w">    </span><span class="c1"># Did we find a better rate?</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">current_refresh_rate</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">new_rate</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR: Setting refresh rate to &quot;</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Function">str</span><span class="p">(</span><span class="n">new_rate</span><span class="p">))</span>
+<span class="w">        </span><span class="n">xr_interface</span><span class="o">.</span><span class="nf">set_display_refresh_rate</span><span class="p">(</span><span class="n">new_rate</span><span class="p">)</span>
+<span class="w">        </span><span class="n">current_refresh_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_rate</span>
+
+<span class="w">    </span><span class="c1"># Now match our physics rate</span>
+<span class="w">    </span><span class="nb">Engine</span><span class="o">.</span><span class="vi">physics_ticks_per_second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_refresh_rate</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">    </span><span class="c1">/// Handle OpenXR session ready</span>
+<span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnOpenXRSessionBegun</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Get the reported refresh rate</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">currentRefreshRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">DisplayRefreshRate</span><span class="p">;</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">currentRefreshRate</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0F</span>
+<span class="w">            </span><span class="o">?</span><span class="w"> </span><span class="s">$&quot;OpenXR: Refresh rate reported as {currentRefreshRate}&quot;</span>
+<span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;OpenXR: No refresh rate given by XR runtime&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// See if we have a better refresh rate available</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">newRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">currentRefreshRate</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">availableRates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">GetAvailableDisplayRefreshRates</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">availableRates</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR: Target does not support refresh rate extension&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">availableRates</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Only one available, so use it</span>
+<span class="w">            </span><span class="n">newRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">availableRates</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR: Available refresh rates: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">availableRates</span><span class="p">);</span>
+<span class="w">            </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">availableRates</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rate</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">newRate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">MaximumRefreshRate</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">newRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Did we find a better rate?</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">currentRefreshRate</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">newRate</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">$&quot;OpenXR: Setting refresh rate to {newRate}&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">_xrInterface</span><span class="p">.</span><span class="n">DisplayRefreshRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newRate</span><span class="p">;</span>
+<span class="w">            </span><span class="n">currentRefreshRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newRate</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Now match our physics rate</span>
+<span class="w">        </span><span class="n">Engine</span><span class="p">.</span><span class="n">PhysicsTicksPerSecond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">currentRefreshRate</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="on-visible-state">
+<h2>Khi ở trạng thái visible<a class="headerlink" href="#on-visible-state" title="Link to this heading"></a></h2>
+<p>Signal này được OpenXR phát ra khi game của chúng ta hiển thị nhưng không có focus. Mô tả này trong OpenXR hơi lạ, nhưng về cơ bản nó có nghĩa là game vừa khởi động và sắp chuyển sang trạng thái focused, hoặc người dùng đã mở menu hệ thống, hoặc người dùng vừa tháo headset.</p>
+<p>Khi nhận được signal này, chúng ta sẽ cập nhật trạng thái focus, đổi process mode của node thành disabled để tạm dừng xử lý trên node này và các node con của nó, rồi phát signal <code class="docutils literal notranslate"><span class="pre">focus_lost</span></code>.</p>
+<p>Nếu bạn đã gắn script này vào node gốc, game của bạn sẽ tự động tạm dừng khi cần. Nếu không, bạn có thể kết nối một phương thức với signal để thực hiện các thay đổi bổ sung.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi game ở trạng thái visible do người dùng mở menu hệ thống, Godot vẫn tiếp tục kết xuất khung hình và theo dõi đầu vẫn hoạt động, nên game vẫn hiển thị ở phía sau. Tuy nhiên, theo dõi controller và theo dõi tay sẽ bị tắt cho đến khi người dùng thoát menu hệ thống.</p>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Handle OpenXR visible state</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_openxr_visible_state</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># We always pass this state at startup,</span>
+<span class="w">    </span><span class="c1"># but the second time we get this it means our player took off their headset</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">xr_is_focussed</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR lost focus&quot;</span><span class="p">)</span>
+
+<span class="w">        </span><span class="n">xr_is_focussed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">        </span><span class="c1"># pause our game</span>
+<span class="w">        </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">paused</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+
+<span class="w">        </span><span class="nf">emit_signal</span><span class="p">(</span><span class="s2">&quot;focus_lost&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">    </span><span class="c1">/// Handle OpenXR visible state</span>
+<span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnOpenXRVisibleState</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// We always pass this state at startup,</span>
+<span class="w">        </span><span class="c1">// but the second time we get this it means our player took off their headset</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_xrIsFocused</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR lost focus&quot;</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">_xrIsFocused</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c1">// Pause our game</span>
+<span class="w">            </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Paused</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+
+<span class="w">            </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">FocusLost</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="on-focused-state">
+<h2>Khi ở trạng thái focused<a class="headerlink" href="#on-focused-state" title="Link to this heading"></a></h2>
+<p>Signal này được OpenXR phát ra khi game của chúng ta có focus. Việc này xảy ra khi quá trình khởi động hoàn tất, nhưng signal cũng có thể được phát ra khi người dùng thoát menu hệ thống hoặc đeo lại headset.</p>
+<p>Cũng lưu ý rằng khi game khởi động trong lúc người dùng chưa đeo headset, game sẽ ở trạng thái 'visible' cho đến khi người dùng đeo headset vào.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Vì vậy, điều quan trọng là phải giữ game ở trạng thái tạm dừng khi ở chế độ visible. Nếu không, game sẽ tiếp tục chạy trong khi người dùng không tương tác với nó. Ngoài ra, khi game quay lại chế độ focused, toàn bộ theo dõi controller và theo dõi tay sẽ đột ngột được bật lại, và có thể gây hậu quả phá vỡ game nếu bạn không xử lý phù hợp. Hãy nhớ kiểm thử hành vi này trong game của bạn!</p>
+</div>
+<p>Khi xử lý signal, chúng ta sẽ cập nhật trạng thái focus, bỏ tạm dừng node và phát signal <code class="docutils literal notranslate"><span class="pre">focus_gained</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Handle OpenXR focused state</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_openxr_focused_state</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR gained focus&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">xr_is_focussed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+
+<span class="w">    </span><span class="c1"># unpause our game</span>
+<span class="w">    </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">paused</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+<span class="w">    </span><span class="nf">emit_signal</span><span class="p">(</span><span class="s2">&quot;focus_gained&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">    </span><span class="c1">/// Handle OpenXR focused state</span>
+<span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnOpenXRFocusedState</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR gained focus&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_xrIsFocused</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Un-pause our game</span>
+<span class="w">        </span><span class="n">GetTree</span><span class="p">().</span><span class="n">Paused</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">FocusGained</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="on-stopping-state">
+<h2>Khi ở trạng thái stopping<a class="headerlink" href="#on-stopping-state" title="Link to this heading"></a></h2>
+<p>Signal này được OpenXR phát ra khi chúng ta vào trạng thái dừng. Thời điểm việc này xảy ra có một số khác biệt giữa các nền tảng. Trên một số nền tảng, signal chỉ được phát ra khi game đang được đóng. Nhưng trên các nền tảng khác, signal cũng được phát ra mỗi khi người chơi tháo headset.</p>
+<p>Hiện tại, phương thức này chỉ là một chỗ giữ chỗ.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Handle OpenXR stopping state</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_openxr_stopping</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Our session is being stopped.</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;OpenXR is stopping&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">    </span><span class="c1">/// Handle OpenXR stopping state</span>
+<span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnOpenXRStopping</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Our session is being stopped.</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;OpenXR is stopping&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="on-pose-recentered">
+<h2>Khi pose được căn giữa lại<a class="headerlink" href="#on-pose-recentered" title="Link to this heading"></a></h2>
+<p>Signal này được OpenXR phát ra khi người dùng yêu cầu căn giữa lại góc nhìn. Về cơ bản, nó báo cho game biết rằng người dùng hiện đang nhìn về phía trước và bạn nên định hướng lại người chơi để họ hướng về phía trước trong thế giới ảo.</p>
+<p>Vì cách làm việc này phụ thuộc vào game của bạn, game cần tự phản hồi cho phù hợp.</p>
+<p>Tất cả những gì chúng ta làm ở đây là phát signal <code class="docutils literal notranslate"><span class="pre">pose_recentered</span></code>. Bạn có thể kết nối với signal này và triển khai code căn giữa thực tế. Thường thì chỉ cần gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_xrserver.html#class-xrserver-method-center-on-hmd" title="Class reference (English)"><span class="xref std std-ref">center_on_hmd()</span></a> là đủ.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Handle OpenXR pose recentered signal</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_openxr_pose_recentered</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># User recentered view, we have to react to this by recentering the view.</span>
+<span class="w">    </span><span class="c1"># This is game implementation dependent.</span>
+<span class="w">    </span><span class="nf">emit_signal</span><span class="p">(</span><span class="s2">&quot;pose_recentered&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">    </span><span class="c1">/// Handle OpenXR pose recentered signal</span>
+<span class="w">    </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnOpenXRPoseRecentered</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// User recentered view, we have to react to this by recentering the view.</span>
+<span class="w">        </span><span class="c1">// This is game implementation dependent.</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">PoseRecentered</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Vậy là script đã hoàn tất. Script được viết để có thể tái sử dụng cho nhiều dự án. Chỉ cần gắn nó làm script trên node chính (và mở rộng nếu cần) hoặc gắn nó vào một node con dành riêng cho script này.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xr_next_steps.html" class="btn btn-neutral float-left" title="Đi tiếp từ đây" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="deploying_to_android.html" class="btn btn-neutral float-right" title="Triển khai lên Android" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

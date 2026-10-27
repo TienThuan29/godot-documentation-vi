@@ -1,0 +1,1090 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Vẽ tùy chỉnh trong 2D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/2d/custom_drawing_in_2d.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Godot có các node để vẽ sprite, polygon, particle, văn bản và nhiều nhu cầu phổ biến khác trong phát triển game. Tuy nhiên, nếu bạn cần thứ gì đó đặc thù mà các node tiêu chuẩn không đá..." />
+<meta name="description" content="Giới thiệu: Godot có các node để vẽ sprite, polygon, particle, văn bản và nhiều nhu cầu phổ biến khác trong phát triển game. Tuy nhiên, nếu bạn cần thứ gì đó đặc thù mà các node tiêu chuẩn không đá..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Vẽ tùy chỉnh trong 2D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Parallax 2D" href="2d_parallax.html" />
+    <link rel="prev" title="Khử răng cưa 2D" href="2d_antialiasing.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/2d/custom_drawing_in_2d" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_2d.html">Giới thiệu về 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_layers.html">Canvas layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_transforms.html">Transform của viewport và canvas</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="2d_lights_and_shadows.html">Ánh sáng và bóng đổ 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_meshes.html">Mesh 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_sprite_animation.html">Hoạt ảnh sprite 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particle_systems_2d.html">Hệ thống hạt 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particle_process_material_2d.html">Sử dụng ParticleProcessMaterial trong 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_antialiasing.html">Khử răng cưa 2D</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Vẽ tùy chỉnh trong 2D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#drawing">Vẽ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updating">Cập nhật</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coordinates-and-line-width-alignment">Tọa độ và căn chỉnh độ rộng nét vẽ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#antialiased-drawing">Vẽ có khử răng cưa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools">Công cụ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-1-drawing-a-custom-shape">Ví dụ 1: vẽ hình dạng tùy chỉnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-2-drawing-a-dynamic-line">Ví dụ 2: vẽ một đường động</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="2d_parallax.html">Parallax 2D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#physics-and-movement">Vật lý và chuyển động</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">2D</a></li>
+      <li class="breadcrumb-item active">Vẽ tùy chỉnh trong 2D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="custom-drawing-in-2d">
+<span id="doc-custom-drawing-in-2d"></span><h1>Vẽ tùy chỉnh trong 2D<a class="headerlink" href="#custom-drawing-in-2d" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Godot có các node để vẽ sprite, polygon, particle, văn bản và nhiều nhu cầu phổ biến khác trong phát triển game. Tuy nhiên, nếu bạn cần thứ gì đó đặc thù mà các node tiêu chuẩn không đáp ứng, bạn có thể cho bất kỳ node 2D nào (ví dụ, dựa trên <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html" title="Class reference (English)"><span class="xref std std-ref">Control</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node2d.html" title="Class reference (English)"><span class="xref std std-ref">Node2D</span></a>) vẽ lên màn hình bằng các lệnh tùy chỉnh.</p>
+<p>Vẽ tùy chỉnh trong node 2D <em>thực sự</em> hữu ích. Dưới đây là một số trường hợp sử dụng:</p>
+<ul class="simple">
+<li><p>Vẽ các hình dạng hoặc logic mà node có sẵn không làm được, như hình ảnh có vệt đuôi hoặc polygon có hoạt ảnh đặc biệt.</p></li>
+<li><p>Vẽ số lượng lớn đối tượng đơn giản, như lưới hoặc bàn cờ cho game 2D. Vẽ tùy chỉnh tránh được chi phí khi dùng số lượng lớn node, có thể giảm sử dụng bộ nhớ và cải thiện hiệu năng.</p></li>
+<li><p>Tạo control UI tùy chỉnh. Có rất nhiều control có sẵn, nhưng khi có nhu cầu đặc biệt, có lẽ bạn sẽ cần một control tùy chỉnh.</p></li>
+</ul>
+</section>
+<section id="drawing">
+<h2>Vẽ<a class="headerlink" href="#drawing" title="Link to this heading"></a></h2>
+<p>Thêm script vào bất kỳ node nào dẫn xuất từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">CanvasItem</span></a>, như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_control.html" title="Class reference (English)"><span class="xref std std-ref">Control</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node2d.html" title="Class reference (English)"><span class="xref std std-ref">Node2D</span></a>. Sau đó ghi đè hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-private-method-draw" title="Class reference (English)"><span class="xref std std-ref">_draw()</span></a>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span><span class="w">  </span><span class="c1"># Your draw commands here.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Your draw commands here.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Các lệnh vẽ được mô tả trong tài liệu tham khảo lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">CanvasItem</span></a>. Có rất nhiều lệnh và chúng ta sẽ xem một số trong các ví dụ bên dưới.</p>
+</section>
+<section id="updating">
+<h2>Cập nhật<a class="headerlink" href="#updating" title="Link to this heading"></a></h2>
+<p>Hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-private-method-draw" title="Class reference (English)"><span class="xref std std-ref">_draw</span></a> chỉ được gọi một lần, sau đó các lệnh vẽ được lưu cache và ghi nhớ, nên không cần gọi thêm.</p>
+<p>Nếu cần vẽ lại vì một biến hoặc thứ gì khác đã thay đổi, hãy gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-queue-redraw" title="Class reference (English)"><span class="xref std std-ref">CanvasItem.queue_redraw</span></a> trong chính node đó và một lần gọi <code class="docutils literal notranslate"><span class="pre">_draw()</span></code> mới sẽ diễn ra.</p>
+<p>Đây là một ví dụ phức tạp hơn một chút, trong đó ta có một biến texture có thể thay đổi bất cứ lúc nào, và dùng <a class="reference internal" href="../scripting/gdscript/gdscript_basics.html#doc-gdscript-basics-setters-getters"><span class="std std-ref">setter</span></a> để buộc vẽ lại texture khi nó bị thay đổi:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">texture</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">Texture2D</span><span class="p">:</span>
+<span class="w">    </span><span class="nf">set</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="n">texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span>
+<span class="w">        </span><span class="nf">queue_redraw</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">draw_texture</span><span class="p">(</span><span class="n">texture</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Texture2D</span><span class="w"> </span><span class="n">_texture</span><span class="p">;</span>
+
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Texture2D</span><span class="w"> </span><span class="n">Texture</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">_texture</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">set</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">            </span><span class="n">QueueRedraw</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">DrawTexture</span><span class="p">(</span><span class="n">_texture</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để xem nó hoạt động, bạn có thể đặt texture là biểu tượng Godot trong trình chỉnh sửa bằng cách kéo thả <code class="docutils literal notranslate"><span class="pre">icon.svg</span></code> mặc định từ thẻ <code class="docutils literal notranslate"><span class="pre">FileSystem</span></code> vào thuộc tính Texture trên thẻ <code class="docutils literal notranslate"><span class="pre">Inspector</span></code>. Khi thay đổi giá trị thuộc tính <code class="docutils literal notranslate"><span class="pre">Texture</span></code> trong lúc script trên đang chạy, texture cũng sẽ tự động thay đổi.</p>
+<p>Trong một số trường hợp, có thể ta cần vẽ lại mỗi frame. Để làm vậy, hãy gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-queue-redraw" title="Class reference (English)"><span class="xref std std-ref">queue_redraw</span></a> từ phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-private-method-process" title="Class reference (English)"><span class="xref std std-ref">_process</span></a>, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span><span class="w">  </span><span class="c1"># Your draw commands here.</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">queue_redraw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Your draw commands here.</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">QueueRedraw</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="coordinates-and-line-width-alignment">
+<h2>Tọa độ và căn chỉnh độ rộng nét vẽ<a class="headerlink" href="#coordinates-and-line-width-alignment" title="Link to this heading"></a></h2>
+<p>API vẽ dùng hệ tọa độ của CanvasItem, không nhất thiết là tọa độ pixel. Điều này có nghĩa <code class="docutils literal notranslate"><span class="pre">_draw()</span></code> dùng không gian tọa độ được tạo sau khi áp dụng transform của CanvasItem. Ngoài ra, bạn có thể áp dụng thêm một transform tùy chỉnh lên trên bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-set-transform" title="Class reference (English)"><span class="xref std std-ref">draw_set_transform</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-set-transform-matrix" title="Class reference (English)"><span class="xref std std-ref">draw_set_transform_matrix</span></a>.</p>
+<p>Khi dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-line" title="Class reference (English)"><span class="xref std std-ref">draw_line</span></a>, bạn nên cân nhắc độ rộng của nét vẽ. Khi dùng độ rộng là số lẻ, vị trí điểm đầu và điểm cuối nên được dịch đi <code class="docutils literal notranslate"><span class="pre">0.5</span></code> để giữ nét vẽ ở chính giữa, như minh họa bên dưới.</p>
+<img alt="../../_images/draw_line.png" src="../../_images/draw_line.png" />
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">draw_line</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_line</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_line</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">DrawLine</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">1.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">1.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawLine</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">4.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">4.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawLine</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">7.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">7.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0f</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Điều tương tự áp dụng cho phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-rect" title="Class reference (English)"><span class="xref std std-ref">draw_rect</span></a> với <code class="docutils literal notranslate"><span class="pre">filled</span> <span class="pre">=</span> <span class="pre">false</span></code>.</p>
+<img alt="../../_images/draw_rect.png" src="../../_images/draw_rect.png" />
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">draw_rect</span><span class="p">(</span><span class="nb nb-Type">Rect2</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_rect</span><span class="p">(</span><span class="nb nb-Type">Rect2</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">,</span><span class="w"> </span><span class="l">false</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_rect</span><span class="p">(</span><span class="nb nb-Type">Rect2</span><span class="p">(</span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_rect</span><span class="p">(</span><span class="nb nb-Type">Rect2</span><span class="p">(</span><span class="mf">16.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span><span class="p">,</span><span class="w"> </span><span class="l">false</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">DrawRect</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Rect2</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawRect</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Rect2</span><span class="p">(</span><span class="mf">5.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawRect</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Rect2</span><span class="p">(</span><span class="mf">9.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawRect</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Rect2</span><span class="p">(</span><span class="mf">16.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0f</span><span class="p">),</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="antialiased-drawing">
+<h2>Vẽ có khử răng cưa<a class="headerlink" href="#antialiased-drawing" title="Link to this heading"></a></h2>
+<p>Godot cung cấp tham số trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-line" title="Class reference (English)"><span class="xref std std-ref">draw_line</span></a> để bật khử răng cưa, nhưng không phải phương thức vẽ tùy chỉnh nào cũng có tham số <code class="docutils literal notranslate"><span class="pre">antialiased</span></code> này.</p>
+<p>Với các phương thức vẽ tùy chỉnh không có tham số <code class="docutils literal notranslate"><span class="pre">antialiased</span></code>, bạn có thể bật MSAA 2D, vốn ảnh hưởng đến việc kết xuất trong toàn bộ viewport. Cách này cho khử răng cưa chất lượng cao, nhưng tốn hiệu năng hơn và chỉ trên một số phần tử nhất định. Xem <a class="reference internal" href="2d_antialiasing.html#doc-2d-antialiasing"><span class="std std-ref">Khử răng cưa 2D</span></a> để biết thêm thông tin.</p>
+<p>Đây là so sánh một nét vẽ có độ rộng tối thiểu (<code class="docutils literal notranslate"><span class="pre">width=-1</span></code>) được vẽ với <code class="docutils literal notranslate"><span class="pre">antialiased=false</span></code>, <code class="docutils literal notranslate"><span class="pre">antialiased=true</span></code>, và <code class="docutils literal notranslate"><span class="pre">antialiased=false</span></code> khi bật MSAA 2D 2x, 4x và 8x.</p>
+<img alt="../../_images/draw_antialiasing_options.webp" src="../../_images/draw_antialiasing_options.webp" />
+</section>
+<section id="tools">
+<h2>Công cụ<a class="headerlink" href="#tools" title="Link to this heading"></a></h2>
+<p>Bạn cũng có thể muốn node tự vẽ của mình hiển thị khi chạy trong trình chỉnh sửa. Điều này có thể dùng để xem trước hoặc trực quan hóa một tính năng hay hành vi nào đó.</p>
+<p>Để làm vậy, bạn có thể dùng <a class="reference internal" href="../scripting/gdscript/gdscript_basics.html#doc-gdscript-tool-mode"><span class="std std-ref">annotation tool</span></a> trên cả GDScript và C#. Xem <a class="reference internal" href="#doc-draw-show-drawing-while-editing-example"><span class="std std-ref">ví dụ bên dưới</span></a> và <a class="reference internal" href="../plugins/running_code_in_the_editor.html#doc-running-code-in-the-editor"><span class="std std-ref">Chạy code trong trình chỉnh sửa</span></a> để biết thêm thông tin.</p>
+</section>
+<section id="example-1-drawing-a-custom-shape">
+<span id="doc-draw-custom-example-1"></span><h2>Ví dụ 1: vẽ hình dạng tùy chỉnh<a class="headerlink" href="#example-1-drawing-a-custom-shape" title="Link to this heading"></a></h2>
+<p>Giờ chúng ta sẽ dùng chức năng vẽ tùy chỉnh của Godot Engine để vẽ thứ mà Godot không cung cấp hàm sẵn. Chúng ta sẽ tái tạo logo Godot nhưng bằng code — chỉ dùng các hàm vẽ.</p>
+<p>Bạn sẽ phải viết một hàm để thực hiện việc này và tự vẽ nó.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các hướng dẫn sau dùng một tập tọa độ cố định có thể quá nhỏ đối với màn hình độ phân giải cao (lớn hơn 1080p). Nếu đó là trường hợp của bạn và hình vẽ quá nhỏ, hãy cân nhắc tăng window scale trong cài đặt dự án <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-display-window-stretch-scale" title="Class reference (English)"><span class="xref std std-ref">Display &gt; Window &gt; Stretch &gt; Scale</span></a> để điều chỉnh dự án cho độ phân giải cao hơn (scale 2 hoặc 4 thường cho kết quả tốt).</p>
+</div>
+<section id="drawing-a-custom-polygon-shape">
+<h3>Vẽ hình đa giác tùy chỉnh<a class="headerlink" href="#drawing-a-custom-polygon-shape" title="Link to this heading"></a></h3>
+<p>Dù đã có một node chuyên dụng để vẽ polygon tùy chỉnh ( <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_polygon2d.html" title="Class reference (English)"><span class="xref std std-ref">Polygon2D</span></a>), trong trường hợp này chúng ta sẽ chỉ dùng các hàm vẽ cấp thấp hơn để kết hợp chúng trên cùng một node và có thể tạo các hình dạng phức tạp hơn sau này.</p>
+<p>Đầu tiên, chúng ta sẽ định nghĩa một tập hợp các điểm - tức các tọa độ X và Y - tạo nên phần nền của hình:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">coords_head</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">22.952</span><span class="p">,</span><span class="w"> </span><span class="mf">83.271</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">28.385</span><span class="p">,</span><span class="w"> </span><span class="mf">98.623</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">53.168</span><span class="p">,</span><span class="w"> </span><span class="mf">107.647</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">72.998</span><span class="p">,</span><span class="w"> </span><span class="mf">107.647</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">99.546</span><span class="p">,</span><span class="w"> </span><span class="mf">98.623</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">105.048</span><span class="p">,</span><span class="w"> </span><span class="mf">83.271</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">105.029</span><span class="p">,</span><span class="w"> </span><span class="mf">55.237</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">110.740</span><span class="p">,</span><span class="w"> </span><span class="mf">47.082</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">102.364</span><span class="p">,</span><span class="w"> </span><span class="mf">36.104</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">94.050</span><span class="p">,</span><span class="w"> </span><span class="mf">40.940</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">85.189</span><span class="p">,</span><span class="w"> </span><span class="mf">34.445</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">85.963</span><span class="p">,</span><span class="w"> </span><span class="mf">24.194</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">73.507</span><span class="p">,</span><span class="w"> </span><span class="mf">19.930</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">68.883</span><span class="p">,</span><span class="w"> </span><span class="mf">28.936</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">59.118</span><span class="p">,</span><span class="w"> </span><span class="mf">28.936</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">54.494</span><span class="p">,</span><span class="w"> </span><span class="mf">19.930</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">42.039</span><span class="p">,</span><span class="w"> </span><span class="mf">24.194</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">42.814</span><span class="p">,</span><span class="w"> </span><span class="mf">34.445</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">33.951</span><span class="p">,</span><span class="w"> </span><span class="mf">40.940</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">25.637</span><span class="p">,</span><span class="w"> </span><span class="mf">36.104</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">17.262</span><span class="p">,</span><span class="w"> </span><span class="mf">47.082</span><span class="w"> </span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="mf">22.973</span><span class="p">,</span><span class="w"> </span><span class="mf">55.237</span><span class="w"> </span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="p">[,]</span><span class="w"> </span><span class="n">_coordsHead</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">22.952f</span><span class="p">,</span><span class="w"> </span><span class="mf">83.271f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">28.385f</span><span class="p">,</span><span class="w"> </span><span class="mf">98.623f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">53.168f</span><span class="p">,</span><span class="w"> </span><span class="mf">107.647f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">72.998f</span><span class="p">,</span><span class="w"> </span><span class="mf">107.647f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">99.546f</span><span class="p">,</span><span class="w"> </span><span class="mf">98.623f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">105.048f</span><span class="p">,</span><span class="w"> </span><span class="mf">83.271f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">105.029f</span><span class="p">,</span><span class="w"> </span><span class="mf">55.237f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">110.740f</span><span class="p">,</span><span class="w"> </span><span class="mf">47.082f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">102.364f</span><span class="p">,</span><span class="w"> </span><span class="mf">36.104f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">94.050f</span><span class="p">,</span><span class="w"> </span><span class="mf">40.940f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">85.189f</span><span class="p">,</span><span class="w"> </span><span class="mf">34.445f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">85.963f</span><span class="p">,</span><span class="w"> </span><span class="mf">24.194f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">73.507f</span><span class="p">,</span><span class="w"> </span><span class="mf">19.930f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">68.883f</span><span class="p">,</span><span class="w"> </span><span class="mf">28.936f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">59.118f</span><span class="p">,</span><span class="w"> </span><span class="mf">28.936f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">54.494f</span><span class="p">,</span><span class="w"> </span><span class="mf">19.930f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">42.039f</span><span class="p">,</span><span class="w"> </span><span class="mf">24.194f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">42.814f</span><span class="p">,</span><span class="w"> </span><span class="mf">34.445f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">33.951f</span><span class="p">,</span><span class="w"> </span><span class="mf">40.940f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">25.637f</span><span class="p">,</span><span class="w"> </span><span class="mf">36.104f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mf">17.262f</span><span class="p">,</span><span class="w"> </span><span class="mf">47.082f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mf">22.973f</span><span class="p">,</span><span class="w"> </span><span class="mf">55.237f</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Định dạng này tuy gọn nhưng không phải là định dạng mà Godot hiểu được để vẽ đa giác. Trong một tình huống khác, chúng ta có thể phải nạp các tọa độ này từ file hoặc tính toán vị trí trong khi ứng dụng đang chạy, vì vậy có thể cần một bước chuyển đổi.</p>
+<p>Để chuyển các tọa độ này sang đúng định dạng, chúng ta sẽ tạo một phương thức mới <code class="docutils literal notranslate"><span class="pre">float_array_to_Vector2Array()</span></code>. Sau đó, chúng ta sẽ override hàm <code class="docutils literal notranslate"><span class="pre">_ready()</span></code> - hàm mà Godot chỉ gọi một lần duy nhất khi bắt đầu thực thi - để nạp các tọa độ đó vào một biến:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">float_array_to_Vector2Array</span><span class="p">(</span><span class="n">coords</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Array</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Convert the array of floats into a PackedVector2Array.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">coord</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">coords</span><span class="p">:</span>
+<span class="w">        </span><span class="n">array</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="w">    </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">array</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">float_array_to_Vector2Array</span><span class="p">(</span><span class="n">coords_head</span><span class="p">);</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="p">[]</span><span class="w"> </span><span class="n">_head</span><span class="p">;</span>
+
+<span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="p">[]</span><span class="w"> </span><span class="nf">FloatArrayToVector2Array</span><span class="p">(</span><span class="kt">float</span><span class="p">[,]</span><span class="w"> </span><span class="n">coords</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Convert the array of floats into an array of Vector2.</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coords</span><span class="p">.</span><span class="n">GetUpperBound</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="p">[]</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">[</span><span class="n">size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">array</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FloatArrayToVector2Array</span><span class="p">(</span><span class="n">_coordsHead</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Cuối cùng, để vẽ hình đầu tiên, chúng ta sẽ dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-polygon" title="Class reference (English)"><span class="xref std std-ref">draw_polygon</span></a> và truyền vào các điểm (dưới dạng mảng tọa độ Vector2) cùng màu của nó, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># We are going to paint with this color.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;478cbf&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># We pass the PackedVector2Array to draw the shape.</span>
+<span class="w">    </span><span class="nf">draw_polygon</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// We are going to paint with this color.</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">godotBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;478cbf&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// We pass the array of Vector2 to draw the shape.</span>
+<span class="w">    </span><span class="n">DrawPolygon</span><span class="p">(</span><span class="n">_head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">godotBlue</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi chạy, bạn sẽ thấy kết quả tương tự như sau:</p>
+<img alt="../../_images/draw_godot_logo_polygon.webp" src="../../_images/draw_godot_logo_polygon.webp" />
+<p>Lưu ý rằng phần dưới của logo trông bị gãy khúc - đó là vì chỉ có ít điểm được dùng để định nghĩa phần này. Để mô phỏng một đường cong mượt, chúng ta có thể thêm nhiều điểm hơn vào mảng, hoặc dùng một hàm toán học để nội suy đường cong và tạo hình mượt bằng code (xem <a class="reference internal" href="#doc-draw-custom-example-2"><span class="std std-ref">ví dụ 2</span></a>).</p>
+<p>Đa giác sẽ luôn <strong>nối điểm được định nghĩa cuối cùng với điểm đầu tiên</strong> để tạo thành một hình khép kín.</p>
+</section>
+<section id="drawing-connected-lines">
+<h3>Vẽ các đường nối liền<a class="headerlink" href="#drawing-connected-lines" title="Link to this heading"></a></h3>
+<p>Vẽ một chuỗi các đoạn thẳng nối liền nhau mà không khép kín thành đa giác cũng rất giống với phương thức trước. Chúng ta sẽ dùng một tập các đoạn thẳng nối liền để vẽ miệng của logo Godot.</p>
+<p>Đầu tiên, chúng ta sẽ định nghĩa danh sách các tọa độ tạo nên hình miệng, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">coords_mouth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">22.817</span><span class="p">,</span><span class="w"> </span><span class="mf">81.100</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">38.522</span><span class="p">,</span><span class="w"> </span><span class="mf">82.740</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">39.001</span><span class="p">,</span><span class="w"> </span><span class="mf">90.887</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">54.465</span><span class="p">,</span><span class="w"> </span><span class="mf">92.204</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">55.641</span><span class="p">,</span><span class="w"> </span><span class="mf">84.260</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">72.418</span><span class="p">,</span><span class="w"> </span><span class="mf">84.177</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">73.629</span><span class="p">,</span><span class="w"> </span><span class="mf">92.158</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">88.895</span><span class="p">,</span><span class="w"> </span><span class="mf">90.923</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="mf">89.556</span><span class="p">,</span><span class="w"> </span><span class="mf">82.673</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">105.005</span><span class="p">,</span><span class="w"> </span><span class="mf">81.100</span><span class="w"> </span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="p">[,]</span><span class="w"> </span><span class="n">_coordsMouth</span><span class="w"> </span><span class="o">=</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">22.817f</span><span class="p">,</span><span class="w"> </span><span class="mf">81.100f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">38.522f</span><span class="p">,</span><span class="w"> </span><span class="mf">82.740f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">39.001f</span><span class="p">,</span><span class="w"> </span><span class="mf">90.887f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">54.465f</span><span class="p">,</span><span class="w"> </span><span class="mf">92.204f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">55.641f</span><span class="p">,</span><span class="w"> </span><span class="mf">84.260f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">72.418f</span><span class="p">,</span><span class="w"> </span><span class="mf">84.177f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">73.629f</span><span class="p">,</span><span class="w"> </span><span class="mf">92.158f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">88.895f</span><span class="p">,</span><span class="w"> </span><span class="mf">90.923f</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">89.556f</span><span class="p">,</span><span class="w"> </span><span class="mf">82.673f</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">105.005f</span><span class="p">,</span><span class="w"> </span><span class="mf">81.100f</span><span class="w"> </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chúng ta sẽ nạp các tọa độ này vào một biến và định nghĩa thêm một biến chứa độ dày nét vẽ có thể tùy chỉnh:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">mouth</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector2Array</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_mouth_width</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.4</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">float_array_to_Vector2Array</span><span class="p">(</span><span class="n">coords_head</span><span class="p">);</span>
+<span class="w">    </span><span class="n">mouth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">float_array_to_Vector2Array</span><span class="p">(</span><span class="n">coords_mouth</span><span class="p">);</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="p">[]</span><span class="w"> </span><span class="n">_mouth</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.4f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FloatArrayToVector2Array</span><span class="p">(</span><span class="n">_coordsHead</span><span class="p">);</span>
+<span class="w">    </span><span class="n">_mouth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FloatArrayToVector2Array</span><span class="p">(</span><span class="n">_coordsMouth</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và cuối cùng, chúng ta sẽ dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-polyline" title="Class reference (English)"><span class="xref std std-ref">draw_polyline</span></a> để thực sự vẽ đường, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-10-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-10-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-10-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># We will use white to draw the line.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">WHITE</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;478cbf&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nf">draw_polygon</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">])</span>
+
+<span class="w">    </span><span class="c1"># We draw the while line on top of the previous shape.</span>
+<span class="w">    </span><span class="nf">draw_polyline</span><span class="p">(</span><span class="n">mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouth_width</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// We will use white to draw the line.</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">White</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">godotBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;478cbf&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">DrawPolygon</span><span class="p">(</span><span class="n">_head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">godotBlue</span><span class="p">]);</span>
+
+<span class="w">    </span><span class="c1">// We draw the while line on top of the previous shape.</span>
+<span class="w">    </span><span class="n">DrawPolyline</span><span class="p">(</span><span class="n">_mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn sẽ nhận được kết quả sau:</p>
+<img alt="../../_images/draw_godot_logo_polyline.webp" src="../../_images/draw_godot_logo_polyline.webp" />
+<p>Khác với <code class="docutils literal notranslate"><span class="pre">draw_polygon()</span></code>, polyline chỉ có thể có một màu duy nhất cho tất cả các điểm (tham số thứ hai). Phương thức này có thêm 2 tham số: độ rộng của đường (mặc định là nhỏ nhất có thể) và bật hoặc tắt khử răng cưa (antialiasing, mặc định bị tắt).</p>
+<p>Thứ tự các lệnh gọi trong <code class="docutils literal notranslate"><span class="pre">_draw</span></code> rất quan trọng - giống như vị trí của các Node trong cây phân cấp, các hình khác nhau sẽ được vẽ từ trên xuống dưới, khiến hình vẽ sau che hình vẽ trước nếu chúng chồng lên nhau. Trong trường hợp này, chúng ta muốn vẽ miệng đè lên đầu, nên đặt nó ở phía sau.</p>
+<p>Hãy chú ý cách chúng ta có thể định nghĩa màu theo nhiều cách khác nhau, bằng mã thập lục phân hoặc bằng tên màu định sẵn. Xem lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html" title="Class reference (English)"><span class="xref std std-ref">Color</span></a> để biết các hằng số khác và các cách định nghĩa màu khác.</p>
+</section>
+<section id="drawing-circles">
+<h3>Vẽ hình tròn<a class="headerlink" href="#drawing-circles" title="Link to this heading"></a></h3>
+<p>Để tạo đôi mắt, chúng ta sẽ thêm 4 lệnh gọi nữa để vẽ các hình mắt với kích thước, màu sắc và vị trí khác nhau.</p>
+<p>Để vẽ hình tròn, bạn định vị nó dựa trên tâm bằng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-circle" title="Class reference (English)"><span class="xref std std-ref">draw_circle</span></a>. Tham số đầu tiên là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">Vector2</span></a> chứa tọa độ tâm, tham số thứ hai là bán kính và tham số thứ ba là màu:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-11-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-11-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-11-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">WHITE</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;478cbf&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">grey</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;414042&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nf">draw_polygon</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">])</span>
+<span class="w">    </span><span class="nf">draw_polyline</span><span class="p">(</span><span class="n">mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouth_width</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Four circles for the 2 eyes: 2 white, 2 grey.</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">42.479</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">85.524</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">43.423</span><span class="p">,</span><span class="w"> </span><span class="mf">65.92</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">84.626</span><span class="p">,</span><span class="w"> </span><span class="mf">66.008</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">White</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">godotBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;478cbf&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">grey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;414042&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">DrawPolygon</span><span class="p">(</span><span class="n">_head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">godotBlue</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">DrawPolyline</span><span class="p">(</span><span class="n">_mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Four circles for the 2 eyes: 2 white, 2 grey.</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">42.479f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825f</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905f</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">85.524f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825f</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905f</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">43.423f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.92f</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246f</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">84.626f</span><span class="p">,</span><span class="w"> </span><span class="mf">66.008f</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246f</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi chạy, bạn sẽ có kết quả tương tự như sau:</p>
+<img alt="../../_images/draw_godot_logo_circle.webp" src="../../_images/draw_godot_logo_circle.webp" />
+<p>Với các cung tròn không tô kín (một phần của hình tròn nằm giữa hai góc bất kỳ), bạn có thể dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-arc" title="Class reference (English)"><span class="xref std std-ref">draw_arc</span></a>.</p>
+</section>
+<section id="drawing-lines">
+<h3>Vẽ đường thẳng<a class="headerlink" href="#drawing-lines" title="Link to this heading"></a></h3>
+<p>Để vẽ hình cuối cùng (cái mũi), chúng ta sẽ dùng một đoạn thẳng để vẽ gần đúng.</p>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-line" title="Class reference (English)"><span class="xref std std-ref">draw_line</span></a> có thể được dùng để vẽ một đoạn thẳng duy nhất bằng cách truyền tọa độ điểm đầu và điểm cuối làm tham số, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-12-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-12-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-12-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">WHITE</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;478cbf&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">grey</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;414042&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nf">draw_polygon</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">])</span>
+<span class="w">    </span><span class="nf">draw_polyline</span><span class="p">(</span><span class="n">mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouth_width</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">42.479</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">85.524</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">43.423</span><span class="p">,</span><span class="w"> </span><span class="mf">65.92</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">84.626</span><span class="p">,</span><span class="w"> </span><span class="mf">66.008</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Draw a short but thick white vertical line for the nose.</span>
+<span class="w">    </span><span class="nf">draw_line</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">64.273</span><span class="p">,</span><span class="w"> </span><span class="mf">60.564</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">64.273</span><span class="p">,</span><span class="w"> </span><span class="mf">74.349</span><span class="p">),</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="mf">5.8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">White</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">godotBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;478cbf&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">grey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;414042&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">DrawPolygon</span><span class="p">(</span><span class="n">_head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">godotBlue</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">DrawPolyline</span><span class="p">(</span><span class="n">_mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">42.479f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825f</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905f</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">85.524f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825f</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905f</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">43.423f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.92f</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246f</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">84.626f</span><span class="p">,</span><span class="w"> </span><span class="mf">66.008f</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246f</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Draw a short but thick white vertical line for the nose.</span>
+<span class="w">    </span><span class="n">DrawLine</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">64.273f</span><span class="p">,</span><span class="w"> </span><span class="mf">60.564f</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">64.273f</span><span class="p">,</span><span class="w"> </span><span class="mf">74.349f</span><span class="p">),</span>
+<span class="w">             </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="mf">5.8f</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Giờ bạn sẽ thấy hình sau trên màn hình:</p>
+<img alt="../../_images/draw_godot_logo_line.webp" src="../../_images/draw_godot_logo_line.webp" />
+<p>Lưu ý rằng nếu cần vẽ nhiều đoạn thẳng không nối liền cùng lúc, bạn có thể đạt hiệu năng tốt hơn bằng cách vẽ tất cả chúng trong một lệnh gọi duy nhất, dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-multiline" title="Class reference (English)"><span class="xref std std-ref">draw_multiline</span></a>.</p>
+</section>
+<section id="drawing-text">
+<h3>Vẽ chữ<a class="headerlink" href="#drawing-text" title="Link to this heading"></a></h3>
+<p>Mặc dù dùng Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_label.html" title="Class reference (English)"><span class="xref std std-ref">Label</span></a> là cách phổ biến nhất để thêm chữ vào ứng dụng, hàm cấp thấp <cite>_draw</cite> cũng có chức năng thêm chữ vào phần vẽ tùy chỉnh của Node. Chúng ta sẽ dùng nó để thêm chữ &quot;GODOT&quot; bên dưới đầu robot.</p>
+<p>Chúng ta sẽ dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-string" title="Class reference (English)"><span class="xref std std-ref">draw_string</span></a> để làm việc này, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-13-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-13-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-13-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">default_font</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb">Font</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ThemeDB</span><span class="o">.</span><span class="vi">fallback_font</span><span class="p">;</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">WHITE</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;478cbf&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">grey</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="s2">&quot;414042&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nf">draw_polygon</span><span class="p">(</span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">godot_blue</span><span class="w"> </span><span class="p">])</span>
+<span class="w">    </span><span class="nf">draw_polyline</span><span class="p">(</span><span class="n">mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouth_width</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">42.479</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">85.524</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">43.423</span><span class="p">,</span><span class="w"> </span><span class="mf">65.92</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_circle</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">84.626</span><span class="p">,</span><span class="w"> </span><span class="mf">66.008</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">draw_line</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">64.273</span><span class="p">,</span><span class="w"> </span><span class="mf">60.564</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">64.273</span><span class="p">,</span><span class="w"> </span><span class="mf">74.349</span><span class="p">),</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="mf">5.8</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Draw GODOT text below the logo with the default font, size 22.</span>
+<span class="w">    </span><span class="nf">draw_string</span><span class="p">(</span><span class="n">default_font</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">130</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot;GODOT&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">HORIZONTAL_ALIGNMENT_CENTER</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="n">Font</span><span class="w"> </span><span class="n">_defaultFont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ThemeDB</span><span class="p">.</span><span class="n">FallbackFont</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">white</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">White</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">godotBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;478cbf&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Color</span><span class="w"> </span><span class="n">grey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="s">&quot;414042&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">DrawPolygon</span><span class="p">(</span><span class="n">_head</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">godotBlue</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">DrawPolyline</span><span class="p">(</span><span class="n">_mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">42.479f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825f</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905f</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">85.524f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.4825f</span><span class="p">),</span><span class="w"> </span><span class="mf">9.3905f</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">43.423f</span><span class="p">,</span><span class="w"> </span><span class="mf">65.92f</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246f</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawCircle</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">84.626f</span><span class="p">,</span><span class="w"> </span><span class="mf">66.008f</span><span class="p">),</span><span class="w"> </span><span class="mf">6.246f</span><span class="p">,</span><span class="w"> </span><span class="n">grey</span><span class="p">);</span>
+<span class="w">    </span><span class="n">DrawLine</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">64.273f</span><span class="p">,</span><span class="w"> </span><span class="mf">60.564f</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">64.273f</span><span class="p">,</span><span class="w"> </span><span class="mf">74.349f</span><span class="p">),</span>
+<span class="w">             </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="mf">5.8f</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Draw GODOT text below the logo with the default font, size 22.</span>
+<span class="w">    </span><span class="n">DrawString</span><span class="p">(</span><span class="n">_defaultFont</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">20f</span><span class="p">,</span><span class="w"> </span><span class="mf">130f</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;GODOT&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="n">HorizontalAlignment</span><span class="p">.</span><span class="n">Center</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ở đây, trước tiên chúng ta nạp font mặc định của theme đã cấu hình vào biến defaultFont (có thể đặt một font tùy chỉnh thay thế), rồi truyền vào các tham số sau: font, vị trí, nội dung chữ, căn lề ngang, độ rộng và cỡ chữ.</p>
+<p>Bạn sẽ thấy kết quả sau trên màn hình:</p>
+<img alt="../../_images/draw_godot_logo_text.webp" src="../../_images/draw_godot_logo_text.webp" />
+<p>Các tham số bổ sung cũng như các phương thức khác liên quan đến chữ và ký tự có thể được tìm thấy trong tài liệu tham khảo lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">CanvasItem</span></a>.</p>
+</section>
+<section id="show-the-drawing-while-editing">
+<span id="doc-draw-show-drawing-while-editing-example"></span><h3>Hiển thị hình vẽ khi đang chỉnh sửa<a class="headerlink" href="#show-the-drawing-while-editing" title="Link to this heading"></a></h3>
+<p>Mặc dù code cho đến giờ có thể vẽ logo trên cửa sổ đang chạy, nó sẽ không hiển thị trong <code class="docutils literal notranslate"><span class="pre">2D</span> <span class="pre">view</span></code> của trình chỉnh sửa. Trong một số trường hợp, bạn cũng muốn hiển thị Node2D hoặc control tùy chỉnh của mình trong trình chỉnh sửa để định vị và co giãn nó cho phù hợp, giống như hầu hết các node khác.</p>
+<p>Để hiển thị logo trực tiếp trong trình chỉnh sửa (mà không cần chạy), bạn có thể dùng annotation <a class="reference internal" href="../scripting/gdscript/gdscript_basics.html#doc-gdscript-tool-mode"><span class="std std-ref">&#64;tool</span></a> để yêu cầu phần vẽ tùy chỉnh của node cũng xuất hiện khi đang chỉnh sửa, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-14-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-14-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-14-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@tool</span>
+<span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="na">[Tool]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+</pre></div>
+</div>
+</div></div>
+<p>Lần đầu tiên bạn thêm hoặc xóa annotation <code class="docutils literal notranslate"><span class="pre">&#64;tool</span></code>, bạn sẽ cần lưu scene, build lại dự án (chỉ với C#) và nạp lại scene hiện tại thủ công qua tùy chọn menu <code class="docutils literal notranslate"><span class="pre">Scene</span> <span class="pre">&gt;</span> <span class="pre">Reload</span> <span class="pre">Saved</span> <span class="pre">Scene</span></code> để làm mới node hiện tại trong view <code class="docutils literal notranslate"><span class="pre">2D</span></code>.</p>
+</section>
+<section id="animation">
+<h3>Hoạt ảnh<a class="headerlink" href="#animation" title="Link to this heading"></a></h3>
+<p>Nếu muốn hình tùy chỉnh thay đổi lúc chạy, chúng ta có thể sửa các phương thức được gọi hoặc tham số của chúng trong lúc thực thi, hoặc áp dụng một transform.</p>
+<p>Ví dụ, nếu muốn hình tùy chỉnh vừa thiết kế xoay tròn, chúng ta có thể thêm biến và code sau vào các phương thức <code class="docutils literal notranslate"><span class="pre">_ready</span></code> và <code class="docutils literal notranslate"><span class="pre">_process</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-15-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-15-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-15-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">rotation_speed</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1"># In radians per second.</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="o">...</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">):</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">rotation_speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="na">[Export]</span>
+<span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">RotationSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span><span class="w">  </span><span class="c1">// In radians per second.</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Rotation</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">RotationSpeed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Vấn đề của đoạn code trên là vì chúng ta đã tạo các điểm xấp xỉ trên một hình chữ nhật bắt đầu từ góc trên bên trái, tức tọa độ <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code>, và kéo dài sang phải và xuống dưới, nên phép xoay sẽ dùng góc trên bên trái làm tâm xoay. Thay đổi transform vị trí của node cũng không giúp được gì ở đây, vì transform xoay được áp dụng trước.</p>
+<p>Dù chúng ta có thể viết lại tọa độ của tất cả các điểm để chúng nằm quanh tâm <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code>, kể cả tọa độ âm, việc đó sẽ tốn rất nhiều công sức.</p>
+<p>Một cách khắc phục là dùng phương thức cấp thấp hơn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-set-transform" title="Class reference (English)"><span class="xref std std-ref">draw_set_transform</span></a> để giải quyết vấn đề này: tịnh tiến tất cả các điểm trong không gian riêng của CanvasItem, rồi đưa nó về vị trí ban đầu bằng một transform node thông thường, trong trình chỉnh sửa hoặc bằng code, như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-16-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-16-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-16-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span>
+<span class="w">    </span><span class="o">...</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">draw_set_transform</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">60</span><span class="p">))</span>
+<span class="w">    </span><span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-16-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Rotation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">);</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">DrawSetTransform</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="o">-</span><span class="mf">60.0f</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">60.0f</span><span class="p">));</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Đây là kết quả, giờ xoay quanh tâm xoay tại <code class="docutils literal notranslate"><span class="pre">(60,</span> <span class="pre">60)</span></code>:</p>
+<img alt="../../_images/draw_godot_rotation.webp" src="../../_images/draw_godot_rotation.webp" />
+<p>Nếu thứ chúng ta muốn tạo hoạt ảnh là một thuộc tính bên trong lệnh gọi <code class="docutils literal notranslate"><span class="pre">_draw()</span></code>, cần nhớ gọi <code class="docutils literal notranslate"><span class="pre">queue_redraw()</span></code> để buộc làm mới, nếu không nó sẽ không được cập nhật trên màn hình.</p>
+<p>Ví dụ, đây là cách làm cho robot trông như đang mở và khép miệng, bằng cách thay đổi độ rộng của đường miệng theo một đường cong hình sin (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-sin" title="Class reference (English)"><span class="xref std std-ref">sin</span></a>):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-17-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-17-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-17-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">_mouth_width</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.4</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_max_width</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_time</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="p">):</span>
+<span class="w">    </span><span class="n">_time</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span>
+<span class="w">    </span><span class="n">_mouth_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">abs</span><span class="p">(</span><span class="nb nb-Function">sin</span><span class="p">(</span><span class="n">_time</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_max_width</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">queue_redraw</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="w">    </span><span class="nf">draw_polyline</span><span class="p">(</span><span class="n">mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouth_width</span><span class="p">)</span>
+<span class="w">    </span><span class="o">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-17-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.4f</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_maxWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">7f</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0f</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_time</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_mouthWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span><span class="p">(</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Sin</span><span class="p">(</span><span class="n">_time</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_maxWidth</span><span class="p">);</span>
+<span class="w">    </span><span class="n">QueueRedraw</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="n">DrawPolyline</span><span class="p">(</span><span class="n">_mouth</span><span class="p">,</span><span class="w"> </span><span class="n">white</span><span class="p">,</span><span class="w"> </span><span class="n">_mouthWidth</span><span class="p">);</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Khi chạy, nó sẽ trông gần giống như sau:</p>
+<img alt="../../_images/draw_godot_mouth_animation.webp" src="../../_images/draw_godot_mouth_animation.webp" />
+<p>Lưu ý rằng <code class="docutils literal notranslate"><span class="pre">_mouth_width</span></code> là một thuộc tính do người dùng định nghĩa như mọi thuộc tính khác, và nó hoặc bất kỳ thuộc tính nào khác được dùng làm tham số vẽ đều có thể được tạo hoạt ảnh bằng các phương pháp chuẩn và cấp cao hơn như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_tween.html" title="Class reference (English)"><span class="xref std std-ref">Tween</span></a> hoặc Node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animationplayer.html" title="Class reference (English)"><span class="xref std std-ref">AnimationPlayer</span></a>. Điểm khác biệt duy nhất là cần gọi <code class="docutils literal notranslate"><span class="pre">queue_redraw()</span></code> để áp dụng các thay đổi đó và hiển thị chúng trên màn hình.</p>
+</section>
+</section>
+<section id="example-2-drawing-a-dynamic-line">
+<span id="doc-draw-custom-example-2"></span><h2>Ví dụ 2: vẽ một đường động<a class="headerlink" href="#example-2-drawing-a-dynamic-line" title="Link to this heading"></a></h2>
+<p>Ví dụ trước hữu ích để học cách vẽ và chỉnh sửa node với hình dạng và hoạt ảnh tùy chỉnh. Cách này có một số ưu điểm, chẳng hạn dùng tọa độ và vector chính xác để vẽ thay vì bitmap - nghĩa là hình sẽ co giãn tốt khi được biến đổi trên màn hình. Trong một số trường hợp, có thể đạt kết quả tương tự bằng cách kết hợp các chức năng cấp cao hơn với các node như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sprite2d.html" title="Class reference (English)"><span class="xref std std-ref">sprite</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animatedsprite2d.html" title="Class reference (English)"><span class="xref std std-ref">AnimatedSprite</span></a> nạp resource SVG (cũng là hình ảnh được định nghĩa bằng vector) và node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_animationplayer.html" title="Class reference (English)"><span class="xref std std-ref">AnimationPlayer</span></a>.</p>
+<p>Trong những trường hợp khác, điều đó sẽ không khả thi vì chúng ta không biết trước kết quả hiển thị đồ họa sẽ ra sao trước khi chạy code. Ở đây chúng ta sẽ xem cách vẽ một đường động có tọa độ không biết trước và chịu ảnh hưởng bởi đầu vào của người dùng.</p>
+<section id="drawing-a-straight-line-between-2-points">
+<h3>Vẽ đường thẳng giữa 2 điểm<a class="headerlink" href="#drawing-a-straight-line-between-2-points" title="Link to this heading"></a></h3>
+<p>Giả sử chúng ta muốn vẽ một đường thẳng giữa 2 điểm, điểm thứ nhất cố định ở góc trên bên trái <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code> và điểm thứ hai được xác định bởi vị trí con trỏ trên màn hình.</p>
+<p>Chúng ta có thể vẽ một đường động giữa 2 điểm đó như sau:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-18-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-18-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-18-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">point1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+<span class="k">var</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">_point2</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">mouse_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_viewport</span><span class="p">()</span><span class="o">.</span><span class="nf">get_mouse_position</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">mouse_position</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">_point2</span><span class="p">:</span>
+<span class="w">        </span><span class="n">_point2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mouse_position</span>
+<span class="w">        </span><span class="nf">queue_redraw</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">draw_line</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span><span class="w"> </span><span class="n">_point2</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-18-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-18-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2DLine</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">Point1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0f</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Width</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Color</span><span class="w"> </span><span class="n">Color</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">_point2</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Vector2</span><span class="w"> </span><span class="n">mousePosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewport</span><span class="p">().</span><span class="n">GetMousePosition</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mousePosition</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">_point2</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_point2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mousePosition</span><span class="p">;</span>
+<span class="w">            </span><span class="n">QueueRedraw</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">DrawLine</span><span class="p">(</span><span class="n">Point1</span><span class="p">,</span><span class="w"> </span><span class="n">_point2</span><span class="p">,</span><span class="w"> </span><span class="n">Color</span><span class="p">,</span><span class="w"> </span><span class="n">Width</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Trong ví dụ này, chúng ta lấy vị trí chuột trong viewport mặc định ở mỗi frame bằng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-method-get-mouse-position" title="Class reference (English)"><span class="xref std std-ref">get_mouse_position</span></a>. Nếu vị trí đã thay đổi kể từ lần yêu cầu vẽ trước (một tối ưu nhỏ để tránh vẽ lại ở mọi frame), chúng ta sẽ lên lịch vẽ lại. Phương thức <code class="docutils literal notranslate"><span class="pre">_draw()</span></code> của chúng ta chỉ có một dòng: yêu cầu vẽ một đường màu xanh lá rộng 10 pixel giữa góc trên bên trái và vị trí vừa lấy được.</p>
+<p>Độ rộng, màu sắc và vị trí điểm bắt đầu có thể được cấu hình bằng các thuộc tính tương ứng.</p>
+<p>Khi chạy, nó sẽ trông như sau:</p>
+<img alt="../../_images/draw_line_between_2_points.webp" src="../../_images/draw_line_between_2_points.webp" />
+</section>
+<section id="drawing-an-arc-between-2-points">
+<h3>Vẽ cung tròn giữa 2 điểm<a class="headerlink" href="#drawing-an-arc-between-2-points" title="Link to this heading"></a></h3>
+<p>Ví dụ trên hoạt động tốt, nhưng có thể chúng ta muốn nối 2 điểm đó bằng một hình dạng hoặc hàm khác thay vì một đường thẳng.</p>
+<p>Giờ hãy thử tạo một cung tròn (một phần của đường tròn) giữa hai điểm.</p>
+<p>Export điểm bắt đầu của đường, số đoạn, độ rộng, màu và khử răng cưa sẽ cho phép chúng ta sửa các thuộc tính đó rất dễ dàng ngay trong bảng Inspector của trình chỉnh sửa:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-19-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-19-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-19-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">point1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="nd">@export_range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">segments</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="o">.</span><span class="vi">GREEN</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">antialiasing</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">false</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">_point2</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-19-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2DLine</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">Point1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mf">0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0f</span><span class="p">);</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">Length</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">350f</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Export(PropertyHint.Range, &quot;1,1000,&quot;)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Segments</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Width</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Color</span><span class="w"> </span><span class="n">Color</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Colors</span><span class="p">.</span><span class="n">Green</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">AntiAliasing</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Vector2</span><span class="w"> </span><span class="n">_point2</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<img alt="../../_images/draw_dynamic_exported_properties.webp" src="../../_images/draw_dynamic_exported_properties.webp" />
+<p>Để vẽ cung tròn, chúng ta có thể dùng phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-draw-arc" title="Class reference (English)"><span class="xref std std-ref">draw_arc</span></a>. Có rất nhiều cung tròn đi qua 2 điểm, nên trong ví dụ này chúng ta sẽ chọn nửa đường tròn có tâm nằm ở trung điểm của 2 điểm ban đầu.</p>
+<p>Tính toán cung tròn này sẽ phức tạp hơn so với trường hợp đường thẳng:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-20-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-20-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-20-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_draw</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Average points to get center.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">center</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">((</span><span class="n">_point2</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">point1</span><span class="o">.</span><span class="vi">x</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">                                   </span><span class="p">(</span><span class="n">_point2</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">point1</span><span class="o">.</span><span class="vi">y</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Calculate the rest of the arc parameters.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point1</span><span class="o">.</span><span class="nf">distance_to</span><span class="p">(</span><span class="n">_point2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">start_angle</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">_point2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">point1</span><span class="p">)</span><span class="o">.</span><span class="nf">angle</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">end_angle</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">point1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_point2</span><span class="p">)</span><span class="o">.</span><span class="nf">angle</span><span class="p">()</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">end_angle</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w">  </span><span class="c1"># end_angle is likely negative, normalize it.</span>
+<span class="w">        </span><span class="n">end_angle</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="l">TAU</span>
+
+<span class="w">    </span><span class="c1"># Finally, draw the arc.</span>
+<span class="w">    </span><span class="nf">draw_arc</span><span class="p">(</span><span class="n">center</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">start_angle</span><span class="p">,</span><span class="w"> </span><span class="n">end_angle</span><span class="p">,</span><span class="w"> </span><span class="n">segments</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="p">,</span>
+<span class="w">             </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">antialiasing</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-20-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-20-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Draw</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Average points to get center.</span>
+<span class="w">    </span><span class="n">Vector2</span><span class="w"> </span><span class="n">center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">((</span><span class="n">_point2</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Point1</span><span class="p">.</span><span class="n">X</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span>
+<span class="w">                                    </span><span class="p">(</span><span class="n">_point2</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Point1</span><span class="p">.</span><span class="n">Y</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Calculate the rest of the arc parameters.</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Point1</span><span class="p">.</span><span class="n">DistanceTo</span><span class="p">(</span><span class="n">_point2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">startAngle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">_point2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Point1</span><span class="p">).</span><span class="n">Angle</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">endAngle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Point1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_point2</span><span class="p">).</span><span class="n">Angle</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">endAngle</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">)</span><span class="w">  </span><span class="c1">// endAngle is likely negative, normalize it.</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">endAngle</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Tau</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Finally, draw the arc.</span>
+<span class="w">    </span><span class="n">DrawArc</span><span class="p">(</span><span class="n">center</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">startAngle</span><span class="p">,</span><span class="w"> </span><span class="n">endAngle</span><span class="p">,</span><span class="w"> </span><span class="n">Segments</span><span class="p">,</span><span class="w"> </span><span class="n">Color</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Width</span><span class="p">,</span><span class="w"> </span><span class="n">AntiAliasing</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tâm của nửa đường tròn sẽ là trung điểm giữa hai điểm. Bán kính sẽ bằng một nửa khoảng cách giữa hai điểm. Góc bắt đầu và góc kết thúc sẽ là góc của vector từ point1 đến point2 và ngược lại. Lưu ý chúng ta phải chuẩn hóa <code class="docutils literal notranslate"><span class="pre">end_angle</span></code> về giá trị dương, vì nếu <code class="docutils literal notranslate"><span class="pre">end_angle</span></code> nhỏ hơn <code class="docutils literal notranslate"><span class="pre">start_angle</span></code>, cung tròn sẽ được vẽ ngược chiều kim đồng hồ, điều chúng ta không muốn trong trường hợp này (cung tròn sẽ bị lộn ngược).</p>
+<p>Kết quả sẽ trông giống như thế này, với cung tròn hướng xuống và nằm giữa các điểm:</p>
+<img alt="../../_images/draw_arc_between_2_points.webp" src="../../_images/draw_arc_between_2_points.webp" />
+<p>Hãy thoải mái thử nghiệm các tham số trong Inspector để có kết quả khác nhau: đổi màu, độ rộng, khử răng cưa và tăng số đoạn để đường cong mượt hơn, đổi lại tốn thêm hiệu năng.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2d_antialiasing.html" class="btn btn-neutral float-left" title="Khử răng cưa 2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="2d_parallax.html" class="btn btn-neutral float-right" title="Parallax 2D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

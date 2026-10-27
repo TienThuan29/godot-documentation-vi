@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tối ưu hóa GPU" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/gpu_optimization.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Nhu cầu về các tính năng đồ họa mới và sự tiến bộ gần như chắc chắn khiến bạn sẽ gặp phải điểm nghẽn đồ họa. Một số có thể nằm ở phía CPU, chẳng hạn trong các phép tính bên trong Godot ..." />
+<meta name="description" content="Giới thiệu: Nhu cầu về các tính năng đồ họa mới và sự tiến bộ gần như chắc chắn khiến bạn sẽ gặp phải điểm nghẽn đồ họa. Một số có thể nằm ở phía CPU, chẳng hạn trong các phép tính bên trong Godot ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tối ưu hóa GPU &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tối ưu bằng MultiMesh" href="using_multimesh.html" />
+    <link rel="prev" title="Tối ưu hóa CPU" href="cpu_optimization.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/gpu_optimization" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#gpu">GPU</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tối ưu hóa GPU</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#draw-calls-state-changes-and-apis">Draw call, thay đổi trạng thái và API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pixel-cost-versus-vertex-cost">Chi phí pixel so với chi phí vertex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pixel-fragment-shaders-and-fill-rate">Shader pixel/fragment và fill rate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transparency-and-blending">Độ trong suốt và hòa trộn (blending)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-platform-advice">Lời khuyên cho đa nền tảng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mobile-tiled-renderers">Trình kết xuất di động/theo ô</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="using_multimesh.html">Tối ưu bằng MultiMesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_compilations.html">Giảm giật lag do biên dịch shader (pipeline)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Tối ưu hóa GPU</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="gpu-optimization">
+<span id="doc-gpu-optimization"></span><h1>Tối ưu hóa GPU<a class="headerlink" href="#gpu-optimization" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Nhu cầu về các tính năng đồ họa mới và sự tiến bộ gần như chắc chắn khiến bạn sẽ gặp phải điểm nghẽn đồ họa. Một số có thể nằm ở phía CPU, chẳng hạn trong các phép tính bên trong Godot engine để chuẩn bị đối tượng cho việc kết xuất. Điểm nghẽn cũng có thể xảy ra trên CPU trong driver đồ họa, nơi sắp xếp các lệnh để chuyển cho GPU, và trong quá trình truyền các lệnh này. Và cuối cùng, điểm nghẽn cũng xảy ra trên chính GPU.</p>
+<p>Điểm nghẽn trong kết xuất xảy ra ở đâu phụ thuộc rất nhiều vào phần cứng. Đặc biệt, GPU di động có thể gặp khó khăn với những scene chạy dễ dàng trên máy tính để bàn.</p>
+<p>Hiểu và điều tra điểm nghẽn GPU hơi khác so với trường hợp trên CPU. Lý do là thường thì bạn chỉ có thể thay đổi hiệu năng một cách gián tiếp bằng cách thay đổi các lệnh bạn gửi cho GPU. Ngoài ra, việc đo đạc cũng có thể khó khăn hơn. Trong nhiều trường hợp, cách duy nhất để đo hiệu năng là xem xét sự thay đổi của thời gian kết xuất mỗi frame.</p>
+</section>
+<section id="draw-calls-state-changes-and-apis">
+<h2>Draw call, thay đổi trạng thái và API<a class="headerlink" href="#draw-calls-state-changes-and-apis" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Phần sau đây không liên quan đến người dùng cuối, nhưng hữu ích để cung cấp thông tin nền liên quan đến các phần sau.</p>
+</div>
+<p>Godot gửi lệnh đến GPU thông qua một graphics API (Vulkan, OpenGL, OpenGL ES hoặc WebGL). Việc giao tiếp và hoạt động của driver liên quan có thể khá tốn kém, đặc biệt là trong OpenGL, OpenGL ES và WebGL. Nếu có thể cung cấp các lệnh này theo cách mà driver và GPU ưa thích, chúng ta có thể tăng hiệu năng đáng kể.</p>
+<p>Gần như mọi lệnh API trong OpenGL đều cần một lượng kiểm tra hợp lệ nhất định để đảm bảo GPU ở đúng trạng thái. Ngay cả những lệnh trông có vẻ đơn giản cũng có thể dẫn đến hàng loạt công việc quản lý phía sau. Vì vậy, mục tiêu là giảm các lệnh này xuống mức tối thiểu và gom các đối tượng tương tự lại với nhau nhiều nhất có thể để chúng có thể được kết xuất cùng nhau, hoặc với số lần thay đổi trạng thái tốn kém ít nhất.</p>
+<section id="d-batching">
+<h3>2D batching<a class="headerlink" href="#d-batching" title="Link to this heading"></a></h3>
+<p>Trong 2D, chi phí xử lý từng item riêng lẻ có thể cao đến mức không chấp nhận được - trên màn hình có thể dễ dàng có hàng nghìn item. Đây là lý do 2D <em>batching</em> được sử dụng. Nhiều item tương tự được gom lại và kết xuất theo lô, qua một draw call duy nhất, thay vì tạo một draw call riêng cho mỗi item. Ngoài ra, điều này còn có nghĩa là các thay đổi trạng thái, thay đổi material và texture có thể được giữ ở mức tối thiểu.</p>
+</section>
+<section id="id1">
+<h3>3D batching<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Trong 3D, chúng ta vẫn hướng tới giảm thiểu draw call và thay đổi trạng thái. Tuy nhiên, việc gom nhiều đối tượng vào một draw call duy nhất có thể khó khăn hơn. Mesh 3D thường bao gồm hàng trăm hoặc hàng nghìn tam giác, và việc kết hợp các mesh lớn theo thời gian thực tốn kém đến mức không chấp nhận được. Chi phí ghép chúng nhanh chóng vượt quá mọi lợi ích khi số tam giác trên mỗi mesh tăng lên. Một lựa chọn tốt hơn nhiều là <strong>ghép mesh từ trước</strong> (các mesh tĩnh tương đối với nhau). Việc này có thể do họa sĩ thực hiện, hoặc thực hiện bằng code trong Godot thông qua một add-on.</p>
+<p>Việc gom các đối tượng trong 3D cũng có cái giá của nó. Nhiều đối tượng được kết xuất như một khối sẽ không thể bị cull riêng lẻ. Cả một thành phố nằm ngoài màn hình vẫn sẽ được kết xuất nếu nó được ghép với một ngọn cỏ đang nằm trên màn hình. Vì vậy, bạn nên luôn tính đến vị trí của các đối tượng và việc culling khi cố gắng gom các đối tượng 3D lại với nhau. Dù vậy, lợi ích của việc ghép các đối tượng tĩnh thường lớn hơn những cân nhắc khác, đặc biệt là với số lượng lớn đối tượng ở xa hoặc low-poly.</p>
+<p>Để biết thêm về các tối ưu dành riêng cho 3D, xem <a class="reference internal" href="optimizing_3d_performance.html#doc-optimizing-3d-performance"><span class="std std-ref">Tối ưu hiệu năng 3D</span></a>.</p>
+</section>
+<section id="reuse-shaders-and-materials">
+<h3>Tái sử dụng shader và material<a class="headerlink" href="#reuse-shaders-and-materials" title="Link to this heading"></a></h3>
+<p>Renderer của Godot hơi khác so với những gì hiện có. Nó được thiết kế để giảm thiểu thay đổi trạng thái GPU nhiều nhất có thể. <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a> làm rất tốt việc tái sử dụng các material cần shader tương tự. Nếu dùng shader tùy chỉnh, hãy đảm bảo tái sử dụng chúng nhiều nhất có thể. Các ưu tiên của Godot là:</p>
+<ul class="simple">
+<li><p><strong>Tái sử dụng material:</strong> Càng ít material khác nhau trong scene, việc kết xuất càng nhanh. Nếu một scene có số lượng đối tượng khổng lồ (hàng trăm hoặc hàng nghìn), hãy thử tái sử dụng material. Trong trường hợp xấu nhất, hãy dùng atlas để giảm số lần thay đổi texture.</p></li>
+<li><p><strong>Tái sử dụng shader:</strong> Nếu không thể tái sử dụng material, ít nhất hãy cố gắng tái sử dụng shader. Lưu ý: shader được tự động tái sử dụng giữa các StandardMaterial3D có cùng cấu hình (các tính năng được bật hoặc tắt bằng ô đánh dấu) ngay cả khi chúng có tham số khác nhau.</p></li>
+</ul>
+<p>Ví dụ, nếu một scene có 20.000 đối tượng, mỗi đối tượng dùng một trong 20.000 material khác nhau, việc kết xuất sẽ chậm. Nếu cùng scene đó có 20.000 đối tượng nhưng chỉ dùng 100 material, việc kết xuất sẽ nhanh hơn nhiều.</p>
+</section>
+</section>
+<section id="pixel-cost-versus-vertex-cost">
+<h2>Chi phí pixel so với chi phí vertex<a class="headerlink" href="#pixel-cost-versus-vertex-cost" title="Link to this heading"></a></h2>
+<p>Có thể bạn đã nghe rằng số polygon trong một model càng thấp thì nó sẽ được kết xuất càng nhanh. Điều này <em>thực sự</em> mang tính tương đối và phụ thuộc vào nhiều yếu tố.</p>
+<p>Trên PC và console hiện đại, chi phí vertex thấp. Ban đầu GPU chỉ kết xuất tam giác. Điều này có nghĩa là mỗi frame:</p>
+<ol class="arabic simple">
+<li><p>Tất cả vertex phải được CPU biến đổi (bao gồm cả clipping).</p></li>
+<li><p>Tất cả vertex phải được gửi từ RAM chính đến bộ nhớ GPU.</p></li>
+</ol>
+<p>Ngày nay, tất cả những việc này được xử lý bên trong GPU, giúp tăng hiệu năng đáng kể. Họa sĩ 3D thường có cảm nhận sai về hiệu năng liên quan đến số polygon vì phần mềm dựng hình 3D (như Blender, 3ds Max, v.v.) cần giữ hình học trong bộ nhớ CPU để có thể chỉnh sửa, làm giảm hiệu năng thực tế. Game engine dựa vào GPU nhiều hơn, nên chúng có thể kết xuất nhiều tam giác hiệu quả hơn rất nhiều.</p>
+<p>Trên thiết bị di động thì câu chuyện lại khác. GPU của PC và console là những &quot;quái vật&quot; sức mạnh có thể lấy bao nhiêu điện tùy thích từ lưới điện. GPU di động bị giới hạn bởi một viên pin nhỏ, nên chúng cần tiết kiệm điện năng hơn rất nhiều.</p>
+<p>Để hiệu quả hơn, GPU di động cố gắng tránh <em>overdraw</em>. Overdraw xảy ra khi cùng một pixel trên màn hình bị kết xuất nhiều hơn một lần. Hãy tưởng tượng một thị trấn có nhiều tòa nhà. GPU không biết cái gì nhìn thấy được và cái gì bị che khuất cho đến khi vẽ nó. Ví dụ, một ngôi nhà có thể được vẽ rồi sau đó một ngôi nhà khác được vẽ ở phía trước (nghĩa là việc kết xuất đã diễn ra hai lần cho cùng một pixel). GPU của PC thường không quan tâm nhiều đến điều này và chỉ đơn giản bổ sung thêm bộ xử lý pixel vào phần cứng để tăng hiệu năng (điều này cũng làm tăng mức tiêu thụ điện).</p>
+<p>Dùng thêm điện năng không phải là lựa chọn trên di động, vì vậy thiết bị di động sử dụng một kỹ thuật gọi là <em>tile-based rendering</em> (kết xuất theo ô), chia màn hình thành một lưới. Mỗi ô lưu danh sách các tam giác được vẽ vào nó và sắp xếp chúng theo độ sâu để giảm thiểu <em>overdraw</em>. Kỹ thuật này cải thiện hiệu năng và giảm tiêu thụ điện, nhưng lại ảnh hưởng đến hiệu năng xử lý vertex. Kết quả là số vertex và tam giác có thể được xử lý để vẽ sẽ ít hơn.</p>
+<p>Ngoài ra, kết xuất theo ô gặp khó khăn khi có các đối tượng nhỏ với nhiều hình học nằm trong một phần nhỏ của màn hình. Điều này buộc GPU di động phải dồn nhiều tải lên một ô màn hình duy nhất, làm giảm hiệu năng đáng kể vì tất cả các ô khác phải đợi nó hoàn thành trước khi hiển thị frame.</p>
+<p>Tóm lại, đừng lo lắng về số lượng vertex trên di động, nhưng <strong>hãy tránh việc tập trung vertex vào những phần nhỏ của màn hình</strong>. Nếu một nhân vật, NPC, phương tiện, v.v. ở xa (nghĩa là trông rất nhỏ), hãy dùng mô hình có mức chi tiết (LOD) thấp hơn. Ngay cả trên GPU máy tính để bàn, bạn cũng nên tránh có các tam giác nhỏ hơn kích thước của một pixel trên màn hình.</p>
+<p>Hãy chú ý đến việc xử lý vertex bổ sung cần thiết khi sử dụng:</p>
+<ul class="simple">
+<li><p>Skinning (hoạt ảnh xương)</p></li>
+<li><p>Morph (shape key)</p></li>
+<li><p>Đối tượng chiếu sáng theo vertex (phổ biến trên di động)</p></li>
+</ul>
+</section>
+<section id="pixel-fragment-shaders-and-fill-rate">
+<h2>Shader pixel/fragment và fill rate<a class="headerlink" href="#pixel-fragment-shaders-and-fill-rate" title="Link to this heading"></a></h2>
+<p>Trái ngược với xử lý vertex, chi phí của việc tô bóng fragment (theo từng pixel) đã tăng lên đáng kể qua nhiều năm. Độ phân giải màn hình đã tăng: diện tích của một màn hình 4K là 8.294.400 pixel, so với 307.200 của một màn hình VGA 640×480 cũ. Tức là gấp 27 lần diện tích! Ngoài ra, độ phức tạp của shader fragment cũng bùng nổ. Kết xuất dựa trên vật lý (physically-based rendering) đòi hỏi các phép tính phức tạp cho từng fragment.</p>
+<p>Bạn có thể kiểm tra khá dễ dàng xem một dự án có bị giới hạn bởi fill rate hay không. Tắt V-Sync để tránh giới hạn số khung hình mỗi giây, sau đó so sánh số khung hình mỗi giây khi chạy với cửa sổ lớn và khi chạy với cửa sổ rất nhỏ. Bạn cũng có thể giảm kích thước shadow map tương tự nếu đang dùng bóng đổ. Thông thường, bạn sẽ thấy FPS tăng khá nhiều khi dùng cửa sổ nhỏ, điều này cho thấy dự án ở một mức độ nào đó bị giới hạn bởi fill rate. Ngược lại, nếu FPS tăng rất ít hoặc không tăng, thì điểm nghẽn nằm ở chỗ khác.</p>
+<p>Bạn có thể tăng hiệu năng trong một dự án bị giới hạn bởi fill rate bằng cách giảm khối lượng công việc mà GPU phải làm. Bạn có thể làm điều này bằng cách đơn giản hóa shader (có thể tắt các tùy chọn tốn kém nếu bạn đang dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a>), hoặc giảm số lượng và kích thước texture được sử dụng. Ngoài ra, khi dùng particle có tô bóng, hãy cân nhắc buộc tô bóng theo vertex trong material của chúng để giảm chi phí tô bóng.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Trên phần cứng được hỗ trợ, có thể dùng <a class="reference internal" href="../3d/variable_rate_shading.html#doc-variable-rate-shading"><span class="std std-ref">Variable rate shading</span></a> để giảm chi phí xử lý tô bóng mà không ảnh hưởng đến độ sắc nét của các cạnh trên hình ảnh cuối cùng.</p>
+</div>
+<p><strong>Khi nhắm đến thiết bị di động, hãy cân nhắc dùng các shader đơn giản nhất mà bạn có thể chấp nhận được.</strong></p>
+<section id="reading-textures">
+<h3>Đọc texture<a class="headerlink" href="#reading-textures" title="Link to this heading"></a></h3>
+<p>Yếu tố còn lại trong shader fragment là chi phí đọc texture. Đọc texture là một thao tác tốn kém, đặc biệt khi đọc từ nhiều texture trong một shader fragment duy nhất. Ngoài ra, hãy lưu ý rằng việc lọc có thể làm nó chậm hơn nữa (lọc trilinear giữa các mipmap và lấy trung bình). Đọc texture cũng tốn kém về mặt tiêu thụ điện, đây là một vấn đề lớn trên di động.</p>
+<p><strong>Nếu bạn dùng shader của bên thứ ba hoặc tự viết shader, hãy cố gắng dùng các thuật toán cần ít lần đọc texture nhất có thể.</strong></p>
+</section>
+<section id="texture-compression">
+<h3>Nén texture<a class="headerlink" href="#texture-compression" title="Link to this heading"></a></h3>
+<p>Theo mặc định, Godot nén texture của mô hình 3D khi import bằng phương pháp nén video RAM (VRAM). Nén video RAM không hiệu quả về dung lượng lưu trữ bằng PNG hay JPG, nhưng tăng hiệu năng rất nhiều khi vẽ các texture đủ lớn.</p>
+<p>Đó là vì mục tiêu chính của nén texture là giảm băng thông giữa bộ nhớ và GPU.</p>
+<p>Trong 3D, hình dạng của đối tượng phụ thuộc vào hình học nhiều hơn là texture, nên việc nén thường không gây khác biệt đáng chú ý. Trong 2D, việc nén phụ thuộc nhiều hơn vào các hình dạng bên trong texture, nên các lỗi hiển thị (artifact) do nén 2D gây ra sẽ dễ nhận thấy hơn.</p>
+<p>Lưu ý rằng hầu hết thiết bị Android không hỗ trợ nén texture cho các texture có độ trong suốt (chỉ hỗ trợ texture đục), vì vậy hãy ghi nhớ điều này.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Ngay cả trong 3D, texture &quot;pixel art&quot; nên tắt nén VRAM vì nó sẽ ảnh hưởng xấu đến vẻ ngoài của chúng, mà không cải thiện hiệu năng đáng kể do độ phân giải thấp của chúng.</p>
+</div>
+</section>
+<section id="post-processing-and-shadows">
+<h3>Hậu xử lý và đổ bóng<a class="headerlink" href="#post-processing-and-shadows" title="Link to this heading"></a></h3>
+<p>Các hiệu ứng hậu xử lý và bóng đổ cũng có thể tốn kém về mặt tô bóng fragment. Hãy luôn kiểm tra tác động của chúng trên các phần cứng khác nhau.</p>
+<p><strong>Giảm kích thước shadowmap có thể tăng hiệu năng</strong>, cả về việc ghi lẫn đọc shadowmap. Hơn nữa, cách tốt nhất để cải thiện hiệu năng bóng đổ là tắt bóng đổ cho càng nhiều đèn và đối tượng càng tốt. Các OmniLight/SpotLight nhỏ hoặc ở xa thường có thể tắt bóng đổ mà chỉ ảnh hưởng nhỏ đến hình ảnh.</p>
+</section>
+</section>
+<section id="transparency-and-blending">
+<h2>Độ trong suốt và hòa trộn (blending)<a class="headerlink" href="#transparency-and-blending" title="Link to this heading"></a></h2>
+<p>Các đối tượng trong suốt gây ra những vấn đề riêng cho hiệu quả kết xuất. Các đối tượng đục (đặc biệt trong 3D) về cơ bản có thể được kết xuất theo bất kỳ thứ tự nào và Z-buffer sẽ đảm bảo chỉ những đối tượng ở phía trước nhất được tô bóng. Các đối tượng trong suốt hoặc được hòa trộn thì khác. Trong hầu hết trường hợp, chúng không thể dựa vào Z-buffer và phải được kết xuất theo &quot;thứ tự của họa sĩ&quot; (tức là từ sau ra trước) để trông đúng.</p>
+<p>Các đối tượng trong suốt cũng đặc biệt tệ đối với fill rate, vì mọi phần tử đều phải được vẽ ngay cả khi các đối tượng trong suốt khác sẽ được vẽ đè lên sau đó.</p>
+<p>Các đối tượng đục không phải làm điều này. Chúng thường có thể tận dụng Z-buffer bằng cách chỉ ghi vào Z-buffer trước, sau đó chỉ chạy shader fragment cho fragment &quot;thắng cuộc&quot;, tức là đối tượng nằm phía trước tại một pixel cụ thể.</p>
+<p>Độ trong suốt đặc biệt tốn kém khi nhiều đối tượng trong suốt chồng lên nhau. Thường tốt hơn là dùng các vùng trong suốt nhỏ nhất có thể để giảm thiểu yêu cầu về fill rate, đặc biệt trên di động, nơi fill rate rất đắt đỏ. Thực tế, trong nhiều tình huống, việc kết xuất hình học đục phức tạp hơn lại có thể nhanh hơn so với dùng độ trong suốt để &quot;ăn gian&quot;.</p>
+</section>
+<section id="multi-platform-advice">
+<h2>Lời khuyên cho đa nền tảng<a class="headerlink" href="#multi-platform-advice" title="Link to this heading"></a></h2>
+<p>Nếu bạn định phát hành trên nhiều nền tảng, hãy kiểm thử <em>sớm</em> và kiểm thử <em>thường xuyên</em> trên tất cả các nền tảng của bạn, đặc biệt là di động. Phát triển game trên máy tính để bàn rồi cố port sang di động vào phút cuối là con đường dẫn đến thảm họa.</p>
+<p>Nhìn chung, bạn nên thiết kế game cho mẫu số chung thấp nhất, sau đó thêm các cải tiến tùy chọn cho những nền tảng mạnh hơn. Ví dụ, bạn có thể muốn dùng phương thức kết xuất Compatibility cho cả nền tảng máy tính để bàn và di động khi nhắm đến cả hai.</p>
+</section>
+<section id="mobile-tiled-renderers">
+<h2>Trình kết xuất di động/theo ô<a class="headerlink" href="#mobile-tiled-renderers" title="Link to this heading"></a></h2>
+<p>Như đã mô tả ở trên, GPU trên thiết bị di động hoạt động theo những cách rất khác so với GPU trên máy tính để bàn. Hầu hết thiết bị di động dùng trình kết xuất theo ô (tile renderer). Trình kết xuất theo ô chia màn hình thành các ô có kích thước đều nhau vừa với bộ nhớ cache siêu nhanh, giúp giảm số thao tác đọc/ghi vào bộ nhớ chính.</p>
+<p>Tuy nhiên vẫn có một số nhược điểm. Kết xuất theo ô có thể khiến một số kỹ thuật trở nên phức tạp và tốn kém hơn nhiều. Các ô phụ thuộc vào kết quả kết xuất ở những ô khác hoặc vào việc giữ lại kết quả của các thao tác trước đó có thể rất chậm. Hãy hết sức cẩn thận kiểm tra hiệu năng của shader, viewport texture và hậu xử lý.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpu_optimization.html" class="btn btn-neutral float-left" title="Tối ưu hóa CPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="using_multimesh.html" class="btn btn-neutral float-right" title="Tối ưu bằng MultiMesh" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

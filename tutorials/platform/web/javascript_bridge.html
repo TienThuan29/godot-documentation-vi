@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Singleton JavaScriptBridge" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/platform/web/javascript_bridge.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong các bản build web, singleton JavaScriptBridge cho phép tương tác với JavaScript và trình duyệt web, và có thể được dùng để hiện thực một số chức năng chỉ có trên nền tảng web. Tương tác với J..." />
+<meta name="description" content="Trong các bản build web, singleton JavaScriptBridge cho phép tương tác với JavaScript và trình duyệt web, và có thể được dùng để hiện thực một số chức năng chỉ có trên nền tảng web. Tương tác với J..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Singleton JavaScriptBridge &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Tham khảo lớp HTML5 shell" href="html5_shell_classref.html" />
+    <link rel="prev" title="Web" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/platform/web/javascript_bridge" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Theo nền tảng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../linux/index.html">Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../android/index.html">Android</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ios/index.html">Plugin iOS</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Web</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Singleton JavaScriptBridge</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#interacting-with-javascript">Tương tác với JavaScript</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#callbacks">Callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#can-i-use-my-favorite-library">Tôi có thể dùng thư viện yêu thích của mình không?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-eval-interface">Giao diện eval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#downloading-files">Tải tệp xuống</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="html5_shell_classref.html">Tham khảo lớp HTML5 shell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customizing_html5_shell.html">Trang HTML tùy chỉnh cho bản xuất Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Theo nền tảng</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Web</a></li>
+      <li class="breadcrumb-item active">Singleton JavaScriptBridge</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="the-javascriptbridge-singleton">
+<span id="doc-web-javascript-bridge"></span><h1>Singleton JavaScriptBridge<a class="headerlink" href="#the-javascriptbridge-singleton" title="Link to this heading"></a></h1>
+<p>Trong các bản build web, singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javascriptbridge.html" title="Class reference (English)"><span class="xref std std-ref">JavaScriptBridge</span></a> cho phép tương tác với JavaScript và trình duyệt web, và có thể được dùng để hiện thực một số chức năng chỉ có trên nền tảng web.</p>
+<section id="interacting-with-javascript">
+<h2>Tương tác với JavaScript<a class="headerlink" href="#interacting-with-javascript" title="Link to this heading"></a></h2>
+<p>Đôi khi, khi xuất Godot cho Web, bạn có thể cần giao tiếp với mã JavaScript bên ngoài như SDK hoặc thư viện của bên thứ ba, hoặc đơn giản là để truy cập các tính năng của trình duyệt mà Godot không cung cấp trực tiếp.</p>
+<p>Singleton <code class="docutils literal notranslate"><span class="pre">JavaScriptBridge</span></code> cung cấp các phương thức để bọc một đối tượng JavaScript gốc thành một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javascriptobject.html" title="Class reference (English)"><span class="xref std std-ref">JavaScriptObject</span></a> của Godot, giúp việc sử dụng trở nên tự nhiên trong ngữ cảnh viết script Godot (ví dụ GDScript và C#).</p>
+<p>Phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javascriptbridge.html#class-javascriptbridge-method-get-interface" title="Class reference (English)"><span class="xref std std-ref">JavaScriptBridge.get_interface()</span></a> lấy một đối tượng trong phạm vi toàn cục.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Retrieve the `window.console` object.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">get_interface</span><span class="p">(</span><span class="s2">&quot;console&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Call the `window.console.log()` method.</span>
+<span class="w">    </span><span class="n">console</span><span class="o">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javascriptbridge.html#class-javascriptbridge-method-create-object" title="Class reference (English)"><span class="xref std std-ref">JavaScriptBridge.create_object()</span></a> tạo một đối tượng mới thông qua constructor <code class="docutils literal notranslate"><span class="pre">new</span></code> của JavaScript.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Call the JavaScript `new` operator on the `window.Array` object.</span>
+<span class="w">    </span><span class="c1"># Passing 10 as argument to the constructor:</span>
+<span class="w">    </span><span class="c1"># JS: `new Array(10);`</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">create_object</span><span class="p">(</span><span class="s2">&quot;Array&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Set the first element of the JavaScript array to the number 42.</span>
+<span class="w">    </span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span>
+<span class="w">    </span><span class="c1"># Call the `pop` function on the JavaScript array.</span>
+<span class="w">    </span><span class="n">arr</span><span class="o">.</span><span class="nf">pop</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Print the value of the `length` property of the array (9 after the pop).</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="vi">length</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Như bạn thấy, bằng cách bọc các đối tượng JavaScript thành <code class="docutils literal notranslate"><span class="pre">JavaScriptObject</span></code>, bạn có thể tương tác với chúng như thể chúng là đối tượng Godot gốc: gọi phương thức, lấy (hoặc thậm chí đặt) thuộc tính của chúng.</p>
+<p>Các kiểu cơ bản (int, float, string, boolean) được chuyển đổi tự động (float có thể bị mất độ chính xác khi chuyển từ Godot sang JavaScript). Mọi thứ khác (tức là object, array, function) đều được xem là chính <code class="docutils literal notranslate"><span class="pre">JavaScriptObjects</span></code>.</p>
+</section>
+<section id="callbacks">
+<h2>Callback<a class="headerlink" href="#callbacks" title="Link to this heading"></a></h2>
+<p>Gọi mã JavaScript từ Godot thì rất tiện, nhưng đôi khi bạn lại cần gọi một hàm Godot từ JavaScript.</p>
+<p>Trường hợp này phức tạp hơn một chút. JavaScript dựa vào cơ chế thu gom rác (garbage collection), trong khi Godot dùng đếm tham chiếu (reference counting) để quản lý bộ nhớ. Điều này có nghĩa là bạn phải tạo callback một cách tường minh (chúng được trả về dưới dạng chính <code class="docutils literal notranslate"><span class="pre">JavaScriptObjects</span></code>) và phải giữ tham chiếu đến chúng.</p>
+<p>Các đối số mà JavaScript truyền cho callback sẽ được truyền dưới dạng một <code class="docutils literal notranslate"><span class="pre">Array</span></code> duy nhất của Godot.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># Here we create a reference to the `_my_callback` function (below).</span>
+<span class="c1"># This reference will be kept until the node is freed.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_callback_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">create_callback</span><span class="p">(</span><span class="n">_my_callback</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Get the JavaScript `window` object.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">get_interface</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Set the `window.onbeforeunload` DOM event listener.</span>
+<span class="w">    </span><span class="n">window</span><span class="o">.</span><span class="vi">onbeforeunload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_callback_ref</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_my_callback</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Get the first argument (the DOM event in our case).</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">js_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">    </span><span class="c1"># Call preventDefault and set the `returnValue` property of the DOM event.</span>
+<span class="w">    </span><span class="n">js_event</span><span class="o">.</span><span class="nf">preventDefault</span><span class="p">()</span>
+<span class="w">    </span><span class="n">js_event</span><span class="o">.</span><span class="vi">returnValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Các phương thức callback được tạo qua <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javascriptbridge.html#class-javascriptbridge-method-get-interface" title="Class reference (English)"><span class="xref std std-ref">JavaScriptBridge.get_interface()</span></a> (<code class="docutils literal notranslate"><span class="pre">_my_callback</span></code> trong ví dụ trên) <strong>phải</strong> nhận đúng một đối số <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_array.html" title="Class reference (English)"><span class="xref std std-ref">Array</span></a>, chính là <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments">đối tượng arguments</a> của JavaScript đã được chuyển thành mảng. Nếu không, phương thức callback sẽ không được gọi.</p>
+</div>
+<p>Dưới đây là một ví dụ khác yêu cầu người dùng cấp <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API">quyền thông báo</a> và chờ bất đồng bộ để gửi thông báo nếu quyền được cấp:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># Here we create a reference to the `_on_permissions` function (below).</span>
+<span class="c1"># This reference will be kept until the node is freed.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_permission_callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">create_callback</span><span class="p">(</span><span class="n">_on_permissions</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># NOTE: This is done in `_ready` for simplicity, but SHOULD BE done in response</span>
+<span class="w">    </span><span class="c1"># to user input instead (e.g. during `_input`, or `button_pressed` event, etc.),</span>
+<span class="w">    </span><span class="c1"># otherwise it might not work.</span>
+
+<span class="w">    </span><span class="c1"># Get the `window.Notification` JavaScript object.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">notification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">get_interface</span><span class="p">(</span><span class="s2">&quot;Notification&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Call the `window.Notification.requestPermission` method which returns a JavaScript</span>
+<span class="w">    </span><span class="c1"># Promise, and bind our callback to it.</span>
+<span class="w">    </span><span class="n">notification</span><span class="o">.</span><span class="nf">requestPermission</span><span class="p">()</span><span class="o">.</span><span class="nf">then</span><span class="p">(</span><span class="n">_permission_callback</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_permissions</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># The first argument of this callback is the string &quot;granted&quot; if the permission is granted.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;granted&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Permission granted, sending notification.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># Create the notification: `new Notification(&quot;Hi there!&quot;)`</span>
+<span class="w">        </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">create_object</span><span class="p">(</span><span class="s2">&quot;Notification&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Hi there!&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;No notification permission.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="can-i-use-my-favorite-library">
+<h2>Tôi có thể dùng thư viện yêu thích của mình không?<a class="headerlink" href="#can-i-use-my-favorite-library" title="Link to this heading"></a></h2>
+<p>Rất có thể là được. Trước tiên, bạn phải đưa thư viện vào trang. Bạn có thể tùy chỉnh <a class="reference internal" href="../../export/exporting_for_web.html#doc-javascript-export-options"><span class="std std-ref">Head Include</span></a> khi xuất (xem bên dưới), hoặc thậm chí <a class="reference internal" href="customizing_html5_shell.html#doc-customizing-html5-shell"><span class="std std-ref">tự viết template của riêng bạn</span></a>.</p>
+<p>Trong ví dụ dưới đây, chúng ta tùy chỉnh <code class="docutils literal notranslate"><span class="pre">Head</span> <span class="pre">Include</span></code> để thêm một thư viện bên ngoài (<a class="reference external" href="https://axios-http.com/">axios</a>) từ một mạng phân phối nội dung (CDN), và một thẻ <code class="docutils literal notranslate"><span class="pre">&lt;script&gt;</span></code> thứ hai để định nghĩa hàm tùy chỉnh của riêng mình:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cm">&lt;!-- Axios --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="cm">&lt;!-- Custom function --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">myFunc</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;My func!&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Sau đó, chúng ta có thể truy cập cả thư viện lẫn hàm từ Godot, giống như đã làm trong các ví dụ trước:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># Here create a reference to the `_on_get` function (below).</span>
+<span class="c1"># This reference will be kept until the node is freed.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">_callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">create_callback</span><span class="p">(</span><span class="n">_on_get</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Get the `window` object, where globally defined functions are.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">get_interface</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Call the JavaScript `myFunc` function defined in the custom HTML head.</span>
+<span class="w">    </span><span class="n">window</span><span class="o">.</span><span class="nf">myFunc</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Get the `axios` library (loaded from a CDN in the custom HTML head).</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">axios</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">get_interface</span><span class="p">(</span><span class="s2">&quot;axios&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Make a GET request to the current location, and receive the callback when done.</span>
+<span class="w">    </span><span class="n">axios</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="vi">location</span><span class="o">.</span><span class="nf">toString</span><span class="p">())</span><span class="o">.</span><span class="nf">then</span><span class="p">(</span><span class="n">_callback</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_get</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="nb">OS</span><span class="o">.</span><span class="nf">alert</span><span class="p">(</span><span class="s2">&quot;On Get&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="the-eval-interface">
+<h2>Giao diện eval<a class="headerlink" href="#the-eval-interface" title="Link to this heading"></a></h2>
+<p>Phương thức <code class="docutils literal notranslate"><span class="pre">eval</span></code> hoạt động tương tự như hàm JavaScript cùng tên. Nó nhận một chuỗi làm đối số và thực thi chuỗi đó dưới dạng mã JavaScript. Điều này cho phép tương tác với trình duyệt theo những cách không thể thực hiện được bằng các ngôn ngữ script được tích hợp trong Godot.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">my_func</span><span class="p">():</span>
+<span class="w">    </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;alert(&#39;Calling JavaScript per GDScript!&#39;);&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">MyFunc</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">JavaScriptBridge</span><span class="p">.</span><span class="n">Eval</span><span class="p">(</span><span class="s">&quot;alert(&#39;Calling JavaScript per C#!&#39;);&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Giá trị của câu lệnh JavaScript cuối cùng được chuyển thành giá trị GDScript và được <code class="docutils literal notranslate"><span class="pre">eval()</span></code> trả về trong một số trường hợp nhất định:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">number</span></code> của JavaScript được trả về dưới dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_float.html" title="Class reference (English)"><span class="xref std std-ref">class_float</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code> của JavaScript được trả về dưới dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_bool.html" title="Class reference (English)"><span class="xref std std-ref">class_bool</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code> của JavaScript được trả về dưới dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_string.html" title="Class reference (English)"><span class="xref std std-ref">class_String</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ArrayBuffer</span></code>, <code class="docutils literal notranslate"><span class="pre">TypedArray</span></code> và <code class="docutils literal notranslate"><span class="pre">DataView</span></code> của JavaScript được trả về dưới dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedbytearray.html" title="Class reference (English)"><span class="xref std std-ref">PackedByteArray</span></a></p></li>
+</ul>
+</div></blockquote>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">my_func2</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">js_return</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;var myNumber = 1; myNumber + 2;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">js_return</span><span class="p">)</span><span class="w"> </span><span class="c1"># prints &#39;3.0&#39;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">MyFunc2</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">jsReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JavaScriptBridge</span><span class="p">.</span><span class="n">Eval</span><span class="p">(</span><span class="s">&quot;var myNumber = 1; myNumber + 2;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">jsReturn</span><span class="p">);</span><span class="w"> </span><span class="c1">// prints &#39;3.0&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Mọi giá trị JavaScript khác được trả về là <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p>
+<p>Export template HTML5 có thể được <a class="reference internal" href="../../../engine_details/development/compiling/compiling_for_web.html#doc-compiling-for-web"><span class="std std-ref">build</span></a> mà không hỗ trợ singleton này để tăng cường bảo mật. Với các template như vậy, và trên các nền tảng khác ngoài HTML5, việc gọi <code class="docutils literal notranslate"><span class="pre">JavaScriptBridge.eval</span></code> cũng sẽ trả về <code class="docutils literal notranslate"><span class="pre">null</span></code>. Có thể kiểm tra singleton có khả dụng hay không bằng <a class="reference internal" href="../../export/feature_tags.html#doc-feature-tags"><span class="std std-ref">feature tag</span></a> <code class="docutils literal notranslate"><span class="pre">web</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">my_func3</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">OS</span><span class="o">.</span><span class="nf">has_feature</span><span class="p">(</span><span class="s1">&#39;web&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="s2">console.log(&#39;The JavaScriptBridge singleton is available&#39;)</span>
+<span class="w">        </span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">else</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;The JavaScriptBridge singleton is NOT available&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">MyFunc3</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">OS</span><span class="p">.</span><span class="n">HasFeature</span><span class="p">(</span><span class="s">&quot;web&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">JavaScriptBridge</span><span class="p">.</span><span class="n">Eval</span><span class="p">(</span><span class="s">&quot;console.log(&#39;The JavaScriptBridge singleton is available&#39;)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;The JavaScriptBridge singleton is NOT available&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Chuỗi nhiều dòng của GDScript, được bao bởi 3 dấu nháy <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;</span></code> như trong <code class="docutils literal notranslate"><span class="pre">my_func3()</span></code> ở trên, rất hữu ích để giữ cho mã JavaScript dễ đọc.</p>
+</div>
+<p>Phương thức <code class="docutils literal notranslate"><span class="pre">eval</span></code> cũng nhận một đối số Boolean thứ hai, tùy chọn, chỉ định có thực thi mã trong ngữ cảnh thực thi toàn cục hay không, mặc định là <code class="docutils literal notranslate"><span class="pre">false</span></code> để tránh làm ô nhiễm namespace toàn cục:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">my_func4</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># execute in global execution context,</span>
+<span class="w">    </span><span class="c1"># thus adding a new JavaScript global variable `SomeGlobal`</span>
+<span class="w">    </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;var SomeGlobal = {};&quot;</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">MyFunc4</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// execute in global execution context,</span>
+<span class="w">    </span><span class="c1">// thus adding a new JavaScript global variable `SomeGlobal`</span>
+<span class="w">    </span><span class="n">JavaScriptBridge</span><span class="p">.</span><span class="n">Eval</span><span class="p">(</span><span class="s">&quot;var SomeGlobal = {};&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="downloading-files">
+<span id="doc-web-downloading-files"></span><h2>Tải tệp xuống<a class="headerlink" href="#downloading-files" title="Link to this heading"></a></h2>
+<p>Việc tải tệp (ví dụ một bản lưu game) từ bản xuất Web của Godot xuống máy tính của người dùng có thể thực hiện bằng cách tương tác trực tiếp với JavaScript, nhưng vì đây là trường hợp sử dụng rất phổ biến, Godot cung cấp chức năng này cho script thông qua một hàm chuyên dụng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_javascriptbridge.html#class-javascriptbridge-method-download-buffer" title="Class reference (English)"><span class="xref std std-ref">JavaScriptBridge.download_buffer()</span></a>, cho phép bạn tải xuống bất kỳ buffer nào được tạo ra.</p>
+<p>Dưới đây là một ví dụ tối giản về cách sử dụng:</p>
+<p>extends Node</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Asks the user download a file called &quot;hello.txt&quot; whose content will be the string &quot;Hello&quot;.</span>
+<span class="w">    </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">download_buffer</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="o">.</span><span class="nf">to_utf8_buffer</span><span class="p">(),</span><span class="w"> </span><span class="s2">&quot;hello.txt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Và đây là một ví dụ đầy đủ hơn về cách tải xuống một tệp đã lưu trước đó:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># Open a file for reading and download it via the JavaScript singleton.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_download_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="nf">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="nb">FileAccess</span><span class="o">.</span><span class="vi">READ</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="l">null</span><span class="p">:</span>
+<span class="w">        </span><span class="nb nb-Function">push_error</span><span class="p">(</span><span class="s2">&quot;Failed to load file&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span>
+<span class="w">    </span><span class="c1"># Get the file name.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">fname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">path</span><span class="o">.</span><span class="nf">get_file</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Read the whole file to memory.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="o">.</span><span class="nf">get_buffer</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="nf">get_len</span><span class="p">())</span>
+<span class="w">    </span><span class="c1"># Prompt the user to download the file (will have the same name as the input file).</span>
+<span class="w">    </span><span class="nb">JavaScriptBridge</span><span class="o">.</span><span class="nf">download_buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="n">fname</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a temporary file.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ConfigFile</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">config</span><span class="o">.</span><span class="nf">set_value</span><span class="p">(</span><span class="s2">&quot;option&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;one&quot;</span><span class="p">,</span><span class="w"> </span><span class="l">false</span><span class="p">)</span>
+<span class="w">    </span><span class="n">config</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="s2">&quot;/tmp/test.cfg&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Download it</span>
+<span class="w">    </span><span class="nf">_download_file</span><span class="p">(</span><span class="s2">&quot;/tmp/test.cfg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Web" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="html5_shell_classref.html" class="btn btn-neutral float-right" title="Tham khảo lớp HTML5 shell" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

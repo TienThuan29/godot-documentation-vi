@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Va chạm hạt 3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/particles/collision.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Va chạm hạt Vì hạt GPU được xử lý hoàn toàn trên GPU, chúng không có quyền truy cập vào thế giới vật lý của game. Nếu bạn cần hạt va chạm với môi trường, bạn phải thiết lập các node va chạm hạt. Có..." />
+<meta name="description" content="Va chạm hạt Vì hạt GPU được xử lý hoàn toàn trên GPU, chúng không có quyền truy cập vào thế giới vật lý của game. Nếu bạn cần hạt va chạm với môi trường, bạn phải thiết lập các node va chạm hạt. Có..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Va chạm hạt 3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Hình dạng phát xạ phức tạp" href="complex_shapes.html" />
+    <link rel="prev" title="Attractor cho hạt 3D" href="attractors.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/particles/collision" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Hệ thống hạt (3D)</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="creating_a_3d_particle_system.html">Tạo hệ thống hạt 3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="properties.html">Các thuộc tính của hệ thống hạt 3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html">Các thuộc tính của process material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#particle-flags">Cờ của hạt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#spawn">Spawn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#accelerations">Gia tốc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#display">Display</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#collision">Va chạm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#sub-emitter">Sub-emitter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process_material_properties.html#customizing-the-process-material">Tùy chỉnh process material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="subemitters.html">Sub-emitter cho hạt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trails.html">Vệt hạt 3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="turbulence.html">Nhiễu loạn hạt (turbulence)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="attractors.html">Attractor cho hạt 3D</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Va chạm hạt 3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="complex_shapes.html">Hình dạng phát xạ phức tạp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../global_illumination/index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">3D</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hệ thống hạt (3D)</a></li>
+      <li class="breadcrumb-item active">Va chạm hạt 3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="d-particle-collisions">
+<span id="doc-3d-particles-collision"></span><h1>Va chạm hạt 3D<a class="headerlink" href="#d-particle-collisions" title="Link to this heading"></a></h1>
+<figure class="align-default">
+<img alt="Va chạm hạt" src="../../../_images/particle_collision.webp" />
+</figure>
+<p>Vì hạt GPU được xử lý hoàn toàn trên GPU, chúng không có quyền truy cập vào thế giới vật lý của game. Nếu bạn cần hạt va chạm với môi trường, bạn phải thiết lập các node va chạm hạt. Có bốn loại: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticlescollisionbox3d.html" title="Class reference (English)"><span class="xref std std-ref">class_GPUParticlesCollisionBox3D</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticlescollisionsphere3d.html" title="Class reference (English)"><span class="xref std std-ref">class_GPUParticlesCollisionSphere3D</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticlescollisionsdf3d.html" title="Class reference (English)"><span class="xref std std-ref">class_GPUParticlesCollisionSDF3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticlescollisionheightfield3d.html" title="Class reference (English)"><span class="xref std std-ref">class_GPUParticlesCollisionHeightField3D</span></a>.</p>
+<section id="common-properties">
+<h2>Thuộc tính chung<a class="headerlink" href="#common-properties" title="Link to this heading"></a></h2>
+<figure class="align-right" id="id1">
+<img alt="Các thuộc tính chung của va chạm hạt" src="../../../_images/particle_collision_common.webp" />
+<figcaption>
+<p><span class="caption-text">Các thuộc tính chung của va chạm</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Có một số thuộc tính mà bạn có thể tìm thấy trên mọi node va chạm. Chúng nằm trong mục <code class="docutils literal notranslate"><span class="pre">GPUParticlesCollision3D</span></code> trong Inspector.</p>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">Cull</span> <span class="pre">Mask</span></code> điều khiển những hệ thống hạt nào chịu ảnh hưởng của một node va chạm, dựa trên <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visualinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">các lớp hiển thị</span></a> của từng hệ thống. Một hệ thống hạt chỉ va chạm với một node va chạm nếu ít nhất một trong các lớp hiển thị của hệ thống được bật trong cull mask của collider.</p>
+</section>
+<section id="box-collision">
+<h2>Va chạm hình hộp<a class="headerlink" href="#box-collision" title="Link to this heading"></a></h2>
+<figure class="align-right" id="id2">
+<img alt="Hộp va chạm hạt" src="../../../_images/particle_collision_box_entry.webp" />
+<figcaption>
+<p><span class="caption-text">Box collision trong danh sách node</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Node box collision có hình dạng một khối hộp chữ nhật đặc. Bạn điều khiển kích thước của chúng bằng thuộc tính <code class="docutils literal notranslate"><span class="pre">Extents</span></code>. Extents của hộp luôn đo một nửa các cạnh của giới hạn, vì vậy giá trị <code class="docutils literal notranslate"><span class="pre">(X=1.0,Y=1.0,Z=1.0)</span></code> tạo ra một hộp rộng 2 mét ở mỗi cạnh. Node box collision hữu ích để mô phỏng hình học sàn và tường mà hạt cần va chạm vào.</p>
+<p>Để tạo một node box collision, hãy thêm một node con mới vào scene và chọn <code class="docutils literal notranslate"><span class="pre">GPUParticlesCollisionBox3D</span></code> từ danh sách các node có sẵn. Bạn có thể tạo hoạt ảnh cho vị trí của hộp hoặc gắn nó vào một node đang di chuyển để có hiệu ứng sinh động hơn.</p>
+<figure class="align-default" id="id3">
+<img alt="Va chạm hình hộp với hệ thống hạt" src="../../../_images/particle_collision_box.webp" />
+<figcaption>
+<p><span class="caption-text">Hai hệ thống hạt va chạm với một node box collision</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="sphere-collision">
+<h2>Va chạm hình cầu<a class="headerlink" href="#sphere-collision" title="Link to this heading"></a></h2>
+<figure class="align-right" id="id4">
+<img alt="Hình cầu va chạm hạt" src="../../../_images/particle_collision_sphere_entry.webp" />
+<figcaption>
+<p><span class="caption-text">Sphere collision trong danh sách node</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Node sphere collision có hình dạng một khối cầu đặc. Thuộc tính <code class="docutils literal notranslate"><span class="pre">Radius</span></code> điều khiển kích thước của khối cầu. Trong khi node box collision không nhất thiết phải là khối lập phương hoàn hảo, node sphere collision luôn là hình cầu. Nếu bạn muốn đặt chiều rộng độc lập với chiều cao, bạn phải thay đổi thuộc tính <code class="docutils literal notranslate"><span class="pre">Scale</span></code> trong mục <code class="docutils literal notranslate"><span class="pre">Node3D</span></code>.</p>
+<p>Để tạo một node sphere collision, hãy thêm một node con mới vào scene và chọn <code class="docutils literal notranslate"><span class="pre">GPUParticlesCollisionSphere3D</span></code> từ danh sách các node có sẵn. Bạn có thể tạo hoạt ảnh cho vị trí của khối cầu hoặc gắn nó vào một node đang di chuyển để có hiệu ứng sinh động hơn.</p>
+<figure class="align-default" id="id5">
+<img alt="Sphere collision với các hệ thống hạt" src="../../../_images/particle_collision_sphere.webp" />
+<figcaption>
+<p><span class="caption-text">Hai hệ thống hạt va chạm với một node sphere collision</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="height-field-collision">
+<h2>Va chạm height field<a class="headerlink" href="#height-field-collision" title="Link to this heading"></a></h2>
+<figure class="align-right" id="id6">
+<img alt="Height field va chạm hạt" src="../../../_images/particle_collision_height.webp" />
+<figcaption>
+<p><span class="caption-text">Height field collision trong danh sách node</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Va chạm hạt bằng height field rất hữu ích cho các khu vực ngoài trời rộng lớn cần va chạm với hạt. Khi chạy, node tạo ra một height field từ tất cả các mesh nằm trong giới hạn của nó và khớp với cull mask của nó. Hạt va chạm với mesh mà height field này biểu diễn. Vì việc tạo height field được thực hiện động, nó có thể đi theo camera của người chơi và phản ứng với các thay đổi trong màn chơi. Các cài đặt khác nhau cho mật độ height field mang lại nhiều lựa chọn điều chỉnh hiệu năng.</p>
+<p>Để tạo một node height field collision, hãy thêm một node con mới vào scene và chọn <code class="docutils literal notranslate"><span class="pre">GPUParticlesCollisionHeightField3D</span></code> từ danh sách các node có sẵn.</p>
+<p>Node height field collision có hình dạng một hộp. Thuộc tính <code class="docutils literal notranslate"><span class="pre">Extents</span></code> điều khiển kích thước của nó. Extents luôn đo một nửa các cạnh của giới hạn, vì vậy giá trị <code class="docutils literal notranslate"><span class="pre">(X=1.0,Y=1.0,Z=1.0)</span></code> tạo ra một hộp rộng 2 mét ở mỗi cạnh. Mọi thứ nằm ngoài extents của node sẽ bị bỏ qua khi tạo height field.</p>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">Resolution</span></code> điều khiển mức độ chi tiết của height field. Độ phân giải thấp hơn chạy nhanh hơn nhưng kém chính xác hơn. Nếu độ phân giải height field quá thấp, có thể trông như hạt xuyên qua hình học của màn chơi hoặc bị kẹt lơ lửng trên không khi va chạm. Chúng cũng có thể bỏ qua hoàn toàn một số mesh nhỏ.</p>
+<figure class="align-default" id="id7">
+<img alt="Các độ phân giải height field" src="../../../_images/particle_heightfield_res.webp" />
+<figcaption>
+<p><span class="caption-text">Ở độ phân giải thấp, height field collision bỏ sót một số chi tiết nhỏ (trái)</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">Update</span> <span class="pre">Mode</span></code> điều khiển thời điểm height field được tạo lại từ các mesh trong giới hạn của nó. Đặt thành <code class="docutils literal notranslate"><span class="pre">When</span> <span class="pre">Moved</span></code> để chỉ làm mới khi nó di chuyển. Cách này có hiệu năng tốt và phù hợp với các scene tĩnh, ít thay đổi. Nếu bạn cần hạt va chạm với các đối tượng động thường xuyên thay đổi vị trí, bạn có thể chọn <code class="docutils literal notranslate"><span class="pre">Always</span></code> để làm mới mỗi frame. Điều này tốn hiệu năng và chỉ nên dùng khi cần thiết.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Điều quan trọng cần nhớ là khi <code class="docutils literal notranslate"><span class="pre">Update</span> <span class="pre">Mode</span></code> được đặt thành <code class="docutils literal notranslate"><span class="pre">When</span> <span class="pre">Moved</span></code>, chính chuyển động của <em>node height field</em> mới kích hoạt việc cập nhật. Height field không được cập nhật khi một trong các mesh bên trong nó di chuyển.</p>
+</div>
+<p>Khi được bật, thuộc tính <code class="docutils literal notranslate"><span class="pre">Follow</span> <span class="pre">Camera</span> <span class="pre">Enabled</span></code> khiến height field đi theo camera hiện tại. Nó sẽ cập nhật mỗi khi camera di chuyển. Thuộc tính này có thể dùng để đảm bảo luôn có va chạm hạt quanh người chơi mà không lãng phí hiệu năng cho các vùng nằm ngoài tầm nhìn hoặc ở quá xa.</p>
+</section>
+<section id="sdf-collision">
+<h2>Va chạm SDF<a class="headerlink" href="#sdf-collision" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Va chạm hạt SDF chỉ được hỗ trợ trong renderer Forward+ và Mobile, không hỗ trợ trong Compatibility.</p>
+</div>
+<figure class="align-right" id="id8">
+<img alt="SDF va chạm hạt" src="../../../_images/particle_collision_sdf_entry.webp" />
+<figcaption>
+<p><span class="caption-text">SDF collision trong danh sách node</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Node SDF collision tạo ra một <a class="reference external" href="https://www.reddit.com/r/explainlikeimfive/comments/k2zbos/eli5_what_are_distance_fields_in_graphics">trường khoảng cách có dấu (signed distance field)</a> mà hạt có thể va chạm vào. SDF collision tương tự height field collision ở chỗ nó biến nhiều mesh trong giới hạn của nó thành một thể tích va chạm duy nhất cho hạt. Một khác biệt lớn là signed distance field có thể biểu diễn lỗ hổng, đường hầm và phần nhô ra, điều mà chỉ riêng height field không thể làm được. Chi phí hiệu năng lớn hơn so với height field, vì vậy chúng phù hợp nhất với các môi trường có kích thước nhỏ đến trung bình.</p>
+<p>Để tạo một node SDF collision, hãy thêm một node con mới vào scene và chọn <code class="docutils literal notranslate"><span class="pre">GPUParticlesCollisionSDF3D</span></code> từ danh sách các node có sẵn. Node SDF collision phải được bake thì mới có tác dụng lên hạt trong màn chơi. Để làm vậy, hãy nhấn nút <span class="role-button role-ui">Bake SDF</span> trên thanh công cụ của viewport khi đang chọn node SDF collision và chọn một thư mục để lưu dữ liệu đã bake. Vì SDF collision cần được bake trong trình chỉnh sửa, nó là tĩnh và không thể thay đổi khi chạy.</p>
+<figure class="align-default" id="id9">
+<img alt="Va chạm hạt bằng SDF" src="../../../_images/particle_collision_sdf.webp" />
+<figcaption>
+<p><span class="caption-text">Va chạm hạt SDF cho phép tạo các hình dạng va chạm 3 chiều rất chi tiết</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Node SDF collision có hình dạng một hộp. Thuộc tính <code class="docutils literal notranslate"><span class="pre">Extents</span></code> điều khiển kích thước của nó. Extents luôn đo một nửa các cạnh của giới hạn, vì vậy giá trị <code class="docutils literal notranslate"><span class="pre">(X=1.0,Y=1.0,Z=1.0)</span></code> tạo ra một hộp rộng 2 mét ở mỗi cạnh. Mọi thứ nằm ngoài extents của node sẽ bị bỏ qua khi tính va chạm.</p>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">Resolution</span></code> điều khiển mức độ chi tiết của trường khoảng cách. Độ phân giải thấp hơn chạy nhanh hơn nhưng kém chính xác hơn. Nếu độ phân giải quá thấp, có thể trông như hạt xuyên qua hình học của màn chơi hoặc bị kẹt lơ lửng trên không khi va chạm. Chúng cũng có thể bỏ qua hoàn toàn một số mesh nhỏ.</p>
+<figure class="align-default" id="id10">
+<img alt="So sánh độ phân giải" src="../../../_images/particle_collision_sdf_res.webp" />
+<figcaption>
+<p><span class="caption-text">Cùng một khu vực được bao phủ bởi signed distance field ở các độ phân giải khác nhau: 16 (trái) và 256 (phải)</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">Thickness</span></code> cho trường khoảng cách, vốn thường rỗng bên trong, một độ dày để ngăn hạt xuyên qua khi di chuyển ở tốc độ cao. Nếu bạn thấy một số hạt không va chạm với hình học của màn chơi mà bay xuyên thẳng qua, hãy thử đặt thuộc tính này thành giá trị cao hơn.</p>
+<p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">Bake</span> <span class="pre">Mask</span></code> điều khiển những mesh nào được xét đến khi bake SDF. Chỉ những mesh được kết xuất trên các lớp đang bật trong bake mask mới góp phần vào va chạm hạt.</p>
+</section>
+<section id="troubleshooting">
+<h2>Khắc phục sự cố<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p>Để va chạm hạt hoạt động, <a class="reference internal" href="properties.html#doc-3d-particles-properties-draw"><span class="std std-ref">visibility AABB</span></a> của hạt phải chồng lên AABB của collider. Nếu va chạm có vẻ không hoạt động dù đã thiết lập collider, hãy tạo visibility AABB mới bằng cách chọn node GPUParticles3D và chọn <strong>GPUParticles3D &gt; Generate Visibility AABB…</strong> ở phía trên viewport của trình chỉnh sửa 3D.</p>
+<p>Nếu hạt di chuyển nhanh và collider mỏng. Có hai giải pháp cho trường hợp này:</p>
+<ul class="simple">
+<li><p>Làm collider dày hơn. Ví dụ, nếu hạt không được phép đi xuống dưới một mặt sàn đặc, bạn có thể làm collider biểu diễn sàn dày hơn so với hình ảnh hiển thị thực tế của nó. Collider heightfield tự động xử lý điều này theo thiết kế, vì heightfield không thể biểu diễn va chạm kiểu &quot;phòng chồng lên phòng&quot;.</p></li>
+<li><p>Tăng <code class="docutils literal notranslate"><span class="pre">Fixed</span> <span class="pre">FPS</span></code> trong node GPUParticles3D, để kiểm tra va chạm thường xuyên hơn. Điều này tốn hiệu năng, vì vậy hãy tránh đặt giá trị quá cao.</p></li>
+</ul>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="attractors.html" class="btn btn-neutral float-left" title="Attractor cho hạt 3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="complex_shapes.html" class="btn btn-neutral float-right" title="Hình dạng phát xạ phức tạp" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

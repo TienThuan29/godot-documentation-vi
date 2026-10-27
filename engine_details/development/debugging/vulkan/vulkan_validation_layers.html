@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Validation layer" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/debugging/vulkan/vulkan_validation_layers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Validation layer cho phép nhà phát triển kiểm tra xem ứng dụng có sử dụng Vulkan API đúng cách hay không. Validation layer có thể được bật trong cả bản build debug lẫn release, kể cả trong các dự á..." />
+<meta name="description" content="Validation layer cho phép nhà phát triển kiểm tra xem ứng dụng có sử dụng Vulkan API đúng cách hay không. Validation layer có thể được bật trong cả bản build debug lẫn release, kể cả trong các dự á..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Validation layer &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../../search.html" />
+    <link rel="next" title="Sử dụng profiler C++" href="../../profiling/index.html" />
+    <link rel="prev" title="Vulkan" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/debugging/vulkan/vulkan_validation_layers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compiling/index.html">Build từ mã nguồn</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Debug</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../using_sanitizers.html">Sử dụng sanitizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../macos_debug.html">Gỡ lỗi trên macOS</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Vulkan</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Validation layer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#debugging-the-editor">Gỡ lỗi trình chỉnh sửa</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../profiling/index.html">Sử dụng profiler C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../handling_compatibility_breakages.html">Xử lý việc phá vỡ tương thích</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Phát triển engine</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Debug</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Vulkan</a></li>
+      <li class="breadcrumb-item active">Validation layer</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="validation-layers">
+<span id="doc-vulkan-validation-layers"></span><h1>Validation layer<a class="headerlink" href="#validation-layers" title="Link to this heading"></a></h1>
+<p>Validation layer cho phép nhà phát triển kiểm tra xem ứng dụng có sử dụng Vulkan API đúng cách hay không. Validation layer có thể được bật trong cả bản build debug lẫn release, kể cả trong các dự án đã xuất.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bật validation layer ảnh hưởng đến hiệu năng, vì vậy chỉ bật chúng khi bạn thực sự cần đầu ra để debug ứng dụng.</p>
+</div>
+<section id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h2>
+<p>Cài đặt Vulkan SDK <a class="reference external" href="https://vulkan.lunarg.com/sdk/home">https://vulkan.lunarg.com/sdk/home</a>, vốn có sẵn validation layer trong bản cài đặt mặc định. Không cần bật bất kỳ tính năng tùy chọn nào trong trình cài đặt; chỉ cần cài đặt Vulkan SDK lõi là đủ. Bạn không cần khởi động lại sau khi cài đặt SDK, nhưng có thể cần đóng và mở lại terminal hiện tại.</p>
+<p>Sau khi cài đặt Vulkan SDK, hãy chạy Godot với <a class="reference internal" href="../../../../tutorials/editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> <code class="docutils literal notranslate"><span class="pre">--gpu-validation</span></code>. Bạn cũng có thể chỉ định <code class="docutils literal notranslate"><span class="pre">--gpu-abort</span></code> để Godot thoát ngay khi xảy ra lỗi validation. Điều này có thể ngăn hệ thống bị treo nếu xảy ra lỗi validation.</p>
+</section>
+<section id="macos">
+<h2>macOS<a class="headerlink" href="#macos" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Các bản build Godot chính thức cho macOS <strong>không</strong> hỗ trợ validation layer, vì chúng được liên kết tĩnh với Vulkan SDK. Thay vào đó phải dùng liên kết động.</p>
+<p>Trên thực tế, điều này có nghĩa là để dùng validation layer trên macOS, bạn <strong>bắt buộc</strong> phải dùng bản build Godot được biên dịch với tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_volk=yes</span></code>. <a class="reference internal" href="../../compiling/compiling_for_macos.html#doc-compiling-for-macos"><span class="std std-ref">Biên dịch cho macOS</span></a>. Nếu kiểm thử validation layer trên một dự án đã xuất, bạn phải biên dịch lại export template và chỉ định nó làm export template tùy chỉnh trong export preset macOS của dự án.</p>
+</div>
+<p>Cài đặt Vulkan SDK <a class="reference external" href="https://vulkan.lunarg.com/sdk/home">https://vulkan.lunarg.com/sdk/home</a>, vốn có sẵn validation layer trong bản cài đặt mặc định. Không cần bật bất kỳ tính năng tùy chọn nào trong trình cài đặt; chỉ cần cài đặt Vulkan SDK lõi là đủ. Bạn không cần khởi động lại sau khi cài đặt SDK, nhưng có thể cần đóng và mở lại terminal hiện tại.</p>
+<p>Sau khi cài đặt Vulkan SDK, hãy chạy một tệp nhị phân Godot được biên dịch với tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">use_volk=yes</span></code>. Chỉ định <a class="reference internal" href="../../../../tutorials/editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> <code class="docutils literal notranslate"><span class="pre">--gpu-validation</span></code>. Bạn cũng có thể chỉ định <code class="docutils literal notranslate"><span class="pre">--gpu-abort</span></code> để Godot thoát ngay khi xảy ra lỗi validation. Điều này có thể ngăn hệ thống bị treo nếu xảy ra lỗi validation.</p>
+</section>
+<section id="linux-bsd">
+<h2>Linux, *BSD<a class="headerlink" href="#linux-bsd" title="Link to this heading"></a></h2>
+<p>Cài đặt Vulkan validation layer từ kho phần mềm của bản phân phối:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Alpine Linux</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Arch Linux</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">Debian/Ubuntu</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">Fedora</button><button aria-controls="panel-0-0-4" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-4" name="0-4" role="tab" tabindex="-1">FreeBSD</button><button aria-controls="panel-0-0-5" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-5" name="0-5" role="tab" tabindex="-1">Gentoo</button><button aria-controls="panel-0-0-6" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-6" name="0-6" role="tab" tabindex="-1">Mageia</button><button aria-controls="panel-0-0-7" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-7" name="0-7" role="tab" tabindex="-1">OpenBSD</button><button aria-controls="panel-0-0-8" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-8" name="0-8" role="tab" tabindex="-1">openSUSE</button><button aria-controls="panel-0-0-9" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-9" name="0-9" role="tab" tabindex="-1">Solus</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">pacman</span><span class="w"> </span><span class="o">-</span><span class="n">S</span><span class="w"> </span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">vulkan</span><span class="o">-</span><span class="n">validationlayers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-4" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-4" name="0-4" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">pkg</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">graphics</span><span class="o">/</span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-5" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-5" name="0-5" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">emerge</span><span class="w"> </span><span class="o">-</span><span class="n">an</span><span class="w"> </span><span class="n">media</span><span class="o">-</span><span class="n">libs</span><span class="o">/</span><span class="n">vulkan</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-6" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-6" name="0-6" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">urpmi</span><span class="w"> </span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-7" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-7" name="0-7" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">pkg_add</span><span class="w"> </span><span class="n">graphics</span><span class="o">/</span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-8" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-8" name="0-8" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">zypper</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">vulkan</span><span class="o">-</span><span class="n">validationlayers</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-9" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-9" name="0-9" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">eopkg</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">vulkan</span><span class="o">-</span><span class="n">validation</span><span class="o">-</span><span class="n">layers</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn không cần khởi động lại sau khi cài đặt validation layer, nhưng có thể cần đóng và mở lại terminal hiện tại.</p>
+<p>Sau khi cài đặt gói, hãy chạy Godot với <a class="reference internal" href="../../../../tutorials/editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> <code class="docutils literal notranslate"><span class="pre">--gpu-validation</span></code>. Bạn cũng có thể chỉ định <code class="docutils literal notranslate"><span class="pre">--gpu-abort</span></code> để Godot thoát ngay khi xảy ra lỗi validation. Điều này có thể ngăn hệ thống bị treo nếu xảy ra lỗi validation.</p>
+</section>
+<section id="ios">
+<h2>iOS<a class="headerlink" href="#ios" title="Link to this heading"></a></h2>
+<p>Validation layer hiện <strong>không</strong> được hỗ trợ trên iOS.</p>
+</section>
+<section id="web">
+<h2>Web<a class="headerlink" href="#web" title="Link to this heading"></a></h2>
+<p>Validation layer <strong>không</strong> được hỗ trợ trên nền tảng web, vì ở đó không có hỗ trợ Vulkan.</p>
+</section>
+<section id="android">
+<span id="doc-vulkan-validation-layers-android"></span><h2>Android<a class="headerlink" href="#android" title="Link to this heading"></a></h2>
+<p>Sau khi bật validation layer trên Android, nhà phát triển có thể xem các thông báo lỗi và cảnh báo trong đầu ra <code class="docutils literal notranslate"><span class="pre">adb</span> <span class="pre">logcat</span></code>.</p>
+<section id="enabling-validation-layers">
+<h3>Bật validation layer<a class="headerlink" href="#enabling-validation-layers" title="Link to this heading"></a></h3>
+<section id="build-validation-layers-from-official-sources">
+<h4>Build validation layer từ mã nguồn chính thức<a class="headerlink" href="#build-validation-layers-from-official-sources" title="Link to this heading"></a></h4>
+<p>Để build các thư viện Android, hãy làm theo hướng dẫn trên <a class="reference external" href="https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/BUILD.md#building-on-android">kho của Khronos</a>. Sau khi build thành công, các thư viện sẽ nằm trong <code class="docutils literal notranslate"><span class="pre">Vulkan-ValidationLayers/build-android/libs</span></code>.</p>
+</section>
+<section id="copy-libraries">
+<h4>Sao chép thư viện<a class="headerlink" href="#copy-libraries" title="Link to this heading"></a></h4>
+<p>Sao chép các thư viện từ <code class="docutils literal notranslate"><span class="pre">Vulkan-ValidationLayers/build-android/libs</span></code> sang <code class="docutils literal notranslate"><span class="pre">godot/platform/android/java/app/libs/debug/vulkan_validation_layers</span></code>.</p>
+<p>Cây thư mục mã nguồn Godot của bạn sẽ trông như ví dụ dưới đây:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">godot</span>
+<span class="o">|--</span><span class="w"> </span><span class="n">platform</span>
+<span class="w">    </span><span class="o">|--</span><span class="w"> </span><span class="n">android</span>
+<span class="w">        </span><span class="o">|--</span><span class="w"> </span><span class="n">java</span>
+<span class="w">            </span><span class="o">|--</span><span class="w"> </span><span class="n">app</span>
+<span class="w">                </span><span class="o">|--</span><span class="w"> </span><span class="n">libs</span>
+<span class="w">                    </span><span class="o">|--</span><span class="w"> </span><span class="n">debug</span>
+<span class="w">                        </span><span class="o">|--</span><span class="w"> </span><span class="n">vulkan_validation_layers</span>
+<span class="w">                            </span><span class="o">|--</span><span class="w"> </span><span class="n">arm64</span><span class="o">-</span><span class="n">v8a</span>
+<span class="w">                            </span><span class="o">|--</span><span class="w"> </span><span class="n">armeabi</span><span class="o">-</span><span class="n">v7a</span>
+<span class="w">                            </span><span class="o">|--</span><span class="w"> </span><span class="n">x86</span>
+<span class="w">                            </span><span class="o">|--</span><span class="w"> </span><span class="n">x86_64</span>
+</pre></div>
+</div>
+<p>Nếu thư mục con <code class="docutils literal notranslate"><span class="pre">libs/debug/vulkan_validation_layers</span></code> không tồn tại, hãy tạo nó.</p>
+</section>
+<section id="compile-and-run-the-android-app">
+<h4>Biên dịch và chạy ứng dụng Android<a class="headerlink" href="#compile-and-run-the-android-app" title="Link to this heading"></a></h4>
+<p>Các validation layer đã liên kết sẽ tự động được nạp và bật trong các bản build debug Android. Bạn có thể dùng tính năng <a class="reference internal" href="../../../../tutorials/export/one-click_deploy.html#doc-one-click-deploy"><span class="std std-ref">Triển khai một cú nhấp</span></a> của Godot để nhanh chóng kiểm thử dự án với validation layer được bật.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Vulkan" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../../profiling/index.html" class="btn btn-neutral float-right" title="Sử dụng profiler C++" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

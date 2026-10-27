@@ -1,0 +1,558 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Hệ thống build phụ: Làm việc với CMake" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/scripting/cpp/build_system/cmake.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Bên cạnh hệ thống build dựa trên SCons, godot-cpp còn cung cấp file CMakeLists.txt để hỗ trợ những người dùng thích dùng CMake thay vì SCons làm hệ thống build. Dù được hỗ trợ tích cực, hệ thống CM..." />
+<meta name="description" content="Bên cạnh hệ thống build dựa trên SCons, godot-cpp còn cung cấp file CMakeLists.txt để hỗ trợ những người dùng thích dùng CMake thay vì SCons làm hệ thống build. Dù được hỗ trợ tích cực, hệ thống CM..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Hệ thống build phụ: Làm việc với CMake &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../../search.html" />
+    <link rel="next" title="Các hàm và kiểu cốt lõi" href="../core_types.html" />
+    <link rel="prev" title="Hệ thống build chính: Làm việc với SCons" href="scons.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/scripting/cpp/build_system/cmake" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Lập trình script</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../gdscript/index.html">GDScript</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../c_sharp/index.html">C#/.NET</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">C++ (godot-cpp)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../about_godot_cpp.html">Giới thiệu godot-cpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gdextension_cpp_example.html">Bắt đầu</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Hệ thống build</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="scons.html">Hệ thống build chính: Làm việc với SCons</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Hệ thống build phụ: Làm việc với CMake</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../core_types.html">Các hàm và kiểu cốt lõi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gdextension_docs_system.html">Thêm tài liệu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_languages.html">Các ngôn ngữ khác</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#core-features">Tính năng cốt lõi</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Lập trình script</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">C++ (godot-cpp)</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hệ thống build</a></li>
+      <li class="breadcrumb-item active">Hệ thống build phụ: Làm việc với CMake</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="secondary-build-system-working-with-cmake">
+<span id="doc-godot-cpp-build-system-cmake"></span><h1>Hệ thống build phụ: Làm việc với CMake<a class="headerlink" href="#secondary-build-system-working-with-cmake" title="Link to this heading"></a></h1>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Trang này hướng dẫn cách biên dịch godot-cpp. Nếu bạn muốn biên dịch Godot, hãy xem <a class="reference internal" href="../../../../engine_details/development/compiling/introduction_to_the_buildsystem.html#doc-introduction-to-the-buildsystem"><span class="std std-ref">Giới thiệu về hệ thống build</span></a>.</p>
+</div>
+<p>Bên cạnh hệ thống build dựa trên <a class="reference external" href="http://scons.org">SCons</a>, godot-cpp còn cung cấp file <a class="reference external" href="https://github.com/godotengine/godot-cpp/blob/master/CMakeLists.txt">CMakeLists.txt</a> để hỗ trợ những người dùng thích dùng <a class="reference external" href="http://cmake.org">CMake</a> thay vì SCons làm hệ thống build.</p>
+<p>Dù được hỗ trợ tích cực, hệ thống CMake được xem là thứ yếu so với hệ thống build SCons. Điều này có nghĩa là nó có thể thiếu một số tính năng có sẵn cho các dự án dùng SCons.</p>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Việc biên dịch godot-cpp độc lập với một dự án extension chủ yếu dành cho các nhà phát triển godot-cpp, người bảo trì gói (package) và CI/CD.</p>
+<p>Các ví dụ về cách dùng CMake để sử dụng thư viện godot-cpp như một phần của dự án extension:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot-cpp-template/">godot-cpp-template</a></p></li>
+<li><p><a class="reference external" href="https://github.com/vorlac/godot-roguelite/">godot_roguelite</a></p></li>
+<li><p><a class="reference external" href="https://github.com/CraterCrash/godot-orchestrator/">godot-orchestrator</a></p></li>
+</ul>
+<p>Các ví dụ cấu hình godot-cpp được liệt kê ở cuối trang, nhiều ví dụ trong số đó có thể giúp bạn cấu hình dự án của mình.</p>
+</section>
+<section id="cmake-s-debug-vs-godot-s-template-debug">
+<h2><code class="docutils literal notranslate"><span class="pre">Debug</span></code> của CMake và <code class="docutils literal notranslate"><span class="pre">template_debug</span></code> của Godot<a class="headerlink" href="#cmake-s-debug-vs-godot-s-template-debug" title="Link to this heading"></a></h2>
+<p>Một điều thường xuất hiện trong nhiều cuộc thảo luận là sự nhầm lẫn giữa việc biên dịch mã nguồn C++ có bật debug symbol và việc biên dịch một Godot extension có bật các tính năng debug. Hai khái niệm này không loại trừ lẫn nhau.</p>
+<section id="debug-features">
+<h3>Tính năng debug<a class="headerlink" href="#debug-features" title="Link to this heading"></a></h3>
+<p>Bật một định nghĩa tiền xử lý (pre-processor) để biên dịch có chọn lọc phần mã giúp người dùng Godot extension làm việc với dự án của họ.</p>
+<p>Các tính năng debug được bật trong bản build <code class="docutils literal notranslate"><span class="pre">editor</span></code> và <code class="docutils literal notranslate"><span class="pre">template_debug</span></code>, có thể chỉ định trong giai đoạn configure như sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>-DGODOTCPP_TARGET<span class="o">=</span>&lt;target<span class="w"> </span>choice&gt;
+</pre></div>
+</div>
+</section>
+<section id="debug">
+<h3>Gỡ lỗi<a class="headerlink" href="#debug" title="Link to this heading"></a></h3>
+<p>Thiết lập các cờ trình biên dịch để tạo debug symbol, giúp nhà phát triển Godot extension debug extension của họ.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Debug</span></code> là kiểu build mặc định của các dự án CMake; cách chọn kiểu khác phụ thuộc vào generator được dùng:</p>
+<ul class="simple">
+<li><p>Với generator đơn cấu hình, thêm <code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE=&lt;type&gt;</span></code> vào lệnh configure.</p></li>
+<li><p>Với generator đa cấu hình, thêm <code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">&lt;type&gt;</span></code> vào lệnh build.</p></li>
+</ul>
+<p>Trong đó <code class="docutils literal notranslate"><span class="pre">&lt;type&gt;</span></code> là một trong <code class="docutils literal notranslate"><span class="pre">Debug</span></code>, <code class="docutils literal notranslate"><span class="pre">Release</span></code>, <code class="docutils literal notranslate"><span class="pre">RelWithDebInfo</span></code> và <code class="docutils literal notranslate"><span class="pre">MinSizeRel</span></code>.</p>
+</section>
+</section>
+<section id="scons-deviations">
+<h2>Khác biệt so với SCons<a class="headerlink" href="#scons-deviations" title="Link to this heading"></a></h2>
+<p>Không phải mọi đoạn mã của hệ thống SCons đều có thể biểu diễn hoàn hảo trong CMake; dưới đây là các khác biệt đáng chú ý:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">debug_symbols</span></code></p>
+<blockquote>
+<div><p>Không còn là một tùy chọn tường minh, và được bật khi dùng các cấu hình build CMake; <code class="docutils literal notranslate"><span class="pre">Debug</span></code>, <code class="docutils literal notranslate"><span class="pre">RelWithDebInfo</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev_build</span></code></p>
+<blockquote>
+<div><p>Không định nghĩa <code class="docutils literal notranslate"><span class="pre">NDEBUG</span></code> khi bị tắt; <code class="docutils literal notranslate"><span class="pre">NDEBUG</span></code> được đặt khi dùng các cấu hình build CMake; <code class="docutils literal notranslate"><span class="pre">Release</span></code>, <code class="docutils literal notranslate"><span class="pre">MinSizeRel</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arch</span></code></p>
+<blockquote>
+<div><p>CMake thiết lập kiến trúc thông qua các file toolchain; macOS universal được điều khiển qua thuộc tính <code class="docutils literal notranslate"><span class="pre">CMAKE_OSX_ARCHITECTURES</span></code>, thuộc tính này được sao chép sang các target khi chúng được định nghĩa.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debug_crt</span></code></p>
+<blockquote>
+<div><p>CMake điều khiển việc liên kết với các thư viện runtime của Windows bằng cách sao chép giá trị của <code class="docutils literal notranslate"><span class="pre">CMAKE_MSVC_RUNTIME_LIBRARIES</span></code> sang các target khi chúng được định nghĩa. godot-cpp sẽ đặt biến này nếu nó chưa được đặt. Vì vậy, hãy include nó trước các dependency khác để giá trị được lan truyền qua các dự án.</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="basic-walk-through">
+<h2>Hướng dẫn cơ bản<a class="headerlink" href="#basic-walk-through" title="Link to this heading"></a></h2>
+<section id="clone-the-git-repository">
+<h3>Clone kho git<a class="headerlink" href="#clone-the-git-repository" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/godotengine/godot-cpp.git
+Cloning<span class="w"> </span>into<span class="w"> </span><span class="s1">&#39;godot-cpp&#39;</span>...
+...
+</pre></div>
+</div>
+</section>
+<section id="configure-the-build">
+<h3>Cấu hình bản build<a class="headerlink" href="#configure-the-build" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>-G<span class="w"> </span>Ninja
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-S</span></code> Chỉ định thư mục nguồn là <code class="docutils literal notranslate"><span class="pre">godot-cpp</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-B</span></code> Chỉ định thư mục build là <code class="docutils literal notranslate"><span class="pre">cmake-build</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-G</span></code> Chỉ định Generator là <code class="docutils literal notranslate"><span class="pre">Ninja</span></code></p></li>
+</ul>
+<p>Thư mục nguồn trong ví dụ này là thư mục gốc mã nguồn của godot-cpp vừa clone. CMake cũng sẽ hiểu đường dẫn đầu tiên trong lệnh là đường dẫn nguồn, hoặc nếu một đường dẫn build có sẵn được chỉ định, nó sẽ suy ra đường dẫn nguồn từ build cache.</p>
+<p>Ba lệnh sau là tương đương:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Current working directory is the godot-cpp source root.</span>
+cmake<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>build-dir
+
+<span class="c1"># Current working directory is an empty godot-cpp/build-dir.</span>
+cmake<span class="w"> </span>../
+
+<span class="c1"># Current working directory is an existing build path.</span>
+cmake<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Thư mục build được chỉ định để các file được tạo ra không làm lộn xộn cây mã nguồn bằng các sản phẩm build.</p>
+<p>CMake không build mã, nó tạo ra các file mà một công cụ build sử dụng; trong trường hợp này generator <code class="docutils literal notranslate"><span class="pre">Ninja</span></code> tạo ra các file build <a class="reference external" href="https://ninja-build.org/">Ninja</a>.</p>
+<p>Để xem danh sách generator, chạy <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">--help</span></code>.</p>
+</section>
+<section id="build-options">
+<h3>Tùy chọn build<a class="headerlink" href="#build-options" title="Link to this heading"></a></h3>
+<p>Để liệt kê các tùy chọn có sẵn, dùng các cờ lệnh <code class="docutils literal notranslate"><span class="pre">-L[AH]</span></code>. <code class="docutils literal notranslate"><span class="pre">A</span></code> là nâng cao (advanced), và <code class="docutils literal notranslate"><span class="pre">H</span></code> là chuỗi trợ giúp (help):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-LH
+</pre></div>
+</div>
+<p>Các tùy chọn được chỉ định trên dòng lệnh khi configure, ví dụ:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-DGODOTCPP_USE_HOT_RELOAD:BOOL<span class="o">=</span>ON<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DGODOTCPP_PRECISION:STRING<span class="o">=</span>double<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_BUILD_TYPE:STRING<span class="o">=</span>Debug
+</pre></div>
+</div>
+<p>Xem <a class="reference external" href="https://cmake.org/cmake/help/latest/guide/user-interaction/index.html#setting-build-variables">setting-build-variables</a> và <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-configurations">build-configurations</a> để biết thêm thông tin.</p>
+<section id="a-non-exhaustive-list-of-options">
+<h4>Danh sách tùy chọn (chưa đầy đủ):<a class="headerlink" href="#a-non-exhaustive-list-of-options" title="Link to this heading"></a></h4>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>// Path to a custom GDExtension API JSON file.
+// (takes precedence over GODOTCPP_GDEXTENSION_DIR)
+// ( /path/to/custom_api_file )
+GODOTCPP_CUSTOM_API_FILE:FILEPATH=
+
+// Force disabling exception handling code. (ON|OFF)
+GODOTCPP_DISABLE_EXCEPTIONS:BOOL=ON
+
+// Path to a custom directory containing the GDExtension interface
+// header and API JSON file. ( /path/to/gdextension_dir )
+GODOTCPP_GDEXTENSION_DIR:PATH=gdextension
+
+// Set the floating-point precision level. (single|double)
+GODOTCPP_PRECISION:STRING=single
+
+// Enable the extra accounting required to support hot reload. (ON|OFF)
+GODOTCPP_USE_HOT_RELOAD:BOOL=
+</pre></div>
+</div>
+</section>
+</section>
+<section id="compiling">
+<h3>Biên dịch<a class="headerlink" href="#compiling" title="Link to this heading"></a></h3>
+<p>Yêu cầu CMake gọi hệ thống build mà nó đã tạo trong thư mục được chỉ định. Target mặc định là <code class="docutils literal notranslate"><span class="pre">template_debug</span></code> và cấu hình build mặc định là Debug.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build
+</pre></div>
+</div>
+</section>
+</section>
+<section id="examples">
+<h2>Ví dụ<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Các ví dụ này, dù dành cho nhà phát triển godot-cpp, người bảo trì gói và CI/CD, vẫn có thể giúp bạn cấu hình dự án extension của riêng mình.</p>
+<p>Các ví dụ thực tế về cách sử dụng thư viện godot-cpp như một phần của dự án extension được liệt kê trong <a class="reference internal" href="#introduction">Introduction</a>.</p>
+<section id="enabling-integration-testing">
+<h3>Bật kiểm thử tích hợp<a class="headerlink" href="#enabling-integration-testing" title="Link to this heading"></a></h3>
+<p>Target kiểm thử <code class="docutils literal notranslate"><span class="pre">godot-cpp-test</span></code> được điều khiển bởi <code class="docutils literal notranslate"><span class="pre">GODOTCPP_ENABLE_TESTING</span></code>, mặc định bị tắt.</p>
+<p>Để configure và build dự án godot-cpp với các target kiểm thử tích hợp được bật, lệnh sẽ trông giống như sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>-DGODOTCPP_ENABLE_TESTING<span class="o">=</span>YES
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build<span class="w"> </span>--target<span class="w"> </span>godot-cpp-test
+</pre></div>
+</div>
+</section>
+<section id="windows-and-msvc-release">
+<h3>Windows và MSVC - Release<a class="headerlink" href="#windows-and-msvc-release" title="Link to this heading"></a></h3>
+<p>Miễn là CMake được cài từ trang <a class="reference external" href="https://cmake.org/download/">CMake Downloads</a> và có trong PATH, và Microsoft Visual Studio được cài kèm hỗ trợ C++, CMake sẽ phát hiện trình biên dịch MSVC.</p>
+<p>Lưu ý rằng Visual Studio là Multi-Config Generator nên cấu hình build cần được chỉ định lúc build, ví dụ <code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">Release</span></code>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>-DGODOTCPP_ENABLE_TESTING<span class="o">=</span>YES
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build<span class="w"> </span>-t<span class="w"> </span>godot-cpp-test<span class="w"> </span>--config<span class="w"> </span>Release
+</pre></div>
+</div>
+</section>
+<section id="msys2-clang64-ninja-debug">
+<h3>MSys2/clang64, &quot;Ninja&quot; - Debug<a class="headerlink" href="#msys2-clang64-ninja-debug" title="Link to this heading"></a></h3>
+<p>Giả định toolchain <code class="docutils literal notranslate"><span class="pre">ming-w64-clang-x86_64</span></code> đã được cài đặt.</p>
+<p>Lưu ý rằng Ninja là Single-Config Generator nên kiểu build cần được chỉ định lúc configure.</p>
+<p>Dùng shell <code class="docutils literal notranslate"><span class="pre">msys2/clang64</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>-G<span class="s2">&quot;Ninja&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DGODOTCPP_ENABLE_TESTING<span class="o">=</span>YES<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build<span class="w"> </span>-t<span class="w"> </span>godot-cpp-test
+</pre></div>
+</div>
+</section>
+<section id="msys2-clang64-ninja-multi-config-dev-build-debug-symbols">
+<h3>MSys2/clang64, &quot;Ninja Multi-Config&quot; - dev_build, Debug Symbols<a class="headerlink" href="#msys2-clang64-ninja-multi-config-dev-build-debug-symbols" title="Link to this heading"></a></h3>
+<p>Giả định toolchain <code class="docutils literal notranslate"><span class="pre">ming-w64-clang-x86_64</span></code> đã được cài đặt.</p>
+<p>Lần này chúng ta chọn generator 'Ninja Multi-Config', nên kiểu build được chỉ định lúc build.</p>
+<p>Dùng shell <code class="docutils literal notranslate"><span class="pre">msys2/clang64</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>-G<span class="s2">&quot;Ninja Multi-Config&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DGODOTCPP_ENABLE_TESTING<span class="o">=</span>YES<span class="w"> </span>-DGODOTCPP_DEV_BUILD:BOOL<span class="o">=</span>ON
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build<span class="w"> </span>-t<span class="w"> </span>godot-cpp-test<span class="w"> </span>--config<span class="w"> </span>Debug
+</pre></div>
+</div>
+</section>
+<section id="emscripten-for-web-platform">
+<h3>Emscripten cho nền tảng web<a class="headerlink" href="#emscripten-for-web-platform" title="Link to this heading"></a></h3>
+<p>Cách này mới chỉ được thử nghiệm trên Windows. Bạn có thể dùng quy trình ví dụ sau:</p>
+<ul class="simple">
+<li><p>Clone và cài đặt các công cụ Emscripten mới nhất vào <code class="docutils literal notranslate"><span class="pre">c:\emsdk</span></code>.</p></li>
+<li><p>Dùng <code class="docutils literal notranslate"><span class="pre">C:\emsdk\emsdk.ps1</span> <span class="pre">activate</span> <span class="pre">latest</span></code> để kích hoạt môi trường từ powershell trong shell hiện tại.</p></li>
+<li><p>Tiện ích <code class="docutils literal notranslate"><span class="pre">emcmake.bat</span></code> thêm toolchain emscripten vào lệnh CMake. Bạn cũng có thể thêm thủ công; vị trí được ghi trong file <code class="docutils literal notranslate"><span class="pre">emcmake.bat</span></code></p></li>
+</ul>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:\</span><span class="n">emsdk</span><span class="p">\</span><span class="n">emsdk</span><span class="p">.</span><span class="n">ps1</span> <span class="n">activate</span> <span class="n">latest</span>
+<span class="n">emcmake</span><span class="p">.</span><span class="n">bat</span> <span class="n">cmake</span> <span class="n">-S</span> <span class="n">godot-cpp</span> <span class="n">-B</span> <span class="n">cmake-build-web</span> <span class="n">-DCMAKE_BUILD_TYPE</span><span class="p">=</span><span class="n">Release</span>
+<span class="n">cmake</span> <span class="p">-</span><span class="n">-build</span> <span class="n">cmake-build-web</span>
+</pre></div>
+</div>
+</section>
+<section id="android-cross-compile-from-windows">
+<h3>Biên dịch chéo cho Android từ Windows<a class="headerlink" href="#android-cross-compile-from-windows" title="Link to this heading"></a></h3>
+<p>Có hai hướng riêng biệt mà bạn có thể chọn khi cấu hình cho Android.</p>
+<p>Dùng các biến <code class="docutils literal notranslate"><span class="pre">CMAKE_ANDROID_*</span></code> được chỉ định trên dòng lệnh hoặc trong file toolchain của riêng bạn như được liệt kê trong tài liệu <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#cross-compiling-for-android-with-the-ndk">cmake-toolchains</a>.</p>
+<p>Hoặc dùng toolchain và các script do Android SDK cung cấp, rồi thay đổi bằng các biến <code class="docutils literal notranslate"><span class="pre">ANDROID_*</span></code> được liệt kê ở đó. Trong đó <code class="docutils literal notranslate"><span class="pre">&lt;version&gt;</span></code> là phiên bản NDK bạn đã cài (đã thử với <cite>28.1.13356709</cite>) và <code class="docutils literal notranslate"><span class="pre">&lt;platform&gt;</span></code> là nền tảng Android SDK (đã thử với <code class="docutils literal notranslate"><span class="pre">android-29</span></code>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p><a class="reference external" href="https://developer.android.com/ndk/guides/cmake">website</a> của Android SDK nêu rõ rằng họ không hỗ trợ dùng phương thức tích hợp sẵn của CMake, và khuyên bạn nên dùng các file toolchain của họ.</p>
+</div>
+<section id="using-your-own-toolchain-file">
+<h4>Dùng file toolchain của riêng bạn<a class="headerlink" href="#using-your-own-toolchain-file" title="Link to this heading"></a></h4>
+<p>Như mô tả trong tài liệu CMake:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span>--toolchain<span class="w"> </span>my_toolchain.cmake
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build<span class="w"> </span>-t<span class="w"> </span>template_release
+</pre></div>
+</div>
+<p>Làm tương tự chỉ bằng dòng lệnh:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_SYSTEM_NAME<span class="o">=</span>Android<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_SYSTEM_VERSION<span class="o">=</span>&lt;platform&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_ANDROID_ARCH_ABI<span class="o">=</span>&lt;arch&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_ANDROID_NDK<span class="o">=</span>/path/to/android-ndk
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build
+</pre></div>
+</div>
+</section>
+<section id="using-the-android-sdk-toolchain-file">
+<h4>Dùng file toolchain của Android SDK<a class="headerlink" href="#using-the-android-sdk-toolchain-file" title="Link to this heading"></a></h4>
+<p>Mặc định dùng phiên bản thấp nhất được hỗ trợ và armv7-a:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--toolchain<span class="w"> </span><span class="nv">$ANDROID_HOME</span>/ndk/&lt;version&gt;/build/cmake/android.toolchain.cmake
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build
+</pre></div>
+</div>
+<p>Chỉ định nền tảng Android và ABI:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>godot-cpp<span class="w"> </span>-B<span class="w"> </span>cmake-build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--toolchain<span class="w"> </span><span class="nv">$ANDROID_HOME</span>/ndk/&lt;version&gt;/build/cmake/android.toolchain.cmake<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DANDROID_PLATFORM:STRING<span class="o">=</span>android-29<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DANDROID_ABI:STRING<span class="o">=</span>armeabi-v7a
+cmake<span class="w"> </span>--build<span class="w"> </span>cmake-build
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scons.html" class="btn btn-neutral float-left" title="Hệ thống build chính: Làm việc với SCons" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../core_types.html" class="btn btn-neutral float-right" title="Các hàm và kiểu cốt lõi" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

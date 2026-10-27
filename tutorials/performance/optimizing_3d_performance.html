@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="tối ưu hóa" name="keywords" translated="True" />
+<meta property="og:title" content="Tối ưu hiệu năng 3D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/optimizing_3d_performance.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Culling: Godot sẽ tự động thực hiện view frustum culling để tránh kết xuất các đối tượng nằm ngoài viewport. Điều này hoạt động tốt với các game diễn ra trong một khu vực nhỏ, tuy nhiên mọi thứ có ..." />
+<meta name="description" content="Culling: Godot sẽ tự động thực hiện view frustum culling để tránh kết xuất các đối tượng nằm ngoài viewport. Điều này hoạt động tốt với các game diễn ra trong một khu vực nhỏ, tuy nhiên mọi thứ có ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tối ưu hiệu năng 3D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tạo hoạt ảnh cho hàng nghìn đối tượng" href="vertex_animation/index.html" />
+    <link rel="prev" title="Giảm giật lag do biên dịch shader (pipeline)" href="pipeline_compilations.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/optimizing_3d_performance" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gpu">GPU</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#d">3D</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tối ưu hiệu năng 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#culling">Culling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transparent-objects">Đối tượng trong suốt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#level-of-detail-lod">Mức chi tiết (LOD)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bake-lighting">Bake chiếu sáng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#animation-and-skinning">Hoạt ảnh và skinning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#large-worlds">Thế giới lớn</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vertex_animation/index.html">Tạo hoạt ảnh cho hàng nghìn đối tượng</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Tối ưu hiệu năng 3D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="optimizing-3d-performance">
+<span id="doc-optimizing-3d-performance"></span><h1>Tối ưu hiệu năng 3D<a class="headerlink" href="#optimizing-3d-performance" title="Link to this heading"></a></h1>
+<section id="culling">
+<h2>Culling<a class="headerlink" href="#culling" title="Link to this heading"></a></h2>
+<p>Godot sẽ tự động thực hiện view frustum culling để tránh kết xuất các đối tượng nằm ngoài viewport. Điều này hoạt động tốt với các game diễn ra trong một khu vực nhỏ, tuy nhiên mọi thứ có thể nhanh chóng trở nên rắc rối ở các màn chơi lớn hơn.</p>
+<section id="occlusion-culling">
+<h3>Occlusion culling<a class="headerlink" href="#occlusion-culling" title="Link to this heading"></a></h3>
+<p>Ví dụ khi đi dạo quanh một thị trấn, bạn có thể chỉ nhìn thấy vài tòa nhà trên con phố bạn đang đứng, cùng với bầu trời và vài con chim bay trên đầu. Tuy nhiên, đối với một trình kết xuất ngây thơ, bạn vẫn có thể nhìn thấy toàn bộ thị trấn. Nó sẽ không chỉ kết xuất các tòa nhà trước mặt bạn, mà còn kết xuất con phố phía sau, với những người trên con phố đó, và các tòa nhà phía sau nữa. Bạn sẽ nhanh chóng rơi vào tình huống cố kết xuất gấp 10× hoặc 100× so với những gì thực sự nhìn thấy được.</p>
+<p>Mọi thứ không tệ như vẻ ngoài, vì Z-buffer thường cho phép GPU chỉ tô bóng đầy đủ các đối tượng ở phía trước. Điều này được gọi là <em>depth prepass</em> và được bật theo mặc định trong Godot khi dùng phương thức kết xuất Forward+ hoặc Compatibility. Tuy nhiên, các đối tượng không cần thiết vẫn làm giảm hiệu năng.</p>
+<p>Một cách có thể giúp giảm khối lượng cần kết xuất là <strong>tận dụng sự che khuất (occlusion)</strong>. Godot cung cấp một phương pháp occlusion culling bằng các node occluder. Xem <a class="reference internal" href="../3d/occlusion_culling.html#doc-occlusion-culling"><span class="std std-ref">Occlusion culling</span></a> để biết hướng dẫn thiết lập occlusion culling trong scene của bạn.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong một số trường hợp, bạn có thể phải điều chỉnh thiết kế màn chơi để tạo thêm cơ hội che khuất. Ví dụ, bạn có thể phải thêm tường để ngăn người chơi nhìn quá xa, vì điều đó sẽ làm giảm hiệu năng do mất cơ hội occlusion culling.</p>
+</div>
+</section>
+</section>
+<section id="transparent-objects">
+<h2>Đối tượng trong suốt<a class="headerlink" href="#transparent-objects" title="Link to this heading"></a></h2>
+<p>Godot sắp xếp các đối tượng theo <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_material.html" title="Class reference (English)"><span class="xref std std-ref">Material</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shader.html" title="Class reference (English)"><span class="xref std std-ref">Shader</span></a> để cải thiện hiệu năng. Tuy nhiên, việc này không thể thực hiện với các đối tượng trong suốt. Các đối tượng trong suốt được kết xuất từ sau ra trước để việc hòa trộn với những gì phía sau hoạt động đúng. Do đó, <strong>hãy cố gắng dùng càng ít đối tượng trong suốt càng tốt</strong>. Nếu một đối tượng chỉ có một phần nhỏ trong suốt, hãy cố tách phần đó thành một surface riêng với material riêng.</p>
+<p>Để biết thêm thông tin, xem tài liệu <a class="reference internal" href="gpu_optimization.html#doc-gpu-optimization"><span class="std std-ref">Tối ưu GPU</span></a>.</p>
+</section>
+<section id="level-of-detail-lod">
+<h2>Mức chi tiết (LOD)<a class="headerlink" href="#level-of-detail-lod" title="Link to this heading"></a></h2>
+<p>Trong một số tình huống, đặc biệt là ở khoảng cách xa, <strong>thay thế hình học phức tạp bằng các phiên bản đơn giản hơn</strong> có thể là một ý hay. Người dùng cuối có lẽ sẽ không thấy nhiều khác biệt. Hãy hình dung việc nhìn một lượng lớn cây cối ở đằng xa. Có một số chiến lược để thay thế mô hình ở các khoảng cách khác nhau. Bạn có thể dùng các mô hình ít polygon hơn, hoặc dùng độ trong suốt để mô phỏng hình học phức tạp hơn.</p>
+<p>Godot 4 cung cấp một số cách để kiểm soát mức chi tiết:</p>
+<ul class="simple">
+<li><p>Cách tự động khi import mesh bằng <a class="reference internal" href="../3d/mesh_lod.html#doc-mesh-lod"><span class="std std-ref">Mức độ chi tiết của mesh (LOD)</span></a>.</p></li>
+<li><p>Cách thủ công được cấu hình trong node 3D bằng <a class="reference internal" href="../3d/visibility_ranges.html#doc-visibility-ranges"><span class="std std-ref">Visibility range (HLOD)</span></a>.</p></li>
+<li><p><a class="reference internal" href="../3d/using_decals.html#doc-using-decals"><span class="std std-ref">Decal</span></a> và <a class="reference internal" href="../3d/lights_and_shadows.html#doc-lights-and-shadows"><span class="std std-ref">đèn</span></a> cũng có thể được hưởng lợi từ mức chi tiết bằng các thuộc tính <strong>Distance Fade</strong> tương ứng của chúng.</p></li>
+</ul>
+<p>Mặc dù có thể dùng độc lập, các cách này hiệu quả nhất khi được dùng cùng nhau. Ví dụ, bạn có thể thiết lập visibility range để ẩn các hiệu ứng particle ở quá xa người chơi để nhận ra. Đồng thời, bạn có thể dựa vào mesh LOD để các mesh của hiệu ứng particle được kết xuất với ít chi tiết hơn khi ở xa.</p>
+<p>Visibility range cũng là một cách tốt để thiết lập <em>impostor</em> cho hình học ở xa (xem bên dưới).</p>
+<section id="billboards-and-imposters">
+<h3>Billboard và imposter<a class="headerlink" href="#billboards-and-imposters" title="Link to this heading"></a></h3>
+<p>Phiên bản đơn giản nhất của việc dùng độ trong suốt để xử lý LOD là billboard. Ví dụ, bạn có thể dùng một quad trong suốt duy nhất để biểu diễn một cái cây ở xa. Việc này có thể rất rẻ để kết xuất, trừ khi tất nhiên có nhiều cây đứng chồng phía trước nhau. Trong trường hợp này, độ trong suốt có thể bắt đầu ngốn fill rate (để biết thêm về fill rate, xem <a class="reference internal" href="gpu_optimization.html#doc-gpu-optimization"><span class="std std-ref">Tối ưu hóa GPU</span></a>).</p>
+<p>Một cách khác là kết xuất không chỉ một cây, mà nhiều cây cùng nhau thành một nhóm. Cách này có thể đặc biệt hiệu quả nếu bạn có thể nhìn thấy một khu vực nhưng không thể tiến lại gần nó trong game.</p>
+<p>Bạn có thể tạo imposter bằng cách kết xuất trước các góc nhìn của một đối tượng ở nhiều góc độ khác nhau. Hoặc bạn thậm chí có thể tiến thêm một bước, định kỳ kết xuất lại một góc nhìn của đối tượng lên một texture để dùng làm imposter. Ở khoảng cách xa, bạn cần di chuyển người xem một quãng đáng kể thì góc nhìn mới thay đổi rõ rệt. Việc này có thể phức tạp để làm cho hoạt động, nhưng có thể đáng công tùy thuộc vào loại dự án bạn đang làm.</p>
+</section>
+<section id="use-automatic-instancing">
+<h3>Dùng instancing tự động<a class="headerlink" href="#use-automatic-instancing" title="Link to this heading"></a></h3>
+<p><em>Tính năng này chỉ được triển khai trong trình kết xuất Forward+, không có trong Mobile hay Compatibility.</em></p>
+<p>Nếu có nhiều đối tượng giống hệt nhau trong scene, bạn có thể dùng instancing tự động để giảm số lượng draw call. Việc này tự động diễn ra với các node MeshInstance3D dùng cùng mesh và material: không cần thiết lập thủ công.</p>
+<p>Để instancing tự động có hiệu quả, material phải là đục hoặc alpha-tested (alpha scissor hoặc alpha hash). Các material alpha-blended hoặc depth pre-pass không bao giờ được instancing theo cách này. Thay vào đó, bạn phải dùng MultiMesh như mô tả bên dưới.</p>
+</section>
+<section id="use-manual-instancing-multimesh">
+<h3>Dùng instancing thủ công (MultiMesh)<a class="headerlink" href="#use-manual-instancing-multimesh" title="Link to this heading"></a></h3>
+<p>Nếu cần vẽ nhiều đối tượng giống hệt nhau ở cùng một chỗ hoặc gần nhau, hãy thử dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_multimesh.html" title="Class reference (English)"><span class="xref std std-ref">MultiMesh</span></a>. MultiMesh cho phép vẽ hàng nghìn đối tượng với chi phí hiệu năng rất thấp, rất lý tưởng cho đàn chim, cỏ, particle và bất cứ thứ gì có hàng nghìn đối tượng giống hệt nhau.</p>
+<p>Xem thêm tài liệu <a class="reference internal" href="using_multimesh.html#doc-using-multimesh"><span class="std std-ref">Sử dụng MultiMesh</span></a>.</p>
+</section>
+</section>
+<section id="bake-lighting">
+<h2>Bake chiếu sáng<a class="headerlink" href="#bake-lighting" title="Link to this heading"></a></h2>
+<p>Chiếu sáng đối tượng là một trong những thao tác kết xuất tốn kém nhất. Chiếu sáng thời gian thực, bóng đổ (đặc biệt với nhiều đèn) và <a class="reference internal" href="../3d/global_illumination/introduction_to_global_illumination.html#doc-introduction-to-global-illumination"><span class="std std-ref">chiếu sáng toàn cục</span></a> đặc biệt tốn kém. Chúng có thể đơn giản là quá sức với các thiết bị di động cấu hình thấp.</p>
+<p><strong>Hãy cân nhắc dùng chiếu sáng đã bake</strong>, đặc biệt trên di động. Cách này có thể trông rất tuyệt, nhưng nhược điểm là nó sẽ không động. Đôi khi, đây là một sự đánh đổi đáng giá.</p>
+<p>Xem <a class="reference internal" href="../3d/global_illumination/using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">Dùng chiếu sáng toàn cục bằng lightmap</span></a> để biết hướng dẫn dùng lightmap đã bake. Để có hiệu năng tốt nhất, bạn nên đặt bake mode của đèn thành <strong>Static</strong> thay vì <strong>Dynamic</strong> mặc định, vì điều này sẽ bỏ qua chiếu sáng thời gian thực trên các mesh đã có chiếu sáng bake.</p>
+<p>Nhược điểm của đèn có bake mode <strong>Static</strong> là chúng không thể đổ bóng lên các mesh có chiếu sáng bake. Điều này có thể khiến các scene có môi trường ngoài trời và đối tượng động trông phẳng. Một sự cân bằng tốt giữa hiệu năng và chất lượng là giữ <strong>Dynamic</strong> cho node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_directionallight3d.html" title="Class reference (English)"><span class="xref std std-ref">class_DirectionalLight3D</span></a>, và dùng <strong>Static</strong> cho hầu hết (nếu không phải tất cả) đèn omni và spot.</p>
+</section>
+<section id="animation-and-skinning">
+<h2>Hoạt ảnh và skinning<a class="headerlink" href="#animation-and-skinning" title="Link to this heading"></a></h2>
+<p>Hoạt ảnh và hoạt ảnh vertex như skinning và morphing có thể rất tốn kém trên một số nền tảng. Bạn có thể cần giảm đáng kể số polygon cho các mô hình có hoạt ảnh, hoặc giới hạn số lượng của chúng trên màn hình tại mọi thời điểm. Bạn cũng có thể giảm tốc độ hoạt ảnh cho các mesh ở xa hoặc bị che khuất, hoặc tạm dừng hoàn toàn hoạt ảnh nếu người chơi khó có thể nhận ra hoạt ảnh bị dừng.</p>
+<p>Các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visibleonscreenenabler3d.html" title="Class reference (English)"><span class="xref std std-ref">class_VisibleOnScreenEnabler3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visibleonscreennotifier3d.html" title="Class reference (English)"><span class="xref std std-ref">class_VisibleOnScreenNotifier3D</span></a> có thể hữu ích cho mục đích này.</p>
+</section>
+<section id="large-worlds">
+<h2>Thế giới lớn<a class="headerlink" href="#large-worlds" title="Link to this heading"></a></h2>
+<p>Nếu bạn đang làm thế giới lớn, sẽ có những điều cần cân nhắc khác so với những gì bạn quen thuộc ở các game nhỏ hơn.</p>
+<p>Thế giới lớn có thể cần được xây dựng theo từng ô có thể tải theo nhu cầu khi bạn di chuyển trong thế giới. Điều này có thể ngăn việc sử dụng bộ nhớ vượt tầm kiểm soát, đồng thời giới hạn việc xử lý cần thiết trong khu vực lân cận.</p>
+<p>Cũng có thể xuất hiện lỗi kết xuất và vật lý do sai số dấu phẩy động trong thế giới lớn. Vấn đề này có thể được giải quyết bằng <a class="reference internal" href="../physics/large_world_coordinates.html#doc-large-world-coordinates"><span class="std std-ref">Tọa độ thế giới lớn</span></a>. Nếu không thể dùng tọa độ thế giới lớn, bạn có thể dùng các kỹ thuật như định hướng thế giới xoay quanh người chơi (thay vì ngược lại), hoặc định kỳ dịch chuyển gốc tọa độ để giữ mọi thứ xoay quanh <code class="docutils literal notranslate"><span class="pre">Vector3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline_compilations.html" class="btn btn-neutral float-left" title="Giảm giật lag do biên dịch shader (pipeline)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="vertex_animation/index.html" class="btn btn-neutral float-right" title="Tạo hoạt ảnh cho hàng nghìn đối tượng" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

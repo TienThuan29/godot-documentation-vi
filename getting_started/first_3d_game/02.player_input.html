@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Scene người chơi và các input action" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_3d_game/02.player_input.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong hai bài học tiếp theo, chúng ta sẽ thiết kế scene người chơi, đăng ký các input action tùy chỉnh và viết mã cho chuyển động của người chơi. Khi kết thúc, bạn sẽ có một nhân vật chơi được, di ..." />
+<meta name="description" content="Trong hai bài học tiếp theo, chúng ta sẽ thiết kế scene người chơi, đăng ký các input action tùy chỉnh và viết mã cho chuyển động của người chơi. Khi kết thúc, bạn sẽ có một nhân vật chơi được, di ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Scene người chơi và các input action &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Di chuyển người chơi bằng code" href="03.player_movement_code.html" />
+    <link rel="prev" title="Thiết lập khu vực chơi" href="01.game_setup.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_3d_game/02.player_input" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 3D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.game_setup.html">Thiết lập khu vực chơi</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Scene người chơi và các input action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-input-actions">Tạo các input action</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="03.player_movement_code.html">Di chuyển người chơi bằng code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04.mob_scene.html">Thiết kế scene quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05.spawning_mobs.html">Sinh quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06.jump_and_squash.html">Nhảy và dẫm bẹp quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07.killing_player.html">Tiêu diệt người chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08.score_and_replay.html">Điểm số và chơi lại</a></li>
+<li class="toctree-l3"><a class="reference internal" href="09.adding_animations.html">Hoạt ảnh nhân vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="going_further.html">Đi xa hơn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 3D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Scene người chơi và các input action</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="player-scene-and-input-actions">
+<span id="doc-first-3d-game-player-scene-and-input"></span><h1>Scene người chơi và các input action<a class="headerlink" href="#player-scene-and-input-actions" title="Link to this heading"></a></h1>
+<p>Trong hai bài học tiếp theo, chúng ta sẽ thiết kế scene người chơi, đăng ký các input action tùy chỉnh và viết mã cho chuyển động của người chơi. Khi kết thúc, bạn sẽ có một nhân vật chơi được, di chuyển theo tám hướng.</p>
+<p>Tạo một scene mới bằng cách vào menu <strong>Scene</strong> ở góc trên bên trái và nhấp <strong>New Scene</strong>.</p>
+<img alt="../../_images/new_scene.webp" src="../../_images/new_scene.webp" />
+<p>Nhấp nút <strong>Other Node</strong> và chọn kiểu node <code class="docutils literal notranslate"><span class="pre">CharacterBody3D</span></code> để tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody3D</span></a> làm node gốc.</p>
+<img alt="../../_images/add_character_body3D.webp" src="../../_images/add_character_body3D.webp" />
+<p>Đổi tên <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody3D</span></a> thành <code class="docutils literal notranslate"><span class="pre">Player</span></code>. Character body bổ sung cho area và rigid body đã dùng trong bài hướng dẫn game 2D. Giống rigid body, chúng có thể di chuyển và va chạm với môi trường, nhưng thay vì được điều khiển bởi physics engine, <strong>bạn</strong> là người quyết định chuyển động của chúng. Bạn sẽ thấy cách chúng ta dùng các tính năng riêng của node này khi viết mã cho cơ chế nhảy và giẫm bẹp.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để tìm hiểu thêm về các kiểu node vật lý khác nhau, xem <a class="reference internal" href="../../tutorials/physics/physics_introduction.html#doc-physics-introduction"><span class="std std-ref">Giới thiệu về vật lý</span></a>.</p>
+</div>
+<p>Hiện tại, chúng ta sẽ tạo một rig cơ bản cho mô hình 3D của nhân vật. Điều này cho phép chúng ta xoay mô hình bằng mã sau này trong khi nó đang phát hoạt ảnh.</p>
+<p>Thêm một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html" title="Class reference (English)"><span class="xref std std-ref">Node3D</span></a> làm con của <code class="docutils literal notranslate"><span class="pre">Player</span></code>. Chọn node <code class="docutils literal notranslate"><span class="pre">Player</span></code> trong cây <strong>Scene</strong> và nhấp nút &quot;<strong>+</strong>&quot; để thêm node con. Đổi tên nó thành <code class="docutils literal notranslate"><span class="pre">Pivot</span></code>.</p>
+<img alt="../../_images/adding_node3D.webp" src="../../_images/adding_node3D.webp" />
+<p>Sau đó, trong FileSystem dock, mở rộng thư mục <code class="docutils literal notranslate"><span class="pre">art/</span></code> bằng cách nhấp đúp vào nó, rồi kéo thả <code class="docutils literal notranslate"><span class="pre">player.glb</span></code> vào <code class="docutils literal notranslate"><span class="pre">Pivot</span></code>.</p>
+<img alt="../../_images/instantiating_the_model.webp" src="../../_images/instantiating_the_model.webp" />
+<p>Thao tác này sẽ tạo instance của mô hình làm con của <code class="docutils literal notranslate"><span class="pre">Pivot</span></code>. Bạn có thể đổi tên nó thành <code class="docutils literal notranslate"><span class="pre">Character</span></code>.</p>
+<img alt="../../_images/scene_structure.webp" src="../../_images/scene_structure.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các file <code class="docutils literal notranslate"><span class="pre">.glb</span></code> chứa dữ liệu scene 3D dựa trên đặc tả mã nguồn mở glTF 2.0. Chúng là lựa chọn thay thế hiện đại và mạnh mẽ cho các định dạng độc quyền như FBX, vốn Godot cũng hỗ trợ. Để tạo ra các file này, chúng tôi đã thiết kế mô hình trong <a class="reference external" href="https://www.blender.org/">Blender 3D</a> và xuất nó sang glTF.</p>
+</div>
+<p>Như với mọi loại node vật lý, chúng ta cần một collision shape để nhân vật va chạm với môi trường. Chọn lại node <code class="docutils literal notranslate"><span class="pre">Player</span></code> và thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">CollisionShape3D</span></a>. Trong <strong>Inspector</strong>, ở thuộc tính <strong>Shape</strong>, thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sphereshape3d.html" title="Class reference (English)"><span class="xref std std-ref">SphereShape3D</span></a> mới.</p>
+<img alt="../../_images/add_capsuleshape3d.webp" src="../../_images/add_capsuleshape3d.webp" />
+<p>Khung lưới (wireframe) của hình cầu xuất hiện bên dưới nhân vật.</p>
+<img alt="../../_images/sphere_shape.png" src="../../_images/sphere_shape.png" />
+<p>Đây sẽ là shape mà physics engine dùng để va chạm với môi trường, nên chúng ta muốn nó khớp hơn với mô hình 3D. Hãy làm nó lớn hơn một chút bằng cách kéo chấm màu cam trong viewport. Hình cầu của tôi có bán kính khoảng <code class="docutils literal notranslate"><span class="pre">0.8</span></code> mét.</p>
+<p>Sau đó, di chuyển collision shape lên sao cho đáy của nó gần như ngang với mặt phẳng lưới.</p>
+<img alt="../../_images/moving_the_sphere_up.png" src="../../_images/moving_the_sphere_up.png" />
+<p>Để di chuyển shape dễ hơn, bạn có thể bật/tắt hiển thị của mô hình bằng cách nhấp vào <strong>biểu tượng con mắt</strong> bên cạnh node <code class="docutils literal notranslate"><span class="pre">Character</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">Pivot</span></code>.</p>
+<img alt="../../_images/toggling_visibility.webp" src="../../_images/toggling_visibility.webp" />
+<p>Lưu scene với tên <code class="docutils literal notranslate"><span class="pre">player.tscn</span></code>.</p>
+<p>Khi các node đã sẵn sàng, chúng ta gần như có thể bắt đầu viết code. Nhưng trước tiên, chúng ta cần định nghĩa một số input action.</p>
+<section id="creating-input-actions">
+<span id="doc-first-3d-game-input-actions"></span><h2>Tạo các input action<a class="headerlink" href="#creating-input-actions" title="Link to this heading"></a></h2>
+<p>Để di chuyển nhân vật, chúng ta sẽ lắng nghe đầu vào của người chơi, chẳng hạn như việc nhấn các phím mũi tên. Trong Godot, dù có thể viết toàn bộ các phím gán trong code, có một hệ thống mạnh mẽ cho phép bạn gán một nhãn cho một tập hợp phím và nút. Điều này giúp đơn giản hóa script và khiến chúng dễ đọc hơn.</p>
+<p>Hệ thống này là Input Map. Để mở trình chỉnh sửa của nó, hãy vào menu <strong>Project</strong> và chọn <strong>Project Settings...</strong>.</p>
+<img alt="../../_images/project_settings.webp" src="../../_images/project_settings.webp" />
+<p>Ở phía trên có nhiều tab. Nhấp vào <strong>Input Map</strong>. Cửa sổ này cho phép bạn thêm các action mới ở phía trên; chúng chính là các nhãn của bạn. Ở phần dưới, bạn có thể gán phím cho các action này.</p>
+<img alt="../../_images/input_map_tab.webp" src="../../_images/input_map_tab.webp" />
+<p>Các dự án Godot có sẵn một số action được định nghĩa trước, dành cho thiết kế giao diện người dùng (xem ảnh chụp màn hình ở trên). Chúng sẽ hiện ra nếu bạn bật nút <strong>Show Built-in Actions</strong>. Chúng ta có thể dùng chúng ở đây, nhưng thay vào đó chúng ta sẽ định nghĩa action riêng để hỗ trợ gamepad. Hãy để <strong>Show Built-in Actions</strong> ở trạng thái tắt.</p>
+<p>Chúng ta sẽ đặt tên các action là <code class="docutils literal notranslate"><span class="pre">move_left</span></code>, <code class="docutils literal notranslate"><span class="pre">move_right</span></code>, <code class="docutils literal notranslate"><span class="pre">move_forward</span></code>, <code class="docutils literal notranslate"><span class="pre">move_back</span></code> và <code class="docutils literal notranslate"><span class="pre">jump</span></code>.</p>
+<p>Để thêm một action, hãy viết tên của nó vào thanh ở phía trên rồi nhấn Enter hoặc nhấp vào nút <strong>Add</strong>.</p>
+<img alt="../../_images/adding_action.webp" src="../../_images/adding_action.webp" />
+<p>Tạo năm action sau:</p>
+<img alt="../../_images/actions_list_empty.webp" src="../../_images/actions_list_empty.webp" />
+<p>Để gán một phím hoặc nút cho một action, hãy nhấp vào nút &quot;<strong>+</strong>&quot; ở bên phải của nó. Làm điều này cho <code class="docutils literal notranslate"><span class="pre">move_left</span></code>. Nhấn phím mũi tên trái và nhấp <strong>OK</strong>.</p>
+<img alt="../../_images/left_inputmap.webp" src="../../_images/left_inputmap.webp" />
+<p>Gán thêm phím <kbd class="kbd docutils literal notranslate">A</kbd> cho action <code class="docutils literal notranslate"><span class="pre">move_left</span></code>.</p>
+<img alt="../../_images/keyboard_keys.webp" src="../../_images/keyboard_keys.webp" />
+<p>Bây giờ hãy thêm hỗ trợ cho joystick trái của gamepad. Nhấp lại vào nút &quot;<strong>+</strong>&quot; nhưng lần này, hãy tự chọn input trong cây input. Chọn trục X âm của joystick trái trong mục <strong>Joypad Axes</strong>.</p>
+<img alt="../../_images/joystick_axis_input.webp" src="../../_images/joystick_axis_input.webp" />
+<p>Để nguyên các giá trị khác ở mặc định và nhấn <strong>OK</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn muốn các tay cầm có input action khác nhau, bạn nên dùng tùy chọn Devices trong Additional Options. Device 0 tương ứng với gamepad được cắm đầu tiên, Device 1 tương ứng với gamepad được cắm thứ hai, và cứ thế tiếp tục.</p>
+</div>
+<p>Làm tương tự cho các input action còn lại. Ví dụ, gán phím mũi tên phải, D và trục dương của joystick trái cho <code class="docutils literal notranslate"><span class="pre">move_right</span></code>. Sau khi gán xong tất cả các phím, giao diện của bạn sẽ trông như thế này.</p>
+<img alt="../../_images/move_inputs_mapped.webp" src="../../_images/move_inputs_mapped.webp" />
+<p>Action cuối cùng cần thiết lập là action <code class="docutils literal notranslate"><span class="pre">jump</span></code>. Gán phím Space và nút A của gamepad nằm trong mục <strong>Joypad Buttons</strong>.</p>
+<img alt="../../_images/joy_button_option.webp" src="../../_images/joy_button_option.webp" />
+<p>Input action nhảy của bạn sẽ trông như thế này.</p>
+<img alt="../../_images/jump_input_action.webp" src="../../_images/jump_input_action.webp" />
+<p>Đó là tất cả các action chúng ta cần cho trò chơi này. Bạn có thể dùng menu này để gán nhãn cho bất kỳ nhóm phím và nút nào trong các dự án của mình.</p>
+<p>Trong phần tiếp theo, chúng ta sẽ viết code và kiểm thử chuyển động của người chơi.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="01.game_setup.html" class="btn btn-neutral float-left" title="Thiết lập khu vực chơi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="03.player_movement_code.html" class="btn btn-neutral float-right" title="Di chuyển người chơi bằng code" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

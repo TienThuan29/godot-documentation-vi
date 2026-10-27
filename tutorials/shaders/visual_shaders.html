@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng VisualShader" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/visual_shaders.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="VisualShader là lựa chọn trực quan để tạo shader. Vì shader vốn gắn liền với hình ảnh, cách tiếp cận dựa trên đồ thị với bản xem trước của texture, material, v.v. mang lại nhiều tiện lợi hơn so với..." />
+<meta name="description" content="VisualShader là lựa chọn trực quan để tạo shader. Vì shader vốn gắn liền với hình ảnh, cách tiếp cận dựa trên đồ thị với bản xem trước của texture, material, v.v. mang lại nhiều tiện lợi hơn so với..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng VisualShader &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng compute shader" href="compute_shaders.html" />
+    <link rel="prev" title="Shader 3D thứ hai của bạn" href="your_first_shader/your_second_3d_shader.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/visual_shaders" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shader_reference/index.html">Tham chiếu shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng VisualShader</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-visualshader">Tạo một VisualShader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-visual-shader-editor">Sử dụng Visual Shader Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visual-shader-node-interface">Giao diện node Visual Shader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visual-shader-nodes">Các node Visual Shader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#expression-node">Node Expression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reroute-node">Node Reroute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fresnel-node">Node Fresnel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#boolean-node">Node Boolean</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#if-node">Node If</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#switch-node">Node Switch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mesh-emitter">Mesh Emitter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="compute_shaders.html">Sử dụng compute shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="screen-reading_shaders.html">Shader đọc màn hình</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_viewport_as_texture.html">Dùng SubViewport làm texture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_postprocessing.html">Hậu xử lý nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Shader</a></li>
+      <li class="breadcrumb-item active">Sử dụng VisualShader</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-visualshaders">
+<span id="doc-visual-shaders"></span><h1>Sử dụng VisualShader<a class="headerlink" href="#using-visualshaders" title="Link to this heading"></a></h1>
+<p>VisualShader là lựa chọn trực quan để tạo shader.</p>
+<p>Vì shader vốn gắn liền với hình ảnh, cách tiếp cận dựa trên đồ thị với bản xem trước của texture, material, v.v. mang lại nhiều tiện lợi hơn so với shader chỉ viết bằng script. Mặt khác, VisualShader không cung cấp tất cả tính năng của shader script, và đôi khi bạn cần dùng song song cả hai cho một số hiệu ứng cụ thể.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn chưa quen với shader, hãy bắt đầu bằng cách đọc <a class="reference internal" href="introduction_to_shaders.html#doc-introduction-to-shaders"><span class="std std-ref">Giới thiệu về shader</span></a>.</p>
+</div>
+<section id="creating-a-visualshader">
+<h2>Tạo một VisualShader<a class="headerlink" href="#creating-a-visualshader" title="Link to this heading"></a></h2>
+<p>VisualShader có thể được tạo trong bất kỳ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html" title="Class reference (English)"><span class="xref std std-ref">class_ShaderMaterial</span></a> nào. Để bắt đầu dùng VisualShader, hãy tạo một <code class="docutils literal notranslate"><span class="pre">ShaderMaterial</span></code> mới trong một đối tượng tùy chọn.</p>
+<img alt="../../_images/shader_material_create_mesh.webp" src="../../_images/shader_material_create_mesh.webp" />
+<p>Sau đó gán một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shader.html" title="Class reference (English)"><span class="xref std std-ref">class_Shader</span></a> cho thuộc tính <code class="docutils literal notranslate"><span class="pre">Shader</span></code>.</p>
+<img alt="../../_images/visual_shader_create.webp" src="../../_images/visual_shader_create.webp" />
+<p>Nhấp vào resource <code class="docutils literal notranslate"><span class="pre">Shader</span></code> mới và hộp thoại Create Shader sẽ tự động mở ra. Đổi tùy chọn Type thành <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visualshader.html" title="Class reference (English)"><span class="xref std std-ref">class_VisualShader</span></a> trong danh sách thả xuống, rồi đặt tên cho nó.</p>
+<img alt="../../_images/visual_shader_create2.webp" src="../../_images/visual_shader_create2.webp" />
+<p>Nhấp vào visual shader bạn vừa tạo để mở Shader Editor. Bố cục của Shader Editor gồm bốn phần: danh sách tệp ở bên trái, thanh công cụ phía trên, chính đồ thị, và bản xem trước material ở bên phải có thể tắt đi</p>
+<img alt="../../_images/visual_shader_editor2.webp" src="../../_images/visual_shader_editor2.webp" />
+<p>Từ trái sang phải trên thanh công cụ:</p>
+<ul class="simple">
+<li><p>Mũi tên có thể dùng để bật/tắt hiển thị bảng tệp.</p></li>
+<li><p>Nút <code class="docutils literal notranslate"><span class="pre">File</span></code> mở một menu thả xuống để lưu, tải và tạo tệp.</p></li>
+<li><p>Nút <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Node</span></code> hiển thị một menu bật lên để bạn thêm node vào đồ thị shader.</p></li>
+<li><p>Menu thả xuống là loại shader: Vertex, Fragment và Light. Giống như với shader script, nó xác định những node dựng sẵn nào sẽ có sẵn.</p></li>
+<li><p>Các nút và ô nhập số tiếp theo điều khiển mức thu phóng, bám lưới và khoảng cách giữa các đường lưới (tính bằng pixel).</p></li>
+<li><p>Nút bật/tắt này điều khiển việc bản đồ thu nhỏ của đồ thị ở góc dưới bên phải trình chỉnh sửa có hiển thị hay không.</p></li>
+<li><p>Nút tự động sắp xếp các node đã chọn sẽ cố gắng sắp xếp mọi node bạn đã chọn một cách hiệu quả và gọn gàng nhất có thể.</p></li>
+<li><p>Nút Manage Varyings mở một menu thả xuống cho phép bạn thêm hoặc xóa một varying.</p></li>
+<li><p>Nút hiển thị code được sinh ra sẽ hiển thị code shader tương ứng với đồ thị của bạn.</p></li>
+<li><p>Nút bật/tắt này bật hoặc tắt bản xem trước material.</p></li>
+<li><p>Nút <code class="docutils literal notranslate"><span class="pre">Online</span> <span class="pre">Docs</span></code> mở trang tài liệu này trong trình duyệt web của bạn.</p></li>
+<li><p>Nút cuối cùng cho phép bạn đặt trình chỉnh sửa shader vào một cửa sổ riêng, tách khỏi phần còn lại của trình chỉnh sửa.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Mặc dù VisualShader không yêu cầu viết code, chúng có cùng logic với shader script. Bạn nên học những kiến thức cơ bản của cả hai để hiểu rõ pipeline shading.</p>
+<p>Đồ thị visual shader được chuyển đổi thành shader script ở phía sau, và bạn có thể xem code này bằng cách nhấn nút cuối cùng trên thanh công cụ. Điều này tiện lợi để hiểu một node cụ thể làm gì và cách tái tạo nó trong script.</p>
+</div>
+</section>
+<section id="using-the-visual-shader-editor">
+<h2>Sử dụng Visual Shader Editor<a class="headerlink" href="#using-the-visual-shader-editor" title="Link to this heading"></a></h2>
+<p>Theo mặc định, mọi <code class="docutils literal notranslate"><span class="pre">VisualShader</span></code> mới đều có một node output. Mọi kết nối node đều kết thúc tại một trong các socket của node output. Node là đơn vị cơ bản để tạo shader của bạn. Để thêm node mới, nhấp vào nút <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Node</span></code> ở góc trên bên trái hoặc nhấp chuột phải vào bất kỳ vị trí trống nào trong đồ thị, và một menu sẽ bật lên.</p>
+<img alt="../../_images/vs_popup.webp" src="../../_images/vs_popup.webp" />
+<p>Popup này có các thuộc tính sau:</p>
+<ul class="simple">
+<li><p>Nếu bạn nhấp chuột phải vào đồ thị, menu này sẽ được gọi tại vị trí con trỏ và node được tạo, trong trường hợp đó, cũng sẽ được đặt tại vị trí đó; nếu không, nó sẽ được tạo ở giữa đồ thị.</p></li>
+<li><p>Menu có thể thay đổi kích thước theo chiều ngang và chiều dọc để hiển thị nhiều nội dung hơn. Kích thước và vị trí nội dung cây được lưu giữa các lần gọi, nên nếu bạn lỡ đóng menu bật lên, bạn có thể dễ dàng khôi phục trạng thái trước đó.</p></li>
+<li><p>Các tùy chọn <code class="docutils literal notranslate"><span class="pre">Expand</span> <span class="pre">All</span></code> và <code class="docutils literal notranslate"><span class="pre">Collapse</span> <span class="pre">All</span></code> trong menu tùy chọn thả xuống có thể dùng để dễ dàng liệt kê các node có sẵn.</p></li>
+<li><p>Bạn cũng có thể kéo và thả node từ menu bật lên vào đồ thị.</p></li>
+</ul>
+<p>Mặc dù menu bật lên đã sắp xếp node theo danh mục, ban đầu nó có thể trông khá choáng ngợp. Hãy thử thêm một vài node, cắm chúng vào socket output và quan sát điều gì xảy ra.</p>
+<p>Khi kết nối bất kỳ output <code class="docutils literal notranslate"><span class="pre">scalar</span></code> nào với một input <code class="docutils literal notranslate"><span class="pre">vector</span></code>, tất cả các thành phần của vector sẽ nhận giá trị của scalar.</p>
+<p>Khi kết nối bất kỳ output <code class="docutils literal notranslate"><span class="pre">vector</span></code> nào với một input <code class="docutils literal notranslate"><span class="pre">scalar</span></code>, giá trị của scalar sẽ là trung bình các thành phần của vector.</p>
+</section>
+<section id="visual-shader-node-interface">
+<h2>Giao diện node Visual Shader<a class="headerlink" href="#visual-shader-node-interface" title="Link to this heading"></a></h2>
+<p>Các node visual shader có cổng input và cổng output. Cổng input nằm ở bên trái node, còn cổng output nằm ở bên phải node.</p>
+<figure class="align-default">
+<img alt="../../_images/vs_node.webp" src="../../_images/vs_node.webp" />
+</figure>
+<p>Các cổng này được tô màu để phân biệt loại cổng:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Các loại cổng</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Màu sắc</p></th>
+<th class="head"><p>Mô tả</p></th>
+<th class="head"><p>Ví dụ</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Scalar</p></td>
+<td><p>Xám</p></td>
+<td><p>Scalar là một giá trị đơn.</p></td>
+<td><p><img alt="scalar" src="../../_images/vs_scalar.webp" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Vector</p></td>
+<td><p>Tím</p></td>
+<td><p>Vector là một tập hợp các giá trị.</p></td>
+<td><p><img alt="vector" src="../../_images/vs_vector.webp" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Boolean</p></td>
+<td><p>Xanh lá</p></td>
+<td><p>Bật hoặc tắt, true hoặc false.</p></td>
+<td><p><img alt="boolean" src="../../_images/vs_boolean.webp" /></p></td>
+</tr>
+<tr class="row-odd"><td><p>Transform</p></td>
+<td><p>Hồng</p></td>
+<td><p>Một ma trận, thường dùng để biến đổi các đỉnh.</p></td>
+<td><p><img alt="transform" src="../../_images/vs_transform.webp" /></p></td>
+</tr>
+<tr class="row-even"><td><p>Sampler</p></td>
+<td><p>Cam</p></td>
+<td><p>Một texture sampler. Nó có thể dùng để lấy mẫu texture.</p></td>
+<td><p><img alt="sampler" src="../../_images/vs_sampler.webp" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>Tất cả các loại này đều được dùng trong các phép tính đỉnh, fragment và ánh sáng trong shader. Ví dụ: nhân ma trận, cộng vector hoặc chia scalar.</p>
+<p>Còn có các loại khác nhưng đây là những loại chính.</p>
+</section>
+<section id="visual-shader-nodes">
+<h2>Các node Visual Shader<a class="headerlink" href="#visual-shader-nodes" title="Link to this heading"></a></h2>
+<p>Dưới đây là một số node đặc biệt đáng để biết. Danh sách này chưa đầy đủ và có thể được mở rộng thêm với nhiều node và ví dụ hơn.</p>
+<section id="expression-node">
+<h3>Node Expression<a class="headerlink" href="#expression-node" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">Expression</span></code> cho phép bạn viết các biểu thức Godot Shading Language (tương tự GLSL) bên trong visual shader. Node có các nút để thêm bất kỳ số lượng cổng input và output cần thiết và có thể thay đổi kích thước. Bạn cũng có thể đặt tên và loại cho từng cổng. Biểu thức bạn đã nhập sẽ được áp dụng ngay lập tức cho material (khi focus rời khỏi ô văn bản biểu thức). Mọi lỗi phân tích cú pháp hoặc biên dịch sẽ được in ra tab Output. Các output được khởi tạo với giá trị 0 theo mặc định. Node nằm trong tab Special và có thể dùng ở mọi chế độ shader.</p>
+<p>Khả năng của node này gần như không giới hạn – bạn có thể viết các thủ tục phức tạp và dùng toàn bộ sức mạnh của shader dạng văn bản, chẳng hạn như vòng lặp, từ khóa <code class="docutils literal notranslate"><span class="pre">discard</span></code>, các kiểu mở rộng, v.v. Ví dụ:</p>
+<img alt="../../_images/vs_expression2.png" src="../../_images/vs_expression2.png" />
+</section>
+<section id="reroute-node">
+<h3>Node Reroute<a class="headerlink" href="#reroute-node" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">Reroute</span></code> chỉ dùng cho mục đích tổ chức. Trong một shader phức tạp có nhiều node, bạn có thể thấy các đường nối giữa các node khiến mọi thứ khó đọc. Reroute, như tên gọi của nó, cho phép bạn điều chỉnh đường nối giữa các node để dễ đọc hơn. Bạn thậm chí có thể dùng nhiều node reroute cho một đường nối, có thể dùng để tạo các góc vuông.</p>
+<img alt="../../_images/vs_reroute.webp" src="../../_images/vs_reroute.webp" />
+<p>Để di chuyển một node reroute, hãy đưa con trỏ chuột lên trên nó và nắm lấy tay cầm xuất hiện.</p>
+<img alt="../../_images/vs_reroute_handle.webp" src="../../_images/vs_reroute_handle.webp" />
+</section>
+<section id="fresnel-node">
+<h3>Node Fresnel<a class="headerlink" href="#fresnel-node" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">Fresnel</span></code> được thiết kế để nhận vector pháp tuyến và vector nhìn, và tạo ra một scalar là tích vô hướng đã được bão hòa (saturate) giữa chúng. Ngoài ra, bạn có thể thiết lập phép đảo ngược và số mũ của phương trình. Node <code class="docutils literal notranslate"><span class="pre">Fresnel</span></code> rất phù hợp để thêm hiệu ứng chiếu sáng dạng viền (rim) cho đối tượng.</p>
+<img alt="../../_images/vs_fresnel.webp" src="../../_images/vs_fresnel.webp" />
+</section>
+<section id="boolean-node">
+<h3>Node Boolean<a class="headerlink" href="#boolean-node" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">Boolean</span></code> có thể được chuyển đổi thành <code class="docutils literal notranslate"><span class="pre">Scalar</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">Vector</span></code> để biểu diễn lần lượt <code class="docutils literal notranslate"><span class="pre">0</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">1</span></code> và <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></code>. Đặc tính này có thể dùng để bật hoặc tắt một số phần hiệu ứng chỉ với một cú nhấp.</p>
+<img alt="../../_images/vs_boolean.gif" src="../../_images/vs_boolean.gif" />
+</section>
+<section id="if-node">
+<h3>Node If<a class="headerlink" href="#if-node" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">If</span></code> cho phép bạn thiết lập một vector sẽ được trả về dựa trên kết quả so sánh giữa <code class="docutils literal notranslate"><span class="pre">a</span></code> và <code class="docutils literal notranslate"><span class="pre">b</span></code>. Có ba vector có thể được trả về: <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></code> (trong trường hợp này tham số tolerance được dùng làm ngưỡng so sánh – theo mặc định nó bằng giá trị tối thiểu, tức <code class="docutils literal notranslate"><span class="pre">0.00001</span></code>), <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&gt;</span> <span class="pre">b</span></code> và <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&lt;</span> <span class="pre">b</span></code>.</p>
+<img alt="../../_images/vs_if.png" src="../../_images/vs_if.png" />
+</section>
+<section id="switch-node">
+<h3>Node Switch<a class="headerlink" href="#switch-node" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">Switch</span></code> trả về một vector tùy theo điều kiện boolean là <code class="docutils literal notranslate"><span class="pre">true</span></code> hay <code class="docutils literal notranslate"><span class="pre">false</span></code>. <code class="docutils literal notranslate"><span class="pre">Boolean</span></code> đã được giới thiệu ở trên. Nếu bạn muốn chuyển đổi một vector thành boolean true, tất cả các thành phần của vector phải khác 0.</p>
+<img alt="../../_images/vs_switch.webp" src="../../_images/vs_switch.webp" />
+</section>
+<section id="mesh-emitter">
+<h3>Mesh Emitter<a class="headerlink" href="#mesh-emitter" title="Link to this heading"></a></h3>
+<p>Node <code class="docutils literal notranslate"><span class="pre">Mesh</span> <span class="pre">Emitter</span></code> dùng để phát hạt từ các đỉnh của mesh. Node này chỉ có sẵn cho các shader ở chế độ <code class="docutils literal notranslate"><span class="pre">Particles</span></code>.</p>
+<p>Hãy lưu ý rằng không phải mọi đối tượng 3D đều là tệp mesh. Không thể kéo và thả một tệp glTF vào đồ thị. Tuy nhiên, bạn có thể tạo một scene kế thừa từ nó, lưu mesh trong scene đó thành một tệp riêng và dùng tệp đó.</p>
+<img alt="../../_images/vs_meshemitter.webp" src="../../_images/vs_meshemitter.webp" />
+<p>Bạn cũng có thể kéo và thả các tệp obj vào trình chỉnh sửa đồ thị để thêm node cho mesh cụ thể đó; các tệp mesh khác sẽ không hoạt động theo cách này.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="your_first_shader/your_second_3d_shader.html" class="btn btn-neutral float-left" title="Shader 3D thứ hai của bạn" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="compute_shaders.html" class="btn btn-neutral float-right" title="Sử dụng compute shader" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

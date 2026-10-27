@@ -1,0 +1,380 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tối ưu bằng MultiMesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/using_multimesh.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Với một lượng lớn instance (hàng nghìn) cần được xử lý liên tục (và cần giữ lại một mức độ kiểm soát nhất định), dùng trực tiếp server là cách tối ưu được khuyến nghị. Khi số lượng đối tượng lên đế..." />
+<meta name="description" content="Với một lượng lớn instance (hàng nghìn) cần được xử lý liên tục (và cần giữ lại một mức độ kiểm soát nhất định), dùng trực tiếp server là cách tối ưu được khuyến nghị. Khi số lượng đối tượng lên đế..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tối ưu bằng MultiMesh &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Giảm giật lag do biên dịch shader (pipeline)" href="pipeline_compilations.html" />
+    <link rel="prev" title="Tối ưu hóa GPU" href="gpu_optimization.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/using_multimesh" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#gpu">GPU</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="gpu_optimization.html">Tối ưu hóa GPU</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tối ưu bằng MultiMesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#multimeshes">MultiMesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multimesh-example">Ví dụ về MultiMesh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_compilations.html">Giảm giật lag do biên dịch shader (pipeline)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Tối ưu bằng MultiMesh</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="optimization-using-multimeshes">
+<span id="doc-using-multimesh"></span><h1>Tối ưu bằng MultiMesh<a class="headerlink" href="#optimization-using-multimeshes" title="Link to this heading"></a></h1>
+<p>Với một lượng lớn instance (hàng nghìn) cần được xử lý liên tục (và cần giữ lại một mức độ kiểm soát nhất định), <a class="reference internal" href="using_servers.html#doc-using-servers"><span class="std std-ref">dùng trực tiếp server</span></a> là cách tối ưu được khuyến nghị.</p>
+<p>Khi số lượng đối tượng lên đến hàng trăm nghìn hoặc hàng triệu, không cách nào trong số này còn hiệu quả nữa. Dù vậy, tùy theo yêu cầu, vẫn còn một cách tối ưu khác.</p>
+<section id="multimeshes">
+<h2>MultiMesh<a class="headerlink" href="#multimeshes" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_multimesh.html" title="Class reference (English)"><span class="xref std std-ref">MultiMesh</span></a> là một primitive vẽ duy nhất có thể vẽ tới hàng triệu đối tượng trong một lần. Nó cực kỳ hiệu quả vì dùng phần cứng GPU để thực hiện việc này.</p>
+<p>Nhược điểm duy nhất là không thể thực hiện culling theo <em>màn hình</em> hay <em>frustum</em> cho từng instance riêng lẻ. Điều này nghĩa là hàng triệu đối tượng sẽ <em>luôn luôn</em> hoặc <em>không bao giờ</em> được vẽ, tùy thuộc vào khả năng hiển thị của toàn bộ MultiMesh. Có thể cung cấp một hình chữ nhật hiển thị tùy chỉnh cho chúng, nhưng khả năng hiển thị sẽ luôn là <em>tất cả hoặc không có gì</em>.</p>
+<p>Nếu các đối tượng đủ đơn giản (chỉ vài vertex), điều này thường không phải vấn đề lớn vì hầu hết GPU hiện đại đều được tối ưu cho trường hợp sử dụng này. Một cách khắc phục là tạo nhiều MultiMesh cho các khu vực khác nhau của thế giới.</p>
+<p>Cũng có thể thực thi một số logic bên trong vertex shader (dùng các hằng số tích hợp <code class="docutils literal notranslate"><span class="pre">INSTANCE_ID</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">INSTANCE_CUSTOM</span></code>). Để xem ví dụ về tạo hoạt ảnh cho hàng nghìn đối tượng trong một MultiMesh, xem bài hướng dẫn <a class="reference internal" href="vertex_animation/animating_thousands_of_fish.html#doc-animating-thousands-of-fish"><span class="std std-ref">Tạo hoạt ảnh cho hàng nghìn con cá</span></a>. Thông tin cho shader có thể được cung cấp qua texture (có các định dạng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_image.html" title="Class reference (English)"><span class="xref std std-ref">Image</span></a> dấu phẩy động rất lý tưởng cho việc này).</p>
+<p>Một lựa chọn khác là dùng GDExtension và C++, cách này sẽ cực kỳ hiệu quả (có thể đặt toàn bộ trạng thái cho tất cả đối tượng bằng bộ nhớ tuyến tính qua hàm <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html#class-renderingserver-method-multimesh-set-buffer" title="Class reference (English)"><span class="xref std std-ref">RenderingServer.multimesh_set_buffer()</span></a>). Bằng cách này, mảng có thể được tạo bằng nhiều luồng, rồi được đặt trong một lần gọi, mang lại hiệu quả cache cao.</p>
+<p>Cuối cùng, không bắt buộc tất cả instance của MultiMesh đều phải hiển thị. Số lượng instance hiển thị có thể được kiểm soát bằng thuộc tính <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_multimesh.html#class-multimesh-property-visible-instance-count" title="Class reference (English)"><span class="xref std std-ref">MultiMesh.visible_instance_count</span></a>. Quy trình điển hình là cấp phát số lượng instance tối đa sẽ dùng, rồi thay đổi số lượng hiển thị tùy theo số lượng hiện đang cần.</p>
+</section>
+<section id="multimesh-example">
+<h2>Ví dụ về MultiMesh<a class="headerlink" href="#multimesh-example" title="Link to this heading"></a></h2>
+<p>Đây là một ví dụ dùng MultiMesh từ code. Các ngôn ngữ khác ngoài GDScript có thể hiệu quả hơn với hàng triệu đối tượng, nhưng với vài nghìn đối tượng thì GDScript vẫn ổn.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">MultiMeshInstance3D</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create the multimesh.</span>
+<span class="w">    </span><span class="n">multimesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">MultiMesh</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Set the format first.</span>
+<span class="w">    </span><span class="n">multimesh</span><span class="o">.</span><span class="vi">transform_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">MultiMesh</span><span class="o">.</span><span class="vi">TRANSFORM_3D</span>
+<span class="w">    </span><span class="c1"># Set the mesh that will be duplicated.</span>
+<span class="w">    </span><span class="n">multimesh</span><span class="o">.</span><span class="vi">mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">BoxMesh</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Then resize (otherwise, changing the format is not allowed).</span>
+<span class="w">    </span><span class="n">multimesh</span><span class="o">.</span><span class="vi">instance_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10000</span>
+<span class="w">    </span><span class="c1"># Maybe not all of them should be visible at first.</span>
+<span class="w">    </span><span class="n">multimesh</span><span class="o">.</span><span class="vi">visible_instance_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
+
+<span class="w">    </span><span class="c1"># Set the transform of the instances.</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">multimesh</span><span class="o">.</span><span class="vi">visible_instance_count</span><span class="p">:</span>
+<span class="w">        </span><span class="n">multimesh</span><span class="o">.</span><span class="nf">set_instance_transform</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">(</span><span class="nb nb-Type">Basis</span><span class="p">(),</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyMultiMeshInstance3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MultiMeshInstance3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create the multimesh.</span>
+<span class="w">        </span><span class="n">Multimesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MultiMesh</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Set the format first.</span>
+<span class="w">        </span><span class="n">Multimesh</span><span class="p">.</span><span class="n">TransformFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MultiMesh</span><span class="p">.</span><span class="n">TransformFormatEnum</span><span class="p">.</span><span class="n">Transform3D</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Then resize (otherwise, changing the format is not allowed)</span>
+<span class="w">        </span><span class="n">Multimesh</span><span class="p">.</span><span class="n">InstanceCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Maybe not all of them should be visible at first.</span>
+<span class="w">        </span><span class="n">Multimesh</span><span class="p">.</span><span class="n">VisibleInstanceCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Set the transform of the instances.</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Multimesh</span><span class="p">.</span><span class="n">VisibleInstanceCount</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Multimesh</span><span class="p">.</span><span class="n">SetInstanceTransform</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform3D</span><span class="p">(</span><span class="n">Basis</span><span class="p">.</span><span class="n">Identity</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector3</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gpu_optimization.html" class="btn btn-neutral float-left" title="Tối ưu hóa GPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="pipeline_compilations.html" class="btn btn-neutral float-right" title="Giảm giật lag do biên dịch shader (pipeline)" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

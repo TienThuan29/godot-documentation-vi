@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Visibility range (HLOD)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/visibility_ranges.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Cùng với Mức độ chi tiết của mesh (LOD) và Occlusion culling, visibility range là một công cụ khác để cải thiện hiệu năng trong các scene 3D lớn và phức tạp. Trong trang này, bạn sẽ học: Visibility..." />
+<meta name="description" content="Cùng với Mức độ chi tiết của mesh (LOD) và Occlusion culling, visibility range là một công cụ khác để cải thiện hiệu năng trong các scene 3D lớn và phức tạp. Trong trang này, bạn sẽ học: Visibility..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Visibility range (HLOD) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Occlusion culling" href="occlusion_culling.html" />
+    <link rel="prev" title="Mức độ chi tiết của mesh (LOD)" href="mesh_lod.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/visibility_ranges" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="using_multi_mesh_instance.html">Sử dụng MultiMeshInstance3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_lod.html">Mức độ chi tiết của mesh (LOD)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Visibility range (HLOD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#how-it-works">Cách hoạt động</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-up-visibility-range">Thiết lập visibility range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visibility-range-properties">Các thuộc tính của visibility range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-tips">Mẹo cấu hình</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="occlusion_culling.html">Occlusion culling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resolution_scaling.html">Co giãn độ phân giải</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable_rate_shading.html">Variable rate shading</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Visibility range (HLOD)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="visibility-ranges-hlod">
+<span id="doc-visibility-ranges"></span><h1>Visibility range (HLOD)<a class="headerlink" href="#visibility-ranges-hlod" title="Link to this heading"></a></h1>
+<p>Cùng với <a class="reference internal" href="mesh_lod.html#doc-mesh-lod"><span class="std std-ref">Mức độ chi tiết của mesh (LOD)</span></a> và <a class="reference internal" href="occlusion_culling.html#doc-occlusion-culling"><span class="std std-ref">Occlusion culling</span></a>, visibility range là một công cụ khác để cải thiện hiệu năng trong các scene 3D lớn và phức tạp.</p>
+<p>Trong trang này, bạn sẽ học:</p>
+<ul class="simple">
+<li><p>Visibility range có thể làm gì và hữu ích trong những tình huống nào.</p></li>
+<li><p>Cách thiết lập visibility range (LOD thủ công) trong Godot.</p></li>
+<li><p>Cách tinh chỉnh visibility range để có hiệu năng và chất lượng tốt nhất.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Nếu bạn chỉ cần mesh trở nên ít chi tiết hơn theo khoảng cách, nhưng không có các mesh LOD được tạo thủ công, hãy cân nhắc dựa vào <a class="reference internal" href="mesh_lod.html#doc-mesh-lod"><span class="std std-ref">Mức độ chi tiết của mesh (LOD)</span></a> tự động.</p>
+<p>Lưu ý rằng mesh LOD tự động và visibility range có thể được dùng cùng lúc, thậm chí trên cùng một mesh.</p>
+</div>
+<section id="how-it-works">
+<h2>Cách hoạt động<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<p>Visibility range có thể dùng với bất kỳ node nào kế thừa từ GeometryInstance3D. Điều này có nghĩa chúng có thể được dùng không chỉ với MeshInstance3D và MultiMeshInstance3D cho <abbr title="Hierarchical Level of Detail">HLOD</abbr> do họa sĩ kiểm soát, mà còn với GPUParticles3D, CPUParticles3D, Label3D, Sprite3D, AnimatedSprite3D và CSGShape3D.</p>
+<p>Vì visibility range được cấu hình trên từng node, điều này cho phép dùng các loại node khác nhau như một phần của hệ thống <abbr title="Level of Detail">LOD</abbr>. Ví dụ, bạn có thể hiển thị một MeshInstance3D biểu diễn cái cây khi ở gần, và thay thế nó bằng một Sprite3D impostor ở xa để cải thiện hiệu năng.</p>
+<p>Ưu điểm của <abbr title="Hierarchical Level of Detail">HLOD</abbr> so với hệ thống <abbr title="Level of Detail">LOD</abbr> truyền thống nằm ở tính phân cấp của nó. Một mesh lớn duy nhất có thể thay thế nhiều mesh nhỏ hơn, nhờ đó giảm số lệnh vẽ (draw call) khi nhìn từ xa, nhưng vẫn giữ được khả năng culling khi ở gần. Ví dụ: bạn có thể có một nhóm nhà dùng các node MeshInstance3D riêng lẻ (mỗi node cho một ngôi nhà) khi ở gần, nhưng chuyển thành một MeshInstance3D duy nhất biểu diễn cả nhóm nhà với ít chi tiết hơn (hoặc dùng MultiMeshInstance3D).</p>
+<p>Cuối cùng, visibility range cũng có thể được dùng để làm mờ dần hoàn toàn một số đối tượng khi camera tiến quá gần hoặc ra quá xa. Điều này có thể phục vụ mục đích gameplay, nhưng cũng giúp giảm sự rối mắt. Ví dụ: các node Label3D có thể được làm mờ dần bằng visibility range khi chúng ở quá xa để có thể đọc được hoặc không còn liên quan đến người chơi.</p>
+</section>
+<section id="setting-up-visibility-range">
+<h2>Thiết lập visibility range<a class="headerlink" href="#setting-up-visibility-range" title="Link to this heading"></a></h2>
+<p>Đây là hướng dẫn nhanh để cấu hình một hệ thống LOD cơ bản. Sau khi làm theo hướng dẫn này, hệ thống LOD sẽ hiển thị một SphereMesh khi ở gần và một BoxMesh khi camera ở đủ xa. Một khoảng trễ (hysteresis) nhỏ cũng được cấu hình qua các thuộc tính <strong>Begin Margin</strong> và <strong>End Margin</strong>. Điều này giúp các mức LOD không bị chuyển qua lại quá nhanh khi camera di chuyển ngay tại &quot;ranh giới&quot; chuyển đổi LOD.</p>
+<p>Các thuộc tính visibility range nằm trong mục <strong>Visibility Range</strong> của inspector GeometryInstance3D sau khi chọn node MeshInstance3D.</p>
+<ul class="simple">
+<li><p>Thêm một node Node3D dùng để gom hai node MeshInstance3D lại với nhau.</p></li>
+<li><p>Thêm node MeshInstance3D thứ nhất làm con của Node3D. Gán một SphereMesh mới cho thuộc tính Mesh của nó.</p></li>
+<li><p>Đặt <strong>End</strong> của visibility range trên MeshInstance3D thứ nhất thành <code class="docutils literal notranslate"><span class="pre">10.0</span></code> và <strong>End Margin</strong> thành <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p>Thêm node MeshInstance3D thứ hai làm con của Node3D. Gán một BoxMesh mới cho thuộc tính Mesh của nó.</p></li>
+<li><p>Đặt <strong>Begin</strong> của visibility range trên MeshInstance3D thứ hai thành <code class="docutils literal notranslate"><span class="pre">10.0</span></code> và <strong>Begin Margin</strong> thành <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p>Di chuyển camera ra xa rồi lại gần đối tượng. Hãy để ý cách đối tượng chuyển từ hình cầu sang hình hộp khi camera lùi ra xa.</p></li>
+</ul>
+</section>
+<section id="visibility-range-properties">
+<h2>Các thuộc tính của visibility range<a class="headerlink" href="#visibility-range-properties" title="Link to this heading"></a></h2>
+<p>Trong inspector của bất kỳ node nào kế thừa từ GeometryInstance3D, bạn có thể điều chỉnh các thuộc tính sau trong mục <strong>Visibility Range</strong> của GeometryInstance3D:</p>
+<ul class="simple">
+<li><p><strong>Begin:</strong> Instance sẽ bị ẩn khi khoảng cách từ camera đến <em>tâm AABB của instance</em> (hộp bao căn theo trục) nhỏ hơn giá trị này (tính bằng đơn vị 3D).</p></li>
+<li><p><strong>Begin Margin:</strong> Khoảng cách trễ (hysteresis) hoặc khoảng cách chuyển tiếp mờ dần alpha dùng cho chuyển đổi ở gần (tính bằng đơn vị 3D). Hành vi của thuộc tính này phụ thuộc vào <strong>Fade Mode</strong>.</p></li>
+<li><p><strong>End:</strong> Instance sẽ bị ẩn khi khoảng cách từ camera đến <em>tâm AABB của instance</em> lớn hơn giá trị này (tính bằng đơn vị 3D).</p></li>
+<li><p><strong>End Margin:</strong> Khoảng cách trễ (hysteresis) hoặc khoảng cách chuyển tiếp mờ dần alpha dùng cho chuyển đổi ở xa (tính bằng đơn vị 3D). Hành vi của thuộc tính này phụ thuộc vào <strong>Fade Mode</strong>.</p></li>
+<li><p><strong>Fade Mode:</strong> Điều khiển cách thực hiện chuyển đổi giữa các mức LOD. Xem chi tiết bên dưới.</p></li>
+</ul>
+<section id="fade-mode">
+<span id="doc-visibility-ranges-fade-mode"></span><h3>Chế độ mờ dần<a class="headerlink" href="#fade-mode" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chế độ mờ dần được chọn chỉ có tác động thấy được nếu <strong>Visibility Range &gt; Begin Margin</strong> hoặc <strong>Visibility Range &gt; End Margin</strong> lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</div>
+<p>Trong mục <strong>Visibility Range</strong> của inspector, có 3 chế độ mờ dần để lựa chọn:</p>
+<ul class="simple">
+<li><p><strong>Disabled:</strong> Dùng hysteresis để chuyển ngay lập tức giữa các mức LOD. Điều này tránh tình huống các mức LOD bị chuyển qua lại liên tục khi người chơi tiến tới rồi lùi lại tại điểm chuyển đổi LOD. Khoảng cách trễ được xác định bởi <strong>Visibility Range &gt; Begin Margin</strong> và <strong>Visibility Range &gt; End Margin</strong>. Chế độ này cho hiệu năng tốt nhất vì không buộc việc kết xuất phải chuyển sang trong suốt trong lúc chuyển tiếp mờ dần.</p></li>
+<li><p><strong>Self:</strong> Dùng alpha blending để mờ dần mượt mà giữa các mức LOD. Node sẽ tự mờ đi khi chạm đến giới hạn visibility range của chính nó. Khoảng cách chuyển tiếp mờ dần được xác định bởi <strong>Visibility Range &gt; Begin Margin</strong> và <strong>Visibility Range &gt; End Margin</strong>. Chế độ này buộc đối tượng được kết xuất trong suốt trong lúc chuyển tiếp mờ dần, nên có ảnh hưởng đến hiệu năng.</p></li>
+<li><p><strong>Dependencies:</strong> Dùng alpha blending để mờ dần mượt mà giữa các mức LOD. Node sẽ làm hiện dần các phụ thuộc của nó khi chạm đến giới hạn visibility range của chính nó. Khoảng cách chuyển tiếp mờ dần được xác định bởi <strong>Visibility Range &gt; Begin Margin</strong> và <strong>Visibility Range &gt; End Margin</strong>. Chế độ này buộc đối tượng được kết xuất trong suốt trong lúc chuyển tiếp mờ dần, nên có ảnh hưởng đến hiệu năng. Chế độ này dành cho các hệ thống LOD phân cấp sử dụng <a class="reference internal" href="#doc-visibility-ranges-visibility-parent"><span class="std std-ref">Visibility parent</span></a>. Nó hoạt động giống <strong>Self</strong> nếu visibility range được dùng cho LOD không phân cấp.</p></li>
+</ul>
+</section>
+<section id="visibility-parent">
+<span id="doc-visibility-ranges-visibility-parent"></span><h3>Visibility parent<a class="headerlink" href="#visibility-parent" title="Link to this heading"></a></h3>
+<p>Thuộc tính <strong>Visibility Parent</strong> giúp thiết lập <abbr title="Hierarchical Level of Detail">HLOD</abbr> dễ dàng hơn. Nó cho phép tự động ẩn các node con nếu node cha của chúng đang hiển thị theo các thuộc tính visibility range hiện tại.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đích của <strong>Visibility Parent</strong> <em>bắt buộc</em> phải kế thừa từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_geometryinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_GeometryInstance3D</span></a>.</p>
+<p>Dù có tên như vậy, thuộc tính <strong>Visibility Parent</strong> <em>có thể</em> trỏ đến một node không phải là node cha của node đó trong cây scene. Tuy nhiên, không thể trỏ <strong>Visibility Parent</strong> đến một node con, vì điều này tạo ra vòng phụ thuộc vốn không được hỗ trợ. Bạn sẽ nhận được thông báo lỗi trong Output panel nếu xảy ra vòng phụ thuộc.</p>
+</div>
+<p>Với cây scene sau (trong đó tất cả các node đều kế thừa từ GeometryInstance3D):</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="err">┖╴</span><span class="nc">BatchOfHouses</span>
+<span class="w">    </span><span class="err">┠╴</span><span class="nc">House1</span>
+<span class="w">    </span><span class="err">┠╴</span><span class="nc">House2</span>
+<span class="w">    </span><span class="err">┠╴</span><span class="nc">House3</span>
+<span class="w">    </span><span class="err">┖╴</span><span class="nc">House4</span>
+</pre></div>
+</div>
+<p>Trong ví dụ này, <em>BatchOfHouses</em> là một mesh lớn được thiết kế để đại diện cho tất cả các node con khi nhìn từ xa. <em>House1</em> đến <em>House4</em> là các MeshInstance3D nhỏ hơn đại diện cho từng ngôi nhà. Để cấu hình HLOD trong ví dụ này, ta chỉ cần cấu hình hai điều:</p>
+<ul class="simple">
+<li><p>Đặt <strong>Visibility Range Begin</strong> thành một số lớn hơn <cite>0.0</cite> để <em>BatchOfHouses</em> chỉ xuất hiện khi ở đủ xa camera. Dưới khoảng cách này, ta muốn hiển thị <em>House1</em> đến <em>House4</em> thay thế.</p></li>
+<li><p>Trên <em>House1</em> đến <em>House4</em>, gán thuộc tính <strong>Visibility Parent</strong> thành <em>BatchOfHouses</em>.</p></li>
+</ul>
+<p>Cách này giúp việc tinh chỉnh thêm dễ dàng hơn, vì bạn không cần điều chỉnh <strong>Visibility Range Begin</strong> của <em>BatchOfHouses</em> và <strong>Visibility Range End</strong> của <em>House1</em> đến <em>House4</em>.</p>
+<p>Chế độ mờ dần được thuộc tính <strong>Visibility Parent</strong> xử lý tự động, để các node con chỉ bị ẩn khi node cha đã mờ đi hoàn toàn. Điều này nhằm giảm thiểu hiện tượng đối tượng đột ngột xuất hiện (pop-in). Tùy vào thiết lập <abbr title="Hierarchical Level of Detail">HLOD</abbr> của bạn, bạn có thể muốn thử cả hai <a class="reference internal" href="#doc-visibility-ranges-fade-mode"><span class="std std-ref">chế độ mờ dần</span></a> <strong>Self</strong> và <strong>Dependencies</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các node bị ẩn qua thuộc tính <strong>Visible</strong> về cơ bản bị loại khỏi cây phụ thuộc hiển thị, nên các instance phụ thuộc sẽ không tính đến node bị ẩn hay các node tổ tiên của nó.</p>
+<p>Trên thực tế, điều này có nghĩa là nếu đích của <strong>Visibility Parent</strong> bị ẩn bằng cách đặt thuộc tính <strong>Visible</strong> của nó thành <code class="docutils literal notranslate"><span class="pre">false</span></code>, node sẽ không bị ẩn theo giá trị <strong>Visibility Range Begin</strong> được chỉ định trong visibility parent.</p>
+</div>
+</section>
+</section>
+<section id="configuration-tips">
+<h2>Mẹo cấu hình<a class="headerlink" href="#configuration-tips" title="Link to this heading"></a></h2>
+<section id="use-simpler-materials-at-a-distance-to-improve-performance">
+<h3>Dùng material đơn giản hơn ở xa để cải thiện hiệu năng<a class="headerlink" href="#use-simpler-materials-at-a-distance-to-improve-performance" title="Link to this heading"></a></h3>
+<p>Một cách để cải thiện hiệu năng hơn nữa là dùng material đơn giản hơn cho các mesh LOD ở xa. Dù dùng mesh LOD sẽ giảm số đỉnh cần kết xuất, tải shading theo từng pixel của material vẫn không đổi. Tuy nhiên, tải shading theo từng pixel thường là nút thắt cổ chai trên GPU trong các scene 3D phức tạp. Một cách giảm tải shading này trên GPU là dùng material đơn giản hơn khi chúng không tạo nhiều khác biệt về mặt hình ảnh.</p>
+<p>Mức tăng hiệu năng khi làm vậy cần được đo đạc cẩn thận, vì việc tăng số material <em>riêng biệt</em> trong một scene tự nó cũng tốn hiệu năng. Dù vậy, dùng material đơn giản hơn cho các mesh LOD ở xa vẫn có thể mang lại lợi ích hiệu năng tổng thể nhờ cần ít phép tính theo từng pixel hơn.</p>
+<p>Ví dụ: trên các material dùng cho mesh LOD ở xa, bạn có thể tắt các tính năng material tốn kém như:</p>
+<ul class="simple">
+<li><p>Normal Map (đặc biệt trên nền tảng di động)</p></li>
+<li><p>Rim</p></li>
+<li><p>Clearcoat</p></li>
+<li><p>Anisotropy</p></li>
+<li><p>Height</p></li>
+<li><p>Subsurface Scattering</p></li>
+<li><p>Back Lighting</p></li>
+<li><p>Refraction</p></li>
+<li><p>Proximity Fade</p></li>
+</ul>
+</section>
+<section id="use-dithering-for-lod-transitions">
+<h3>Dùng dithering cho chuyển tiếp LOD<a class="headerlink" href="#use-dithering-for-lod-transitions" title="Link to this heading"></a></h3>
+<p>Hiện tại Godot chỉ hỗ trợ mờ dần dựa trên alpha cho visibility range. Tuy nhiên, bạn có thể dùng dithering thay thế bằng cách dùng nhiều material khác nhau cho các mức LOD khác nhau.</p>
+<p>Dùng dithering thay cho alpha blending trong chuyển đổi LOD có hai ưu điểm:</p>
+<ul class="simple">
+<li><p>Hiệu năng cao hơn, vì độ trong suốt dạng dithering kết xuất nhanh hơn so với alpha blending.</p></li>
+<li><p>Không bị lỗi hình ảnh do <a class="reference internal" href="3d_rendering_limitations.html#doc-3d-rendering-limitations-transparency-sorting"><span class="std std-ref">vấn đề sắp xếp độ trong suốt</span></a> trong lúc chuyển đổi LOD.</p></li>
+</ul>
+<p>Nhược điểm của dithering là một họa tiết &quot;nhiễu&quot; sẽ lộ ra trong lúc chuyển tiếp mờ dần LOD. Điều này có thể ít nhận thấy hơn ở độ phân giải viewport cao hơn hoặc khi bật khử răng cưa theo thời gian (temporal antialiasing).</p>
+<p>Ngoài ra, vì distance fade trong BaseMaterial3D chỉ hỗ trợ mờ dần khi ở gần <em>hoặc</em> mờ dần khi ở xa, cách thiết lập này phù hợp nhất khi chỉ dùng hai mức LOD.</p>
+<ul class="simple">
+<li><p>Đảm bảo <strong>Begin Margin</strong> và <strong>End Margin</strong> được đặt thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code> trên cả hai node MeshInstance3D, vì ở đây không cần hysteresis hay mờ dần alpha.</p></li>
+<li><p>Trên cả hai node MeshInstance3D, <em>giảm</em> <strong>Begin</strong> đi một khoảng bằng khoảng cách chuyển tiếp mờ dần mong muốn và <em>tăng</em> <strong>End</strong> thêm cùng khoảng đó. Điều này là cần thiết để chuyển tiếp dithering thực sự hiển thị được.</p></li>
+<li><p>Trên MeshInstance3D hiển thị khi ở gần, chỉnh sửa material của nó trong inspector. Đặt chế độ <strong>Distance Fade</strong> thành <strong>Object Dither</strong>. Đặt <strong>Min Distance</strong> bằng giá trị <strong>End</strong> của visibility range. Đặt <strong>Max Distance</strong> bằng chính giá trị đó <em>trừ đi</em> khoảng cách chuyển tiếp mờ dần.</p></li>
+<li><p>Trên MeshInstance3D hiển thị khi ở xa, chỉnh sửa material của nó trong inspector. Đặt chế độ <strong>Distance Fade</strong> thành <strong>Object Dither</strong>. Đặt <strong>Min Distance</strong> bằng giá trị <strong>Begin</strong> của visibility range. Đặt <strong>Max Distance</strong> bằng chính giá trị đó <em>cộng thêm</em> khoảng cách chuyển tiếp mờ dần.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mesh_lod.html" class="btn btn-neutral float-left" title="Mức độ chi tiết của mesh (LOD)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="occlusion_culling.html" class="btn btn-neutral float-right" title="Occlusion culling" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

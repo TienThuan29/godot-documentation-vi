@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Port nền tảng tùy chỉnh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/engine_api/custom_platform_ports.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Tương tự Module tùy chỉnh bằng C++, kiến trúc đa nền tảng của Godot được thiết kế để cho phép tạo port nền tảng mà không cần sửa bất kỳ mã nguồn hiện có nào. Một ví dụ về port nền tảng tùy chỉnh đư..." />
+<meta name="description" content="Tương tự Module tùy chỉnh bằng C++, kiến trúc đa nền tảng của Godot được thiết kế để cho phép tạo port nền tảng mà không cần sửa bất kỳ mã nguồn hiện có nào. Một ví dụ về port nền tảng tùy chỉnh đư..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Port nền tảng tùy chỉnh &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Phát triển engine" href="../development/index.html" />
+    <link rel="prev" title="AudioStream tùy chỉnh" href="custom_audiostreams.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/engine_api/custom_platform_ports" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Các API mở rộng engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="custom_modules_in_cpp.html">Module tùy chỉnh bằng C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendor_runtime_module.html">Vendor Runtime Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gdextension/index.html">Hệ thống GDExtension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binding_to_external_libraries.html">Liên kết với thư viện bên ngoài</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_resource_format_loaders.html">Trình tải định dạng resource tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_audiostreams.html">AudioStream tùy chỉnh</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Port nền tảng tùy chỉnh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#official-platform-ports">Các bản port nền tảng chính thức</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-custom-platform-port">Tạo bản port nền tảng tùy chỉnh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-features-of-a-platform-port">Các tính năng bắt buộc của một port nền tảng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-features-of-a-platform-port">Các tính năng tùy chọn của một port nền tảng</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#distributing-a-custom-platform-port">Phân phối port nền tảng tùy chỉnh</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Các API mở rộng engine</a></li>
+      <li class="breadcrumb-item active">Port nền tảng tùy chỉnh</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="custom-platform-ports">
+<span id="doc-custom-platform-ports"></span><h1>Port nền tảng tùy chỉnh<a class="headerlink" href="#custom-platform-ports" title="Link to this heading"></a></h1>
+<p>Tương tự <a class="reference internal" href="custom_modules_in_cpp.html#doc-custom-modules-in-cpp"><span class="std std-ref">Module tùy chỉnh bằng C++</span></a>, kiến trúc đa nền tảng của Godot được thiết kế để cho phép tạo port nền tảng mà không cần sửa bất kỳ mã nguồn hiện có nào.</p>
+<p>Một ví dụ về port nền tảng tùy chỉnh được phân phối độc lập với engine là <a class="reference external" href="https://github.com/efornara/frt">FRT</a>, nhắm tới các máy tính bo mạch đơn. Lưu ý rằng port nền tảng này hiện nhắm tới Godot 3.x; vì vậy, nó không dùng lớp trừu tượng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_displayserver.html" title="Class reference (English)"><span class="xref std std-ref">class_DisplayServer</span></a> mới có trong Godot 4.</p>
+<p>Một số lý do để tạo port nền tảng tùy chỉnh có thể là:</p>
+<ul class="simple">
+<li><p>Bạn muốn port game của mình lên console (xem thêm <a class="reference external" href="https://godotengine.org/consoles/">trang web Godot về hỗ trợ console</a>), nhưng muốn tự viết lớp nền tảng. Đây là một quá trình dài và gian nan, vì nó đòi hỏi ký NDA với các nhà sản xuất console, nhưng nó cho phép bạn toàn quyền kiểm soát quá trình port lên console.</p></li>
+<li><p>Bạn muốn port Godot lên một nền tảng lạ hiện chưa được hỗ trợ.</p></li>
+</ul>
+<p>Nếu bạn có câu hỏi về việc tạo port nền tảng tùy chỉnh, cứ thoải mái hỏi trong kênh <code class="docutils literal notranslate"><span class="pre">#platforms</span></code> của <a class="reference external" href="https://chat.godotengine.org/channel/platforms">Godot Contributors Chat</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot là một engine hiện đại với các yêu cầu hiện đại. Ngay cả khi bạn chỉ định chạy các dự án 2D đơn giản trên nền tảng đích, nó vẫn cần một lượng bộ nhớ khiến việc chạy trên hầu hết các console retro là không khả thi. Để tham khảo, trong Godot 4, một dự án trống không hiển thị gì cần khoảng 100 MB RAM để chạy trên Linux (50 MB ở chế độ headless).</p>
+<p>Nếu bạn muốn chạy Godot trên các nền tảng bị giới hạn bộ nhớ nghiêm ngặt, các phiên bản Godot cũ hơn có yêu cầu bộ nhớ thấp hơn. Quá trình port cũng tương tự, ngoại trừ việc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_displayserver.html" title="Class reference (English)"><span class="xref std std-ref">class_DisplayServer</span></a> chưa được tách khỏi singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_os.html" title="Class reference (English)"><span class="xref std std-ref">class_OS</span></a>.</p>
+</div>
+<section id="official-platform-ports">
+<h2>Các bản port nền tảng chính thức<a class="headerlink" href="#official-platform-ports" title="Link to this heading"></a></h2>
+<p>Các port nền tảng chính thức có thể được dùng làm tài liệu tham khảo khi tạo port nền tảng tùy chỉnh:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/windows">Windows</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/macos">macOS</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/linuxbsd">Linux/*BSD</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/android">Android</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/ios">iOS</a></p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/web">Web</a></p></li>
+</ul>
+<p>Mặc dù mã nền tảng thường độc lập, vẫn có những ngoại lệ. Chẳng hạn, các driver âm thanh dùng chung cho nhiều nền tảng và các driver kết xuất nằm trong <a class="reference external" href="https://github.com/godotengine/godot/tree/master/drivers">thư mục drivers/</a> của mã nguồn Godot.</p>
+</section>
+<section id="creating-a-custom-platform-port">
+<h2>Tạo bản port nền tảng tùy chỉnh<a class="headerlink" href="#creating-a-custom-platform-port" title="Link to this heading"></a></h2>
+<p>Tạo port nền tảng tùy chỉnh là một công việc lớn, đòi hỏi kiến thức trước về SDK của nền tảng. Tùy vào những tính năng bạn cần, khối lượng công việc sẽ khác nhau:</p>
+<section id="required-features-of-a-platform-port">
+<h3>Các tính năng bắt buộc của một port nền tảng<a class="headerlink" href="#required-features-of-a-platform-port" title="Link to this heading"></a></h3>
+<p>Tối thiểu, một port nền tảng phải hiện thực các phương thức từ singleton <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_os.html" title="Class reference (English)"><span class="xref std std-ref">class_OS</span></a> để có thể build và sử dụng ở chế độ headless. Một ảnh vector <code class="docutils literal notranslate"><span class="pre">logo.svg</span></code> (32×32) cũng phải có trong thư mục nền tảng. Logo này được hiển thị trong hộp thoại Export cho mỗi export preset nhắm tới nền tảng đó.</p>
+<p>Xem <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/os_linuxbsd.cpp">bản hiện thực này</a> cho nền tảng Linux/*BSD làm ví dụ. Xem thêm <a class="reference external" href="https://github.com/godotengine/godot/blob/master/core/os/os.h">header của singleton OS</a> để tham khảo.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu nền tảng đích tương tự UNIX, hãy cân nhắc kế thừa từ lớp <code class="docutils literal notranslate"><span class="pre">OS_Unix</span></code> để phần lớn công việc được thực hiện tự động.</p>
+<p>Nếu nền tảng không tương tự UNIX, bạn có thể dùng <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/windows/os_windows.cpp">port Windows</a> làm tài liệu tham khảo.</p>
+</div>
+<p><strong>File detect.py</strong></p>
+<p>Một file <code class="docutils literal notranslate"><span class="pre">detect.py</span></code> phải được tạo trong thư mục của nền tảng với tất cả các phương thức được hiện thực. File này cần thiết để SCons nhận diện nền tảng là một lựa chọn hợp lệ để biên dịch. Xem <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/detect.py">file detect.py</a> cho nền tảng Linux/*BSD làm ví dụ.</p>
+<p>Tất cả các phương thức nên được hiện thực trong <code class="docutils literal notranslate"><span class="pre">detect.py</span></code> như sau:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">is_active()</span></code>: Có thể dùng để tạm thời tắt việc build cho một nền tảng. Thông thường hàm này nên luôn trả về <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_name()</span></code>: Trả về tên hiển thị với người dùng của nền tảng dưới dạng chuỗi.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">can_build()</span></code>: Trả về <code class="docutils literal notranslate"><span class="pre">True</span></code> nếu hệ thống host có thể build cho nền tảng đích, ngược lại trả về <code class="docutils literal notranslate"><span class="pre">False</span></code>. Đừng đặt các bước kiểm tra chậm ở đây, vì hàm này được gọi khi người dùng yêu cầu danh sách nền tảng. Hãy dùng <code class="docutils literal notranslate"><span class="pre">configure()</span></code> cho các bước kiểm tra phụ thuộc chuyên sâu.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_opts()</span></code>: Trả về danh sách các tùy chọn build SCons mà người dùng có thể định nghĩa cho nền tảng này.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_flags()</span></code>: Trả về danh sách các cờ SCons bị ghi đè cho nền tảng này.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">configure()</span></code>: Thực hiện cấu hình build, chẳng hạn chọn các tùy chọn trình biên dịch dựa trên các tùy chọn SCons đã chọn.</p></li>
+</ul>
+</section>
+<section id="optional-features-of-a-platform-port">
+<h3>Các tính năng tùy chọn của một port nền tảng<a class="headerlink" href="#optional-features-of-a-platform-port" title="Link to this heading"></a></h3>
+<p>Trên thực tế, chế độ headless là không đủ nếu bạn muốn thấy bất cứ thứ gì trên màn hình và xử lý các thiết bị đầu vào. Bạn cũng có thể muốn có đầu ra âm thanh cho hầu hết các game.</p>
+<p><em>Một số liên kết trong danh sách này trỏ tới bản hiện thực của nền tảng Linux/*BSD để tham khảo.</em></p>
+<ul class="simple">
+<li><p>Một hoặc nhiều <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/x11/display_server_x11.cpp">DisplayServer</a>, với các phương thức quản lý cửa sổ được hiện thực. DisplayServer cũng bao gồm các tính năng như hỗ trợ chuột, hỗ trợ màn hình cảm ứng và driver tablet (cho bút cảm ứng). Xem <a class="reference external" href="https://github.com/godotengine/godot/blob/master/servers/display_server.h">header của singleton DisplayServer</a> để tham khảo.</p>
+<ul>
+<li><p>Với các nền tảng không hỗ trợ đầy đủ việc quản lý cửa sổ (hoặc nếu điều đó không liên quan tới port bạn đang làm), hầu hết các hàm quản lý cửa sổ có thể để gần như không hiện thực. Các hàm này có thể chỉ cần kiểm tra xem window ID có phải là <code class="docutils literal notranslate"><span class="pre">MAIN_WINDOW_ID</span></code> hay không, và các thao tác cụ thể như thay đổi kích thước có thể gắn với tính năng độ phân giải màn hình của nền tảng (nếu có liên quan). Mọi nỗ lực tạo hoặc thao tác với các window ID khác đều có thể bị từ chối.</p></li>
+</ul>
+</li>
+<li><p><em>Nếu nền tảng đích hỗ trợ các API đồ họa tương ứng:</em> Rendering context cho <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/x11/rendering_context_driver_vulkan_x11.cpp">Vulkan</a>, <a class="reference external" href="https://github.com/godotengine/godot/blob/master/drivers/d3d12/rendering_context_driver_d3d12.cpp">Direct3D 12</a> <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/x11/gl_manager_x11.cpp">OpenGL 3.3 hoặc OpenGL ES 3.0</a>.</p></li>
+<li><p>Các trình xử lý đầu vào cho <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/x11/key_mapping_x11.cpp">bàn phím</a> và <a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/joypad_linux.cpp">tay cầm</a>.</p></li>
+<li><p>Một hoặc nhiều <a class="reference external" href="https://github.com/godotengine/godot/blob/master/drivers/pulseaudio/audio_driver_pulseaudio.cpp">driver âm thanh</a>. Driver âm thanh có thể nằm trong thư mục <code class="docutils literal notranslate"><span class="pre">platform/</span></code> (cách làm của các nền tảng Android và Web), hoặc trong thư mục <code class="docutils literal notranslate"><span class="pre">drivers/</span></code> nếu nhiều nền tảng có thể dùng driver âm thanh này. Xem <a class="reference external" href="https://github.com/godotengine/godot/blob/master/servers/audio_server.h">header của singleton AudioServer</a> để tham khảo.</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/crash_handler_linuxbsd.cpp">Crash handler</a>, để in backtrace khi game bị crash. Điều này giúp việc khắc phục sự cố dễ hơn trên các nền tảng mà log không sẵn có để truy cập.</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/platform/linuxbsd/tts_linux.cpp">Driver chuyển văn bản thành giọng nói</a> (cho khả năng tiếp cận).</p></li>
+<li><p><a class="reference external" href="https://github.com/godotengine/godot/tree/master/platform/linuxbsd/export">Export handler</a> (để xuất từ trình chỉnh sửa, bao gồm cả <a class="reference internal" href="../../tutorials/export/one-click_deploy.html#doc-one-click-deploy"><span class="std std-ref">Triển khai một cú nhấp</span></a>). Không bắt buộc nếu bạn chỉ định xuất file PCK từ trình chỉnh sửa, rồi chạy trực tiếp binary của export template bằng cách đổi tên nó cho khớp với file PCK. Xem <a class="reference external" href="https://github.com/godotengine/godot/blob/master/editor/export/editor_export_platform.h">header của EditorExportPlatform</a> để tham khảo. <code class="docutils literal notranslate"><span class="pre">run_icon.svg</span></code> (16×16) nên có trong thư mục nền tảng nếu <a class="reference internal" href="../../tutorials/export/one-click_deploy.html#doc-one-click-deploy"><span class="std std-ref">Triển khai một cú nhấp</span></a> được hiện thực cho nền tảng đích. Biểu tượng này được hiển thị ở phía trên trình chỉnh sửa khi one-click deploy được thiết lập cho nền tảng đích.</p></li>
+</ul>
+<p>Nếu nền tảng đích không hỗ trợ chạy Vulkan, Direct3D 12, OpenGL 3.3 hoặc OpenGL ES 3.0, bạn có hai lựa chọn:</p>
+<ul class="simple">
+<li><p>Dùng một thư viện lúc chạy để chuyển các lời gọi Vulkan hoặc OpenGL sang API đồ họa khác. Ví dụ, <a class="reference external" href="https://moltengl.com/moltenvk/">MoltenVK</a> được dùng trên macOS để chuyển Vulkan sang Metal lúc chạy.</p></li>
+<li><p>Tạo một renderer mới từ đầu. Đây là một công việc lớn, đặc biệt nếu bạn muốn hỗ trợ cả kết xuất 2D và 3D với các tính năng nâng cao.</p></li>
+</ul>
+</section>
+</section>
+<section id="distributing-a-custom-platform-port">
+<h2>Phân phối port nền tảng tùy chỉnh<a class="headerlink" href="#distributing-a-custom-platform-port" title="Link to this heading"></a></h2>
+<div class="admonition danger">
+<p class="admonition-title">Nguy hiểm</p>
+<p>Trước khi phân phối port nền tảng tùy chỉnh, hãy đảm bảo bạn được phép phân phối toàn bộ mã được liên kết vào. SDK của console thường chịu ràng buộc NDA, ngăn việc phân phối lại cho công chúng.</p>
+</div>
+<p>Các port nền tảng được thiết kế để độc lập nhất có thể. Phần lớn mã có thể được giữ trong một thư mục duy nhất nằm trong <code class="docutils literal notranslate"><span class="pre">platform/</span></code>. Giống như <a class="reference internal" href="custom_modules_in_cpp.html#doc-custom-modules-in-cpp"><span class="std std-ref">Module tùy chỉnh bằng C++</span></a>, điều này giúp đơn giản hóa quá trình build bằng cách cho phép <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> một thư mục nền tảng vào thư mục <code class="docutils literal notranslate"><span class="pre">platform/</span></code> của bản clone repository Godot, rồi chạy <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">platform=&lt;name&gt;</span></code>. Không cần bước nào khác để build, trừ khi cần cài trước các phụ thuộc bên thứ ba dành riêng cho nền tảng.</p>
+<p>Tuy nhiên, khi cần một driver kết xuất tùy chỉnh, phải thêm một thư mục khác vào <code class="docutils literal notranslate"><span class="pre">drivers/</span></code>. Trong trường hợp này, port nền tảng có thể được phân phối dưới dạng một fork của repository Godot, hoặc dưới dạng tập hợp nhiều thư mục có thể thêm vào trên một bản clone repository Git của Godot.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom_audiostreams.html" class="btn btn-neutral float-left" title="AudioStream tùy chỉnh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../development/index.html" class="btn btn-neutral float-right" title="Phát triển engine" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

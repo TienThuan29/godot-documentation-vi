@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Tối ưu bằng Server" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/using_servers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Các engine như Godot mang lại sự dễ dùng hơn nhờ các cấu trúc và tính năng cấp cao. Hầu hết chúng được truy cập và sử dụng thông qua hệ thống scene. Dùng node và resource giúp đơn giản hóa việc tổ ..." />
+<meta name="description" content="Các engine như Godot mang lại sự dễ dùng hơn nhờ các cấu trúc và tính năng cấp cao. Hầu hết chúng được truy cập và sử dụng thông qua hệ thống scene. Dùng node và resource giúp đơn giản hóa việc tổ ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Tối ưu bằng Server &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Tối ưu hóa CPU" href="cpu_optimization.html" />
+    <link rel="prev" title="Mẹo tối ưu hóa chung" href="general_optimization.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/using_servers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#common">Chung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="general_optimization.html">Mẹo tối ưu hóa chung</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tối ưu bằng Server</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#servers">Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rids">RID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-sprite">Tạo một sprite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instantiating-a-mesh-into-3d-space">Tạo instance một Mesh vào không gian 3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-2d-rigidbody-and-moving-a-sprite-with-it">Tạo một RigidBody 2D và di chuyển sprite theo nó</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getting-data-from-the-servers">Lấy dữ liệu từ các server</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gpu">GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#threads">Luồng</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Tối ưu bằng Server</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="optimization-using-servers">
+<span id="doc-using-servers"></span><h1>Tối ưu bằng Server<a class="headerlink" href="#optimization-using-servers" title="Link to this heading"></a></h1>
+<p>Các engine như Godot mang lại sự dễ dùng hơn nhờ các cấu trúc và tính năng cấp cao. Hầu hết chúng được truy cập và sử dụng thông qua <a class="reference internal" href="../scripting/scene_tree.html#doc-scene-tree"><span class="std std-ref">hệ thống scene</span></a>. Dùng node và resource giúp đơn giản hóa việc tổ chức dự án và quản lý asset trong các game phức tạp.</p>
+<p>Cách này có một số nhược điểm:</p>
+<ul class="simple">
+<li><p>Có thêm một lớp phức tạp.</p></li>
+<li><p>Hiệu năng thấp hơn so với khi dùng trực tiếp các API đơn giản.</p></li>
+<li><p>Không thể <a class="reference internal" href="using_multiple_threads.html#doc-using-multiple-threads"><span class="std std-ref">dùng nhiều luồng</span></a> để điều khiển chúng.</p></li>
+<li><p>Cần nhiều bộ nhớ hơn.</p></li>
+</ul>
+<p>Trong hầu hết trường hợp, đây không thực sự là vấn đề. Godot được tối ưu tốt, và hầu hết thao tác được xử lý bằng signal, nghĩa là không cần polling. Dù vậy, đôi khi chúng ta muốn khai thác hiệu năng tốt hơn từ phần cứng khi các hướng tối ưu khác đã cạn kiệt. Ví dụ, việc xử lý hàng chục nghìn instance cho thứ gì đó cần được xử lý mỗi frame có thể trở thành điểm nghẽn.</p>
+<p>Loại tình huống này khiến lập trình viên hối tiếc vì đang dùng game engine và ước có thể quay lại cách triển khai code game cấp thấp, thủ công hơn.</p>
+<p>Dù vậy, Godot được thiết kế để giải quyết vấn đề này.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể xem cách dùng server cấp thấp hoạt động thực tế qua <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/2d/bullet_shower">dự án demo Bullet Shower</a>.</p>
+</div>
+<section id="servers">
+<h2>Server<a class="headerlink" href="#servers" title="Link to this heading"></a></h2>
+<p>Một trong những quyết định thiết kế thú vị nhất của Godot là việc toàn bộ hệ thống scene là <em>tùy chọn</em>. Mặc dù không thể loại bỏ nó khi biên dịch, nó có thể được bỏ qua hoàn toàn.</p>
+<p>Ở phần lõi, Godot dùng khái niệm Server. Chúng là các API cấp thấp để điều khiển kết xuất, vật lý, âm thanh, v.v. Hệ thống scene được xây dựng trên chúng và dùng chúng trực tiếp. Các server phổ biến nhất là:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html" title="Class reference (English)"><span class="xref std std-ref">class_RenderingServer</span></a>: Xử lý mọi thứ liên quan đến đồ họa.</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver3d.html" title="Class reference (English)"><span class="xref std std-ref">class_PhysicsServer3D</span></a>: Xử lý mọi thứ liên quan đến vật lý 3D.</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver2d.html" title="Class reference (English)"><span class="xref std std-ref">class_PhysicsServer2D</span></a>: Xử lý mọi thứ liên quan đến vật lý 2D.</p></li>
+<li><p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audioserver.html" title="Class reference (English)"><span class="xref std std-ref">class_AudioServer</span></a>: Xử lý mọi thứ liên quan đến âm thanh.</p></li>
+</ul>
+<p>Hãy khám phá API của chúng, và bạn sẽ nhận ra rằng tất cả các hàm được cung cấp đều là triển khai cấp thấp của mọi thứ mà Godot cho phép bạn làm bằng node.</p>
+</section>
+<section id="rids">
+<h2>RID<a class="headerlink" href="#rids" title="Link to this heading"></a></h2>
+<p>Chìa khóa để sử dụng các server là hiểu các đối tượng Resource ID (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">RID</span></a>). Đây là các handle mờ (opaque) trỏ tới phần triển khai của server. Chúng được cấp phát và giải phóng thủ công. Hầu như mọi hàm trong các server đều cần RID để truy cập resource thực sự.</p>
+<p>Hầu hết các node và resource của Godot đều chứa sẵn bên trong các RID này từ các server, và bạn có thể lấy chúng bằng nhiều hàm khác nhau. Thực tế, bất cứ thứ gì kế thừa <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resource.html" title="Class reference (English)"><span class="xref std std-ref">Resource</span></a> đều có thể được ép kiểu trực tiếp thành RID. Tuy nhiên, không phải resource nào cũng chứa RID: trong những trường hợp đó, RID sẽ rỗng. Khi đó, resource có thể được truyền vào các API của server dưới dạng RID.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Resource được đếm tham chiếu (xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_refcounted.html" title="Class reference (English)"><span class="xref std std-ref">RefCounted</span></a>), và các tham chiếu tới RID của một resource <em>không</em> được tính khi xác định resource đó còn được sử dụng hay không. Hãy đảm bảo <strong>giữ một tham chiếu</strong> tới resource bên ngoài server. Nếu không, cả resource lẫn RID của nó đều sẽ bị xóa.</p>
+</div>
+<p>Đối với node, có nhiều hàm có sẵn:</p>
+<ul class="simple">
+<li><p>Với CanvasItem, phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html#class-canvasitem-method-get-canvas-item" title="Class reference (English)"><span class="xref std std-ref">CanvasItem.get_canvas_item()</span></a> sẽ trả về RID của canvas item trong server.</p></li>
+<li><p>Với CanvasLayer, phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvaslayer.html#class-canvaslayer-method-get-canvas" title="Class reference (English)"><span class="xref std std-ref">CanvasLayer.get_canvas()</span></a> sẽ trả về RID của canvas trong server.</p></li>
+<li><p>Với Viewport, phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html#class-viewport-method-get-viewport-rid" title="Class reference (English)"><span class="xref std std-ref">Viewport.get_viewport_rid()</span></a> sẽ trả về RID của viewport trong server.</p></li>
+<li><p>Với 2D, resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_world2d.html" title="Class reference (English)"><span class="xref std std-ref">class_World2D</span></a> (lấy được từ các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">class_Viewport</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">CanvasItem</span></a>) chứa các hàm để lấy <em>RenderingServer Canvas</em> và <em>PhysicsServer2D Space</em>. Điều này cho phép tạo và sử dụng các đối tượng 2D trực tiếp bằng API của server.</p></li>
+<li><p>Với 3D, resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_world3d.html" title="Class reference (English)"><span class="xref std std-ref">class_World3D</span></a> (lấy được từ các node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewport.html" title="Class reference (English)"><span class="xref std std-ref">class_Viewport</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Node3D</span></a>) chứa các hàm để lấy <em>RenderingServer Scenario</em> và <em>PhysicsServer Space</em>. Điều này cho phép tạo và sử dụng các đối tượng 3D trực tiếp bằng API của server.</p></li>
+<li><p>Lớp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visualinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_VisualInstance3D</span></a> cho phép lấy <em>instance</em> và <em>instance base</em> của scenario lần lượt thông qua <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visualinstance3d.html#class-visualinstance3d-method-get-instance" title="Class reference (English)"><span class="xref std std-ref">VisualInstance3D.get_instance()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visualinstance3d.html#class-visualinstance3d-method-get-base" title="Class reference (English)"><span class="xref std std-ref">VisualInstance3D.get_base()</span></a>.</p></li>
+</ul>
+<p>Hãy thử khám phá các node và resource mà bạn đã quen thuộc và tìm các hàm để lấy <em>RID</em> của server.</p>
+<p>Không nên điều khiển RID từ các đối tượng đã có node gắn liền. Thay vào đó, luôn dùng các hàm của server để tạo và điều khiển RID mới cũng như tương tác với các RID hiện có.</p>
+</section>
+<section id="creating-a-sprite">
+<h2>Tạo một sprite<a class="headerlink" href="#creating-a-sprite" title="Link to this heading"></a></h2>
+<p>Đây là ví dụ về cách tạo một sprite từ code và di chuyển nó bằng API cấp thấp <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">class_CanvasItem</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi tạo canvas item bằng RenderingServer, bạn nên reset nội suy vật lý ở frame đầu tiên bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html#class-renderingserver-method-canvas-item-reset-physics-interpolation" title="Class reference (English)"><span class="xref std std-ref">RenderingServer.canvas_item_reset_physics_interpolation()</span></a>. Điều này đảm bảo đồng bộ chính xác giữa hệ thống kết xuất và hệ thống vật lý.</p>
+<p>Nếu không làm vậy, canvas item có thể trông như bị dịch chuyển tức thời vào khi scene được tải, thay vì xuất hiện ngay tại vị trí mong muốn.</p>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node2D</span>
+
+
+<span class="c1"># RenderingServer expects references to be kept around.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">texture</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a canvas item, child of this node.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">ci_rid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_create</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Make this node the parent.</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_set_parent</span><span class="p">(</span><span class="n">ci_rid</span><span class="p">,</span><span class="w"> </span><span class="nf">get_canvas_item</span><span class="p">())</span>
+<span class="w">    </span><span class="c1"># Draw a texture on it.</span>
+<span class="w">    </span><span class="c1"># Remember to keep this reference.</span>
+<span class="w">    </span><span class="n">texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">load</span><span class="p">(</span><span class="s2">&quot;res://my_texture.png&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Add it, centered.</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_add_texture_rect</span><span class="p">(</span><span class="n">ci_rid</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Rect2</span><span class="p">(</span><span class="o">-</span><span class="n">texture</span><span class="o">.</span><span class="nf">get_size</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">texture</span><span class="o">.</span><span class="nf">get_size</span><span class="p">()),</span><span class="w"> </span><span class="n">texture</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Add the item, rotated 45 degrees and translated.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">xform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">()</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Function">deg_to_rad</span><span class="p">(</span><span class="mi">45</span><span class="p">))</span><span class="o">.</span><span class="nf">translated</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">))</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_set_transform</span><span class="p">(</span><span class="n">ci_rid</span><span class="p">,</span><span class="w"> </span><span class="n">xform</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Reset physics interpolation for this item.</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_reset_physics_interpolation</span><span class="p">(</span><span class="n">ci_rid</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// RenderingServer expects references to be kept around.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Texture2D</span><span class="w"> </span><span class="n">_texture</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create a canvas item, child of this node.</span>
+<span class="w">        </span><span class="n">Rid</span><span class="w"> </span><span class="n">ciRid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemCreate</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Make this node the parent.</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemSetParent</span><span class="p">(</span><span class="n">ciRid</span><span class="p">,</span><span class="w"> </span><span class="n">GetCanvasItem</span><span class="p">());</span>
+<span class="w">        </span><span class="c1">// Draw a texture on it.</span>
+<span class="w">        </span><span class="c1">// Remember to keep this reference.</span>
+<span class="w">        </span><span class="n">_texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceLoader</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">Texture2D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://my_texture.png&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Add it, centered.</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemAddTextureRect</span><span class="p">(</span><span class="n">ciRid</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Rect2</span><span class="p">(</span><span class="o">-</span><span class="n">_texture</span><span class="p">.</span><span class="n">GetSize</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">_texture</span><span class="p">.</span><span class="n">GetSize</span><span class="p">()),</span><span class="w"> </span><span class="n">_texture</span><span class="p">.</span><span class="n">GetRid</span><span class="p">());</span>
+<span class="w">        </span><span class="c1">// Add the item, rotated 45 degrees and translated.</span>
+<span class="w">        </span><span class="n">Transform2D</span><span class="w"> </span><span class="n">xform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">.</span><span class="n">Identity</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Mathf</span><span class="p">.</span><span class="n">DegToRad</span><span class="p">(</span><span class="mi">45</span><span class="p">)).</span><span class="n">Translated</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">));</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemSetTransform</span><span class="p">(</span><span class="n">ciRid</span><span class="p">,</span><span class="w"> </span><span class="n">xform</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Reset physics interpolation for this item.</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemResetPhysicsInterpolation</span><span class="p">(</span><span class="n">ciRid</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>API Canvas Item trong server cho phép bạn thêm các primitive vẽ vào nó. Một khi đã thêm, chúng không thể bị sửa đổi. Item cần được xóa sạch và các primitive phải được thêm lại. Điều này không áp dụng cho việc đặt transform, vốn có thể thực hiện bao nhiêu lần tùy ý.</p>
+<p>Các primitive được xóa theo cách này:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_clear</span><span class="p">(</span><span class="n">ci_rid</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemClear</span><span class="p">(</span><span class="n">ciRid</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="instantiating-a-mesh-into-3d-space">
+<h2>Tạo instance một Mesh vào không gian 3D<a class="headerlink" href="#instantiating-a-mesh-into-3d-space" title="Link to this heading"></a></h2>
+<p>Các API 3D khác với API 2D, vì vậy phải dùng API tạo instance.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+
+<span class="c1"># RenderingServer expects references to be kept around.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">mesh</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create a visual instance (for 3D).</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">instance_create</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Set the scenario from the world. This ensures it</span>
+<span class="w">    </span><span class="c1"># appears with the same objects as the scene.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">scenario</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">get_world_3d</span><span class="p">()</span><span class="o">.</span><span class="vi">scenario</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">instance_set_scenario</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">scenario</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Add a mesh to it.</span>
+<span class="w">    </span><span class="c1"># Remember to keep this reference.</span>
+<span class="w">    </span><span class="n">mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">load</span><span class="p">(</span><span class="s2">&quot;res://my_mesh.obj&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">instance_set_base</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">mesh</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Move the mesh around.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">xform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">(</span><span class="nb nb-Type">Basis</span><span class="p">(),</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">instance_set_transform</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">xform</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// RenderingServer expects references to be kept around.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Mesh</span><span class="w"> </span><span class="n">_mesh</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create a visual instance (for 3D).</span>
+<span class="w">        </span><span class="n">Rid</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">InstanceCreate</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Set the scenario from the world. This ensures it</span>
+<span class="w">        </span><span class="c1">// appears with the same objects as the scene.</span>
+<span class="w">        </span><span class="n">Rid</span><span class="w"> </span><span class="n">scenario</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWorld3D</span><span class="p">().</span><span class="n">Scenario</span><span class="p">;</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">InstanceSetScenario</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">scenario</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Add a mesh to it.</span>
+<span class="w">        </span><span class="c1">// Remember to keep this reference.</span>
+<span class="w">        </span><span class="n">_mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceLoader</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://my_mesh.obj&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">InstanceSetBase</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">_mesh</span><span class="p">.</span><span class="n">GetRid</span><span class="p">());</span>
+<span class="w">        </span><span class="c1">// Move the mesh around.</span>
+<span class="w">        </span><span class="n">Transform3D</span><span class="w"> </span><span class="n">xform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform3D</span><span class="p">(</span><span class="n">Basis</span><span class="p">.</span><span class="n">Identity</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector3</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">InstanceSetTransform</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">xform</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="creating-a-2d-rigidbody-and-moving-a-sprite-with-it">
+<h2>Tạo một RigidBody 2D và di chuyển sprite theo nó<a class="headerlink" href="#creating-a-2d-rigidbody-and-moving-a-sprite-with-it" title="Link to this heading"></a></h2>
+<p>Đoạn này tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rigidbody2d.html" title="Class reference (English)"><span class="xref std std-ref">class_RigidBody2D</span></a> bằng API <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver2d.html" title="Class reference (English)"><span class="xref std std-ref">class_PhysicsServer2D</span></a> và di chuyển một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html" title="Class reference (English)"><span class="xref std std-ref">class_CanvasItem</span></a> khi body di chuyển.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># PhysicsServer2D expects references to be kept around.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">body</span>
+<span class="k">var</span><span class="w"> </span><span class="n">shape</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_body_moved</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Created your own canvas item; use it here.</span>
+<span class="w">    </span><span class="c1"># `ci_rid` from the sprite example above needs to be moved to a</span>
+<span class="w">    </span><span class="c1"># member variable (instead of within `_ready()`) so it can be referenced here.</span>
+<span class="w">    </span><span class="nb">RenderingServer</span><span class="o">.</span><span class="nf">canvas_item_set_transform</span><span class="p">(</span><span class="n">ci_rid</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="o">.</span><span class="vi">transform</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Create the body.</span>
+<span class="w">    </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">body_create</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">body_set_mode</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="vi">BODY_MODE_RIGID</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Add a shape.</span>
+<span class="w">    </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">rectangle_shape_create</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Set rectangle extents.</span>
+<span class="w">    </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">shape_set_data</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span>
+<span class="w">    </span><span class="c1"># Make sure to keep the shape reference!</span>
+<span class="w">    </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">body_add_shape</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">shape</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Set space, so it collides in the same space as current scene.</span>
+<span class="w">    </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">body_set_space</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="nf">get_world_2d</span><span class="p">()</span><span class="o">.</span><span class="vi">space</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Move initial position.</span>
+<span class="w">    </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">body_set_state</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="vi">BODY_STATE_TRANSFORM</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)))</span>
+<span class="w">    </span><span class="c1"># Add the transform callback, when body moves</span>
+<span class="w">    </span><span class="c1"># The last parameter is optional, can be used as index</span>
+<span class="w">    </span><span class="c1"># if you have many bodies and a single callback.</span>
+<span class="w">    </span><span class="nb">PhysicsServer2D</span><span class="o">.</span><span class="nf">body_set_force_integration_callback</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_body_moved&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Also create a sprite using RenderingServer here.</span>
+<span class="w">    </span><span class="c1"># See the section above on creating a sprite.</span>
+<span class="w">    </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode2D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node2D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Rid</span><span class="w"> </span><span class="n">_canvasItem</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">BodyMoved</span><span class="p">(</span><span class="n">PhysicsDirectBodyState2D</span><span class="w"> </span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Created your own canvas item; use it here.</span>
+<span class="w">        </span><span class="c1">// `ciRid` from the sprite example above needs to be moved to a</span>
+<span class="w">        </span><span class="c1">// member variable (instead of within `_Ready()`) so it can be referenced here.</span>
+<span class="w">        </span><span class="n">RenderingServer</span><span class="p">.</span><span class="n">CanvasItemSetTransform</span><span class="p">(</span><span class="n">_canvasItem</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">Transform</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create the body.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodyCreate</span><span class="p">();</span>
+<span class="w">        </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodySetMode</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodyMode</span><span class="p">.</span><span class="n">Rigid</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Add a shape.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">RectangleShapeCreate</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Set rectangle extents.</span>
+<span class="w">        </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">ShapeSetData</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">));</span>
+<span class="w">        </span><span class="c1">// Make sure to keep the shape reference!</span>
+<span class="w">        </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodyAddShape</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">shape</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Set space, so it collides in the same space as current scene.</span>
+<span class="w">        </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodySetSpace</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">GetWorld2D</span><span class="p">().</span><span class="n">Space</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Move initial position.</span>
+<span class="w">        </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodySetState</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodyState</span><span class="p">.</span><span class="n">Transform</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)));</span>
+<span class="w">        </span><span class="c1">// Add the transform callback, when body moves</span>
+<span class="w">        </span><span class="c1">// The last parameter is optional, can be used as index</span>
+<span class="w">        </span><span class="c1">// if you have many bodies and a single callback.</span>
+<span class="w">        </span><span class="n">PhysicsServer2D</span><span class="p">.</span><span class="n">BodySetForceIntegrationCallback</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Callable</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">MethodName</span><span class="p">.</span><span class="n">BodyMoved</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Also create a sprite using RenderingServer here.</span>
+<span class="w">        </span><span class="c1">// See the section above on creating a sprite.</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Phiên bản 3D sẽ rất tương tự, vì các server vật lý 2D và 3D giống hệt nhau (lần lượt dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rigidbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_RigidBody3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver3d.html" title="Class reference (English)"><span class="xref std std-ref">class_PhysicsServer3D</span></a>).</p>
+</section>
+<section id="getting-data-from-the-servers">
+<h2>Lấy dữ liệu từ các server<a class="headerlink" href="#getting-data-from-the-servers" title="Link to this heading"></a></h2>
+<p>Cố gắng <strong>không bao giờ</strong> yêu cầu bất kỳ thông tin nào từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html" title="Class reference (English)"><span class="xref std std-ref">class_RenderingServer</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver2d.html" title="Class reference (English)"><span class="xref std std-ref">class_PhysicsServer2D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_physicsserver3d.html" title="Class reference (English)"><span class="xref std std-ref">class_PhysicsServer3D</span></a> bằng cách gọi hàm, trừ khi bạn biết mình đang làm gì. Các server này thường chạy bất đồng bộ để tăng hiệu năng, và việc gọi bất kỳ hàm nào trả về giá trị sẽ làm chúng đình trệ và buộc chúng xử lý mọi thứ đang chờ cho đến khi hàm thực sự được gọi. Điều này sẽ làm giảm hiệu năng nghiêm trọng nếu bạn gọi chúng mỗi frame (và sẽ không rõ ràng vì sao).</p>
+<p>Vì lý do này, hầu hết API trong các server đó được thiết kế sao cho thậm chí không thể yêu cầu thông tin trả về, trừ khi đó là dữ liệu thực sự có thể lưu lại.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="general_optimization.html" class="btn btn-neutral float-left" title="Mẹo tối ưu hóa chung" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="cpu_optimization.html" class="btn btn-neutral float-right" title="Tối ưu hóa CPU" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

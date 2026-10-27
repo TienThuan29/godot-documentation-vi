@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Bản địa hóa bằng gettext (file PO)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/i18n/localization_using_gettext.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Ngoài việc import bản dịch ở định dạng CSV, Godot cũng hỗ trợ tải các file bản dịch được viết theo định dạng GNU gettext (dạng văn bản.po và dạng đã biên dịch.mo). Ưu điểm: gettext là một định dạng..." />
+<meta name="description" content="Ngoài việc import bản dịch ở định dạng CSV, Godot cũng hỗ trợ tải các file bản dịch được viết theo định dạng GNU gettext (dạng văn bản.po và dạng đã biên dịch.mo). Ưu điểm: gettext là một định dạng..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Bản địa hóa bằng gettext (file PO) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Mã locale" href="locales.html" />
+    <link rel="prev" title="Bản địa hóa bằng bảng tính" href="localization_using_spreadsheets.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/i18n/localization_using_gettext" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Quốc tế hóa</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="internationalizing_games.html">Quốc tế hóa game</a></li>
+<li class="toctree-l2"><a class="reference internal" href="localization_using_spreadsheets.html">Bản địa hóa bằng bảng tính</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bản địa hóa bằng gettext (file PO)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#advantages">Ưu điểm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disadvantages">Nhược điểm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-gettext-tools">Cài đặt công cụ gettext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-the-po-template">Tạo PO template</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#automatic-generation-using-the-editor">Tự động tạo bằng trình chỉnh sửa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#manual-creation">Tạo thủ công</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-messages-file-from-a-po-template">Tạo file message từ PO template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loading-a-messages-file-in-godot">Tải file message trong Godot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-message-files-to-follow-the-po-template">Cập nhật file message theo PO template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checking-the-validity-of-a-po-file-or-template">Kiểm tra tính hợp lệ của file PO hoặc template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-binary-mo-files-useful-for-large-projects-only">Dùng file MO nhị phân (chỉ hữu ích cho dự án lớn)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-localizable-strings-from-gdscript-files">Trích xuất chuỗi cần bản địa hóa từ file GDScript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-context">Dùng ngữ cảnh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-po-files">Cập nhật file PO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pot-generation-custom-plugin">Plugin tùy chỉnh để tạo POT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="locales.html">Mã locale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pseudolocalization.html">Pseudolocalization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Quốc tế hóa</a></li>
+      <li class="breadcrumb-item active">Bản địa hóa bằng gettext (file PO)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="localization-using-gettext-po-files">
+<span id="doc-localization-using-gettext"></span><h1>Bản địa hóa bằng gettext (file PO)<a class="headerlink" href="#localization-using-gettext-po-files" title="Link to this heading"></a></h1>
+<p>Ngoài việc import bản dịch ở <a class="reference internal" href="localization_using_spreadsheets.html#doc-localization-using-spreadsheets"><span class="std std-ref">định dạng CSV</span></a>, Godot cũng hỗ trợ tải các file bản dịch được viết theo định dạng GNU gettext (dạng văn bản <code class="docutils literal notranslate"><span class="pre">.po</span></code> và dạng đã biên dịch <code class="docutils literal notranslate"><span class="pre">.mo</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để làm quen với gettext, hãy xem <a class="reference external" href="https://www.labri.fr/perso/fleury/posts/programming/a-quick-gettext-tutorial.html">A Quick Gettext Tutorial</a>. Bài này được viết cho các dự án C, nhưng phần lớn lời khuyên cũng áp dụng được cho Godot (trừ <code class="docutils literal notranslate"><span class="pre">xgettext</span></code>).</p>
+<p>Để xem tài liệu đầy đủ, hãy tham khảo <a class="reference external" href="https://www.gnu.org/software/gettext/manual/gettext.html">GNU Gettext</a>.</p>
+</div>
+<section id="advantages">
+<h2>Ưu điểm<a class="headerlink" href="#advantages" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>gettext là một định dạng chuẩn, có thể chỉnh sửa bằng bất kỳ trình soạn thảo văn bản nào hoặc các trình chỉnh sửa có giao diện đồ họa như <a class="reference external" href="https://poedit.net/">Poedit</a>. Điều này có ý nghĩa vì nó cung cấp nhiều công cụ cho người dịch, chẳng hạn như đánh dấu các chuỗi đã lỗi thời, tìm các chuỗi chưa được dịch, v.v.</p></li>
+<li><p>gettext được hỗ trợ bởi các nền tảng dịch thuật như <a class="reference external" href="https://www.transifex.com/">Transifex</a> và <a class="reference external" href="https://weblate.org/">Weblate</a>, giúp mọi người cộng tác bản địa hóa dễ dàng hơn.</p></li>
+<li><p>So với CSV, các file gettext hoạt động tốt hơn với các hệ thống quản lý phiên bản như Git, vì mỗi locale có file message riêng.</p></li>
+<li><p>Chuỗi nhiều dòng dễ chỉnh sửa trong file PO của gettext hơn so với file CSV.</p></li>
+</ul>
+</section>
+<section id="disadvantages">
+<h2>Nhược điểm<a class="headerlink" href="#disadvantages" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>File PO của gettext có định dạng phức tạp hơn CSV và có thể khó nắm bắt hơn với những người mới làm bản địa hóa phần mềm.</p></li>
+<li><p>Những người duy trì các file bản địa hóa sẽ phải cài đặt công cụ gettext trên hệ thống của mình. Tuy nhiên, vì Godot hỗ trợ dùng file message dạng văn bản (<code class="docutils literal notranslate"><span class="pre">.po</span></code>), người dịch có thể kiểm tra công việc của mình mà không cần cài công cụ gettext.</p></li>
+<li><p>File PO của gettext thường dùng tiếng Anh làm ngôn ngữ gốc. Người dịch sẽ dựa vào ngôn ngữ gốc này để dịch sang các ngôn ngữ khác. Bạn vẫn có thể dùng ngôn ngữ khác làm ngôn ngữ gốc, nhưng điều này không phổ biến.</p></li>
+</ul>
+</section>
+<section id="installing-gettext-tools">
+<h2>Cài đặt công cụ gettext<a class="headerlink" href="#installing-gettext-tools" title="Link to this heading"></a></h2>
+<p>Các công cụ gettext dòng lệnh là cần thiết để thực hiện các thao tác bảo trì, chẳng hạn như cập nhật file message. Vì vậy, bạn rất nên cài đặt chúng.</p>
+<ul class="simple">
+<li><p><strong>Windows:</strong> Tải trình cài đặt từ <a class="reference external" href="https://mlocati.github.io/articles/gettext-iconv-windows.html">trang này</a>. Mọi kiến trúc và kiểu binary (shared hoặc static) đều dùng được; nếu không chắc, hãy chọn trình cài đặt static 64-bit.</p></li>
+<li><p><strong>macOS:</strong> Cài đặt gettext bằng <a class="reference external" href="https://brew.sh/">Homebrew</a> với lệnh <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">gettext</span></code>, hoặc bằng <a class="reference external" href="https://www.macports.org/">MacPorts</a> với lệnh <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">port</span> <span class="pre">install</span> <span class="pre">gettext</span></code>.</p></li>
+<li><p><strong>Linux:</strong> Trên hầu hết các bản phân phối, hãy cài gói <code class="docutils literal notranslate"><span class="pre">gettext</span></code> từ trình quản lý gói của bản phân phối.</p></li>
+</ul>
+<p>Nếu muốn một công cụ có giao diện đồ họa, bạn có thể tải Poedit từ <a class="reference external" href="https://poedit.net/">trang web chính thức</a>. Phiên bản cơ bản là mã nguồn mở và được phát hành theo giấy phép MIT.</p>
+</section>
+<section id="creating-the-po-template">
+<h2>Tạo PO template<a class="headerlink" href="#creating-the-po-template" title="Link to this heading"></a></h2>
+<section id="automatic-generation-using-the-editor">
+<h3>Tự động tạo bằng trình chỉnh sửa<a class="headerlink" href="#automatic-generation-using-the-editor" title="Link to this heading"></a></h3>
+<p>Trình chỉnh sửa có thể tự động tạo PO template từ các file scene và GDScript được chỉ định. Việc tạo POT này cũng hỗ trợ ngữ cảnh dịch và dạng số nhiều nếu được dùng trong script, thông qua đối số thứ hai (tùy chọn) của <code class="docutils literal notranslate"><span class="pre">tr()</span></code> và phương thức <code class="docutils literal notranslate"><span class="pre">tr_n()</span></code>.</p>
+<p>Mở <span class="role-menu role-ui">Project &gt; Project Settings &gt; Localization &gt; Template Generation</span>, rồi dùng nút <span class="role-button role-ui">Add…</span> để chỉ định đường dẫn tới các scene và script trong dự án có chứa chuỗi cần bản địa hóa:</p>
+<figure class="align-center" id="id1">
+<img alt="Tạo PO template trong tab Localization &gt; Template Generation của Project Settings" src="../../_images/localization_using_gettext_pot_generation.webp" />
+<figcaption>
+<p><span class="caption-text">Tạo PO template trong tab <span class="role-menu role-ui">Localization &gt; Template Generation</span> của <span class="role-ui">Project Settings</span></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Sau khi thêm ít nhất một scene hoặc script, nhấp <span class="role-button role-ui">Generate</span> ở góc trên bên phải, rồi chỉ định đường dẫn tới file đầu ra có phần mở rộng <code class="docutils literal notranslate"><span class="pre">pot</span></code>. File này có thể đặt ở bất kỳ đâu trong thư mục dự án, nhưng nên giữ nó trong một thư mục con như <code class="docutils literal notranslate"><span class="pre">locale</span></code>, vì mỗi locale sẽ được định nghĩa trong một file riêng.</p>
+<p>Xem <a class="reference internal" href="#doc-localization-using-gettext-gdscript"><span class="std std-ref">bên dưới</span></a> để biết cách thêm chú thích cho người dịch hoặc loại trừ một số chuỗi khỏi PO template đối với các file GDScript.</p>
+<p>Sau đó, bạn có thể chuyển sang <a class="reference internal" href="#doc-localization-using-gettext-messages-file"><span class="std std-ref">tạo file message từ PO template</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hãy nhớ tạo lại PO template sau khi thay đổi bất kỳ chuỗi cần bản địa hóa nào, hoặc sau khi thêm scene hay script mới. Nếu không, các chuỗi mới thêm sẽ không thể bản địa hóa và người dịch sẽ không thể cập nhật bản dịch cho các chuỗi đã lỗi thời.</p>
+</div>
+</section>
+<section id="manual-creation">
+<h3>Tạo thủ công<a class="headerlink" href="#manual-creation" title="Link to this heading"></a></h3>
+<p>Nếu cách tạo tự động không đáp ứng được nhu cầu của bạn, bạn có thể tạo PO template bằng tay trong trình soạn thảo văn bản. File này có thể đặt ở bất kỳ đâu trong thư mục dự án, nhưng nên giữ nó trong một thư mục con, vì mỗi locale sẽ được định nghĩa trong một file riêng.</p>
+<p>Tạo một thư mục tên <code class="docutils literal notranslate"><span class="pre">locale</span></code> trong thư mục dự án. Trong thư mục này, lưu một file tên <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code> với nội dung sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Don&#39;t remove the two lines below, they&#39;re required for gettext to work correctly.</span>
+<span class="n">msgid</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="n">msgstr</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+<span class="c1"># Example of a regular string.</span>
+<span class="n">msgid</span><span class="w"> </span><span class="s2">&quot;Hello world!&quot;</span>
+<span class="n">msgstr</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+<span class="c1"># Example of a string with pluralization.</span>
+<span class="n">msgid</span><span class="w"> </span><span class="s2">&quot;There is </span><span class="si">%d</span><span class="s2"> apple.&quot;</span>
+<span class="n">msgid_plural</span><span class="w"> </span><span class="s2">&quot;There are </span><span class="si">%d</span><span class="s2"> apples.&quot;</span>
+<span class="n">msgstr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="n">msgstr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+<span class="c1"># Example of a string with a translation context.</span>
+<span class="n">msgctxt</span><span class="w"> </span><span class="s2">&quot;Actions&quot;</span>
+<span class="n">msgid</span><span class="w"> </span><span class="s2">&quot;Close&quot;</span>
+<span class="n">msgstr</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>Message trong gettext được tạo thành từ các cặp <code class="docutils literal notranslate"><span class="pre">msgid</span></code> và <code class="docutils literal notranslate"><span class="pre">msgstr</span></code>. <code class="docutils literal notranslate"><span class="pre">msgid</span></code> là chuỗi nguồn (thường bằng tiếng Anh), <code class="docutils literal notranslate"><span class="pre">msgstr</span></code> sẽ là chuỗi đã dịch.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Giá trị <code class="docutils literal notranslate"><span class="pre">msgstr</span></code> trong các file PO template (<code class="docutils literal notranslate"><span class="pre">.pot</span></code>) phải <strong>luôn</strong> để trống. Việc bản địa hóa sẽ được thực hiện trong các file <code class="docutils literal notranslate"><span class="pre">.po</span></code> được tạo ra.</p>
+</div>
+</section>
+</section>
+<section id="creating-a-messages-file-from-a-po-template">
+<span id="doc-localization-using-gettext-messages-file"></span><h2>Tạo file message từ PO template<a class="headerlink" href="#creating-a-messages-file-from-a-po-template" title="Link to this heading"></a></h2>
+<p>Lệnh <code class="docutils literal notranslate"><span class="pre">msginit</span></code> được dùng để chuyển PO template thành file message. Ví dụ, để tạo file bản địa hóa tiếng Pháp, hãy dùng lệnh sau khi đang ở trong thư mục <code class="docutils literal notranslate"><span class="pre">locale</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>msginit<span class="w"> </span>--no-translator<span class="w"> </span>--input<span class="o">=</span>messages.pot<span class="w"> </span>--locale<span class="o">=</span>fr
+</pre></div>
+</div>
+<p>Lệnh trên sẽ tạo một file tên <code class="docutils literal notranslate"><span class="pre">fr.po</span></code> trong cùng thư mục với PO template.</p>
+<p>Ngoài ra, bạn có thể làm việc này bằng giao diện đồ họa với Poedit, hoặc bằng cách tải file POT lên nền tảng web bạn chọn.</p>
+</section>
+<section id="loading-a-messages-file-in-godot">
+<h2>Tải file message trong Godot<a class="headerlink" href="#loading-a-messages-file-in-godot" title="Link to this heading"></a></h2>
+<p>Để đăng ký một file message làm bản dịch trong dự án, hãy mở <span class="role-ui">Project Settings</span>, rồi vào <span class="role-menu role-ui">Localization &gt; Translations</span>, nhấp <span class="role-button role-ui">Add…</span> rồi chọn file <code class="docutils literal notranslate"><span class="pre">.po</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.mo</span></code> trong hộp thoại chọn file. Locale sẽ được suy ra từ thuộc tính <code class="docutils literal notranslate"><span class="pre">&quot;Language:</span> <span class="pre">&lt;code&gt;\n&quot;</span></code> trong file message.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Xem <a class="reference internal" href="internationalizing_games.html#doc-internationalizing-games"><span class="std std-ref">Quốc tế hóa game</span></a> để biết thêm thông tin về việc import và kiểm tra bản dịch trong Godot.</p>
+</div>
+</section>
+<section id="updating-message-files-to-follow-the-po-template">
+<h2>Cập nhật file message theo PO template<a class="headerlink" href="#updating-message-files-to-follow-the-po-template" title="Link to this heading"></a></h2>
+<p>Sau khi cập nhật PO template, bạn sẽ phải cập nhật các file message để chúng chứa các chuỗi mới, đồng thời loại bỏ các chuỗi không còn trong PO template. Việc này có thể thực hiện tự động bằng công cụ <code class="docutils literal notranslate"><span class="pre">msgmerge</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># The order matters: specify the message file *then* the PO template!</span>
+msgmerge<span class="w"> </span>--update<span class="w"> </span>--backup<span class="o">=</span>none<span class="w"> </span>fr.po<span class="w"> </span>messages.pot
+</pre></div>
+</div>
+<p>Nếu bạn muốn giữ bản sao lưu của file message gốc (sẽ được lưu thành <code class="docutils literal notranslate"><span class="pre">fr.po~</span></code> trong ví dụ này), hãy bỏ đối số <code class="docutils literal notranslate"><span class="pre">--backup=none</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Sau khi chạy <code class="docutils literal notranslate"><span class="pre">msgmerge</span></code>, các chuỗi đã bị thay đổi trong ngôn ngữ gốc sẽ được thêm chú thích &quot;fuzzy&quot; phía trước trong file <code class="docutils literal notranslate"><span class="pre">.po</span></code>. Chú thích này cho biết bản dịch cần được cập nhật để khớp với chuỗi nguồn mới, vì nhiều khả năng bản dịch sẽ không chính xác cho đến khi được cập nhật.</p>
+<p>Các chuỗi có chú thích &quot;fuzzy&quot; sẽ <strong>không</strong> được Godot đọc cho đến khi bản dịch được cập nhật và chú thích &quot;fuzzy&quot; được gỡ bỏ.</p>
+</div>
+</section>
+<section id="checking-the-validity-of-a-po-file-or-template">
+<h2>Kiểm tra tính hợp lệ của file PO hoặc template<a class="headerlink" href="#checking-the-validity-of-a-po-file-or-template" title="Link to this heading"></a></h2>
+<p>Bạn có thể kiểm tra xem cú pháp của một file gettext có hợp lệ hay không.</p>
+<p>Nếu mở bằng Poeditor, nó sẽ hiển thị các cảnh báo phù hợp khi có lỗi cú pháp. Bạn cũng có thể kiểm tra bằng cách chạy lệnh gettext dưới đây:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>msgfmt<span class="w"> </span>fr.po<span class="w"> </span>--check
+</pre></div>
+</div>
+<p>Nếu có lỗi cú pháp hoặc cảnh báo, chúng sẽ được hiển thị trong console. Nếu không, <code class="docutils literal notranslate"><span class="pre">msgfmt</span></code> sẽ không xuất ra gì cả.</p>
+</section>
+<section id="using-binary-mo-files-useful-for-large-projects-only">
+<h2>Dùng file MO nhị phân (chỉ hữu ích cho dự án lớn)<a class="headerlink" href="#using-binary-mo-files-useful-for-large-projects-only" title="Link to this heading"></a></h2>
+<p>Với các dự án lớn có từ vài nghìn chuỗi cần dịch trở lên, việc dùng file message MO nhị phân (đã biên dịch) thay cho file PO dạng văn bản có thể đáng cân nhắc. File MO nhị phân nhỏ hơn và đọc nhanh hơn so với file PO tương đương.</p>
+<p>Bạn có thể tạo file MO bằng lệnh dưới đây:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>msgfmt<span class="w"> </span>fr.po<span class="w"> </span>--no-hash<span class="w"> </span>-o<span class="w"> </span>fr.mo
+</pre></div>
+</div>
+<p>Nếu file PO hợp lệ, lệnh này sẽ tạo file <code class="docutils literal notranslate"><span class="pre">fr.mo</span></code> bên cạnh file PO. File MO này sau đó có thể được tải trong Godot như mô tả ở trên.</p>
+<p>File PO gốc nên được giữ trong hệ thống quản lý phiên bản để bạn có thể cập nhật bản dịch sau này. Trong trường hợp bạn làm mất file PO gốc và muốn dịch ngược file MO thành file PO dạng văn bản, bạn có thể làm như sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>msgunfmt<span class="w"> </span>fr.mo<span class="w"> </span>&gt;<span class="w"> </span>fr.po
+</pre></div>
+</div>
+<p>File được dịch ngược sẽ không có chú thích hay các chuỗi fuzzy, vì ngay từ đầu chúng không bao giờ được biên dịch vào file MO.</p>
+</section>
+<section id="extracting-localizable-strings-from-gdscript-files">
+<span id="doc-localization-using-gettext-gdscript"></span><h2>Trích xuất chuỗi cần bản địa hóa từ file GDScript<a class="headerlink" href="#extracting-localizable-strings-from-gdscript-files" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/godotengine/godot/blob/master/modules/gdscript/editor/gdscript_translation_parser_plugin.h">Editor plugin</a> tích hợp sẵn nhận diện nhiều mẫu trong mã nguồn để trích xuất các chuỗi cần bản địa hóa từ file GDScript, bao gồm nhưng không giới hạn ở:</p>
+<ul class="simple">
+<li><p>các lời gọi <code class="docutils literal notranslate"><span class="pre">tr()</span></code>, <code class="docutils literal notranslate"><span class="pre">tr_n()</span></code>, <code class="docutils literal notranslate"><span class="pre">atr()</span></code> và <code class="docutils literal notranslate"><span class="pre">atr_n()</span></code>;</p></li>
+<li><p>gán các thuộc tính <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">placeholder_text</span></code> và <code class="docutils literal notranslate"><span class="pre">tooltip_text</span></code>;</p></li>
+<li><p>các lời gọi <code class="docutils literal notranslate"><span class="pre">add_tab()</span></code>, <code class="docutils literal notranslate"><span class="pre">add_item()</span></code>, <code class="docutils literal notranslate"><span class="pre">set_tab_title()</span></code> và các lời gọi khác;</p></li>
+<li><p>bộ lọc <code class="docutils literal notranslate"><span class="pre">FileDialog</span></code> như <code class="docutils literal notranslate"><span class="pre">&quot;*.png</span> <span class="pre">;</span> <span class="pre">PNG</span> <span class="pre">Images&quot;</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Đối số hoặc toán hạng bên phải phải là một chuỗi hằng, nếu không plugin sẽ không thể đánh giá biểu thức và sẽ bỏ qua nó.</p>
+</div>
+<p>Nếu plugin trích xuất những chuỗi không cần thiết, bạn có thể bỏ qua chúng bằng chú thích <code class="docutils literal notranslate"><span class="pre">NO_TRANSLATE</span></code>. Bạn cũng có thể cung cấp thêm thông tin cho người dịch bằng chú thích <code class="docutils literal notranslate"><span class="pre">TRANSLATORS:</span></code>. Các chú thích này phải được đặt trên cùng dòng với mẫu được nhận diện hoặc ngay trước nó.</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="sx">$CharacterName</span><span class="o">.</span><span class="vi">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;???&quot;</span><span class="w"> </span><span class="c1"># NO_TRANSLATE</span>
+
+<span class="c1"># NO_TRANSLATE: Language name.</span>
+<span class="sx">$TabContainer</span><span class="o">.</span><span class="nf">set_tab_title</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Python&quot;</span><span class="p">)</span>
+
+<span class="n">item</span><span class="o">.</span><span class="vi">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Tool&quot;</span><span class="w"> </span><span class="c1"># TRANSLATORS: Up to 10 characters.</span>
+
+<span class="c1"># TRANSLATORS: This is a reference to Lewis Carroll&#39;s poem &quot;Jabberwocky&quot;,</span>
+<span class="c1"># make sure to keep this as it is important to the plot.</span>
+<span class="nf">say</span><span class="p">(</span><span class="nf">tr</span><span class="p">(</span><span class="s2">&quot;He took his vorpal sword in hand. The end?&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="using-context">
+<h2>Dùng ngữ cảnh<a class="headerlink" href="#using-context" title="Link to this heading"></a></h2>
+<p>Tham số <code class="docutils literal notranslate"><span class="pre">context</span></code> có thể dùng để phân biệt tình huống sử dụng một bản dịch, hoặc để phân biệt các từ đa nghĩa (từ có nhiều nghĩa).</p>
+<p>Ví dụ:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nf">tr</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Main Menu&quot;</span><span class="p">)</span>
+<span class="nf">tr</span><span class="p">(</span><span class="s2">&quot;End&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Main Menu&quot;</span><span class="p">)</span>
+<span class="nf">tr</span><span class="p">(</span><span class="s2">&quot;Shop&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Main Menu&quot;</span><span class="p">)</span>
+<span class="nf">tr</span><span class="p">(</span><span class="s2">&quot;Shop&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;In Game&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Trong file PO của gettext, một chuỗi có ngữ cảnh có thể được định nghĩa như sau:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example of a string with a translation context.</span>
+<span class="n">msgctxt</span><span class="w"> </span><span class="s2">&quot;Main Menu&quot;</span>
+<span class="n">msgid</span><span class="w"> </span><span class="s2">&quot;Shop&quot;</span>
+<span class="n">msgstr</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+
+<span class="c1"># A different source string that is identical, but with a different context.</span>
+<span class="n">msgctxt</span><span class="w"> </span><span class="s2">&quot;In Game&quot;</span>
+<span class="n">msgid</span><span class="w"> </span><span class="s2">&quot;Shop&quot;</span>
+<span class="n">msgstr</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="updating-po-files">
+<h2>Cập nhật file PO<a class="headerlink" href="#updating-po-files" title="Link to this heading"></a></h2>
+<p>Sớm hay muộn, bạn sẽ thêm nội dung mới vào trò chơi, và sẽ có các chuỗi mới cần được dịch. Khi đó, bạn sẽ cần cập nhật các file PO hiện có để bao gồm các chuỗi mới.</p>
+<p>Đầu tiên, tạo một file POT mới chứa tất cả các chuỗi hiện có cùng với các chuỗi mới thêm. Sau đó, hợp nhất các file PO hiện có với file POT mới. Có hai cách để làm việc này:</p>
+<ul class="simple">
+<li><p>Dùng một trình chỉnh sửa gettext; nó thường có tùy chọn cập nhật file PO từ file POT.</p></li>
+<li><p>Dùng công cụ <code class="docutils literal notranslate"><span class="pre">msgmerge</span></code> của gettext:</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># The order matters: specify the message file *then* the PO template!</span>
+msgmerge<span class="w"> </span>--update<span class="w"> </span>--backup<span class="o">=</span>none<span class="w"> </span>fr.po<span class="w"> </span>messages.pot
+</pre></div>
+</div>
+<p>Nếu bạn muốn giữ bản sao lưu của file message gốc (sẽ được lưu thành <code class="docutils literal notranslate"><span class="pre">fr.po~</span></code> trong ví dụ này), hãy bỏ đối số <code class="docutils literal notranslate"><span class="pre">--backup=none</span></code>.</p>
+</section>
+<section id="pot-generation-custom-plugin">
+<h2>Plugin tùy chỉnh để tạo POT<a class="headerlink" href="#pot-generation-custom-plugin" title="Link to this heading"></a></h2>
+<p>Nếu bạn cần xử lý thêm định dạng file nào khác, bạn có thể viết một plugin tùy chỉnh để phân tích và trích xuất chuỗi từ file tùy chỉnh đó. Plugin tùy chỉnh này sẽ trích xuất các chuỗi và ghi vào file POT khi bạn nhấn <strong>Generate POT</strong>. Để tìm hiểu thêm về cách tạo plugin phân tích bản dịch, hãy xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_editortranslationparserplugin.html" title="Class reference (English)"><span class="xref std std-ref">EditorTranslationParserPlugin</span></a>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="localization_using_spreadsheets.html" class="btn btn-neutral float-left" title="Bản địa hóa bằng bảng tính" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="locales.html" class="btn btn-neutral float-right" title="Mã locale" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

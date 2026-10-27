@@ -1,0 +1,917 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Multiplayer cấp cao" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/networking/high_level_multiplayer.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="API cấp cao và API cấp thấp: Phần sau giải thích sự khác biệt giữa networking cấp cao và cấp thấp trong Godot cũng như một số kiến thức nền tảng. Nếu bạn muốn bắt tay ngay vào việc thêm networking ..." />
+<meta name="description" content="API cấp cao và API cấp thấp: Phần sau giải thích sự khác biệt giữa networking cấp cao và cấp thấp trong Godot cũng như một số kiến thức nền tảng. Nếu bạn muốn bắt tay ngay vào việc thêm networking ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Multiplayer cấp cao &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Gửi HTTP request" href="http_request_class.html" />
+    <link rel="prev" title="Mạng" href="index.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/networking/high_level_multiplayer" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Mạng</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multiplayer cấp cao</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#high-level-vs-low-level-api">API cấp cao và API cấp thấp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mid-level-abstraction">Lớp trừu tượng cấp trung</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hosting-considerations">Lưu ý khi host</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#initializing-the-network">Khởi tạo mạng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#managing-connections">Quản lý kết nối</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remote-procedure-calls">Gọi thủ tục từ xa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#channels">Kênh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-lobby-implementation">Ví dụ triển khai lobby</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exporting-for-dedicated-servers">Xuất cho máy chủ chuyên dụng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authentication">Xác thực</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secure-multiplayer-design">Thiết kế multiplayer an toàn</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="http_request_class.html">Gửi HTTP request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http_client_class.html">Lớp HTTP client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ssl_certificates.html">Chứng chỉ TLS/SSL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html">Sử dụng WebSocket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webrtc.html">WebRTC</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Mạng</a></li>
+      <li class="breadcrumb-item active">Multiplayer cấp cao</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="high-level-multiplayer">
+<span id="doc-high-level-multiplayer"></span><h1>Multiplayer cấp cao<a class="headerlink" href="#high-level-multiplayer" title="Link to this heading"></a></h1>
+<section id="high-level-vs-low-level-api">
+<h2>API cấp cao và API cấp thấp<a class="headerlink" href="#high-level-vs-low-level-api" title="Link to this heading"></a></h2>
+<p>Phần sau giải thích sự khác biệt giữa networking cấp cao và cấp thấp trong Godot cũng như một số kiến thức nền tảng. Nếu bạn muốn bắt tay ngay vào việc thêm networking cho những node đầu tiên của mình, hãy chuyển tới <a class="reference internal" href="#initializing-the-network">Initializing the network</a> bên dưới. Nhưng nhớ đọc phần còn lại sau nhé!</p>
+<p>Godot luôn hỗ trợ networking cấp thấp tiêu chuẩn qua <abbr title="User Datagram Protocol">UDP</abbr>, <abbr title="Transmission Control Protocol">TCP</abbr> và một số giao thức cấp cao hơn như <abbr title="Hypertext Transfer Protocol">HTTP</abbr> và <abbr title="Secure Sockets Layer">SSL</abbr>. Các giao thức này linh hoạt và có thể dùng cho hầu như mọi thứ. Tuy nhiên, dùng chúng để đồng bộ trạng thái game thủ công có thể tốn rất nhiều công sức. Đôi khi khối lượng công việc đó không thể tránh khỏi hoặc đáng bỏ ra, ví dụ khi làm việc với một triển khai server tùy chỉnh ở backend. Nhưng trong hầu hết các trường hợp, bạn nên cân nhắc API networking cấp cao của Godot, vốn đánh đổi một phần khả năng kiểm soát chi tiết của networking cấp thấp để dễ sử dụng hơn.</p>
+<p>Điều này là do những hạn chế vốn có của các giao thức cấp thấp:</p>
+<ul class="simple">
+<li><p>TCP đảm bảo các gói tin luôn đến nơi đáng tin cậy và đúng thứ tự, nhưng độ trễ thường cao hơn do cơ chế sửa lỗi. Đây cũng là một giao thức khá phức tạp vì nó hiểu &quot;kết nối&quot; là gì, và tối ưu cho những mục tiêu thường không phù hợp với các ứng dụng như game multiplayer. Các gói tin được đệm lại để gửi theo những lô lớn hơn, đánh đổi chi phí trên mỗi gói thấp hơn lấy độ trễ cao hơn. Điều này có thể hữu ích cho những thứ như HTTP, nhưng nhìn chung không phù hợp với game. Một phần trong số này có thể được cấu hình và tắt đi (ví dụ bằng cách tắt &quot;thuật toán Nagle&quot; cho kết nối TCP).</p></li>
+<li><p>UDP là một giao thức đơn giản hơn, chỉ gửi gói tin (và không có khái niệm &quot;kết nối&quot;). Không có cơ chế sửa lỗi khiến nó khá nhanh (độ trễ thấp), nhưng gói tin có thể bị mất trên đường đi hoặc được nhận sai thứ tự. Thêm vào đó, MTU (kích thước gói tin tối đa) của UDP thường thấp (chỉ vài trăm byte), nên việc truyền các gói tin lớn hơn đồng nghĩa với việc phải chia nhỏ, sắp xếp lại và thử lại nếu một phần bị lỗi.</p></li>
+</ul>
+<p>Nhìn chung, TCP có thể được xem là đáng tin cậy, có thứ tự và chậm; UDP là không đáng tin cậy, không có thứ tự và nhanh. Do khác biệt lớn về hiệu năng, việc xây dựng lại những phần của TCP mà game cần (độ tin cậy và thứ tự gói tin tùy chọn) trong khi tránh những phần không cần (các tính năng kiểm soát tắc nghẽn/lưu lượng, thuật toán Nagle, v.v.) thường là hợp lý. Vì thế, hầu hết game engine đều đi kèm một triển khai như vậy, và Godot cũng không ngoại lệ.</p>
+<p>Tóm lại, bạn có thể dùng API networking cấp thấp để kiểm soát tối đa và tự triển khai mọi thứ trên nền các giao thức mạng thuần, hoặc dùng API cấp cao dựa trên <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>, vốn đảm nhận phần lớn công việc nặng nhọc phía sau theo cách thường được tối ưu.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hầu hết các nền tảng mà Godot hỗ trợ đều cung cấp tất cả hoặc phần lớn các tính năng networking cấp cao và cấp thấp đã đề cập. Tuy nhiên, vì networking luôn phụ thuộc nhiều vào phần cứng và hệ điều hành, một số tính năng có thể thay đổi hoặc không khả dụng trên một số nền tảng đích. Đáng chú ý nhất, nền tảng HTML5 hiện hỗ trợ WebSockets và WebRTC nhưng thiếu một số tính năng cấp cao hơn, cũng như quyền truy cập thô vào các giao thức cấp thấp như TCP và UDP.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tìm hiểu thêm về TCP/IP, UDP và networking: <a class="reference external" href="https://gafferongames.com/post/udp_vs_tcp/">https://gafferongames.com/post/udp_vs_tcp/</a></p>
+<p>Gaffer On Games có rất nhiều bài viết hữu ích về networking trong game (<a class="reference external" href="https://gafferongames.com/categories/game-networking/">tại đây</a>), bao gồm bài <a class="reference external" href="https://gafferongames.com/post/what_every_programmer_needs_to_know_about_game_networking/">giới thiệu toàn diện về các mô hình networking trong game</a>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Thêm networking vào game đi kèm với một số trách nhiệm. Nếu làm sai, nó có thể khiến ứng dụng của bạn dễ bị tấn công và dẫn đến gian lận hoặc khai thác lỗ hổng. Thậm chí, kẻ tấn công có thể xâm nhập những máy chạy ứng dụng của bạn và dùng server của bạn để gửi spam, tấn công người khác hoặc đánh cắp dữ liệu người dùng nếu họ chơi game của bạn.</p>
+<p>Điều này luôn đúng mỗi khi có networking và không liên quan gì đến Godot. Tất nhiên bạn có thể thử nghiệm, nhưng khi phát hành một ứng dụng có kết nối mạng, hãy luôn chú ý đến mọi vấn đề bảo mật có thể xảy ra.</p>
+</div>
+</section>
+<section id="mid-level-abstraction">
+<h2>Lớp trừu tượng cấp trung<a class="headerlink" href="#mid-level-abstraction" title="Link to this heading"></a></h2>
+<p>Trước khi đi vào cách chúng ta muốn đồng bộ game qua mạng, sẽ hữu ích nếu hiểu cách API mạng cơ sở cho việc đồng bộ hoạt động.</p>
+<p>Godot dùng một đối tượng cấp trung là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_multiplayerpeer.html" title="Class reference (English)"><span class="xref std std-ref">MultiplayerPeer</span></a>. Đối tượng này không nhằm để tạo trực tiếp, mà được thiết kế để nhiều triển khai C++ có thể cung cấp nó.</p>
+<p>Đối tượng này mở rộng từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packetpeer.html" title="Class reference (English)"><span class="xref std std-ref">PacketPeer</span></a>, nên nó kế thừa mọi phương thức hữu ích để serialize, gửi và nhận dữ liệu. Ngoài ra, nó bổ sung các phương thức để đặt peer, chế độ truyền, v.v. Nó cũng có các signal cho bạn biết khi nào peer kết nối hoặc ngắt kết nối.</p>
+<p>Giao diện lớp này có thể trừu tượng hóa hầu hết các loại tầng mạng, topology và thư viện. Theo mặc định, Godot cung cấp một triển khai dựa trên ENet (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_enetmultiplayerpeer.html" title="Class reference (English)"><span class="xref std std-ref">ENetMultiplayerPeer</span></a>), một dựa trên WebRTC (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_webrtcmultiplayerpeer.html" title="Class reference (English)"><span class="xref std std-ref">WebRTCMultiplayerPeer</span></a>) và một dựa trên WebSocket (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_websocketmultiplayerpeer.html" title="Class reference (English)"><span class="xref std std-ref">WebSocketMultiplayerPeer</span></a>), nhưng nó cũng có thể được dùng để triển khai các API di động (cho WiFi ad hoc, Bluetooth) hoặc các API mạng tùy chỉnh dành riêng cho thiết bị/console.</p>
+<p>Trong hầu hết các trường hợp thông thường, không nên dùng trực tiếp đối tượng này, vì Godot cung cấp các tiện ích networking ở cấp còn cao hơn. Đối tượng này vẫn được cung cấp phòng khi game có nhu cầu cụ thể về một API cấp thấp hơn.</p>
+</section>
+<section id="hosting-considerations">
+<h2>Lưu ý khi host<a class="headerlink" href="#hosting-considerations" title="Link to this heading"></a></h2>
+<p>Khi host một server, các client trong <abbr title="Local Area Network">LAN</abbr> của bạn có thể kết nối bằng địa chỉ IP nội bộ, thường có dạng <code class="docutils literal notranslate"><span class="pre">192.168.*.*</span></code>. Địa chỉ IP nội bộ này <strong>không</strong> thể truy cập được từ các client ngoài LAN/Internet.</p>
+<p>Trên Windows, bạn có thể tìm địa chỉ IP nội bộ bằng cách mở command prompt và nhập <code class="docutils literal notranslate"><span class="pre">ipconfig</span></code>. Trên macOS, mở Terminal và nhập <code class="docutils literal notranslate"><span class="pre">ifconfig</span></code>. Trên Linux, mở terminal và nhập <code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">addr</span></code>.</p>
+<p>Nếu bạn host server trên máy của mình và muốn các client ngoài LAN kết nối tới, có lẽ bạn sẽ phải <em>forward</em> cổng server trên router. Điều này là bắt buộc để server có thể truy cập được từ Internet vì hầu hết các kết nối gia đình đều dùng <a class="reference external" href="https://en.wikipedia.org/wiki/Network_address_translation">NAT</a>. API multiplayer cấp cao của Godot chỉ dùng UDP, nên bạn phải forward cổng theo UDP, không chỉ TCP.</p>
+<p>Sau khi forward một cổng UDP và đảm bảo server dùng cổng đó, bạn có thể dùng <a class="reference external" href="https://icanhazip.com/">trang web này</a> để tìm địa chỉ IP công khai của mình. Sau đó, đưa địa chỉ IP công khai này cho bất kỳ client Internet nào muốn kết nối tới server của bạn.</p>
+<p>API multiplayer cấp cao của Godot dùng một phiên bản ENet đã được chỉnh sửa, cho phép hỗ trợ IPv6 đầy đủ.</p>
+</section>
+<section id="initializing-the-network">
+<h2>Khởi tạo mạng<a class="headerlink" href="#initializing-the-network" title="Link to this heading"></a></h2>
+<p>Networking cấp cao trong Godot được quản lý bởi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html" title="Class reference (English)"><span class="xref std std-ref">SceneTree</span></a>.</p>
+<p>Mỗi node có một thuộc tính <code class="docutils literal notranslate"><span class="pre">multiplayer</span></code>, là tham chiếu đến instance <code class="docutils literal notranslate"><span class="pre">MultiplayerAPI</span></code> được scene tree cấu hình cho nó. Ban đầu, mọi node đều được cấu hình với cùng một đối tượng <code class="docutils literal notranslate"><span class="pre">MultiplayerAPI</span></code> mặc định.</p>
+<p>Bạn có thể tạo một đối tượng <code class="docutils literal notranslate"><span class="pre">MultiplayerAPI</span></code> mới và gán nó cho một <code class="docutils literal notranslate"><span class="pre">NodePath</span></code> trong scene tree, điều này sẽ ghi đè <code class="docutils literal notranslate"><span class="pre">multiplayer</span></code> cho node tại đường dẫn đó và mọi node con cháu của nó. Nhờ vậy, các node anh em có thể được cấu hình với các peer khác nhau, cho phép chạy đồng thời một server và một client trong cùng một instance của Godot.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># By default, these expressions are interchangeable.</span>
+<span class="n">multiplayer</span><span class="w"> </span><span class="c1"># Get the MultiplayerAPI object configured for this node.</span>
+<span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">get_multiplayer</span><span class="p">()</span><span class="w"> </span><span class="c1"># Get the default MultiplayerAPI object.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// By default, these expressions are interchangeable.</span>
+<span class="n">Multiplayer</span><span class="p">;</span><span class="w"> </span><span class="c1">// Get the MultiplayerAPI object configured for this node.</span>
+<span class="n">GetTree</span><span class="p">().</span><span class="n">GetMultiplayer</span><span class="p">();</span><span class="w"> </span><span class="c1">// Get the default MultiplayerAPI object.</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để khởi tạo networking, một đối tượng <code class="docutils literal notranslate"><span class="pre">MultiplayerPeer</span></code> phải được tạo, khởi tạo dưới dạng server hoặc client, rồi truyền cho <code class="docutils literal notranslate"><span class="pre">MultiplayerAPI</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create client.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ENetMultiplayerPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">peer</span><span class="o">.</span><span class="nf">create_client</span><span class="p">(</span><span class="n">IP_ADDRESS</span><span class="p">,</span><span class="w"> </span><span class="n">PORT</span><span class="p">)</span>
+<span class="n">multiplayer</span><span class="o">.</span><span class="vi">multiplayer_peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span>
+
+<span class="c1"># Create server.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ENetMultiplayerPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">peer</span><span class="o">.</span><span class="nf">create_server</span><span class="p">(</span><span class="n">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">MAX_CLIENTS</span><span class="p">)</span>
+<span class="n">multiplayer</span><span class="o">.</span><span class="vi">multiplayer_peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create client.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ENetMultiplayerPeer</span><span class="p">();</span>
+<span class="n">peer</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">,</span><span class="w"> </span><span class="n">Port</span><span class="p">);</span>
+<span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+
+<span class="c1">// Create server.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ENetMultiplayerPeer</span><span class="p">();</span>
+<span class="n">peer</span><span class="p">.</span><span class="n">CreateServer</span><span class="p">(</span><span class="n">Port</span><span class="p">,</span><span class="w"> </span><span class="n">MaxClients</span><span class="p">);</span>
+<span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để kết thúc networking:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">multiplayer_peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">OfflineMultiplayerPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Khi xuất sang Android, hãy đảm bảo bật quyền <code class="docutils literal notranslate"><span class="pre">INTERNET</span></code> trong export preset Android trước khi xuất dự án hoặc dùng one-click deploy. Nếu không, mọi loại giao tiếp mạng sẽ bị Android chặn.</p>
+</div>
+</section>
+<section id="managing-connections">
+<h2>Quản lý kết nối<a class="headerlink" href="#managing-connections" title="Link to this heading"></a></h2>
+<p>Mỗi peer được gán một ID duy nhất. ID của server luôn là 1, còn client được gán một số nguyên dương ngẫu nhiên.</p>
+<p>Bạn có thể phản hồi các sự kiện kết nối hoặc ngắt kết nối bằng cách kết nối tới các signal của <code class="docutils literal notranslate"><span class="pre">MultiplayerAPI</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">peer_connected(id:</span> <span class="pre">int)</span></code> Signal này được phát kèm ID của peer vừa kết nối trên mỗi peer khác, và được phát nhiều lần trên peer mới, mỗi lần với ID của một peer khác.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peer_disconnected(id:</span> <span class="pre">int)</span></code> Signal này được phát trên mọi peer còn lại khi một peer ngắt kết nối.</p></li>
+</ul>
+<p>Các signal còn lại chỉ được phát trên client:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">connected_to_server()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connection_failed()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">server_disconnected()</span></code></p></li>
+</ul>
+<p>Để lấy ID duy nhất của peer liên kết:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">get_unique_id</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">GetUniqueId</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để kiểm tra peer là server hay client:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">is_server</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">IsServer</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="remote-procedure-calls">
+<span id="doc-high-level-multiplayer-rpcs"></span><h2>Gọi thủ tục từ xa<a class="headerlink" href="#remote-procedure-calls" title="Link to this heading"></a></h2>
+<p>Gọi thủ tục từ xa (Remote procedure call), hay RPC, là các hàm có thể được gọi trên các peer khác. Để tạo một RPC, dùng annotation <code class="docutils literal notranslate"><span class="pre">&#64;rpc</span></code> trước phần định nghĩa hàm. Để gọi một RPC, dùng phương thức <code class="docutils literal notranslate"><span class="pre">rpc()</span></code> của <code class="docutils literal notranslate"><span class="pre">Callable</span></code> để gọi trên mọi peer, hoặc <code class="docutils literal notranslate"><span class="pre">rpc_id()</span></code> để gọi trên một peer cụ thể.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">is_server</span><span class="p">():</span>
+<span class="w">        </span><span class="n">print_once_per_client</span><span class="o">.</span><span class="nf">rpc</span><span class="p">()</span>
+
+<span class="nd">@rpc</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">print_once_per_client</span><span class="p">():</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;I will be printed to the console once per each connected client.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">IsServer</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Rpc</span><span class="p">(</span><span class="n">MethodName</span><span class="p">.</span><span class="n">PrintOncePerClient</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="na">[Rpc]</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">PrintOncePerClient</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;I will be printed to the console once per each connected client.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>RPC sẽ không serialize Object hoặc Callable.</p>
+<p>Để một lệnh gọi từ xa thành công, node gửi và node nhận cần có cùng <code class="docutils literal notranslate"><span class="pre">NodePath</span></code>, nghĩa là chúng phải có cùng tên. Khi dùng <code class="docutils literal notranslate"><span class="pre">add_child()</span></code> cho các node dự kiến dùng RPC, hãy đặt đối số <code class="docutils literal notranslate"><span class="pre">force_readable_name</span></code> thành <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Nếu một hàm được đánh dấu <code class="docutils literal notranslate"><span class="pre">&#64;rpc</span></code> trong script client (tương ứng là script server), thì hàm này cũng phải được khai báo trong script server (tương ứng là script client). Cả hai RPC phải có cùng chữ ký, được đánh giá bằng một checksum của <strong>tất cả RPC</strong>. Mọi RPC trong một script được kiểm tra cùng lúc, và mọi RPC phải được khai báo trong cả script client lẫn script server, <strong>kể cả những hàm hiện không được dùng</strong>.</p>
+<p>Chữ ký của RPC bao gồm khai báo <code class="docutils literal notranslate"><span class="pre">&#64;rpc()</span></code>, hàm, kiểu trả về <strong>và</strong> NodePath. Nếu một RPC nằm trong script gắn với <code class="docutils literal notranslate"><span class="pre">/root/Main/Node1</span></code>, thì nó phải nằm ở đúng đường dẫn và node đó trên cả script client lẫn script server. Các đối số của hàm không được kiểm tra khớp giữa mã server và client (ví dụ: <code class="docutils literal notranslate"><span class="pre">func</span> <span class="pre">sendstuff():</span></code> và <code class="docutils literal notranslate"><span class="pre">func</span> <span class="pre">sendstuff(arg1,</span> <span class="pre">arg2):</span></code> <strong>sẽ vượt qua</strong> việc kiểm tra khớp chữ ký).</p>
+<p>Nếu các điều kiện này không được đáp ứng (nếu không phải mọi RPC đều khớp chữ ký), script có thể in ra lỗi hoặc gây ra hành vi không mong muốn. Thông báo lỗi có thể không liên quan đến hàm RPC mà bạn đang xây dựng và kiểm thử.</p>
+<p>Xem thêm giải thích và cách khắc phục sự cố tại <a class="reference external" href="https://github.com/godotengine/godot/issues/57869#issuecomment-1034215138">bài viết này</a>.</p>
+</div>
+<p>Annotation này có thể nhận một số đối số với giá trị mặc định. <code class="docutils literal notranslate"><span class="pre">&#64;rpc</span></code> tương đương với:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="nd">@rpc</span><span class="p">(</span><span class="s2">&quot;authority&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;call_remote&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;reliable&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="na">[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable, TransferChannel = 0)]</span>
+</pre></div>
+</div>
+</div></div>
+<p>Các tham số và chức năng của chúng như sau:</p>
+<p><code class="docutils literal notranslate"><span class="pre">mode</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;authority&quot;</span></code>: Chỉ multiplayer authority mới có thể gọi từ xa. Mặc định authority là server, nhưng có thể thay đổi cho từng node bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node-method-set-multiplayer-authority" title="Class reference (English)"><span class="xref std std-ref">Node.set_multiplayer_authority</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;any_peer&quot;</span></code>: Client được phép gọi từ xa. Hữu ích khi truyền đầu vào của người dùng.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">sync</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;call_remote&quot;</span></code>: Hàm sẽ không được gọi trên peer cục bộ.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;call_local&quot;</span></code>: Hàm có thể được gọi trên peer cục bộ. Hữu ích khi server cũng là một người chơi.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">transfer_mode</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;unreliable&quot;</span></code> Gói tin không được xác nhận, có thể bị mất và có thể đến theo bất kỳ thứ tự nào.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;unreliable_ordered&quot;</span></code> Gói tin được nhận theo đúng thứ tự đã gửi. Điều này đạt được bằng cách bỏ qua các gói tin đến muộn nếu một gói tin được gửi sau chúng đã được nhận trước đó. Có thể gây mất gói tin nếu dùng không đúng cách.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;reliable&quot;</span></code> Gói tin sẽ được gửi lại cho đến khi được xác nhận, và thứ tự của chúng được giữ nguyên. Gây tốn hiệu năng đáng kể.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">transfer_channel</span></code> là chỉ số kênh.</p>
+<p>3 tham số đầu có thể truyền theo bất kỳ thứ tự nào, nhưng <code class="docutils literal notranslate"><span class="pre">transfer_channel</span></code> phải luôn ở cuối cùng.</p>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">multiplayer.get_remote_sender_id()</span></code> có thể được dùng để lấy id duy nhất của bên gửi rpc, khi được dùng bên trong hàm được gọi bởi rpc.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_some_input</span><span class="p">():</span><span class="w"> </span><span class="c1"># Connected to some input.</span>
+<span class="w">    </span><span class="n">transfer_some_input</span><span class="o">.</span><span class="nf">rpc_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1"># Send the input only to the server.</span>
+
+
+<span class="c1"># Call local is required if the server is also a player.</span>
+<span class="nd">@rpc</span><span class="p">(</span><span class="s2">&quot;any_peer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;call_local&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;reliable&quot;</span><span class="p">)</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">transfer_some_input</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># The server knows who sent the input.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">sender_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">get_remote_sender_id</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Process the input and affect game logic.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnSomeInput</span><span class="p">()</span><span class="w"> </span><span class="c1">// Connected to some input.</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">RpcId</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MethodName</span><span class="p">.</span><span class="n">TransferSomeInput</span><span class="p">);</span><span class="w"> </span><span class="c1">// Send the input only to the server.</span>
+<span class="p">}</span>
+
+<span class="c1">// Call local is required if the server is also a player.</span>
+<span class="na">[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">TransferSomeInput</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// The server knows who sent the input.</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">senderId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">GetRemoteSenderId</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Process the input and affect game logic.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các phương thức RPC phải được định nghĩa trên các lớp kế thừa từ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node.html" title="Class reference (English)"><span class="xref std std-ref">class_Node</span></a>. Cố gắng dùng lời gọi RPC cấp cao trên các phương thức chỉ được định nghĩa trong các lớp không phải Node (chẳng hạn Resource) sẽ gây ra lỗi lúc chạy.</p>
+</div>
+</section>
+<section id="channels">
+<h2>Kênh<a class="headerlink" href="#channels" title="Link to this heading"></a></h2>
+<p>Các giao thức mạng hiện đại hỗ trợ kênh (channel), tức là các kết nối riêng biệt bên trong một kết nối. Điều này cho phép có nhiều luồng gói tin không gây ảnh hưởng lẫn nhau.</p>
+<p>Ví dụ, các tin nhắn liên quan đến chat trong game và một số tin nhắn gameplay cốt lõi đều nên được gửi một cách tin cậy, nhưng một tin nhắn gameplay không nên phải chờ một tin nhắn chat được xác nhận. Điều này có thể thực hiện bằng cách dùng các kênh khác nhau.</p>
+<p>Kênh cũng hữu ích khi dùng với chế độ truyền unreliable ordered. Gửi các gói tin có kích thước thay đổi với chế độ truyền này có thể gây mất gói tin, vì các gói tin đến chậm hơn sẽ bị bỏ qua. Tách chúng thành nhiều luồng gói tin đồng nhất bằng cách dùng kênh cho phép truyền có thứ tự với ít mất gói tin, và không chịu độ trễ do chế độ reliable gây ra.</p>
+<p>Kênh mặc định với chỉ số 0 thực ra là ba kênh khác nhau - mỗi kênh cho một chế độ truyền.</p>
+</section>
+<section id="example-lobby-implementation">
+<h2>Ví dụ triển khai lobby<a class="headerlink" href="#example-lobby-implementation" title="Link to this heading"></a></h2>
+<p>Đây là một ví dụ lobby có thể xử lý việc peer tham gia và rời đi, thông báo cho các scene UI qua signal, và bắt đầu game sau khi tất cả client đã tải xong scene game.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node</span>
+
+<span class="c1"># Autoload named Lobby</span>
+
+<span class="c1"># These signals can be connected to by a UI lobby scene or the game scene.</span>
+<span class="k">signal</span><span class="w"> </span><span class="nf">player_connected</span><span class="p">(</span><span class="n">peer_id</span><span class="p">,</span><span class="w"> </span><span class="n">player_info</span><span class="p">)</span>
+<span class="k">signal</span><span class="w"> </span><span class="nf">player_disconnected</span><span class="p">(</span><span class="n">peer_id</span><span class="p">)</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">server_disconnected</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7000</span>
+<span class="k">const</span><span class="w"> </span><span class="n">DEFAULT_SERVER_IP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="w"> </span><span class="c1"># IPv4 localhost</span>
+<span class="k">const</span><span class="w"> </span><span class="n">MAX_CONNECTIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span>
+
+<span class="c1"># This will contain player info for every player,</span>
+<span class="c1"># with the keys being each player&#39;s unique IDs.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">players</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="c1"># This is the local player info. This should be modified locally</span>
+<span class="c1"># before the connection is made. It will be passed to every other peer.</span>
+<span class="c1"># For example, the value of &quot;name&quot; can be set to something the player</span>
+<span class="c1"># entered in a UI scene.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">player_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Name&quot;</span><span class="p">}</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">players_loaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">peer_connected</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_player_connected</span><span class="p">)</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">peer_disconnected</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_player_disconnected</span><span class="p">)</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">connected_to_server</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_connected_ok</span><span class="p">)</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">connection_failed</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_connected_fail</span><span class="p">)</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">server_disconnected</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">_on_server_disconnected</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">join_game</span><span class="p">(</span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">address</span><span class="o">.</span><span class="nf">is_empty</span><span class="p">():</span>
+<span class="w">        </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEFAULT_SERVER_IP</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ENetMultiplayerPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">create_client</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="n">PORT</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">error</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">error</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">multiplayer_peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">create_game</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ENetMultiplayerPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="o">.</span><span class="nf">create_server</span><span class="p">(</span><span class="n">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">MAX_CONNECTIONS</span><span class="p">)</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">error</span><span class="p">:</span>
+<span class="w">        </span><span class="k k-ControlFlow">return</span><span class="w"> </span><span class="n">error</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">multiplayer_peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span>
+
+<span class="w">    </span><span class="n">players</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player_info</span>
+<span class="w">    </span><span class="n">player_connected</span><span class="o">.</span><span class="nf">emit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">player_info</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">remove_multiplayer_peer</span><span class="p">():</span>
+<span class="w">    </span><span class="n">multiplayer</span><span class="o">.</span><span class="vi">multiplayer_peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">OfflineMultiplayerPeer</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="n">players</span><span class="o">.</span><span class="nf">clear</span><span class="p">()</span>
+
+
+<span class="c1"># When the server decides to start the game from a UI scene,</span>
+<span class="c1"># do Lobby.load_game.rpc(filepath)</span>
+<span class="nd">@rpc</span><span class="p">(</span><span class="s2">&quot;call_local&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;reliable&quot;</span><span class="p">)</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">load_game</span><span class="p">(</span><span class="n">game_scene_path</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="nf">change_scene_to_file</span><span class="p">(</span><span class="n">game_scene_path</span><span class="p">)</span>
+
+
+<span class="c1"># Every peer will call this when they have loaded the game scene.</span>
+<span class="nd">@rpc</span><span class="p">(</span><span class="s2">&quot;any_peer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;call_local&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;reliable&quot;</span><span class="p">)</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">player_loaded</span><span class="p">():</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">is_server</span><span class="p">():</span>
+<span class="w">        </span><span class="n">players_loaded</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">players_loaded</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">players</span><span class="o">.</span><span class="nf">size</span><span class="p">():</span>
+<span class="w">            </span><span class="o">$/</span><span class="n">root</span><span class="o">/</span><span class="nc">Game</span><span class="o">.</span><span class="nf">start_game</span><span class="p">()</span>
+<span class="w">            </span><span class="n">players_loaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+
+<span class="c1"># When a peer connects, send them my player info.</span>
+<span class="c1"># This allows transfer of all desired data for each player, not only the unique ID.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_player_connected</span><span class="p">(</span><span class="n">id</span><span class="p">):</span>
+<span class="w">    </span><span class="n">_register_player</span><span class="o">.</span><span class="nf">rpc_id</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">player_info</span><span class="p">)</span>
+
+
+<span class="nd">@rpc</span><span class="p">(</span><span class="s2">&quot;any_peer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;reliable&quot;</span><span class="p">)</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_register_player</span><span class="p">(</span><span class="n">new_player_info</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">new_player_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">get_remote_sender_id</span><span class="p">()</span>
+<span class="w">    </span><span class="n">players</span><span class="p">[</span><span class="n">new_player_id</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_player_info</span>
+<span class="w">    </span><span class="n">player_connected</span><span class="o">.</span><span class="nf">emit</span><span class="p">(</span><span class="n">new_player_id</span><span class="p">,</span><span class="w"> </span><span class="n">new_player_info</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_player_disconnected</span><span class="p">(</span><span class="n">id</span><span class="p">):</span>
+<span class="w">    </span><span class="n">players</span><span class="o">.</span><span class="nf">erase</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="w">    </span><span class="n">player_disconnected</span><span class="o">.</span><span class="nf">emit</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_connected_ok</span><span class="p">():</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">peer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">get_unique_id</span><span class="p">()</span>
+<span class="w">    </span><span class="n">players</span><span class="p">[</span><span class="n">peer_id</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player_info</span>
+<span class="w">    </span><span class="n">player_connected</span><span class="o">.</span><span class="nf">emit</span><span class="p">(</span><span class="n">peer_id</span><span class="p">,</span><span class="w"> </span><span class="n">player_info</span><span class="p">)</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_connected_fail</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">remove_multiplayer_peer</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_server_disconnected</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">remove_multiplayer_peer</span><span class="p">()</span>
+<span class="w">    </span><span class="n">players</span><span class="o">.</span><span class="nf">clear</span><span class="p">()</span>
+<span class="w">    </span><span class="n">server_disconnected</span><span class="o">.</span><span class="nf">emit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Lobby</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">Lobby</span><span class="w"> </span><span class="n">Instance</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// These signals can be connected to by a UI lobby scene or the game scene.</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">PlayerConnectedEventHandler</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">peerId</span><span class="p">,</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">playerInfo</span><span class="p">);</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">PlayerDisconnectedEventHandler</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">peerId</span><span class="p">);</span>
+<span class="w">    </span><span class="na">[Signal]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ServerDisconnectedEventHandler</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7000</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DefaultServerIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// IPv4 localhost</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">MaxConnections</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// This will contain player info for every player,</span>
+<span class="w">    </span><span class="c1">// with the keys being each player&#39;s unique IDs.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">long</span><span class="p">,</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">_players</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">long</span><span class="p">,</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// This is the local player info. This should be modified locally</span>
+<span class="w">    </span><span class="c1">// before the connection is made. It will be passed to every other peer.</span>
+<span class="w">    </span><span class="c1">// For example, the value of &quot;name&quot; can be set to something the player</span>
+<span class="w">    </span><span class="c1">// entered in a UI scene.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_playerInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;Name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PlayerName&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_playersLoaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">PeerConnected</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnPlayerConnected</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">PeerDisconnected</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnPlayerDisconnected</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">ConnectedToServer</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnConnectOk</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">ConnectionFailed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnConnectionFail</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">ServerDisconnected</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnServerDisconnected</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="nf">JoinGame</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DefaultServerIP</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ENetMultiplayerPeer</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Error</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="n">Port</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Error</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">error</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Error</span><span class="p">.</span><span class="n">Ok</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="nf">CreateGame</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ENetMultiplayerPeer</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Error</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">CreateServer</span><span class="p">(</span><span class="n">Port</span><span class="p">,</span><span class="w"> </span><span class="n">MaxConnections</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Error</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">error</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_players</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_playerInfo</span><span class="p">;</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">PlayerConnected</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">_playerInfo</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Error</span><span class="p">.</span><span class="n">Ok</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">RemoveMultiplayerPeer</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_players</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// When the server decides to start the game from a UI scene,</span>
+<span class="w">    </span><span class="c1">// do Rpc(Lobby.MethodName.LoadGame, filePath);</span>
+<span class="w">    </span><span class="na">[Rpc(CallLocal = true,TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">LoadGame</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">gameScenePath</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GetTree</span><span class="p">().</span><span class="n">ChangeSceneToFile</span><span class="p">(</span><span class="n">gameScenePath</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Every peer will call this when they have loaded the game scene.</span>
+<span class="w">    </span><span class="na">[Rpc(MultiplayerApi.RpcMode.AnyPeer,CallLocal = true,TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">PlayerLoaded</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">IsServer</span><span class="p">())</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_playersLoaded</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_playersLoaded</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">_players</span><span class="p">.</span><span class="n">Count</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Game</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;/root/Game&quot;</span><span class="p">).</span><span class="n">StartGame</span><span class="p">();</span>
+<span class="w">                </span><span class="n">_playersLoaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// When a peer connects, send them my player info.</span>
+<span class="w">    </span><span class="c1">// This allows transfer of all desired data for each player, not only the unique ID.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerConnected</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">RpcId</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">MethodName</span><span class="p">.</span><span class="n">RegisterPlayer</span><span class="p">,</span><span class="w"> </span><span class="n">_playerInfo</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="na">[Rpc(MultiplayerApi.RpcMode.AnyPeer,TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">RegisterPlayer</span><span class="p">(</span><span class="n">Godot</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">newPlayerInfo</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">newPlayerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">GetRemoteSenderId</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_players</span><span class="p">[</span><span class="n">newPlayerId</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newPlayerInfo</span><span class="p">;</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">PlayerConnected</span><span class="p">,</span><span class="w"> </span><span class="n">newPlayerId</span><span class="p">,</span><span class="w"> </span><span class="n">newPlayerInfo</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerDisconnected</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_players</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">PlayerDisconnected</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnectOk</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">peerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">GetUniqueId</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_players</span><span class="p">[</span><span class="n">peerId</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_playerInfo</span><span class="p">;</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">PlayerConnected</span><span class="p">,</span><span class="w"> </span><span class="n">peerId</span><span class="p">,</span><span class="w"> </span><span class="n">_playerInfo</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnectionFail</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnServerDisconnected</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Multiplayer</span><span class="p">.</span><span class="n">MultiplayerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_players</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<span class="w">        </span><span class="n">EmitSignal</span><span class="p">(</span><span class="n">SignalName</span><span class="p">.</span><span class="n">ServerDisconnected</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Node gốc của scene game nên được đặt tên là Game. Trong script gắn vào nó:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span><span class="w"> </span><span class="c1"># Or Node2D.</span>
+
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Preconfigure game.</span>
+
+<span class="w">    </span><span class="nc">Lobby</span><span class="o">.</span><span class="vi">player_loaded</span><span class="o">.</span><span class="nf">rpc_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1"># Tell the server that this peer has loaded.</span>
+
+
+<span class="c1"># Called only on the server.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">start_game</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># All peers are ready to receive RPCs in this scene.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Game</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node3D</span><span class="w"> </span><span class="c1">// Or Node2D.</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Preconfigure game.</span>
+
+<span class="w">        </span><span class="n">Lobby</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">RpcId</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">Lobby</span><span class="p">.</span><span class="n">MethodName</span><span class="p">.</span><span class="n">PlayerLoaded</span><span class="p">);</span><span class="w"> </span><span class="c1">// Tell the server that this peer has loaded.</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Called only on the server.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">StartGame</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// All peers are ready to receive RPCs in this scene.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="exporting-for-dedicated-servers">
+<h2>Xuất cho máy chủ chuyên dụng<a class="headerlink" href="#exporting-for-dedicated-servers" title="Link to this heading"></a></h2>
+<p>Khi đã làm xong một game nhiều người chơi, bạn có thể muốn xuất (export) nó để chạy trên một dedicated server không có GPU. Xem <a class="reference internal" href="../export/exporting_for_dedicated_servers.html#doc-exporting-for-dedicated-servers"><span class="std std-ref">Xuất cho máy chủ chuyên dụng</span></a> để biết thêm thông tin.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các đoạn code mẫu trên trang này không được thiết kế để chạy trên dedicated server. Bạn sẽ phải sửa chúng để server không bị coi là một người chơi. Bạn cũng sẽ phải sửa cơ chế bắt đầu game để người chơi đầu tiên tham gia có thể bắt đầu game.</p>
+</div>
+</section>
+<section id="authentication">
+<h2>Xác thực<a class="headerlink" href="#authentication" title="Link to this heading"></a></h2>
+<p>Trước khi đưa game của bạn lên mạng cho công chúng, bạn có thể cân nhắc thêm xác thực và bảo vệ các RPC khỏi truy cập chưa được xác thực. Bạn có thể dùng cơ chế xác thực tích hợp sẵn của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenemultiplayer.html" title="Class reference (English)"><span class="xref std std-ref">SceneMultiplayer</span></a> cho việc này.</p>
+<p>Trên server:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-10-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button></div><div aria-labelledby="tab-10-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># This goes after `multiplayer.multiplayer_peer = peer`.</span>
+<span class="n">multiplayer</span><span class="o">.</span><span class="vi">auth_timout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">multiplayer</span><span class="o">.</span><span class="vi">auth_callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">func</span><span class="p">(</span><span class="n">peer_id</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedByteArray</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">auth_data</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Dictionary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="o">.</span><span class="nf">parse_string</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="nf">get_string_from_utf8</span><span class="p">())</span>
+<span class="w">    </span><span class="c1"># Your authentication logic (such as checking the supplied username/password against a database)</span>
+
+<span class="w">    </span><span class="c1"># Tell the MultiplayerAPI that the authentication was successful</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">authentication_successful</span><span class="p">:</span>
+<span class="w">        </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">complete_auth</span><span class="p">(</span><span class="n">peer_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Trên client:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-11-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button></div><div aria-labelledby="tab-11-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># This goes after `multiplayer.multiplayer_peer = peer`.</span>
+<span class="n">multiplayer</span><span class="o">.</span><span class="vi">auth_callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">func</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># We have to set this on the client for the `peer_authenticating`</span>
+<span class="w">    </span><span class="c1"># signal to emit.</span>
+<span class="w">    </span><span class="k k-ControlFlow">pass</span>
+<span class="n">multiplayer</span><span class="o">.</span><span class="vi">peer_authenticating</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">peer_id</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">):</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">auth_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;username&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">send_auth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="o">.</span><span class="nf">stringify</span><span class="p">(</span><span class="n">auth_data</span><span class="p">)</span><span class="o">.</span><span class="nf">to_utf8_buffer</span><span class="p">())</span>
+
+<span class="w">        </span><span class="c1"># Tell the MultiplayerAPI that the authentication was successful.</span>
+<span class="w">        </span><span class="n">multiplayer</span><span class="o">.</span><span class="nf">complete_auth</span><span class="p">(</span><span class="n">peer_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ngay khi phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenemultiplayer.html#class-scenemultiplayer-method-complete-auth" title="Class reference (English)"><span class="xref std std-ref">complete_auth()</span></a> của cả client và server đều đã được gọi, kết nối được coi là đã thiết lập và các signal <code class="docutils literal notranslate"><span class="pre">connected_to_server</span></code> và <code class="docutils literal notranslate"><span class="pre">peer_connected</span></code> sẽ được phát ra.</p>
+</section>
+<section id="secure-multiplayer-design">
+<h2>Thiết kế multiplayer an toàn<a class="headerlink" href="#secure-multiplayer-design" title="Link to this heading"></a></h2>
+<p>API multiplayer cấp cao của Godot giúp việc xây dựng game qua mạng dễ dàng hơn, nhưng không tự động làm cho logic gameplay trở nên an toàn. Với các game nhiều người chơi mang tính cạnh tranh hoặc lưu trạng thái lâu dài, hãy coi mọi đầu vào từ client là không đáng tin cậy.</p>
+<p>Một sai lầm phổ biến là để client quyết định các trạng thái game quan trọng, chẳng hạn vị trí người chơi, kết quả chiến đấu, thay đổi túi đồ hay kết quả trận đấu. Điều này có thể khiến gian lận dễ dàng hơn nhiều và dẫn đến mất đồng bộ (&quot;desync&quot;) thường xuyên hơn.</p>
+<p>Nói chung, nên ưu tiên các mẫu sau:</p>
+<ul class="simple">
+<li><p>Dùng logic do server quyết định (server-authoritative) cho các quyết định quan trọng với gameplay.</p></li>
+<li><p>Kiểm tra hợp lệ các đối số RPC trước khi áp dụng chúng vào trạng thái game.</p></li>
+<li><p>Tránh tin vào vị trí, bộ đếm thời gian, thời gian hồi chiêu hay giá trị tài nguyên do client báo cáo mà không kiểm tra.</p></li>
+<li><p>Thêm kiểm tra an toàn và giới hạn tần suất cho các hành động có thể được kích hoạt thường xuyên.</p></li>
+</ul>
+<p>Tóm lại, bạn nên thiết kế phần mạng sao cho server vẫn là nguồn sự thật cho các trạng thái quan trọng.</p>
+<p>Ví dụ, thay vì chấp nhận trực tiếp vị trí cuối cùng của client, hãy cân nhắc gửi đầu vào hoặc ý định di chuyển của người chơi lên authority/server, rồi kiểm tra và áp dụng kết quả tại đó. Cách này có một số đánh đổi (như hiệu năng phía server và độ phức tạp do cần dự đoán phía client), nhưng sẽ khiến kẻ tấn công khó gian lận hơn nhiều bằng cách gửi dữ liệu giả mạo.</p>
+<p>Xem <a class="reference external" href="https://mas-bandwidth.com/choosing-the-right-network-model-for-your-multiplayer-game/">Chọn mô hình mạng phù hợp cho game nhiều người chơi của bạn</a> để biết thêm thông tin về các mô hình multiplayer khác nhau và ảnh hưởng của chúng đến bảo mật.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Mạng" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="http_request_class.html" class="btn btn-neutral float-right" title="Gửi HTTP request" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

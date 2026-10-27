@@ -1,0 +1,427 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng GridMap" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/using_gridmaps.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Gridmap là công cụ để tạo màn chơi 3D, tương tự cách TileMap hoạt động trong 2D. Bạn bắt đầu với một bộ sưu tập mesh 3D định sẵn (một class_MeshLibrary) có thể đặt trên lưới, như thể bạ..." />
+<meta name="description" content="Giới thiệu: Gridmap là công cụ để tạo màn chơi 3D, tương tự cách TileMap hoạt động trong 2D. Bạn bắt đầu với một bộ sưu tập mesh 3D định sẵn (một class_MeshLibrary) có thể đặt trên lưới, như thể bạ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng GridMap &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Camera góc nhìn thứ ba với spring arm" href="spring_arm.html" />
+    <link rel="prev" title="Tạo nguyên mẫu level bằng CSG" href="csg_tools.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/using_gridmaps" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#tools">Công cụ</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="csg_tools.html">Tạo nguyên mẫu level bằng CSG</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sử dụng GridMap</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-project">Dự án ví dụ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-meshlibrary">Tạo MeshLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#collisions">Va chạm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#materials">Material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navigationmeshes">NavigationMesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lightmaps">Lightmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#meshlibrary-format">Định dạng MeshLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-the-meshlibrary">Export MeshLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-gridmap">Sử dụng GridMap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-gridmap-in-code">Sử dụng GridMap trong code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spring_arm.html">Camera góc nhìn thứ ba với spring arm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Sử dụng GridMap</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-gridmaps">
+<span id="doc-using-gridmaps"></span><h1>Sử dụng GridMap<a class="headerlink" href="#using-gridmaps" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gridmap.html" title="Class reference (English)"><span class="xref std std-ref">Gridmap</span></a> là công cụ để tạo màn chơi 3D, tương tự cách <a class="reference internal" href="../2d/using_tilemaps.html#doc-using-tilemaps"><span class="std std-ref">TileMap</span></a> hoạt động trong 2D. Bạn bắt đầu với một bộ sưu tập mesh 3D định sẵn (một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshlibrary.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshLibrary</span></a>) có thể đặt trên lưới, như thể bạn đang xây màn chơi bằng vô số khối Lego.</p>
+<p>Bạn cũng có thể thêm va chạm và điều hướng (navigation) vào các mesh, giống như với các tile của một tilemap.</p>
+</section>
+<section id="example-project">
+<h2>Dự án ví dụ<a class="headerlink" href="#example-project" title="Link to this heading"></a></h2>
+<p>Để tìm hiểu cách GridMap hoạt động, hãy bắt đầu bằng việc tải dự án mẫu: <a class="reference external" href="https://github.com/godotengine/godot-docs-project-starters/releases/download/latest-4.x/gridmap_starter.zip">gridmap_starter.zip</a>.</p>
+<p>Giải nén dự án này và thêm nó vào Project Manager bằng nút &quot;Import&quot;. Bạn có thể nhận được một popup cho biết dự án cần được chuyển đổi sang phiên bản Godot mới hơn, hãy nhấn <strong>Convert project.godot</strong>.</p>
+</section>
+<section id="creating-a-meshlibrary">
+<h2>Tạo MeshLibrary<a class="headerlink" href="#creating-a-meshlibrary" title="Link to this heading"></a></h2>
+<p>Để bắt đầu, bạn cần một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshlibrary.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshLibrary</span></a>, là tập hợp các mesh riêng lẻ có thể dùng trong gridmap. Mở scene &quot;mesh_library_source.tscn&quot; để xem ví dụ về cách thiết lập mesh library.</p>
+<img alt="../../_images/gridmap_meshlibrary1.webp" src="../../_images/gridmap_meshlibrary1.webp" />
+<p>Như bạn thấy, scene này có một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Node3D</span></a> làm gốc, và một số node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshInstance3D</span></a>.</p>
+<p>Nếu bạn không cần vật lý trong scene thì đã xong. Tuy nhiên, trong hầu hết trường hợp bạn sẽ muốn gán collision body cho các mesh.</p>
+</section>
+<section id="collisions">
+<h2>Va chạm<a class="headerlink" href="#collisions" title="Link to this heading"></a></h2>
+<p>Bạn có thể gán thủ công một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_StaticBody3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_CollisionShape3D</span></a> cho mỗi mesh. Ngoài ra, bạn có thể dùng menu &quot;Mesh&quot; để tự động tạo collision body dựa trên dữ liệu mesh.</p>
+<img alt="../../_images/gridmap_create_body.webp" src="../../_images/gridmap_create_body.webp" />
+<p>Lưu ý rằng collision body &quot;Convex&quot; sẽ hoạt động tốt hơn với các mesh đơn giản. Với các hình dạng phức tạp hơn, hãy chọn &quot;Create Trimesh Static Body&quot;. Khi mỗi mesh đã được gán physics body và collision shape, mesh library của bạn đã sẵn sàng để sử dụng.</p>
+<img alt="../../_images/gridmap_mesh_scene.webp" src="../../_images/gridmap_mesh_scene.webp" />
+</section>
+<section id="materials">
+<h2>Material<a class="headerlink" href="#materials" title="Link to this heading"></a></h2>
+<p>Chỉ các material nằm trong mesh được dùng khi tạo mesh library. Material đặt trên node sẽ bị bỏ qua.</p>
+</section>
+<section id="navigationmeshes">
+<h2>NavigationMesh<a class="headerlink" href="#navigationmeshes" title="Link to this heading"></a></h2>
+<p>Giống như mọi mesh instance, các mục của MeshLibrary có thể được gán một resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationmesh.html" title="Class reference (English)"><span class="xref std std-ref">class_NavigationMesh</span></a>, có thể tạo thủ công hoặc bake như mô tả bên dưới.</p>
+<p>Để tạo NavigationMesh từ việc export scene MeshLibrary, hãy đặt một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion3d.html" title="Class reference (English)"><span class="xref std std-ref">class_NavigationRegion3D</span></a> bên dưới MeshInstance3D chính của mục GridMap. Thêm một resource NavigationMesh hợp lệ vào NavigationRegion3D cùng một số node hình học nguồn bên dưới, rồi bake NavigationMesh.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Với các ô lưới nhỏ, thường cần giảm các thuộc tính agent radius và region minimum size của NavigationMesh.</p>
+</div>
+<img alt="../../_images/meshlibrary_scene.png" src="../../_images/meshlibrary_scene.png" />
+<p>Các node bên dưới NavigationRegion3D bị bỏ qua khi export scene MeshLibrary, nên có thể thêm các node bổ sung làm hình học nguồn chỉ để bake navmesh.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Kích thước ô khi bake của NavigationMesh phải khớp với kích thước ô của map NavigationServer để hợp nhất đúng các navigation mesh của các ô lưới khác nhau.</p>
+</div>
+</section>
+<section id="lightmaps">
+<h2>Lightmap<a class="headerlink" href="#lightmaps" title="Link to this heading"></a></h2>
+<p>Bạn có thể bake lightmap lên GridMap. Dữ liệu UV2 cho lightmap sẽ được dùng lại từ mesh nếu đã có. Nếu chưa có dữ liệu UV2, nó sẽ được tự động tạo khi bake với kích thước texel lightmap là 0.1 đơn vị. Để tạo dữ liệu UV2 với kích thước texel lightmap khác, bạn có thể đặt chế độ global illumination trong Import dock thành <strong>Static Lightmaps</strong> và chỉ định kích thước texel ở đó. Tùy chọn này phải được thay đổi <em>trước khi</em> scene được chuyển đổi thành MeshLibrary, vì thay đổi sau đó sẽ không ảnh hưởng đến dữ liệu MeshLibrary hiện có.</p>
+<p>Ngoài điểm đặc thù này, quy trình bake lightmap giống như với bất kỳ scene 3D nào khác. Xem <a class="reference internal" href="global_illumination/using_lightmap_gi.html#doc-using-lightmap-gi"><span class="std std-ref">Dùng chiếu sáng toàn cục bằng lightmap</span></a> để biết thêm thông tin về bake lightmap.</p>
+</section>
+<section id="meshlibrary-format">
+<h2>Định dạng MeshLibrary<a class="headerlink" href="#meshlibrary-format" title="Link to this heading"></a></h2>
+<p>Tóm tắt các ràng buộc cụ thể của định dạng MeshLibrary: một scene MeshLibrary có Node3D làm node gốc, và nhiều node con sẽ trở thành các mục MeshLibrary. Mỗi node con của node gốc nên:</p>
+<ul class="simple">
+<li><p>Là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshInstance3D</span></a>, sẽ trở thành mục MeshLibrary. Chỉ mesh hiển thị này được export.</p></li>
+<li><p>Có material trong ô material của mesh, <em>không phải</em> trong các ô material của MeshInstance3D.</p></li>
+<li><p>Có tối đa một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_staticbody3d.html" title="Class reference (English)"><span class="xref std std-ref">class_StaticBody3D</span></a> cho va chạm. StaticBody3D nên có một hoặc nhiều node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">class_CollisionShape3D</span></a>.</p></li>
+<li><p>Có tối đa một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationregion3d.html" title="Class reference (English)"><span class="xref std std-ref">class_NavigationRegion3D</span></a> cho điều hướng. NavigationRegion3D có thể có thêm một hoặc nhiều node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshInstance3D</span></a>, có thể được bake cho điều hướng nhưng sẽ không được export như mesh hiển thị.</p></li>
+</ul>
+<p>Chỉ định dạng cụ thể này được nhận diện. Các loại node khác đặt làm node con sẽ không được nhận diện và export. GridMap không phải là hệ thống đa năng để đặt <em>node</em> lên lưới, mà là một hệ thống chuyên biệt, được tối ưu, thiết kế để đặt <em>mesh</em> kèm va chạm và điều hướng.</p>
+</section>
+<section id="exporting-the-meshlibrary">
+<h2>Export MeshLibrary<a class="headerlink" href="#exporting-the-meshlibrary" title="Link to this heading"></a></h2>
+<p>Để export library, nhấn vào <strong>Scene &gt; Export As... &gt; MeshLibrary...</strong>, và lưu nó dưới dạng một resource.</p>
+<img alt="../../_images/gridmap_export.webp" src="../../_images/gridmap_export.webp" />
+<p>Bạn có thể tìm thấy một MeshLibrary đã được export sẵn trong dự án với tên <code class="docutils literal notranslate"><span class="pre">MeshLibrary.tres</span></code>.</p>
+</section>
+<section id="using-gridmap">
+<h2>Sử dụng GridMap<a class="headerlink" href="#using-gridmap" title="Link to this heading"></a></h2>
+<p>Tạo một scene mới và thêm node GridMap. Thêm mesh library bằng cách kéo file resource từ FileSystem dock và thả vào thuộc tính <strong>Mesh Library</strong> trong Inspector.</p>
+<img alt="../../_images/gridmap_mesh_library_inspector.webp" src="../../_images/gridmap_mesh_library_inspector.webp" />
+<section id="inspector-properties">
+<h3>Thuộc tính trong Inspector<a class="headerlink" href="#inspector-properties" title="Link to this heading"></a></h3>
+<p>Cài đặt <strong>Physics Material</strong> cho phép bạn ghi đè physics material cho mọi mesh trong NavigationMesh.</p>
+<p>Trong <strong>Cells</strong>, thuộc tính <strong>Size</strong> nên được đặt bằng kích thước mesh của bạn. Bạn có thể để giá trị mặc định cho bản demo. Bỏ chọn thuộc tính <strong>Center Y</strong>.</p>
+<p>Các tùy chọn <strong>Collision</strong> cho phép bạn đặt collision layer, collision mask và độ ưu tiên cho toàn bộ lưới. Để biết thêm về cách chúng hoạt động, xem mục <a class="reference internal" href="../physics/index.html#doc-physics-index"><span class="std std-ref">Vật lý</span></a>.</p>
+<p>Trong <strong>Navigation</strong> có tùy chọn &quot;Bake Navigation&quot;. Nếu được bật, nó tạo một navigation region cho mỗi ô dùng mục mesh library có navigation mesh.</p>
+<p>Nếu bạn nhấn vào chính MeshLibrary trong Inspector, bạn có thể điều chỉnh cài đặt cho từng mesh, chẳng hạn như navigation mesh, navigation layer, hoặc mesh có đổ bóng hay không.</p>
+<img alt="../../_images/gridmap_mesh_library_settings.webp" src="../../_images/gridmap_mesh_library_settings.webp" />
+</section>
+<section id="gridmap-panel">
+<h3>Bảng GridMap<a class="headerlink" href="#gridmap-panel" title="Link to this heading"></a></h3>
+<p>Ở dưới cùng của trình chỉnh sửa là bảng GridMap, bảng này sẽ tự động mở khi bạn thêm node GridMap.</p>
+<img alt="../../_images/gridmap_panel.webp" src="../../_images/gridmap_panel.webp" />
+<p>Từ trái sang phải trên thanh công cụ:</p>
+<ul class="simple">
+<li><p><strong>Transform</strong>: Thêm một gizmo vào scene cho phép bạn thay đổi vị trí và góc xoay tương đối của gridmap trong scene.</p></li>
+<li><p><strong>Selection</strong>: Khi được kích hoạt, bạn có thể chọn một vùng trong viewport, nhấn và kéo để chọn nhiều ô trên lưới.</p></li>
+<li><p><strong>Erase</strong>: Khi được kích hoạt, nhấn vào viewport để xóa mesh.</p></li>
+<li><p><strong>Paint</strong>: Khi được kích hoạt, nhấn vào viewport để thêm mesh đang được chọn trong bảng GridMap vào scene.</p></li>
+<li><p><strong>Pick</strong>: Khi được kích hoạt, nhấn vào một mesh gridmap trong viewport sẽ khiến nó được chọn trong bảng GridMap.</p></li>
+<li><p><strong>Fill</strong>: Lấp đầy vùng đã được chọn trong viewport bằng mesh đang được chọn ở bảng GridMap phía dưới.</p></li>
+<li><p><strong>Move</strong>: Di chuyển một hoặc nhiều mesh đang được chọn trong viewport.</p></li>
+<li><p><strong>Duplicate</strong>: Tạo bản sao của một hoặc nhiều mesh đang được chọn trong GridMap.</p></li>
+<li><p><strong>Delete</strong>: Tương tự erase, nhưng áp dụng cho toàn bộ vùng đã chọn.</p></li>
+<li><p><strong>Cursor Rotate X</strong>: Khi công cụ paint được chọn, thao tác này sẽ xoay mesh sắp được vẽ quanh trục X. Nó cũng sẽ xoay các vùng đã chọn nếu chúng đang được di chuyển.</p></li>
+<li><p><strong>Cursor Rotate Y</strong>: Khi công cụ paint được chọn, thao tác này sẽ xoay mesh sắp được vẽ quanh trục Y. Nó cũng sẽ xoay các vùng đã chọn nếu chúng đang được di chuyển.</p></li>
+<li><p><strong>Cursor Rotate Z</strong>: Khi công cụ paint được chọn, thao tác này sẽ xoay mesh sắp được vẽ quanh trục Z. Nó cũng sẽ xoay các vùng đã chọn nếu chúng đang được di chuyển.</p></li>
+<li><p><strong>Change Grid Floor</strong>: Điều chỉnh tầng đang được làm việc. Có thể thay đổi bằng các mũi tên, nhập giá trị vào ô, hoặc <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">Mouse</kbd> <kbd class="kbd docutils literal notranslate">wheel</kbd></kbd>.</p></li>
+<li><p><strong>Filter Meshes</strong>: Dùng để tìm một mesh cụ thể trong bảng phía dưới.</p></li>
+<li><p><strong>Zoom</strong>: Điều khiển mức thu phóng của các mesh trong bảng phía dưới.</p></li>
+<li><p><strong>Layout toggles</strong>: Hai nút này chuyển đổi giữa các bố cục khác nhau cho mesh trong bảng phía dưới.</p></li>
+<li><p><strong>Tools dropdown</strong>: Nút này mở một menu thả xuống với thêm vài tùy chọn.</p></li>
+</ul>
+<img alt="../../_images/gridmap_dropdown.webp" src="../../_images/gridmap_dropdown.webp" />
+<p>Nhấn vào <strong>Settings</strong> trong menu thả xuống đó sẽ mở một cửa sổ cho phép bạn thay đổi <strong>Pick Distance</strong>, là khoảng cách tối đa mà tile có thể được đặt lên GridMap, tính từ vị trí camera (theo mét).</p>
+</section>
+</section>
+<section id="using-gridmap-in-code">
+<h2>Sử dụng GridMap trong code<a class="headerlink" href="#using-gridmap-in-code" title="Link to this heading"></a></h2>
+<p>Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gridmap.html" title="Class reference (English)"><span class="xref std std-ref">class_GridMap</span></a> để biết chi tiết về các phương thức và biến thành viên của node.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="csg_tools.html" class="btn btn-neutral float-left" title="Tạo nguyên mẫu level bằng CSG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="spring_arm.html" class="btn btn-neutral float-right" title="Camera góc nhìn thứ ba với spring arm" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

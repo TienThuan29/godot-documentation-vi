@@ -1,0 +1,1490 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="API tuần tự hóa nhị phân" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/io/binary_serialization_api.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Godot có một API tuần tự hóa dựa trên Variant. Nó được dùng để chuyển đổi các kiểu dữ liệu thành mảng byte một cách hiệu quả. API này được cung cấp qua các hàm toàn cục bytes_to_var() v..." />
+<meta name="description" content="Giới thiệu: Godot có một API tuần tự hóa dựa trên Variant. Nó được dùng để chuyển đổi các kiểu dữ liệu thành mảng byte một cách hiệu quả. API này được cung cấp qua các hàm toàn cục bytes_to_var() v..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) API tuần tự hóa nhị phân &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Quốc tế hóa" href="../i18n/index.html" />
+    <link rel="prev" title="Tải và lưu file khi chạy" href="runtime_file_loading_and_saving.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/io/binary_serialization_api" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Nhập/xuất file và dữ liệu</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="background_loading.html">Tải nền</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_paths.html">Đường dẫn file trong dự án Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saving_games.html">Lưu game</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runtime_file_loading_and_saving.html">Tải và lưu file khi chạy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">API tuần tự hóa nhị phân</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-objects-vs-object-instance-ids">Object đầy đủ và instance ID của Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packet-specification">Đặc tả packet</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#null">0: null</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bool">1: <span class="xref std std-ref">bool</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#int">2: <span class="xref std std-ref">int</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#float">3: <span class="xref std std-ref">float</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#string">4: <span class="xref std std-ref">String</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vector2">5: <span class="xref std std-ref">Vector2</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rect2">6: <span class="xref std std-ref">Rect2</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vector3">7: <span class="xref std std-ref">Vector3</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transform2d">8: <span class="xref std std-ref">Transform2D</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plane">9: <span class="xref std std-ref">Plane</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quaternion">10: <span class="xref std std-ref">Quaternion</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aabb">11: <span class="xref std std-ref">AABB</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basis">12: <span class="xref std std-ref">Basis</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transform3d">13: <span class="xref std std-ref">Transform3D</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color">14: <span class="xref std std-ref">Color</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nodepath">15: <span class="xref std std-ref">NodePath</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#for-old-format">Với định dạng cũ:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#for-new-format">Với định dạng mới:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rid-unsupported">16: <span class="xref std std-ref">RID</span> (không được hỗ trợ)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#object">17: <span class="xref std std-ref">Object</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dictionary">18: <span class="xref std std-ref">Dictionary</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#array">19: <span class="xref std std-ref">Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedbytearray">20: <span class="xref std std-ref">PackedByteArray</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedint32array">21: <span class="xref std std-ref">PackedInt32Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedint64array">22: <span class="xref std std-ref">PackedInt64Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedfloat32array">23: <span class="xref std std-ref">PackedFloat32Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedfloat64array">24: <span class="xref std std-ref">PackedFloat64Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedstringarray">25: <span class="xref std std-ref">PackedStringArray</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedvector2array">26: <span class="xref std std-ref">PackedVector2Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedvector3array">27: <span class="xref std std-ref">PackedVector3Array</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packedcolorarray">28: <span class="xref std std-ref">PackedColorArray</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Nhập/xuất file và dữ liệu</a></li>
+      <li class="breadcrumb-item active">API tuần tự hóa nhị phân</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="binary-serialization-api">
+<span id="doc-binary-serialization-api"></span><h1>API tuần tự hóa nhị phân<a class="headerlink" href="#binary-serialization-api" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Godot có một API tuần tự hóa dựa trên Variant. Nó được dùng để chuyển đổi các kiểu dữ liệu thành mảng byte một cách hiệu quả. API này được cung cấp qua các hàm toàn cục <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-bytes-to-var" title="Class reference (English)"><span class="xref std std-ref">bytes_to_var()</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-method-var-to-bytes" title="Class reference (English)"><span class="xref std std-ref">var_to_bytes()</span></a>, nhưng nó cũng được dùng trong các phương thức <code class="docutils literal notranslate"><span class="pre">get_var</span></code> và <code class="docutils literal notranslate"><span class="pre">store_var</span></code> của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_fileaccess.html" title="Class reference (English)"><span class="xref std std-ref">class_FileAccess</span></a> cũng như các API packet của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packetpeer.html" title="Class reference (English)"><span class="xref std std-ref">class_PacketPeer</span></a>. Định dạng này <em>không</em> được dùng cho scene và resource nhị phân.</p>
+</section>
+<section id="full-objects-vs-object-instance-ids">
+<h2>Object đầy đủ và instance ID của Object<a class="headerlink" href="#full-objects-vs-object-instance-ids" title="Link to this heading"></a></h2>
+<p>Nếu một biến được tuần tự hóa với <code class="docutils literal notranslate"><span class="pre">full_objects</span> <span class="pre">=</span> <span class="pre">true</span></code>, mọi Object chứa trong biến sẽ được tuần tự hóa và đưa vào kết quả. Việc này mang tính đệ quy.</p>
+<p>Nếu <code class="docutils literal notranslate"><span class="pre">full_objects</span> <span class="pre">=</span> <span class="pre">false</span></code>, chỉ instance ID của các Object chứa trong biến được tuần tự hóa.</p>
+</section>
+<section id="packet-specification">
+<h2>Đặc tả packet<a class="headerlink" href="#packet-specification" title="Link to this heading"></a></h2>
+<p>Packet được thiết kế để luôn được đệm thành bội số 4 byte. Mọi giá trị đều được mã hóa little-endian. Mọi packet đều có header 4 byte biểu diễn một số nguyên, chỉ định kiểu dữ liệu.</p>
+<p>Hai byte có giá trị thấp nhất được dùng để xác định kiểu, còn hai byte có giá trị cao nhất chứa các cờ:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">base_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFFFF</span><span class="p">;</span>
+<span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Giá trị</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>null</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>vector2</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>rect2</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>vector3</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>transform2d</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>plane</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>quaternion</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p>aabb</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>basis</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><p>transform3d</p></td>
+</tr>
+<tr class="row-even"><td><p>14</p></td>
+<td><p>color</p></td>
+</tr>
+<tr class="row-odd"><td><p>15</p></td>
+<td><p>node path</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p>rid</p></td>
+</tr>
+<tr class="row-odd"><td><p>17</p></td>
+<td><p>object</p></td>
+</tr>
+<tr class="row-even"><td><p>18</p></td>
+<td><p>dictionary</p></td>
+</tr>
+<tr class="row-odd"><td><p>19</p></td>
+<td><p>array</p></td>
+</tr>
+<tr class="row-even"><td><p>20</p></td>
+<td><p>raw array</p></td>
+</tr>
+<tr class="row-odd"><td><p>21</p></td>
+<td><p>int32 array</p></td>
+</tr>
+<tr class="row-even"><td><p>22</p></td>
+<td><p>int64 array</p></td>
+</tr>
+<tr class="row-odd"><td><p>23</p></td>
+<td><p>float32 array</p></td>
+</tr>
+<tr class="row-even"><td><p>24</p></td>
+<td><p>float64 array</p></td>
+</tr>
+<tr class="row-odd"><td><p>25</p></td>
+<td><p>string array</p></td>
+</tr>
+<tr class="row-even"><td><p>26</p></td>
+<td><p>vector2 array</p></td>
+</tr>
+<tr class="row-odd"><td><p>27</p></td>
+<td><p>vector3 array</p></td>
+</tr>
+<tr class="row-even"><td><p>28</p></td>
+<td><p>color array</p></td>
+</tr>
+<tr class="row-odd"><td><p>29</p></td>
+<td><p>max</p></td>
+</tr>
+</tbody>
+</table>
+<p>Tiếp theo là nội dung thực tế của packet, khác nhau tùy theo từng loại packet. Lưu ý rằng điều này giả định Godot được biên dịch với float độ chính xác đơn, đây là mặc định. Nếu Godot được biên dịch với float độ chính xác kép, độ dài của các trường &quot;Float&quot; trong cấu trúc dữ liệu phải là 8, và offset phải là <code class="docutils literal notranslate"><span class="pre">(offset</span> <span class="pre">-</span> <span class="pre">4)</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">+</span> <span class="pre">4</span></code>. Bản thân kiểu &quot;float&quot; luôn dùng độ chính xác kép.</p>
+<section id="null">
+<h3>0: null<a class="headerlink" href="#null" title="Link to this heading"></a></h3>
+</section>
+<section id="bool">
+<h3>1: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_bool.html" title="Class reference (English)"><span class="xref std std-ref">bool</span></a><a class="headerlink" href="#bool" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>0 cho False, 1 cho True</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="int">
+<h3>2: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_int.html" title="Class reference (English)"><span class="xref std std-ref">int</span></a><a class="headerlink" href="#int" title="Link to this heading"></a></h3>
+<p>Nếu không có cờ nào được đặt (flags == 0), số nguyên được gửi dưới dạng số nguyên 32 bit:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Số nguyên có dấu 32 bit</p></td>
+</tr>
+</tbody>
+</table>
+<p>Nếu cờ <code class="docutils literal notranslate"><span class="pre">ENCODE_FLAG_64</span></code> được đặt (<code class="docutils literal notranslate"><span class="pre">flags</span> <span class="pre">&amp;</span> <span class="pre">1</span> <span class="pre">==</span> <span class="pre">1</span></code>), số nguyên được gửi dưới dạng số nguyên 64 bit:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>8</p></td>
+<td><p>Integer</p></td>
+<td><p>Số nguyên có dấu 64 bit</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="float">
+<h3>3: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_float.html" title="Class reference (English)"><span class="xref std std-ref">float</span></a><a class="headerlink" href="#float" title="Link to this heading"></a></h3>
+<p>Nếu không có cờ nào được đặt (flags == 0), float được gửi dưới dạng độ chính xác đơn 32 bit:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Float độ chính xác đơn IEEE 754</p></td>
+</tr>
+</tbody>
+</table>
+<p>Nếu cờ <code class="docutils literal notranslate"><span class="pre">ENCODE_FLAG_64</span></code> được đặt (<code class="docutils literal notranslate"><span class="pre">flags</span> <span class="pre">&amp;</span> <span class="pre">1</span> <span class="pre">==</span> <span class="pre">1</span></code>), float được gửi dưới dạng số độ chính xác kép 64 bit:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>8</p></td>
+<td><p>Float</p></td>
+<td><p>Float độ chính xác kép IEEE 754</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="string">
+<h3>4: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_string.html" title="Class reference (English)"><span class="xref std std-ref">String</span></a><a class="headerlink" href="#string" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài chuỗi (tính bằng byte)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>X</p></td>
+<td><p>Byte</p></td>
+<td><p>Chuỗi mã hóa UTF-8</p></td>
+</tr>
+</tbody>
+</table>
+<p>Trường này được đệm thành bội số 4 byte.</p>
+</section>
+<section id="vector2">
+<h3>5: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">Vector2</span></a><a class="headerlink" href="#vector2" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ X</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Y</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="rect2">
+<h3>6: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rect2.html" title="Class reference (English)"><span class="xref std std-ref">Rect2</span></a><a class="headerlink" href="#rect2" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ X</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Y</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Kích thước X</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Kích thước Y</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vector3">
+<h3>7: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">Vector3</span></a><a class="headerlink" href="#vector3" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ X</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Y</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Z</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="transform2d">
+<h3>8: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">Transform2D</span></a><a class="headerlink" href="#transform2d" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột X, truy cập qua [0][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột X, truy cập qua [0][1]</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột Y, truy cập qua [1][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột Y, truy cập qua [1][1]</p></td>
+</tr>
+<tr class="row-even"><td><p>20</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector gốc tọa độ, truy cập qua [2][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector gốc tọa độ, truy cập qua [2][1]</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="plane">
+<h3>9: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_plane.html" title="Class reference (English)"><span class="xref std std-ref">Plane</span></a><a class="headerlink" href="#plane" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Pháp tuyến X</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Pháp tuyến Y</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Pháp tuyến Z</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Khoảng cách</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="quaternion">
+<h3>10: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_quaternion.html" title="Class reference (English)"><span class="xref std std-ref">Quaternion</span></a><a class="headerlink" href="#quaternion" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Phần ảo X</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Phần ảo Y</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Phần ảo Z</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Phần thực W</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="aabb">
+<h3>11: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_aabb.html" title="Class reference (English)"><span class="xref std std-ref">AABB</span></a><a class="headerlink" href="#aabb" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ X</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Y</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Z</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Kích thước X</p></td>
+</tr>
+<tr class="row-even"><td><p>20</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Kích thước Y</p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Kích thước Z</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="basis">
+<h3>12: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">Basis</span></a><a class="headerlink" href="#basis" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột X, truy cập qua [0][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột X, truy cập qua [0][1]</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector cột X, truy cập qua [0][2]</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột Y, truy cập qua [1][0]</p></td>
+</tr>
+<tr class="row-even"><td><p>20</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột Y, truy cập qua [1][1]</p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector cột Y, truy cập qua [1][2]</p></td>
+</tr>
+<tr class="row-even"><td><p>28</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột Z, truy cập qua [2][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>32</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột Z, truy cập qua [2][1]</p></td>
+</tr>
+<tr class="row-even"><td><p>36</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector cột Z, truy cập qua [2][2]</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="transform3d">
+<h3>13: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html" title="Class reference (English)"><span class="xref std std-ref">Transform3D</span></a><a class="headerlink" href="#transform3d" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột X, truy cập qua [0][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột X, truy cập qua [0][1]</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector cột X, truy cập qua [0][2]</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột Y, truy cập qua [1][0]</p></td>
+</tr>
+<tr class="row-even"><td><p>20</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột Y, truy cập qua [1][1]</p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector cột Y, truy cập qua [1][2]</p></td>
+</tr>
+<tr class="row-even"><td><p>28</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector cột Z, truy cập qua [2][0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>32</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector cột Z, truy cập qua [2][1]</p></td>
+</tr>
+<tr class="row-even"><td><p>36</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector cột Z, truy cập qua [2][2]</p></td>
+</tr>
+<tr class="row-odd"><td><p>40</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần X của vector gốc tọa độ, truy cập qua [3][0]</p></td>
+</tr>
+<tr class="row-even"><td><p>44</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Y của vector gốc tọa độ, truy cập qua [3][1]</p></td>
+</tr>
+<tr class="row-odd"><td><p>48</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Thành phần Z của vector gốc tọa độ, truy cập qua [3][2]</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="color">
+<h3>14: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_color.html" title="Class reference (English)"><span class="xref std std-ref">Color</span></a><a class="headerlink" href="#color" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Đỏ (thường 0..1, có thể lớn hơn 1 với màu quá sáng)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Xanh lá (thường 0..1, có thể lớn hơn 1 với màu quá sáng)</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Xanh dương (thường 0..1, có thể lớn hơn 1 với màu quá sáng)</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Alpha (0..1)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="nodepath">
+<h3>15: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_nodepath.html" title="Class reference (English)"><span class="xref std std-ref">NodePath</span></a><a class="headerlink" href="#nodepath" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài chuỗi, hoặc định dạng mới (val&amp;0x80000000!=0 và NameCount=val&amp;0x7FFFFFFF)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="for-old-format">
+<h3>Với định dạng cũ:<a class="headerlink" href="#for-old-format" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>X</p></td>
+<td><p>Byte</p></td>
+<td><p>Chuỗi mã hóa UTF-8</p></td>
+</tr>
+</tbody>
+</table>
+<p>Được đệm thành bội số 4 byte.</p>
+</section>
+<section id="for-new-format">
+<h3>Với định dạng mới:<a class="headerlink" href="#for-new-format" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Số lượng sub-name</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Cờ (absolute: val&amp;1 != 0 )</p></td>
+</tr>
+</tbody>
+</table>
+<p>Với mỗi Name và Sub-Name</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X+0</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài chuỗi</p></td>
+</tr>
+<tr class="row-odd"><td><p>X+4</p></td>
+<td><p>X</p></td>
+<td><p>Byte</p></td>
+<td><p>Chuỗi mã hóa UTF-8</p></td>
+</tr>
+</tbody>
+</table>
+<p>Mỗi chuỗi tên được đệm thành bội số 4 byte.</p>
+</section>
+<section id="rid-unsupported">
+<h3>16: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_rid.html" title="Class reference (English)"><span class="xref std std-ref">RID</span></a> (không được hỗ trợ)<a class="headerlink" href="#rid-unsupported" title="Link to this heading"></a></h3>
+</section>
+<section id="object">
+<h3>17: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html" title="Class reference (English)"><span class="xref std std-ref">Object</span></a><a class="headerlink" href="#object" title="Link to this heading"></a></h3>
+<p>Một Object có thể được tuần tự hóa theo ba cách khác nhau: dưới dạng giá trị null, với <code class="docutils literal notranslate"><span class="pre">full_objects</span> <span class="pre">=</span> <span class="pre">false</span></code>, hoặc với <code class="docutils literal notranslate"><span class="pre">full_objects</span> <span class="pre">=</span> <span class="pre">true</span></code>.</p>
+<section id="a-null-value">
+<h4>Giá trị null<a class="headerlink" href="#a-null-value" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Số không (số nguyên có dấu 32 bit)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="full-objects-disabled">
+<h4><code class="docutils literal notranslate"><span class="pre">full_objects</span></code> bị tắt<a class="headerlink" href="#full-objects-disabled" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>8</p></td>
+<td><p>Integer</p></td>
+<td><p>Instance ID của Object (số nguyên có dấu 64 bit)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="full-objects-enabled">
+<h4><code class="docutils literal notranslate"><span class="pre">full_objects</span></code> được bật<a class="headerlink" href="#full-objects-enabled" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Tên lớp (độ dài String)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>X</p></td>
+<td><p>Byte</p></td>
+<td><p>Tên lớp (chuỗi mã hóa UTF-8)</p></td>
+</tr>
+<tr class="row-even"><td><p>X+8</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Số lượng thuộc tính được tuần tự hóa</p></td>
+</tr>
+</tbody>
+</table>
+<p>Với mỗi thuộc tính:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Y</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Tên thuộc tính (độ dài String)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Y+4</p></td>
+<td><p>Z</p></td>
+<td><p>Byte</p></td>
+<td><p>Tên thuộc tính (chuỗi mã hóa UTF-8)</p></td>
+</tr>
+<tr class="row-even"><td><p>Y+4+Z</p></td>
+<td><p>W</p></td>
+<td><p>&lt;variable&gt;</p></td>
+<td><p>Giá trị thuộc tính, dùng cùng định dạng này</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Không phải mọi thuộc tính đều được đưa vào. Chỉ những thuộc tính được cấu hình với cờ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#class-globalscope-constant-property-usage-storage" title="Class reference (English)"><span class="xref std std-ref">PROPERTY_USAGE_STORAGE</span></a> mới được tuần tự hóa. Bạn có thể thêm cờ usage mới cho một thuộc tính bằng cách override phương thức <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-private-method-get-property-list" title="Class reference (English)"><span class="xref std std-ref">_get_property_list</span></a> trong lớp của bạn. Bạn cũng có thể kiểm tra cách cấu hình usage của thuộc tính bằng cách gọi <code class="docutils literal notranslate"><span class="pre">Object._get_property_list</span></code>. Xem <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html#enum-globalscope-propertyusageflags" title="Class reference (English)"><span class="xref std std-ref">PropertyUsageFlags</span></a> để biết các cờ usage có thể dùng.</p>
+</div>
+</section>
+</section>
+<section id="dictionary">
+<h3>18: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_dictionary.html" title="Class reference (English)"><span class="xref std std-ref">Dictionary</span></a><a class="headerlink" href="#dictionary" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>val&amp;0x7FFFFFFF = số phần tử, val&amp;0x80000000 = shared (bool)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Tiếp theo là, với số lượng bằng &quot;số phần tử&quot;, các cặp khóa và giá trị nối tiếp nhau, dùng cùng định dạng này.</p>
+</section>
+<section id="array">
+<h3>19: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_array.html" title="Class reference (English)"><span class="xref std std-ref">Array</span></a><a class="headerlink" href="#array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>val&amp;0x7FFFFFFF = số phần tử, val&amp;0x80000000 = shared (bool)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Tiếp theo là, với số lượng bằng &quot;số phần tử&quot;, các giá trị nối tiếp nhau, dùng cùng định dạng này.</p>
+</section>
+<section id="packedbytearray">
+<h3>20: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedbytearray.html" title="Class reference (English)"><span class="xref std std-ref">PackedByteArray</span></a><a class="headerlink" href="#packedbytearray" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng (Byte)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length</p></td>
+<td><p>1</p></td>
+<td><p>Byte</p></td>
+<td><p>Byte (0..255)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Dữ liệu mảng được đệm thành bội số 4 byte.</p>
+</section>
+<section id="packedint32array">
+<h3>21: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedint32array.html" title="Class reference (English)"><span class="xref std std-ref">PackedInt32Array</span></a><a class="headerlink" href="#packedint32array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng (số Integer)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Số nguyên có dấu 32 bit</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="packedint64array">
+<h3>22: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedint64array.html" title="Class reference (English)"><span class="xref std std-ref">PackedInt64Array</span></a><a class="headerlink" href="#packedint64array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>8</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng (số Integer)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*8</p></td>
+<td><p>8</p></td>
+<td><p>Integer</p></td>
+<td><p>Số nguyên có dấu 64 bit</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="packedfloat32array">
+<h3>23: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedfloat32array.html" title="Class reference (English)"><span class="xref std std-ref">PackedFloat32Array</span></a><a class="headerlink" href="#packedfloat32array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng (số Float)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Float độ chính xác đơn IEEE 754 32 bit</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="packedfloat64array">
+<h3>24: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedfloat64array.html" title="Class reference (English)"><span class="xref std std-ref">PackedFloat64Array</span></a><a class="headerlink" href="#packedfloat64array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng (số Float)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*8</p></td>
+<td><p>8</p></td>
+<td><p>Integer</p></td>
+<td><p>Float độ chính xác kép IEEE 754 64 bit</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="packedstringarray">
+<h3>25: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedstringarray.html" title="Class reference (English)"><span class="xref std std-ref">PackedStringArray</span></a><a class="headerlink" href="#packedstringarray" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng (số String)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Với mỗi String:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X+0</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài chuỗi</p></td>
+</tr>
+<tr class="row-odd"><td><p>X+4</p></td>
+<td><p>X</p></td>
+<td><p>Byte</p></td>
+<td><p>Chuỗi mã hóa UTF-8</p></td>
+</tr>
+</tbody>
+</table>
+<p>Mỗi chuỗi được đệm thành bội số 4 byte.</p>
+</section>
+<section id="packedvector2array">
+<h3>26: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedvector2array.html" title="Class reference (English)"><span class="xref std std-ref">PackedVector2Array</span></a><a class="headerlink" href="#packedvector2array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ X</p></td>
+</tr>
+<tr class="row-even"><td><p>8..12+length*8</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Y</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="packedvector3array">
+<h3>27: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedvector3array.html" title="Class reference (English)"><span class="xref std std-ref">PackedVector3Array</span></a><a class="headerlink" href="#packedvector3array" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ X</p></td>
+</tr>
+<tr class="row-even"><td><p>8..12+length*12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Y</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..16+length*12</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Tọa độ Z</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="packedcolorarray">
+<h3>28: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_packedcolorarray.html" title="Class reference (English)"><span class="xref std std-ref">PackedColorArray</span></a><a class="headerlink" href="#packedcolorarray" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Độ dài</p></th>
+<th class="head"><p>Kiểu</p></th>
+<th class="head"><p>Mô tả</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Độ dài mảng</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..8+length*16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Đỏ (thường 0..1, có thể lớn hơn 1 với màu quá sáng)</p></td>
+</tr>
+<tr class="row-even"><td><p>8..12+length*16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Xanh lá (thường 0..1, có thể lớn hơn 1 với màu quá sáng)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8..16+length*16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Xanh dương (thường 0..1, có thể lớn hơn 1 với màu quá sáng)</p></td>
+</tr>
+<tr class="row-even"><td><p>8..20+length*16</p></td>
+<td><p>4</p></td>
+<td><p>Float</p></td>
+<td><p>Alpha (0..1)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="runtime_file_loading_and_saving.html" class="btn btn-neutral float-left" title="Tải và lưu file khi chạy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../i18n/index.html" class="btn btn-neutral float-right" title="Quốc tế hóa" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

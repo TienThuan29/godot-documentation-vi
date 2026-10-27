@@ -1,0 +1,616 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Giới thiệu về hệ thống build" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="engine_details/development/compiling/introduction_to_the_buildsystem.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Godot chủ yếu là một dự án C++ và nó dùng hệ thống build SCons. Chúng tôi yêu thích SCons vì nó giúp hệ thống build của chúng tôi dễ bảo trì và dễ thiết lập. Nhờ vậy, việc biên dịch Godot từ mã ngu..." />
+<meta name="description" content="Godot chủ yếu là một dự án C++ và nó dùng hệ thống build SCons. Chúng tôi yêu thích SCons vì nó giúp hệ thống build của chúng tôi dễ bảo trì và dễ thiết lập. Nhờ vậy, việc biên dịch Godot từ mã ngu..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Giới thiệu về hệ thống build &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Biên dịch cho Windows" href="compiling_for_windows.html" />
+    <link rel="prev" title="Lấy mã nguồn" href="getting_source.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="engine_details/development/compiling/introduction_to_the_buildsystem" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Phát triển engine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../configuring_an_ide/index.html">Cấu hình IDE</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Build từ mã nguồn</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="getting_source.html">Lấy mã nguồn</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Giới thiệu về hệ thống build</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-multi-threading">Sử dụng đa luồng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#platform-selection">Chọn nền tảng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resulting-binary">Binary kết quả</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#target">Target</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#development-and-production-aliases">Các alias cho development và production</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dev-build">Bản build dev</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#debugging-symbols">Ký hiệu gỡ lỗi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optimization-level">Mức tối ưu hóa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Kiến trúc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-modules">Module tùy chỉnh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cleaning-generated-files">Dọn dẹp các file đã tạo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-build-options">Các tùy chọn build khác</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export-templates">Export template</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_windows.html">Biên dịch cho Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_linuxbsd.html">Biên dịch cho Linux, *BSD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_macos.html">Biên dịch cho macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_android.html">Biên dịch cho Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_ios.html">Biên dịch cho iOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_visionos.html">Biên dịch cho visionOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_for_web.html">Biên dịch cho Web</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cross-compiling_for_ios_on_linux.html">Biên dịch chéo cho iOS trên Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_with_dotnet.html">Biên dịch với .NET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compiling_with_script_encryption_key.html">Biên dịch với khóa mã hóa PCK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizing_for_size.html">Tối ưu hóa kích thước bản build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/index.html">Debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profiling/index.html">Sử dụng profiler C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../handling_compatibility_breakages.html">Xử lý việc phá vỡ tương thích</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Phát triển engine</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Build từ mã nguồn</a></li>
+      <li class="breadcrumb-item active">Giới thiệu về hệ thống build</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="introduction-to-the-buildsystem">
+<span id="doc-introduction-to-the-buildsystem"></span><h1>Giới thiệu về hệ thống build<a class="headerlink" href="#introduction-to-the-buildsystem" title="Link to this heading"></a></h1>
+<p>Godot chủ yếu là một dự án C++ và nó <a class="reference internal" href="../../../about/faq.html#doc-faq-why-scons"><span class="std std-ref">dùng hệ thống build SCons.</span></a> Chúng tôi yêu thích SCons vì nó giúp hệ thống build của chúng tôi dễ bảo trì và dễ thiết lập. Nhờ vậy, việc biên dịch Godot từ mã nguồn có thể đơn giản chỉ là chạy:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons
+</pre></div>
+</div>
+<p>Lệnh này tạo ra một bản build trình chỉnh sửa cho nền tảng, hệ điều hành và kiến trúc hiện tại của bạn. Bạn có thể thay đổi thứ được build bằng cách chỉ định target, nền tảng và/hoặc kiến trúc. Ví dụ, để build một export template dùng để chạy các game đã xuất, bạn có thể chạy:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">target</span><span class="o">=</span>template_release
+</pre></div>
+</div>
+<p>Nếu bạn định debug hoặc phát triển engine, có thể bạn sẽ muốn bật tùy chọn <code class="docutils literal notranslate"><span class="pre">dev_build</span></code> để kích hoạt code debug chỉ dành cho phát triển:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">dev_build</span><span class="o">=</span>yes
+</pre></div>
+</div>
+<p>Các phần tiếp theo của bài viết sẽ giải thích chi tiết hơn về các tùy chọn này và các tùy chọn chung khác. Nhưng trước khi có thể biên dịch Godot, bạn cần cài đặt một vài điều kiện tiên quyết. Hãy tham khảo tài liệu của từng nền tảng để tìm hiểu thêm:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="compiling_for_android.html#doc-compiling-for-android"><span class="std std-ref">Biên dịch cho Android</span></a></p></li>
+<li><p><a class="reference internal" href="compiling_for_ios.html#doc-compiling-for-ios"><span class="std std-ref">Biên dịch cho iOS</span></a></p></li>
+<li><p><a class="reference internal" href="compiling_for_linuxbsd.html#doc-compiling-for-linuxbsd"><span class="std std-ref">Biên dịch cho Linux, *BSD</span></a></p></li>
+<li><p><a class="reference internal" href="compiling_for_macos.html#doc-compiling-for-macos"><span class="std std-ref">Biên dịch cho macOS</span></a></p></li>
+<li><p><a class="reference internal" href="compiling_for_web.html#doc-compiling-for-web"><span class="std std-ref">Biên dịch cho Web</span></a></p></li>
+<li><p><a class="reference internal" href="compiling_for_windows.html#doc-compiling-for-windows"><span class="std std-ref">Biên dịch cho Windows</span></a></p></li>
+</ul>
+<p>Các bài viết này trình bày rất chi tiết cả cách thiết lập môi trường để biên dịch Godot trên một nền tảng cụ thể lẫn cách biên dịch cho nền tảng đó. Bạn cứ thoải mái chuyển qua lại giữa chúng và bài viết này để tham khảo các tùy chọn cấu hình riêng cho từng nền tảng và các tùy chọn chung.</p>
+<section id="using-multi-threading">
+<h2>Sử dụng đa luồng<a class="headerlink" href="#using-multi-threading" title="Link to this heading"></a></h2>
+<p>Quá trình build có thể mất khá lâu, tùy vào cấu hình máy của bạn mạnh đến đâu. Theo mặc định, thiết lập SCons của Godot được cấu hình để dùng tất cả luồng CPU trừ một (để hệ thống vẫn phản hồi tốt trong khi biên dịch). Nếu hệ thống có từ 4 luồng CPU trở xuống, nó sẽ dùng tất cả các luồng theo mặc định.</p>
+<p>Nếu muốn điều chỉnh số luồng CPU mà SCons sẽ dùng, hãy dùng tham số <code class="docutils literal notranslate"><span class="pre">-j&lt;threads&gt;</span></code> để chỉ định số luồng dùng cho quá trình build.</p>
+<p>Ví dụ dùng 12 luồng:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span>-j12
+</pre></div>
+</div>
+</section>
+<section id="platform-selection">
+<h2>Chọn nền tảng<a class="headerlink" href="#platform-selection" title="Link to this heading"></a></h2>
+<p>Hệ thống build của Godot sẽ bắt đầu bằng việc phát hiện các nền tảng mà nó có thể build. Nếu không được phát hiện, nền tảng đó đơn giản là sẽ không xuất hiện trong danh sách các nền tảng khả dụng. Yêu cầu build cho từng nền tảng được mô tả trong phần còn lại của mục hướng dẫn này.</p>
+<p>SCons được gọi chỉ bằng lệnh <code class="docutils literal notranslate"><span class="pre">scons</span></code>. Nếu không chỉ định nền tảng, SCons sẽ tự động phát hiện nền tảng đích dựa trên nền tảng host, rồi bắt đầu build cho nền tảng đích đó ngay lập tức.</p>
+<p>Để liệt kê các nền tảng đích khả dụng, hãy dùng <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">platform=list</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>scons platform=list
+scons: Reading SConscript files ...
+The following platforms are available:
+
+    android
+    ios
+    linuxbsd
+    macos
+    web
+    windows
+
+Please run SCons again and select a valid platform: platform=&lt;string&gt;
+</pre></div>
+</div>
+<p>Để build cho một nền tảng (ví dụ <code class="docutils literal notranslate"><span class="pre">linuxbsd</span></code>), hãy chạy với tham số <code class="docutils literal notranslate"><span class="pre">platform=</span></code> (hoặc viết tắt <code class="docutils literal notranslate"><span class="pre">p=</span></code>):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>linuxbsd
+</pre></div>
+</div>
+</section>
+<section id="resulting-binary">
+<span id="doc-introduction-to-the-buildsystem-resulting-binary"></span><h2>Binary kết quả<a class="headerlink" href="#resulting-binary" title="Link to this heading"></a></h2>
+<p>Các binary kết quả sẽ được đặt trong thư mục con <code class="docutils literal notranslate"><span class="pre">bin/</span></code>, thường theo quy ước đặt tên sau:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>godot.&lt;platform&gt;.&lt;target&gt;<span class="o">[</span>.dev<span class="o">][</span>.double<span class="o">]</span>.&lt;arch&gt;<span class="o">[</span>.&lt;extra_suffix&gt;<span class="o">][</span>.&lt;ext&gt;<span class="o">]</span>
+</pre></div>
+</div>
+<p>Với lần build ở trên, kết quả sẽ trông như sau:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ls bin</span>
+<span class="go">bin/godot.linuxbsd.editor.x86_64</span>
+</pre></div>
+</div>
+<p>Điều này có nghĩa binary dành cho Linux <em>hoặc</em> *BSD (<em>không phải</em> cả hai), chưa được tối ưu hóa, có biên dịch kèm toàn bộ trình chỉnh sửa và dành cho 64 bit.</p>
+<p>Một binary Windows với cùng cấu hình sẽ trông như sau:</p>
+<div class="highlight-doscon notranslate"><div class="highlight"><pre><span></span><span class="gp">C:\godot&gt;</span> <span class="k">dir</span> bin/
+<span class="go">godot.windows.editor.64.exe</span>
+</pre></div>
+</div>
+<p>Hãy sao chép binary đó đến bất kỳ vị trí nào bạn thích, vì nó chứa Project Manager, trình chỉnh sửa và mọi thứ cần thiết để chạy game. Tuy nhiên, nó thiếu dữ liệu để xuất game sang các nền tảng khác nhau. Để làm điều đó cần có export template (bạn có thể tải từ <a class="reference external" href="https://godotengine.org/">godotengine.org</a>, hoặc tự build).</p>
+<p>Ngoài ra, có một vài tùy chọn tiêu chuẩn có thể đặt cho mọi build target, sẽ được giải thích bên dưới.</p>
+</section>
+<section id="target">
+<span id="doc-introduction-to-the-buildsystem-target"></span><h2>Target<a class="headerlink" href="#target" title="Link to this heading"></a></h2>
+<p>Tùy chọn <code class="docutils literal notranslate"><span class="pre">target</span></code> quyết định việc có biên dịch trình chỉnh sửa và có dùng các cờ debug hay không. Mức tối ưu hóa (<code class="docutils literal notranslate"><span class="pre">optimize</span></code>) và việc mỗi bản build có chứa debug symbol hay không (<code class="docutils literal notranslate"><span class="pre">debug_symbols</span></code>) được điều khiển riêng biệt với target. Ý nghĩa của từng chế độ:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">target=editor</span></code>: Build binary trình chỉnh sửa (định nghĩa <code class="docutils literal notranslate"><span class="pre">TOOLS_ENABLED</span></code> và <code class="docutils literal notranslate"><span class="pre">DEBUG_ENABLED</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target=template_debug</span></code>: Build export template debug (định nghĩa <code class="docutils literal notranslate"><span class="pre">DEBUG_ENABLED</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target=template_release</span></code>: Build export template release</p></li>
+</ul>
+<p>Trình chỉnh sửa được bật theo mặc định trên mọi target PC (Linux, Windows, macOS) và bị tắt cho mọi nền tảng khác. Tắt trình chỉnh sửa sẽ tạo ra một binary có thể chạy dự án nhưng không bao gồm trình chỉnh sửa hay Project Manager.</p>
+<p>Danh sách <a class="reference internal" href="../../../tutorials/editor/command_line_tutorial.html#doc-command-line-tutorial"><span class="std std-ref">tham số dòng lệnh</span></a> khả dụng thay đổi tùy theo loại bản build.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>&lt;platform&gt;<span class="w"> </span><span class="nv">target</span><span class="o">=</span>editor<span class="p">|</span>template_debug<span class="p">|</span>template_release
+</pre></div>
+</div>
+</section>
+<section id="development-and-production-aliases">
+<span id="doc-introduction-to-the-buildsystem-development-and-production-aliases"></span><h2>Các alias cho development và production<a class="headerlink" href="#development-and-production-aliases" title="Link to this heading"></a></h2>
+<p>Khi tạo bản build để phát triển (chạy công cụ debug/<a class="reference internal" href="../profiling/index.html#doc-using-cpp-profilers"><span class="std std-ref">profiling</span></a>), bạn thường có mục tiêu khác so với bản build production (tạo binary nhanh và nhỏ nhất có thể).</p>
+<p>Godot cung cấp hai alias cho mục đích này:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev_mode=yes</span></code> là alias của <code class="docutils literal notranslate"><span class="pre">verbose=yes</span> <span class="pre">warnings=extra</span> <span class="pre">werror=yes</span> <span class="pre">tests=yes</span></code>. Tùy chọn này bật hành vi coi cảnh báo là lỗi (tương tự thiết lập continuous integration của Godot) và build cả <a class="reference internal" href="../../architecture/unit_testing.html#doc-unit-testing"><span class="std std-ref">unit test</span></a> để bạn có thể chạy chúng trên máy cục bộ.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">production=yes</span></code> là alias của <code class="docutils literal notranslate"><span class="pre">use_static_cpp=yes</span> <span class="pre">debug_symbols=no</span> <span class="pre">lto=auto</span></code>. Liên kết tĩnh libstdc++ giúp binary dễ di chuyển giữa các hệ thống hơn khi biên dịch cho Linux. Alias này cũng bật tối ưu hóa lúc liên kết (link-time optimization) khi biên dịch cho Linux, Web và Windows với MinGW, nhưng giữ LTO ở trạng thái tắt khi biên dịch cho macOS, iOS hoặc Windows với MSVC. Lý do là trên các nền tảng đó, LTO liên kết rất chậm hoặc gây vấn đề với code được tạo ra.</p></li>
+</ul>
+<p>Bạn có thể ghi đè thủ công các tùy chọn từ những alias đó bằng cách chỉ định chúng trên cùng dòng lệnh với giá trị khác. Ví dụ, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">production=yes</span> <span class="pre">debug_symbols=yes</span></code> để tạo binary được tối ưu cho production có kèm debug symbol.</p>
+</section>
+<section id="dev-build">
+<h2>Bản build dev<a class="headerlink" href="#dev-build" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><code class="docutils literal notranslate"><span class="pre">dev_build</span></code> <strong>không</strong> nên bị nhầm lẫn với <code class="docutils literal notranslate"><span class="pre">dev_mode</span></code>, vốn là alias cho một số tùy chọn liên quan đến phát triển (xem ở trên).</p>
+</div>
+<p>Khi phát triển engine, tùy chọn <code class="docutils literal notranslate"><span class="pre">dev_build</span></code> có thể được dùng cùng với <code class="docutils literal notranslate"><span class="pre">target</span></code> để bật code dành riêng cho phát triển. <code class="docutils literal notranslate"><span class="pre">dev_build</span></code> định nghĩa <code class="docutils literal notranslate"><span class="pre">DEV_ENABLED</span></code>, tắt tối ưu hóa (<code class="docutils literal notranslate"><span class="pre">-O0</span></code>/<code class="docutils literal notranslate"><span class="pre">/0d</span></code>), bật tạo debug symbol và không định nghĩa <code class="docutils literal notranslate"><span class="pre">NDEBUG</span></code> (để <code class="docutils literal notranslate"><span class="pre">assert()</span></code> hoạt động trong các thư viện bên thứ ba).</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>&lt;platform&gt;<span class="w"> </span><span class="nv">dev_build</span><span class="o">=</span>yes
+</pre></div>
+</div>
+<p>Cờ này thêm hậu tố <code class="docutils literal notranslate"><span class="pre">.dev</span></code> (viết tắt của development) vào tên binary được tạo ra.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Có thêm các tùy chọn SCons để bật <em>sanitizer</em>, là những công cụ bạn có thể bật lúc biên dịch để debug tốt hơn một số vấn đề của engine. Xem <a class="reference internal" href="../debugging/using_sanitizers.html#doc-using-sanitizers"><span class="std std-ref">Sử dụng sanitizer</span></a> để biết thêm thông tin.</p>
+</div>
+</section>
+<section id="debugging-symbols">
+<span id="doc-introduction-to-the-buildsystem-debugging-symbols"></span><h2>Ký hiệu gỡ lỗi<a class="headerlink" href="#debugging-symbols" title="Link to this heading"></a></h2>
+<p>Theo mặc định, <code class="docutils literal notranslate"><span class="pre">debug_symbols=no</span></code> được dùng, nghĩa là <strong>không</strong> có debug symbol nào được đưa vào binary đã biên dịch. Hãy dùng <code class="docutils literal notranslate"><span class="pre">debug_symbols=yes</span></code> để đưa debug symbol vào binary đã biên dịch, giúp debugger và profiler hoạt động đúng. Debug symbol cũng cần thiết để stacktrace khi crash của Godot hiển thị kèm tham chiếu tới tệp và dòng mã nguồn.</p>
+<p>Nhược điểm là debug symbol là các tệp lớn (lớn hơn đáng kể so với chính các binary). Do đó, các binary chính thức hiện không bao gồm debug symbol. Điều này có nghĩa bạn cần tự biên dịch Godot để có được debug symbol.</p>
+<p>Khi dùng <code class="docutils literal notranslate"><span class="pre">debug_symbols=yes</span></code>, bạn cũng có thể dùng <code class="docutils literal notranslate"><span class="pre">separate_debug_symbols=yes</span></code> để đặt thông tin debug vào một tệp riêng có hậu tố <code class="docutils literal notranslate"><span class="pre">.debug</span></code>. Điều này cho phép phân phối hai tệp độc lập với nhau. Lưu ý rằng trên Windows, khi biên dịch với MSVC, thông tin debug <em>luôn</em> được ghi vào một tệp <code class="docutils literal notranslate"><span class="pre">.pdb</span></code> riêng bất kể <code class="docutils literal notranslate"><span class="pre">separate_debug_symbols</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Dùng lệnh <code class="docutils literal notranslate"><span class="pre">strip</span> <span class="pre">&lt;path/to/binary&gt;</span></code> để xóa debug symbol khỏi binary bạn đã biên dịch.</p>
+</div>
+</section>
+<section id="optimization-level">
+<h2>Mức tối ưu hóa<a class="headerlink" href="#optimization-level" title="Link to this heading"></a></h2>
+<p>Có thể chọn một trong các mức tối ưu hóa của trình biên dịch sau:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=speed_trace</span></code> <em>(mặc định khi nhắm tới các nền tảng không phải Web)</em>: Ưu tiên tốc độ thực thi, đổi lại kích thước binary lớn hơn. Việc tối ưu hóa đôi khi có thể ảnh hưởng xấu tới việc dùng debugger (stack trace có thể kém chính xác hơn. Nếu gặp tình trạng này, hãy dùng <code class="docutils literal notranslate"><span class="pre">optimize=debug</span></code> thay thế.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=speed</span></code>: Ưu tiên tốc độ thực thi hơn nữa, đổi lại kích thước binary còn lớn hơn so với <code class="docutils literal notranslate"><span class="pre">optimize=speed_trace</span></code>. Còn kém thân thiện với việc debug hơn so với <code class="docutils literal notranslate"><span class="pre">optimize=debug</span></code>, vì nó dùng các tối ưu hóa mạnh nhất hiện có.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=size</span></code> <em>(mặc định khi nhắm tới nền tảng Web)</em>: Ưu tiên binary nhỏ, đổi lại tốc độ thực thi chậm hơn.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=size_extra</span></code>: Ưu tiên binary còn nhỏ hơn nữa, đổi lại tốc độ thực thi còn chậm hơn so với <code class="docutils literal notranslate"><span class="pre">optimize=size</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=debug</span></code>: Chỉ bật các tối ưu hóa hoàn toàn không ảnh hưởng tới việc debug. Kết quả là binary nhanh hơn so với <code class="docutils literal notranslate"><span class="pre">optimize=none</span></code> nhưng chậm hơn so với <code class="docutils literal notranslate"><span class="pre">optimize=speed_trace</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=none</span></code>: Không thực hiện tối ưu hóa nào. Tùy chọn này cho thời gian build nhanh nhất nhưng thời gian thực thi chậm nhất.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimize=custom</span></code> <em>(chỉ dành cho người dùng nâng cao)</em>: Không truyền tham số tối ưu hóa cho trình biên dịch C/C++. Bạn sẽ phải tự truyền tham số bằng các tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">cflags</span></code>, <code class="docutils literal notranslate"><span class="pre">ccflags</span></code> và <code class="docutils literal notranslate"><span class="pre">cxxflags</span></code>.</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h2>Kiến trúc<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<p>Tùy chọn <code class="docutils literal notranslate"><span class="pre">arch</span></code> dùng để chỉ định CPU hoặc phiên bản hệ điều hành mà binary sẽ chạy trên đó. Nó chủ yếu dành cho các nền tảng desktop và bị bỏ qua ở mọi nơi khác.</p>
+<p>Các giá trị được hỗ trợ cho tùy chọn <code class="docutils literal notranslate"><span class="pre">arch</span></code> là <strong>auto</strong>, <strong>x86_32</strong>, <strong>x86_64</strong>, <strong>arm32</strong>, <strong>arm64</strong>, <strong>rv64</strong>, <strong>ppc32</strong>, <strong>ppc64</strong> và <strong>wasm32</strong>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">platform</span><span class="o">=</span>&lt;platform&gt;<span class="w"> </span><span class="nv">arch</span><span class="o">={</span>auto<span class="p">|</span>x86_32<span class="p">|</span>x86_64<span class="p">|</span>arm32<span class="p">|</span>arm64<span class="p">|</span>rv64<span class="p">|</span>ppc32<span class="p">|</span>ppc64<span class="p">|</span>wasm32<span class="o">}</span>
+</pre></div>
+</div>
+<p>Cờ này thêm giá trị của <code class="docutils literal notranslate"><span class="pre">arch</span></code> vào tên binary kết quả khi phù hợp. Giá trị mặc định <code class="docutils literal notranslate"><span class="pre">arch=auto</span></code> sẽ phát hiện kiến trúc khớp với nền tảng host.</p>
+</section>
+<section id="custom-modules">
+<span id="doc-buildsystem-custom-modules"></span><h2>Module tùy chỉnh<a class="headerlink" href="#custom-modules" title="Link to this heading"></a></h2>
+<p>Bạn có thể biên dịch các module nằm bên ngoài cây thư mục của Godot, cùng với các module có sẵn.</p>
+<p>Có thể truyền tùy chọn build <code class="docutils literal notranslate"><span class="pre">custom_modules</span></code> trên dòng lệnh trước khi biên dịch. Tùy chọn này là một danh sách các đường dẫn thư mục, phân tách bằng dấu phẩy, chứa tập hợp các module C++ độc lập có thể xem như các gói C++, giống như thư mục <code class="docutils literal notranslate"><span class="pre">modules/</span></code> có sẵn.</p>
+<p>Ví dụ, bạn có thể cung cấp cả đường dẫn tương đối, tuyệt đối và đường dẫn thư mục người dùng chứa các module như vậy:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">custom_modules</span><span class="o">=</span><span class="s2">&quot;../modules,/abs/path/to/modules,~/src/godot_modules&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu có module tùy chỉnh nào có tên thư mục trùng chính xác với một module có sẵn, engine sẽ chỉ biên dịch module tùy chỉnh. Có thể tận dụng cơ chế này để ghi đè phần cài đặt của module có sẵn.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference internal" href="../../engine_api/custom_modules_in_cpp.html#doc-custom-modules-in-cpp"><span class="std std-ref">Module tùy chỉnh bằng C++</span></a></p>
+</div>
+</section>
+<section id="cleaning-generated-files">
+<h2>Dọn dẹp các file đã tạo<a class="headerlink" href="#cleaning-generated-files" title="Link to this heading"></a></h2>
+<p>Đôi khi bạn có thể gặp lỗi do có các tệp được tạo ra từ trước. Bạn có thể xóa chúng bằng <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">--clean</span> <span class="pre">&lt;options&gt;</span></code>, trong đó <code class="docutils literal notranslate"><span class="pre">&lt;options&gt;</span></code> là danh sách các tùy chọn build bạn đã dùng để build Godot trước đó.</p>
+<p>Ngoài ra, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clean</span> <span class="pre">-fixd</span></code> để dọn sạch các sản phẩm build của mọi nền tảng và cấu hình. Hãy cẩn thận, vì lệnh này sẽ xóa mọi tệp chưa được theo dõi và bị bỏ qua trong repository. Đừng chạy lệnh này nếu bạn còn thay đổi chưa commit!</p>
+</section>
+<section id="other-build-options">
+<h2>Các tùy chọn build khác<a class="headerlink" href="#other-build-options" title="Link to this heading"></a></h2>
+<p>Còn nhiều tùy chọn build khác mà bạn có thể dùng để cấu hình cách Godot được build (trình biên dịch, tùy chọn debug, v.v.) cũng như các tính năng cần đưa vào/tắt đi.</p>
+<p>Hãy xem kết quả của <code class="docutils literal notranslate"><span class="pre">scons</span> <span class="pre">--help</span></code> để biết chi tiết về từng tùy chọn cho phiên bản bạn muốn biên dịch.</p>
+<section id="overriding-the-build-options">
+<span id="doc-overriding-build-options"></span><h3>Ghi đè các tùy chọn build<a class="headerlink" href="#overriding-the-build-options" title="Link to this heading"></a></h3>
+<section id="using-a-file">
+<h4>Sử dụng file<a class="headerlink" href="#using-a-file" title="Link to this heading"></a></h4>
+<p>Bạn có thể tạo tệp <code class="docutils literal notranslate"><span class="pre">custom.py</span></code> mặc định ở thư mục gốc của mã nguồn Godot Engine để khởi tạo bất kỳ tùy chọn build SCons nào vốn được truyền qua dòng lệnh:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">custom.py</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">optimize</span> <span class="o">=</span> <span class="s2">&quot;size&quot;</span>
+<span class="n">module_mono_enabled</span> <span class="o">=</span> <span class="s2">&quot;yes&quot;</span>
+<span class="n">use_llvm</span> <span class="o">=</span> <span class="s2">&quot;yes&quot;</span>
+<span class="n">extra_suffix</span> <span class="o">=</span> <span class="s2">&quot;game_title&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Bạn cũng có thể tắt một số module có sẵn trước khi biên dịch, giúp tiết kiệm phần nào thời gian build engine. Xem trang <a class="reference internal" href="optimizing_for_size.html#doc-optimizing-for-size"><span class="std std-ref">Tối ưu hóa kích thước bản build</span></a> để biết thêm chi tiết.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Bạn có thể dùng công cụ trực tuyến <a class="reference external" href="https://godot-build-options-generator.github.io/">Godot build options generator</a> để tạo tệp <code class="docutils literal notranslate"><span class="pre">custom.py</span></code> chứa các tùy chọn SCons. Sau đó bạn có thể lưu tệp này và đặt nó vào thư mục gốc của mã nguồn Godot.</p>
+</div>
+<p>Bạn cũng có thể chỉ định rõ một tệp tùy chỉnh khác bằng tùy chọn dòng lệnh <code class="docutils literal notranslate"><span class="pre">profile</span></code>, cả hai đều ghi đè cấu hình build mặc định:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scons<span class="w"> </span><span class="nv">profile</span><span class="o">=</span>path/to/custom.py
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các tùy chọn build đặt từ tệp có thể bị ghi đè bởi các tùy chọn dòng lệnh.</p>
+</div>
+<p>Cũng có thể ghi đè các tùy chọn theo điều kiện:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">custom.py</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">version</span>
+
+<span class="c1"># Override options specific for Godot 3.x and 4.x versions.</span>
+<span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">elif</span> <span class="n">version</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="using-the-sconsflags">
+<h4>Dùng SCONSFLAGS<a class="headerlink" href="#using-the-sconsflags" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">SCONSFLAGS</span></code> là một biến môi trường được SCons dùng để tự động đặt các tùy chọn mà không cần truyền qua dòng lệnh.</p>
+<p>Ví dụ, bạn có thể muốn cố định số luồng CPU bằng tùy chọn <code class="docutils literal notranslate"><span class="pre">-j</span></code> đã nói ở trên cho mọi lần build sau này:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-TGludXgvbWFjT1M=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-TGludXgvbWFjT1M=" name="TGludXgvbWFjT1M=" role="tab" tabindex="0">Linux/macOS</button><button aria-controls="panel-0-V2luZG93cyAoY21kKQ==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-V2luZG93cyAoY21kKQ==" name="V2luZG93cyAoY21kKQ==" role="tab" tabindex="-1">Windows (cmd)</button><button aria-controls="panel-0-V2luZG93cyAoUG93ZXJTaGVsbCk=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-V2luZG93cyAoUG93ZXJTaGVsbCk=" name="V2luZG93cyAoUG93ZXJTaGVsbCk=" role="tab" tabindex="-1">Windows (PowerShell)</button></div><div aria-labelledby="tab-0-TGludXgvbWFjT1M=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-TGludXgvbWFjT1M=" name="TGludXgvbWFjT1M=" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SCONSFLAGS</span><span class="o">=</span><span class="s2">&quot;-j4&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-V2luZG93cyAoY21kKQ==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-V2luZG93cyAoY21kKQ==" name="V2luZG93cyAoY21kKQ==" role="tabpanel" tabindex="0"><div class="highlight-bat notranslate"><div class="highlight"><pre><span></span><span class="k">set</span> <span class="nv">SCONSFLAGS</span><span class="p">=</span>-j4
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-V2luZG93cyAoUG93ZXJTaGVsbCk=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-V2luZG93cyAoUG93ZXJTaGVsbCk=" name="V2luZG93cyAoUG93ZXJTaGVsbCk=" role="tabpanel" tabindex="0"><div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nv">$env:SCONSFLAGS</span><span class="p">=</span><span class="s2">&quot;-j4&quot;</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="scu-single-compilation-unit-build">
+<h4>Build SCU (single compilation unit)<a class="headerlink" href="#scu-single-compilation-unit-build" title="Link to this heading"></a></h4>
+<p>Các bản build thông thường hay bị nghẽn do phải include số lượng lớn header trong mỗi translation unit. Chủ yếu để tăng tốc quá trình phát triển (chứ không dành cho bản build production), Godot cung cấp kiểu build &quot;single compilation unit&quot; (còn gọi là build &quot;Unity / Jumbo&quot;).</p>
+<p>Với các thư mục được tăng tốc bởi tùy chọn này, nhiều tệp <code class="docutils literal notranslate"><span class="pre">.cpp</span></code> được biên dịch trong mỗi translation unit, nhờ đó các header có thể được dùng chung giữa nhiều tệp, giúp giảm đáng kể thời gian build.</p>
+<p>Để thực hiện build SCU, hãy dùng tùy chọn SCons <code class="docutils literal notranslate"><span class="pre">scu_build=yes</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi phát triển một pull request bằng build SCU, hãy nhớ build theo cách thông thường trước khi gửi PR. Lý do là build SCU về bản chất sẽ include các header từ những tệp <code class="docutils literal notranslate"><span class="pre">.cpp</span></code> trước đó trong translation unit, nên sẽ không phát hiện được hết các include mà bạn cần trong bản build thông thường. CI sẽ bắt được các lỗi này, nhưng thường thì phát hiện chúng qua bản build cục bộ trên máy bạn sẽ nhanh hơn.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="export-templates">
+<h2>Export template<a class="headerlink" href="#export-templates" title="Link to this heading"></a></h2>
+<p>Export template chính thức được tải từ trang Godot Engine: <a class="reference external" href="https://godotengine.org/">godotengine.org</a>. Tuy nhiên, bạn có thể muốn tự build chúng (trong trường hợp bạn muốn bản mới hơn, đang dùng module tùy chỉnh, hoặc đơn giản là không tin cả cái bóng của chính mình).</p>
+<p>Nếu tải gói export template chính thức và giải nén, bạn sẽ thấy hầu hết các tệp là binary hoặc gói đã được tối ưu hóa cho từng nền tảng:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>android_debug.apk
+android_release.apk
+android_source.zip
+ios.zip
+linux_debug.arm32
+linux_debug.arm64
+linux_debug.x86_32
+linux_debug.x86_64
+linux_release.arm32
+linux_release.arm64
+linux_release.x86_32
+linux_release.x86_64
+macos.zip
+version.txt
+web_debug.zip
+web_dlink_debug.zip
+web_dlink_nothreads_debug.zip
+web_dlink_nothreads_release.zip
+web_dlink_release.zip
+web_nothreads_debug.zip
+web_nothreads_release.zip
+web_release.zip
+windows_debug_x86_32_console.exe
+windows_debug_x86_32.exe
+windows_debug_x86_64_console.exe
+windows_debug_x86_64.exe
+windows_debug_arm64_console.exe
+windows_debug_arm64.exe
+windows_release_x86_32_console.exe
+windows_release_x86_32.exe
+windows_release_x86_64_console.exe
+windows_release_x86_64.exe
+windows_release_arm64_console.exe
+windows_release_arm64.exe
+</pre></div>
+</div>
+<p>Để tự tạo những tệp đó, hãy làm theo hướng dẫn chi tiết cho từng nền tảng trong cùng mục hướng dẫn này. Mỗi nền tảng đều giải thích cách tạo template riêng của nó.</p>
+<p>Tệp <code class="docutils literal notranslate"><span class="pre">version.txt</span></code> cần chứa định danh phiên bản Godot tương ứng. Tệp này được dùng để cài đặt export template vào một thư mục riêng theo phiên bản nhằm tránh xung đột. Ví dụ, nếu bạn build export template cho Godot 4.4.1, <code class="docutils literal notranslate"><span class="pre">version.txt</span></code> cần chứa <code class="docutils literal notranslate"><span class="pre">4.4.1.stable</span></code> ở dòng đầu tiên (và không có gì khác). Định danh phiên bản này dựa trên các dòng <code class="docutils literal notranslate"><span class="pre">major</span></code>, <code class="docutils literal notranslate"><span class="pre">minor</span></code>, <code class="docutils literal notranslate"><span class="pre">patch</span></code> (nếu có) và <code class="docutils literal notranslate"><span class="pre">status</span></code> của <a class="reference external" href="https://github.com/godotengine/godot/blob/master/version.py">tệp version.py trong repository Git của Godot</a>.</p>
+<p>Nếu bạn phát triển cho nhiều nền tảng, macOS chắc chắn là nền tảng host tiện lợi nhất cho việc biên dịch chéo, vì bạn có thể biên dịch chéo cho mọi target. Linux và Windows đứng thứ hai, nhưng Linux có lợi thế là nền tảng dễ thiết lập hơn.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_source.html" class="btn btn-neutral float-left" title="Lấy mã nguồn" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="compiling_for_windows.html" class="btn btn-neutral float-right" title="Biên dịch cho Windows" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

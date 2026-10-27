@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng MeshDataTool" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/procedural_geometry/meshdatatool.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="MeshDataTool không dùng để tạo hình học. Tuy nhiên, nó hữu ích để thay đổi hình học một cách động, ví dụ khi bạn muốn viết một script để chia nhỏ (tessellate), đơn giản hóa hoặc biến dạng các mesh...." />
+<meta name="description" content="MeshDataTool không dùng để tạo hình học. Tuy nhiên, nó hữu ích để thay đổi hình học một cách động, ví dụ khi bạn muốn viết một script để chia nhỏ (tessellate), đơn giản hóa hoặc biến dạng các mesh...." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng MeshDataTool &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Sử dụng SurfaceTool" href="surfacetool.html" />
+    <link rel="prev" title="Sử dụng ArrayMesh" href="arraymesh.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/procedural_geometry/meshdatatool" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Hình học thủ tục</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="arraymesh.html">Sử dụng ArrayMesh</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sử dụng MeshDataTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="surfacetool.html">Sử dụng SurfaceTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="immediatemesh.html">Sử dụng ImmediateMesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#what-is-geometry">Hình học là gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#what-is-a-mesh">Mesh là gì?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#what-a-mesh-is">Mesh là gì</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#which-one-should-i-use">Nên dùng cách nào?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#rendering">Kết xuất</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">3D</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hình học thủ tục</a></li>
+      <li class="breadcrumb-item active">Sử dụng MeshDataTool</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-the-meshdatatool">
+<span id="doc-meshdatatool"></span><h1>Sử dụng MeshDataTool<a class="headerlink" href="#using-the-meshdatatool" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshdatatool.html" title="Class reference (English)"><span class="xref std std-ref">MeshDataTool</span></a> không dùng để tạo hình học. Tuy nhiên, nó hữu ích để thay đổi hình học một cách động, ví dụ khi bạn muốn viết một script để chia nhỏ (tessellate), đơn giản hóa hoặc biến dạng các mesh.</p>
+<p>MeshDataTool không nhanh bằng việc thay đổi trực tiếp các mảng bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_arraymesh.html" title="Class reference (English)"><span class="xref std std-ref">ArrayMesh</span></a>. Tuy nhiên, nó cung cấp nhiều thông tin và công cụ để làm việc với mesh hơn ArrayMesh. Khi dùng MeshDataTool, nó sẽ tính toán các dữ liệu mesh không có sẵn trong ArrayMesh như mặt (face) và cạnh (edge), vốn cần thiết cho một số thuật toán xử lý mesh. Nếu bạn không cần những thông tin bổ sung này thì nên dùng ArrayMesh.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>MeshDataTool chỉ có thể dùng với các Mesh sử dụng PrimitiveType <code class="docutils literal notranslate"><span class="pre">Mesh.PRIMITIVE_TRIANGLES</span></code>.</p>
+</div>
+<p>Chúng ta khởi tạo MeshDataTool từ một ArrayMesh bằng cách gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshdatatool.html#class-meshdatatool-method-create-from-surface" title="Class reference (English)"><span class="xref std std-ref">create_from_surface()</span></a>. Nếu MeshDataTool đã có dữ liệu được khởi tạo, việc gọi <code class="docutils literal notranslate"><span class="pre">create_from_surface()</span></code> sẽ tự xóa dữ liệu đó cho bạn. Ngoài ra, bạn có thể tự gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshdatatool.html#class-meshdatatool-method-clear" title="Class reference (English)"><span class="xref std std-ref">clear()</span></a> trước khi dùng lại MeshDataTool.</p>
+<p>Trong các ví dụ dưới đây, giả sử một ArrayMesh tên là <code class="docutils literal notranslate"><span class="pre">mesh</span></code> đã được tạo sẵn. Xem <a class="reference internal" href="arraymesh.html#doc-arraymesh"><span class="std std-ref">bài hướng dẫn ArrayMesh</span></a> để biết ví dụ về cách tạo mesh.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">mdt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">MeshDataTool</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="n">mdt</span><span class="o">.</span><span class="nf">create_from_surface</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">mdt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MeshDataTool</span><span class="p">();</span>
+<span class="n">mdt</span><span class="p">.</span><span class="n">CreateFromSurface</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p><code class="docutils literal notranslate"><span class="pre">create_from_surface()</span></code> dùng các mảng đỉnh (vertex) từ ArrayMesh để tính thêm hai mảng, một cho cạnh và một cho mặt, tổng cộng là ba mảng.</p>
+<p>Cạnh là kết nối giữa hai đỉnh bất kỳ. Mỗi cạnh trong mảng cạnh chứa tham chiếu tới hai đỉnh tạo nên nó, và tới tối đa hai mặt chứa nó.</p>
+<p>Mặt là một tam giác được tạo bởi ba đỉnh và ba cạnh tương ứng. Mỗi mặt trong mảng mặt chứa tham chiếu tới ba đỉnh và ba cạnh tạo nên nó.</p>
+<p>Mảng đỉnh chứa thông tin về cạnh, mặt, pháp tuyến (normal), màu, tiếp tuyến (tangent), uv, uv2, xương (bone) và trọng số (weight) gắn với mỗi đỉnh.</p>
+<p>Để truy cập thông tin từ các mảng này, bạn dùng một hàm có dạng <code class="docutils literal notranslate"><span class="pre">get_****()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_count</span><span class="p">()</span><span class="w"> </span><span class="c1"># Returns the number of vertices in the vertex array.</span>
+<span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_faces</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c1"># Returns an array of faces that contain vertex[0].</span>
+<span class="n">mdt</span><span class="o">.</span><span class="nf">get_face_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1"># Calculates and returns the face normal of the second face.</span>
+<span class="n">mdt</span><span class="o">.</span><span class="nf">get_edge_vertex</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1"># Returns the second vertex comprising the edge at index 10.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexCount</span><span class="p">();</span><span class="w"> </span><span class="c1">// Returns the number of vertices in the vertex array.</span>
+<span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexFaces</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c1">// Returns an array of faces that contain vertex[0].</span>
+<span class="n">mdt</span><span class="p">.</span><span class="n">GetFaceNormal</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Calculates and returns the face normal of the second face.</span>
+<span class="n">mdt</span><span class="p">.</span><span class="n">GetEdgeVertex</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Returns the second vertex comprising the edge at index 10.</span>
+</pre></div>
+</div>
+</div></div>
+<p>Bạn làm gì với các hàm này là tùy bạn. Một trường hợp sử dụng phổ biến là duyệt qua tất cả các đỉnh và biến đổi chúng theo cách nào đó:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_count</span><span class="p">()):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">vert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="w">    </span><span class="n">vert</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="c1"># Scales the vertex by doubling its size.</span>
+<span class="w">    </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">vert</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexCount</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Vector3</span><span class="w"> </span><span class="n">vert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertex</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span><span class="n">vert</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">;</span><span class="w"> </span><span class="c1">// Scales the vertex by doubling its size.</span>
+<span class="w">    </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">vert</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Những thay đổi này không được thực hiện trực tiếp trên ArrayMesh. Nếu bạn đang cập nhật động một ArrayMesh có sẵn, hãy xóa surface hiện có trước khi thêm surface mới bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshdatatool.html#class-meshdatatool-method-commit-to-surface" title="Class reference (English)"><span class="xref std std-ref">commit_to_surface()</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span><span class="o">.</span><span class="nf">clear_surfaces</span><span class="p">()</span><span class="w"> </span><span class="c1"># Deletes all of the mesh&#39;s surfaces.</span>
+<span class="n">mdt</span><span class="o">.</span><span class="nf">commit_to_surface</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span><span class="p">.</span><span class="n">ClearSurfaces</span><span class="p">();</span><span class="w"> </span><span class="c1">// Deletes all of the mesh&#39;s surfaces.</span>
+<span class="n">mdt</span><span class="p">.</span><span class="n">CommitToSurface</span><span class="p">(</span><span class="n">mesh</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dưới đây là một ví dụ hoàn chỉnh biến một mesh hình cầu tên <code class="docutils literal notranslate"><span class="pre">mesh</span></code> thành một khối biến dạng ngẫu nhiên, kèm theo pháp tuyến và màu đỉnh đã được cập nhật. Xem <a class="reference internal" href="arraymesh.html#doc-arraymesh"><span class="std std-ref">bài hướng dẫn ArrayMesh</span></a> để biết cách tạo mesh cơ sở.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">MeshInstance3D</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">fnl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">FastNoiseLite</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">mdt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">MeshDataTool</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">fnl</span><span class="o">.</span><span class="vi">frequency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span>
+
+<span class="w">    </span><span class="n">mdt</span><span class="o">.</span><span class="nf">create_from_surface</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_count</span><span class="p">()):</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span>
+<span class="w">        </span><span class="c1"># Scale the vertices using noise.</span>
+<span class="w">        </span><span class="n">vertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">fnl</span><span class="o">.</span><span class="nf">get_noise_3dv</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.75</span><span class="p">)</span>
+<span class="w">        </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">vertex</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Calculate the vertex normals, face-by-face.</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_face_count</span><span class="p">()):</span>
+<span class="w">        </span><span class="c1"># Get the index in the vertex array.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_face_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_face_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_face_vertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># Get the vertex position using the vertex index.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">ap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">bp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># Calculate the normal of the face.</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">bp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cp</span><span class="p">)</span><span class="o">.</span><span class="nf">cross</span><span class="p">(</span><span class="n">ap</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bp</span><span class="p">)</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span>
+<span class="w">        </span><span class="c1"># Add this face normal to the current vertex normals.</span>
+<span class="w">        </span><span class="c1"># This will not result in perfect normals, but it will be close.</span>
+<span class="w">        </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex_normal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_normal</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="w">        </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex_normal</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_normal</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="w">        </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex_normal</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_normal</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+
+<span class="w">    </span><span class="c1"># Run through the vertices one last time to normalize their normals and</span>
+<span class="w">    </span><span class="c1"># set the vertex colors to these new normals.</span>
+<span class="w">    </span><span class="k k-ControlFlow">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb nb-Function">range</span><span class="p">(</span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_count</span><span class="p">()):</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="o">.</span><span class="nf">get_vertex_normal</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span>
+<span class="w">        </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex_normal</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="w">        </span><span class="n">mdt</span><span class="o">.</span><span class="nf">set_vertex_color</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Color</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="vi">x</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="o">.</span><span class="vi">y</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="o">.</span><span class="vi">z</span><span class="p">))</span>
+
+<span class="w">    </span><span class="n">mesh</span><span class="o">.</span><span class="nf">clear_surfaces</span><span class="p">()</span>
+<span class="w">    </span><span class="n">mdt</span><span class="o">.</span><span class="nf">commit_to_surface</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyMeshInstance3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MeshInstance3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">MeshDataTool</span><span class="w"> </span><span class="n">mdt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MeshDataTool</span><span class="p">();</span>
+<span class="w">    </span><span class="n">FastNoiseLite</span><span class="w"> </span><span class="n">fnl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FastNoiseLite</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">fnl</span><span class="p">.</span><span class="n">Frequency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7f</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">ArrayMesh</span><span class="w"> </span><span class="n">mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mesh</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">ArrayMesh</span><span class="p">;</span><span class="w"> </span><span class="c1">// The mesh assigned the MeshInstance3D needs to be an ArrayMesh.</span>
+<span class="w">        </span><span class="n">mdt</span><span class="p">.</span><span class="n">CreateFromSurface</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexCount</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Vector3</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertex</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">Normalized</span><span class="p">();</span>
+<span class="w">            </span><span class="c1">// Scale the vertices using noise.</span>
+<span class="w">            </span><span class="n">vertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">fnl</span><span class="p">.</span><span class="n">GetNoise3Dv</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5f</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.75f</span><span class="p">);</span>
+<span class="w">            </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">vertex</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Calculate the vertex normals, face-by-face.</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetFaceCount</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Get the index in the vertex array.</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetFaceVertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetFaceVertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetFaceVertex</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">            </span><span class="c1">// Get the vertex position using the vertex index.</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">ap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertex</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">bp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertex</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertex</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+<span class="w">            </span><span class="c1">// Calculate the normal of the face.</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">bp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cp</span><span class="p">).</span><span class="n">Cross</span><span class="p">(</span><span class="n">ap</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bp</span><span class="p">).</span><span class="n">Normalized</span><span class="p">();</span>
+<span class="w">            </span><span class="c1">// Add this face normal to the current vertex normals.</span>
+<span class="w">            </span><span class="c1">// This will not result in perfect normals, but it will be close.</span>
+<span class="w">            </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertexNormal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexNormal</span><span class="p">(</span><span class="n">a</span><span class="p">));</span>
+<span class="w">            </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertexNormal</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexNormal</span><span class="p">(</span><span class="n">b</span><span class="p">));</span>
+<span class="w">            </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertexNormal</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexNormal</span><span class="p">(</span><span class="n">c</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Run through the vertices one last time to normalize their normals and</span>
+<span class="w">        </span><span class="c1">// set the vertex colors to these new normals.</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexCount</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mdt</span><span class="p">.</span><span class="n">GetVertexNormal</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">Normalized</span><span class="p">();</span>
+<span class="w">            </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertexNormal</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+<span class="w">            </span><span class="n">mdt</span><span class="p">.</span><span class="n">SetVertexColor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">Z</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">mesh</span><span class="p">.</span><span class="n">ClearSurfaces</span><span class="p">();</span>
+<span class="w">        </span><span class="n">mdt</span><span class="p">.</span><span class="n">CommitToSurface</span><span class="p">(</span><span class="n">mesh</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="arraymesh.html" class="btn btn-neutral float-left" title="Sử dụng ArrayMesh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="surfacetool.html" class="btn btn-neutral float-right" title="Sử dụng SurfaceTool" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

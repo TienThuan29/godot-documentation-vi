@@ -1,0 +1,538 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Thiết kế scene quái vật" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_3d_game/04.mob_scene.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Trong phần này, bạn sẽ viết code cho quái vật, mà chúng ta sẽ gọi là mob. Trong bài tiếp theo, chúng ta sẽ sinh chúng ngẫu nhiên quanh khu vực chơi. Hãy thiết kế bản thân các quái vật trong một sce..." />
+<meta name="description" content="Trong phần này, bạn sẽ viết code cho quái vật, mà chúng ta sẽ gọi là mob. Trong bài tiếp theo, chúng ta sẽ sinh chúng ngẫu nhiên quanh khu vực chơi. Hãy thiết kế bản thân các quái vật trong một sce..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Thiết kế scene quái vật &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sinh quái vật" href="05.spawning_mobs.html" />
+    <link rel="prev" title="Di chuyển người chơi bằng code" href="03.player_movement_code.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_3d_game/04.mob_scene" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 3D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.game_setup.html">Thiết lập khu vực chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02.player_input.html">Scene người chơi và các input action</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03.player_movement_code.html">Di chuyển người chơi bằng code</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Thiết kế scene quái vật</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#removing-monsters-off-screen">Xóa quái vật khi ra khỏi màn hình</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="05.spawning_mobs.html">Sinh quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06.jump_and_squash.html">Nhảy và dẫm bẹp quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07.killing_player.html">Tiêu diệt người chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08.score_and_replay.html">Điểm số và chơi lại</a></li>
+<li class="toctree-l3"><a class="reference internal" href="09.adding_animations.html">Hoạt ảnh nhân vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="going_further.html">Đi xa hơn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 3D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Thiết kế scene quái vật</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="designing-the-mob-scene">
+<span id="doc-first-3d-game-designing-the-mob-scene"></span><h1>Thiết kế scene quái vật<a class="headerlink" href="#designing-the-mob-scene" title="Link to this heading"></a></h1>
+<p>Trong phần này, bạn sẽ viết code cho quái vật, mà chúng ta sẽ gọi là mob. Trong bài tiếp theo, chúng ta sẽ sinh chúng ngẫu nhiên quanh khu vực chơi.</p>
+<p>Hãy thiết kế bản thân các quái vật trong một scene mới. Cấu trúc node sẽ tương tự như scene <code class="docutils literal notranslate"><span class="pre">player.tscn</span></code>.</p>
+<p>Một lần nữa, tạo một scene với node gốc là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody3D</span></a>. Đặt tên là <code class="docutils literal notranslate"><span class="pre">Mob</span></code>. Thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html" title="Class reference (English)"><span class="xref std std-ref">Node3D</span></a>, đặt tên là <code class="docutils literal notranslate"><span class="pre">Pivot</span></code>. Rồi kéo thả file <code class="docutils literal notranslate"><span class="pre">mob.glb</span></code> từ dock <em>FileSystem</em> vào <code class="docutils literal notranslate"><span class="pre">Pivot</span></code> để thêm mô hình 3D của quái vật vào scene.</p>
+<img alt="../../_images/drag_drop_mob.webp" src="../../_images/drag_drop_mob.webp" />
+<p>Bạn có thể đổi tên node <code class="docutils literal notranslate"><span class="pre">mob</span></code> vừa được tạo thành <code class="docutils literal notranslate"><span class="pre">Character</span></code>.</p>
+<p><img alt="image0" src="../../_images/01.initial_three_nodes.webp" /></p>
+<p>Chúng ta cần một collision shape để body hoạt động. Nhấp chuột phải vào node <code class="docutils literal notranslate"><span class="pre">Mob</span></code>, node gốc của scene, và nhấp <em>Add Child Node</em>.</p>
+<p><img alt="image1" src="../../_images/02.add_child_node.webp" /></p>
+<p>Thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_collisionshape3d.html" title="Class reference (English)"><span class="xref std std-ref">CollisionShape3D</span></a>.</p>
+<p><img alt="image2" src="../../_images/03.scene_with_collision_shape.webp" /></p>
+<p>Trong <em>Inspector</em>, gán một <em>BoxShape3D</em> cho thuộc tính <em>Shape</em>.</p>
+<img alt="../../_images/08.create_box_shape3D.webp" src="../../_images/08.create_box_shape3D.webp" />
+<p>Chúng ta nên thay đổi kích thước của nó để khớp hơn với mô hình 3D. Bạn có thể làm điều này một cách trực quan bằng cách nhấp và kéo các chấm màu cam.</p>
+<p>Hộp nên chạm sàn và mỏng hơn mô hình một chút. Engine vật lý hoạt động theo cách mà chỉ cần quả cầu của người chơi chạm vào góc của hộp là va chạm sẽ xảy ra. Nếu hộp hơi quá lớn so với mô hình 3D, bạn có thể chết khi vẫn còn cách xa quái vật, và người chơi sẽ cảm thấy trò chơi không công bằng.</p>
+<p><img alt="image4" src="../../_images/05.box_final_size.png" /></p>
+<p>Hãy để ý rằng hộp của tôi cao hơn quái vật. Điều này không sao trong trò chơi này vì chúng ta nhìn scene từ trên xuống và dùng một góc nhìn cố định. Collision shape không cần khớp chính xác với mô hình. Chính cảm giác khi bạn chơi thử mới là thứ quyết định hình dạng và kích thước của chúng.</p>
+<section id="removing-monsters-off-screen">
+<h2>Xóa quái vật khi ra khỏi màn hình<a class="headerlink" href="#removing-monsters-off-screen" title="Link to this heading"></a></h2>
+<p>Chúng ta sẽ sinh quái vật theo các khoảng thời gian đều đặn trong màn chơi. Nếu không cẩn thận, số lượng của chúng có thể tăng lên vô hạn, và chúng ta không muốn điều đó. Mỗi instance mob đều tốn cả bộ nhớ lẫn chi phí xử lý, và chúng ta không muốn trả giá cho nó khi mob đã ở ngoài màn hình.</p>
+<p>Khi một quái vật rời khỏi màn hình, chúng ta không cần nó nữa, nên chúng ta nên xóa nó. Godot có một node phát hiện khi đối tượng rời khỏi màn hình, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visibleonscreennotifier3d.html" title="Class reference (English)"><span class="xref std std-ref">VisibleOnScreenNotifier3D</span></a>, và chúng ta sẽ dùng nó để hủy các mob.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi bạn liên tục tạo instance của một đối tượng, có một kỹ thuật gọi là pooling mà bạn có thể dùng để tránh chi phí tạo và hủy instance liên tục. Kỹ thuật này gồm việc tạo trước một mảng đối tượng và tái sử dụng chúng nhiều lần.</p>
+<p>Khi làm việc với GDScript, điều này thường không cần thiết. Lý do chính để dùng pool là tránh hiện tượng giật hình với các ngôn ngữ có garbage collection như C# hoặc Lua. GDScript dùng một kỹ thuật khác để quản lý bộ nhớ, đó là đếm tham chiếu (reference counting), vốn không có nhược điểm đó. Bạn có thể tìm hiểu thêm tại đây: <a class="reference internal" href="../../tutorials/scripting/gdscript/gdscript_basics.html#doc-gdscript-basics-memory-management"><span class="std std-ref">Quản lý bộ nhớ</span></a>.</p>
+</div>
+<p>Chọn node <code class="docutils literal notranslate"><span class="pre">Mob</span></code> và thêm một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visibleonscreennotifier3d.html" title="Class reference (English)"><span class="xref std std-ref">VisibleOnScreenNotifier3D</span></a>. Một hộp khác, lần này màu hồng, xuất hiện. Khi hộp này hoàn toàn rời khỏi màn hình, node sẽ phát ra một signal.</p>
+<p><img alt="image5" src="../../_images/06.visibility_notifier.webp" /></p>
+<p>Thay đổi kích thước của nó bằng các chấm màu cam cho đến khi nó bao phủ toàn bộ mô hình 3D.</p>
+<p><img alt="image6" src="../../_images/07.visibility_notifier_bbox_resized.png" /></p>
+<section id="coding-the-mob-s-movement">
+<h3>Viết code cho chuyển động của mob<a class="headerlink" href="#coding-the-mob-s-movement" title="Link to this heading"></a></h3>
+<p>Hãy triển khai chuyển động của quái vật. Chúng ta sẽ làm việc này theo hai bước. Đầu tiên, chúng ta sẽ viết một script cho <code class="docutils literal notranslate"><span class="pre">Mob</span></code> định nghĩa một hàm để khởi tạo quái vật. Sau đó, chúng ta sẽ viết code cho cơ chế sinh ngẫu nhiên trong scene <code class="docutils literal notranslate"><span class="pre">main.tscn</span></code> và gọi hàm đó từ đó.</p>
+<p>Gắn một script vào <code class="docutils literal notranslate"><span class="pre">Mob</span></code>.</p>
+<p><img alt="image7" src="../../_images/08.mob_attach_script.webp" /></p>
+<p>Đây là code chuyển động để bắt đầu. Chúng ta định nghĩa hai thuộc tính, <code class="docutils literal notranslate"><span class="pre">min_speed</span></code> và <code class="docutils literal notranslate"><span class="pre">max_speed</span></code>, để xác định một khoảng tốc độ ngẫu nhiên, mà sau này chúng ta sẽ dùng để xác định <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.velocity</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody3D</span>
+
+<span class="c1"># Minimum speed of the mob in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">min_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span>
+<span class="c1"># Maximum speed of the mob in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">max_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">18.0</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Mob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Don&#39;t forget to rebuild the project so the editor knows about the new export variable.</span>
+
+<span class="w">    </span><span class="c1">// Minimum speed of the mob in meters per second</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">MinSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Maximum speed of the mob in meters per second</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">MaxSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">18.0f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tương tự như người chơi, chúng ta di chuyển mob mỗi frame bằng cách gọi hàm <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.move_and_slide()</span></code>. Lần này, chúng ta không cập nhật <code class="docutils literal notranslate"><span class="pre">velocity</span></code> mỗi frame; chúng ta muốn quái vật di chuyển với tốc độ không đổi và rời khỏi màn hình, ngay cả khi nó va phải chướng ngại vật.</p>
+<p>Chúng ta cần định nghĩa một hàm khác để tính <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.velocity</span></code>. Hàm này sẽ xoay quái vật về phía người chơi và ngẫu nhiên hóa cả góc chuyển động lẫn vận tốc của nó.</p>
+<p>Hàm sẽ nhận các đối số là <code class="docutils literal notranslate"><span class="pre">start_position</span></code>, vị trí sinh ra của mob, và <code class="docutils literal notranslate"><span class="pre">player_position</span></code>.</p>
+<p>Chúng ta đặt mob tại <code class="docutils literal notranslate"><span class="pre">start_position</span></code> và xoay nó về phía người chơi bằng phương thức <code class="docutils literal notranslate"><span class="pre">look_at_from_position()</span></code>, rồi ngẫu nhiên hóa góc bằng cách xoay một lượng ngẫu nhiên quanh trục Y. Ở dưới, <code class="docutils literal notranslate"><span class="pre">randf_range()</span></code> cho ra một giá trị ngẫu nhiên trong khoảng từ <code class="docutils literal notranslate"><span class="pre">-PI</span> <span class="pre">/</span> <span class="pre">4</span></code> radian đến <code class="docutils literal notranslate"><span class="pre">PI</span> <span class="pre">/</span> <span class="pre">4</span></code> radian.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># This function will be called from the Main scene.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">initialize</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># We position the mob by placing it at start_position</span>
+<span class="w">    </span><span class="c1"># and rotate it towards player_position, so it looks at the player.</span>
+<span class="w">    </span><span class="nf">look_at_from_position</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Rotate this mob randomly within range of -45 and +45 degrees,</span>
+<span class="w">    </span><span class="c1"># so that it doesn&#39;t move directly towards the player.</span>
+<span class="w">    </span><span class="nf">rotate_y</span><span class="p">(</span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="o">-</span><span class="l">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// This function will be called from the Main scene.</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">Vector3</span><span class="w"> </span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// We position the mob by placing it at startPosition</span>
+<span class="w">    </span><span class="c1">// and rotate it towards playerPosition, so it looks at the player.</span>
+<span class="w">    </span><span class="n">LookAtFromPosition</span><span class="p">(</span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Rotate this mob randomly within range of -45 and +45 degrees,</span>
+<span class="w">    </span><span class="c1">// so that it doesn&#39;t move directly towards the player.</span>
+<span class="w">    </span><span class="n">RotateY</span><span class="p">((</span><span class="kt">float</span><span class="p">)</span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="o">-</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Chúng ta đã có một vị trí ngẫu nhiên, giờ cần một <code class="docutils literal notranslate"><span class="pre">random_speed</span></code>. <code class="docutils literal notranslate"><span class="pre">randf_range()</span></code> sẽ hữu ích vì nó cho ra các giá trị số thực ngẫu nhiên, và chúng ta sẽ dùng <code class="docutils literal notranslate"><span class="pre">min_speed</span></code> và <code class="docutils literal notranslate"><span class="pre">max_speed</span></code>. <code class="docutils literal notranslate"><span class="pre">random_speed</span></code> chỉ là một số thực, và chúng ta chỉ dùng nó để nhân với <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.velocity</span></code>. Sau khi áp dụng <code class="docutils literal notranslate"><span class="pre">random_speed</span></code>, chúng ta xoay Vector3 <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.velocity</span></code> về phía người chơi.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">initialize</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># ...</span>
+
+<span class="w">    </span><span class="c1"># We calculate a random speed (float)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="n">min_speed</span><span class="p">,</span><span class="w"> </span><span class="n">max_speed</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># We calculate a forward velocity that represents the speed.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">FORWARD</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">random_speed</span>
+<span class="w">    </span><span class="c1"># We then rotate the velocity vector based on the mob&#39;s Y rotation</span>
+<span class="w">    </span><span class="c1"># in order to move in the direction the mob is looking.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">,</span><span class="w"> </span><span class="n">rotation</span><span class="o">.</span><span class="vi">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">Vector3</span><span class="w"> </span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+
+<span class="w">    </span><span class="c1">// We calculate a random speed (float).</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">randomSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="n">MinSpeed</span><span class="p">,</span><span class="w"> </span><span class="n">MaxSpeed</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// We calculate a forward velocity that represents the speed.</span>
+<span class="w">    </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Forward</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randomSpeed</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// We then rotate the velocity vector based on the mob&#39;s Y rotation</span>
+<span class="w">    </span><span class="c1">// in order to move in the direction the mob is looking.</span>
+<span class="w">    </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Velocity</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">,</span><span class="w"> </span><span class="n">Rotation</span><span class="p">.</span><span class="n">Y</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="leaving-the-screen">
+<h3>Rời khỏi màn hình<a class="headerlink" href="#leaving-the-screen" title="Link to this heading"></a></h3>
+<p>Chúng ta vẫn phải hủy các mob khi chúng rời khỏi màn hình. Để làm vậy, chúng ta sẽ kết nối signal <code class="docutils literal notranslate"><span class="pre">screen_exited</span></code> của node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visibleonscreennotifier3d.html" title="Class reference (English)"><span class="xref std std-ref">VisibleOnScreenNotifier3D</span></a> với <code class="docutils literal notranslate"><span class="pre">Mob</span></code>.</p>
+<p>Chọn node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_visibleonscreennotifier3d.html" title="Class reference (English)"><span class="xref std std-ref">VisibleOnScreenNotifier3D</span></a> và ở phía bên phải giao diện, chuyển đến dock <em>Signals</em>. Nhấp đúp vào signal <code class="docutils literal notranslate"><span class="pre">screen_exited()</span></code>.</p>
+<p><img alt="image9" src="../../_images/10.node_dock.webp" /></p>
+<p>Kết nối signal với <code class="docutils literal notranslate"><span class="pre">Mob</span></code></p>
+<p><img alt="image10" src="../../_images/11.connect_signal.webp" /></p>
+<p>Thao tác này sẽ thêm một hàm mới cho bạn trong script của mob, <code class="docutils literal notranslate"><span class="pre">_on_visible_on_screen_notifier_3d_screen_exited()</span></code>. Từ đó, hãy gọi phương thức <code class="docutils literal notranslate"><span class="pre">queue_free()</span></code>. Hàm này hủy instance mà nó được gọi trên đó.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_visible_on_screen_notifier_3d_screen_exited</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnVisibilityNotifierScreenExited</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">QueueFree</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Quái vật của chúng ta đã sẵn sàng tham gia trò chơi! Trong phần tiếp theo, bạn sẽ sinh quái vật trong màn chơi.</p>
+<p>Đây là toàn bộ script <code class="docutils literal notranslate"><span class="pre">mob.gd</span></code> để bạn tham khảo.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody3D</span>
+
+<span class="c1"># Minimum speed of the mob in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">min_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span>
+<span class="c1"># Maximum speed of the mob in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">max_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">18.0</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">_delta</span><span class="p">):</span>
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+
+<span class="c1"># This function will be called from the Main scene.</span>
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">initialize</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># We position the mob by placing it at start_position</span>
+<span class="w">    </span><span class="c1"># and rotate it towards player_position, so it looks at the player.</span>
+<span class="w">    </span><span class="nf">look_at_from_position</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span><span class="w"> </span><span class="n">player_position</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Rotate this mob randomly within range of -45 and +45 degrees,</span>
+<span class="w">    </span><span class="c1"># so that it doesn&#39;t move directly towards the player.</span>
+<span class="w">    </span><span class="nf">rotate_y</span><span class="p">(</span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="o">-</span><span class="l">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="l">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">))</span>
+
+<span class="w">    </span><span class="c1"># We calculate a random speed (float)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">random_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">randf_range</span><span class="p">(</span><span class="n">min_speed</span><span class="p">,</span><span class="w"> </span><span class="n">max_speed</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># We calculate a forward velocity that represents the speed.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">FORWARD</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">random_speed</span>
+<span class="w">    </span><span class="c1"># We then rotate the velocity vector based on the mob&#39;s Y rotation</span>
+<span class="w">    </span><span class="c1"># in order to move in the direction the mob is looking.</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="o">.</span><span class="nf">rotated</span><span class="p">(</span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">,</span><span class="w"> </span><span class="n">rotation</span><span class="o">.</span><span class="vi">y</span><span class="p">)</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_on_visible_on_screen_notifier_3d_screen_exited</span><span class="p">():</span>
+<span class="w">    </span><span class="nf">queue_free</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Mob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Minimum speed of the mob in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">MinSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Maximum speed of the mob in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">MaxSpeed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">18.0f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// This function will be called from the Main scene.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">Vector3</span><span class="w"> </span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// We position the mob by placing it at startPosition</span>
+<span class="w">        </span><span class="c1">// and rotate it towards playerPosition, so it looks at the player.</span>
+<span class="w">        </span><span class="n">LookAtFromPosition</span><span class="p">(</span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">playerPosition</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Rotate this mob randomly within range of -45 and +45 degrees,</span>
+<span class="w">        </span><span class="c1">// so that it doesn&#39;t move directly towards the player.</span>
+<span class="w">        </span><span class="n">RotateY</span><span class="p">((</span><span class="kt">float</span><span class="p">)</span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="o">-</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">));</span>
+
+<span class="w">        </span><span class="c1">// We calculate a random speed (float).</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">randomSpeed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">RandRange</span><span class="p">(</span><span class="n">MinSpeed</span><span class="p">,</span><span class="w"> </span><span class="n">MaxSpeed</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// We calculate a forward velocity that represents the speed.</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Forward</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randomSpeed</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// We then rotate the velocity vector based on the mob&#39;s Y rotation</span>
+<span class="w">        </span><span class="c1">// in order to move in the direction the mob is looking.</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Velocity</span><span class="p">.</span><span class="n">Rotated</span><span class="p">(</span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">,</span><span class="w"> </span><span class="n">Rotation</span><span class="p">.</span><span class="n">Y</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// We also specified this function name in PascalCase in the editor&#39;s connection window.</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnVisibilityNotifierScreenExited</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">QueueFree</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="03.player_movement_code.html" class="btn btn-neutral float-left" title="Di chuyển người chơi bằng code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="05.spawning_mobs.html" class="btn btn-neutral float-right" title="Sinh quái vật" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,763 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Môi trường và hậu xử lý" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/environment_and_post_processing.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Godot 4 cung cấp resource Environment được thiết kế lại, cùng với một hệ thống hậu xử lý mới với nhiều hiệu ứng có sẵn ngay lập tức. Environment: Resource class_Environment lưu trữ tất cả thông tin..." />
+<meta name="description" content="Godot 4 cung cấp resource Environment được thiết kế lại, cùng với một hệ thống hậu xử lý mới với nhiều hiệu ứng có sẵn ngay lập tức. Environment: Resource class_Environment lưu trữ tất cả thông tin..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Môi trường và hậu xử lý &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sương mù thể tích và fog volume" href="volumetric_fog.html" />
+    <link rel="prev" title="Giả lập chiếu sáng toàn cục" href="global_illumination/faking_global_illumination.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/environment_and_post_processing" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="global_illumination/index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Môi trường và hậu xử lý</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#camera-attributes">Thuộc tính camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environment-options">Tùy chọn môi trường</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mid-and-post-processing-effects">Hiệu ứng trung gian và hậu xử lý</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#camera-attribute-options">Tùy chọn thuộc tính camera</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">3D</a></li>
+      <li class="breadcrumb-item active">Môi trường và hậu xử lý</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="environment-and-post-processing">
+<span id="doc-environment-and-post-processing"></span><h1>Môi trường và hậu xử lý<a class="headerlink" href="#environment-and-post-processing" title="Link to this heading"></a></h1>
+<p>Godot 4 cung cấp resource Environment được thiết kế lại, cùng với một hệ thống hậu xử lý mới với nhiều hiệu ứng có sẵn ngay lập tức.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kể từ Godot 4, các cài đặt <em>hiệu năng/chất lượng</em> của Environment được định nghĩa trong cài đặt dự án thay vì trong resource Environment. Điều này giúp điều chỉnh toàn cục dễ dàng hơn, vì bạn không còn phải tinh chỉnh từng resource Environment riêng lẻ để phù hợp với các cấu hình phần cứng khác nhau.</p>
+<p>Lưu ý rằng hầu hết các cài đặt hiệu năng/chất lượng của Environment chỉ hiển thị sau khi bật nút gạt <strong>Advanced</strong> trong Project Settings.</p>
+</div>
+<section id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Link to this heading"></a></h2>
+<p>Resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_environment.html" title="Class reference (English)"><span class="xref std std-ref">class_Environment</span></a> lưu trữ tất cả thông tin cần thiết để điều khiển môi trường kết xuất 2D và 3D. Bao gồm bầu trời, ánh sáng môi trường (ambient lighting), tone mapping, các hiệu ứng và điều chỉnh. Tự nó không làm gì cả, nhưng bạn có thể kích hoạt nó bằng cách dùng nó ở một trong các vị trí sau, theo thứ tự ưu tiên:</p>
+<section id="camera3d-node-high-priority">
+<h3>Node Camera3D (ưu tiên cao)<a class="headerlink" href="#camera3d-node-high-priority" title="Link to this heading"></a></h3>
+<p>Có thể gán một Environment cho node Camera3D. Nó sẽ được ưu tiên hơn mọi cài đặt khác.</p>
+<img alt="../../_images/environment_camera.webp" src="../../_images/environment_camera.webp" />
+<p>Cách này chủ yếu hữu ích khi bạn muốn ghi đè một môi trường hiện có, nhưng nhìn chung nên dùng tùy chọn bên dưới.</p>
+</section>
+<section id="worldenvironment-node-medium-priority-recommended">
+<h3>Node WorldEnvironment (ưu tiên trung bình, khuyến nghị)<a class="headerlink" href="#worldenvironment-node-medium-priority-recommended" title="Link to this heading"></a></h3>
+<p>Node WorldEnvironment có thể được thêm vào bất kỳ scene nào, nhưng mỗi cây scene đang hoạt động chỉ được có một node. Thêm nhiều hơn một sẽ gây ra cảnh báo.</p>
+<img alt="../../_images/environment_world.webp" src="../../_images/environment_world.webp" />
+<p>Bất kỳ Environment nào được thêm vào đều có mức ưu tiên cao hơn Environment mặc định (giải thích bên dưới). Điều này có nghĩa là nó có thể bị ghi đè theo từng scene, khiến nó khá hữu ích.</p>
+</section>
+<section id="preview-environment-and-sun-low-priority">
+<h3>Môi trường và mặt trời xem trước (ưu tiên thấp)<a class="headerlink" href="#preview-environment-and-sun-low-priority" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kể từ Godot 4, hệ thống môi trường và mặt trời xem trước thay thế tệp <code class="docutils literal notranslate"><span class="pre">default_env.tres</span></code> từng được dùng trong các dự án Godot 3.</p>
+</div>
+<p>Nếu không có node WorldEnvironment hoặc node DirectionalLight3D nào trong scene hiện tại, trình chỉnh sửa sẽ hiển thị môi trường và mặt trời xem trước thay thế. Có thể tắt tính năng này bằng các nút ở phía trên trình chỉnh sửa 3D:</p>
+<img alt="../../_images/environment_preview_sun_sky_toggle.webp" src="../../_images/environment_preview_sun_sky_toggle.webp" />
+<p>Nhấn vào 3 dấu chấm dọc ở bên phải sẽ hiển thị một hộp thoại cho phép bạn tùy chỉnh giao diện của môi trường xem trước:</p>
+<img alt="../../_images/environment_preview_sun_sky_dialog.webp" src="../../_images/environment_preview_sun_sky_dialog.webp" />
+<p><strong>Mặt trời và bầu trời xem trước chỉ hiển thị trong trình chỉnh sửa, không hiển thị trong dự án đang chạy.</strong> Dùng các nút ở cuối hộp thoại, bạn có thể thêm mặt trời và bầu trời xem trước vào scene dưới dạng node.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn giữ <kbd class="kbd docutils literal notranslate">Shift</kbd> trong khi nhấn <strong>Add Sun to Scene</strong> hoặc <strong>Add Environment to Scene</strong> trong trình chỉnh sửa môi trường xem trước, thao tác này sẽ thêm cả mặt trời và môi trường xem trước vào scene hiện tại (như thể bạn đã nhấn cả hai nút riêng lẻ). Hãy dùng cách này để tăng tốc việc thiết lập dự án và tạo nguyên mẫu.</p>
+</div>
+</section>
+</section>
+<section id="camera-attributes">
+<h2>Thuộc tính camera<a class="headerlink" href="#camera-attributes" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong Godot 4, thông tin về độ phơi sáng (exposure) và độ sâu trường ảnh (depth of field) được tách khỏi resource Environment sang một resource CameraAttributes riêng. Điều này cho phép điều chỉnh các thuộc tính đó độc lập với các cài đặt Environment khác dễ dàng hơn.</p>
+</div>
+<p>Resource <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_cameraattributes.html" title="Class reference (English)"><span class="xref std std-ref">class_CameraAttributes</span></a> lưu trữ thông tin về độ phơi sáng và độ sâu trường ảnh. Nó cũng cho phép bật tính năng tự động điều chỉnh độ phơi sáng theo độ sáng của scene.</p>
+<p>Có hai loại resource CameraAttribute:</p>
+<ul class="simple">
+<li><p><strong>CameraAttributesPractical:</strong> Các tính năng được cung cấp bằng đơn vị tùy ý, dễ hình dung hơn cho hầu hết các trường hợp sử dụng trong game.</p></li>
+<li><p><strong>CameraAttributesPhysical:</strong> Các tính năng được cung cấp bằng đơn vị thực tế, tương tự máy ảnh kỹ thuật số. Ví dụ, góc nhìn (field of view) được đặt bằng tiêu cự tính theo milimét thay vì giá trị tính theo độ. Được khuyến nghị khi độ chính xác vật lý là quan trọng, chẳng hạn cho kết xuất chân thực.</p></li>
+</ul>
+<p>Cả hai loại resource CameraAttribute đều cho phép bạn dùng các tính năng giống nhau, nhưng được cấu hình khác nhau. Nếu bạn không biết chọn loại nào, hãy dùng <strong>CameraAttributesPractical</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_cameraattributesphysical.html" title="Class reference (English)"><span class="xref std std-ref">class_CameraAttributesPhysical</span></a> trên node Camera3D sẽ khóa việc điều chỉnh FOV và tỷ lệ khung hình trong Camera3D đó, vì góc nhìn được điều chỉnh trong resource CameraAttributesPhysical. Nếu được dùng trong WorldEnvironment, CameraAttributesPhysical sẽ không ghi đè bất kỳ Camera3D nào trong scene.</p>
+</div>
+<p>Có thể thêm resource CameraAttributes vào node Camera3D hoặc WorldEnvironment. Khi camera hiện tại có CameraAttributes được đặt, nó sẽ <em>ghi đè</em> CameraAttributes được đặt trong WorldEnvironment (nếu có).</p>
+<p>Trong hầu hết các tình huống, nên đặt resource CameraAttributes trên node Camera3D thay vì WorldEnvironment. Khác với WorldEnvironment, việc gán resource CameraAttributes cho node Camera3D sẽ ngăn độ sâu trường ảnh hiển thị trong viewport của trình chỉnh sửa 3D, trừ khi camera đang được xem trước.</p>
+</section>
+<section id="environment-options">
+<h2>Tùy chọn môi trường<a class="headerlink" href="#environment-options" title="Link to this heading"></a></h2>
+<p>Dưới đây là mô tả chi tiết về tất cả các tùy chọn môi trường và cách chúng được dự định sử dụng.</p>
+<section id="background">
+<h3>Hình nền<a class="headerlink" href="#background" title="Link to this heading"></a></h3>
+<p>Mục Background chứa các cài đặt về cách tô nền (những phần màn hình không có đối tượng nào được vẽ). Nền không chỉ có mục đích hiển thị một hình ảnh hay màu sắc. Theo mặc định, nó còn ảnh hưởng tới cách các đối tượng chịu tác động của ánh sáng môi trường và ánh sáng phản xạ. Điều này được gọi là chiếu sáng dựa trên hình ảnh (image-based lighting - IBL).</p>
+<p>Do đó, bầu trời nền có thể ảnh hưởng lớn tới diện mạo tổng thể của scene, ngay cả khi bầu trời không bao giờ hiển thị trực tiếp trên màn hình. Cần lưu ý điều này khi tinh chỉnh chiếu sáng trong scene.</p>
+<img alt="../../_images/environment_background1.webp" src="../../_images/environment_background1.webp" />
+<p>Có một số chế độ nền có sẵn:</p>
+<ul class="simple">
+<li><p><strong>Clear Color</strong> dùng màu xóa (clear color) mặc định được định nghĩa trong cài đặt dự án. Nền sẽ là một màu cố định.</p></li>
+<li><p><strong>Custom Color</strong> giống Clear Color nhưng với giá trị màu tùy chỉnh.</p></li>
+<li><p><strong>Sky</strong> cho phép bạn định nghĩa một sky material làm nền (xem bên dưới). Theo mặc định, các đối tượng trong scene sẽ phản chiếu sky material này và hấp thụ ánh sáng môi trường từ nó.</p></li>
+<li><p><strong>Canvas</strong> hiển thị scene 2D làm nền cho scene 3D. Có thể dùng điều này để các hiệu ứng môi trường hiển thị trên kết xuất 2D, chẳng hạn <a class="reference internal" href="#doc-environment-and-post-processing-using-glow-in-2d"><span class="std std-ref">glow trong 2D</span></a>.</p></li>
+<li><p><strong>Keep</strong> không vẽ bầu trời nào, thay vào đó giữ lại những gì có ở các frame trước. Điều này cải thiện hiệu năng trong các scene hoàn toàn trong nhà, nhưng sẽ tạo ra lỗi hình ảnh &quot;phòng gương&quot; nếu bầu trời hiển thị vào bất kỳ lúc nào.</p></li>
+<li><p><strong>Camera Feed</strong> hiển thị một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camerafeed.html" title="Class reference (English)"><span class="xref std std-ref">class_CameraFeed</span></a> từ camera vật lý làm nền, hữu ích cho các game AR trên thiết bị di động.</p></li>
+</ul>
+</section>
+<section id="sky-materials">
+<h3>Sky material<a class="headerlink" href="#sky-materials" title="Link to this heading"></a></h3>
+<p>Khi dùng chế độ nền <strong>Sky</strong> (hoặc chế độ ánh sáng môi trường/phản xạ được đặt là <strong>Sky</strong>), một subresource Sky sẽ có thể chỉnh sửa trong resource Environment. Chỉnh sửa subresource này cho phép bạn tạo một resource SkyMaterial bên trong Sky.</p>
+<p>Có 3 sky material tích hợp sẵn để lựa chọn:</p>
+<ul class="simple">
+<li><p><strong>PanoramaSkyMaterial:</strong> Dùng ảnh bầu trời toàn cảnh 360 độ (khuyến nghị tỷ lệ khung hình 2:1). Để tận dụng dải tần nhạy sáng cao (high dynamic range), ảnh toàn cảnh phải ở định dạng tương thích HDR như <code class="docutils literal notranslate"><span class="pre">.hdr</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.exr</span></code> thay vì định dạng dải tần nhạy sáng tiêu chuẩn như <code class="docutils literal notranslate"><span class="pre">.png</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>.</p></li>
+<li><p><strong>ProceduralSkyMaterial:</strong> Dùng bầu trời được tạo theo thủ tục (procedural) với màu mặt đất, mặt trời, bầu trời và đường chân trời có thể điều chỉnh. Đây là loại bầu trời được dùng trong chế độ xem trước của trình chỉnh sửa. Vị trí mặt trời được tự động suy ra từ 4 node DirectionalLight3D đầu tiên có trong scene. Có thể có tối đa 4 mặt trời cùng lúc.</p></li>
+<li><p><strong>PhysicalSkyMaterial:</strong> Dùng bầu trời procedural dựa trên vật lý với các tham số tán xạ có thể điều chỉnh. Vị trí mặt trời được tự động suy ra từ node DirectionalLight3D đầu tiên có trong scene. PhysicalSkyMaterial tốn kém hơn một chút khi kết xuất so với ProceduralSkyMaterial. Có thể có tối đa 1 mặt trời cùng lúc.</p></li>
+</ul>
+<p>Ảnh bầu trời toàn cảnh đôi khi được gọi là HDRI (High Dynamic Range Images). Bạn có thể tìm các HDRI có giấy phép tự do trên <a class="reference external" href="https://polyhaven.com/hdris">Poly Haven</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Texture HDR của PanoramaSkyMaterial có các điểm rất sáng (chẳng hạn ảnh chụp thực tế có mặt trời) có thể gây ra các đốm lấp lánh dễ thấy trên phản xạ ambient và specular. Nguyên nhân là độ phơi sáng đỉnh của texture quá cao.</p>
+<p>Để khắc phục, hãy chọn texture toàn cảnh trong FileSystem dock, vào Import dock, bật <strong>HDR Clamp Exposure</strong> rồi nhấn <strong>Reimport</strong>.</p>
+</div>
+<p>Nếu bạn cần một sky material tùy chỉnh (ví dụ cho mây procedural), bạn có thể tạo một <a class="reference internal" href="../shaders/shader_reference/sky_shader.html#doc-sky-shader"><span class="std std-ref">sky shader</span></a> tùy chỉnh.</p>
+</section>
+<section id="ambient-light">
+<h3>Ánh sáng môi trường (ambient light)<a class="headerlink" href="#ambient-light" title="Link to this heading"></a></h3>
+<p>Ánh sáng môi trường (như được định nghĩa ở đây) là một loại ánh sáng ảnh hưởng tới mọi phần hình học với cùng cường độ. Nó mang tính toàn cục và độc lập với các nguồn sáng có thể được thêm vào scene. Ánh sáng môi trường là một trong hai thành phần của chiếu sáng dựa trên hình ảnh. Khác với ánh sáng phản xạ, ánh sáng môi trường không thay đổi theo vị trí và góc nhìn của camera.</p>
+<p>Có một số loại ánh sáng môi trường (ambient light) để lựa chọn:</p>
+<ul class="simple">
+<li><p><strong>Background:</strong> Lấy ánh sáng môi trường từ nền, chẳng hạn bầu trời, màu tùy chỉnh hoặc clear color (mặc định). Cường độ ánh sáng môi trường sẽ thay đổi tùy theo nội dung ảnh bầu trời, có thể giúp ánh sáng môi trường đẹp mắt hơn. Phải đặt bầu trời làm nền thì chế độ này mới hiển thị.</p></li>
+<li><p><strong>Disabled:</strong> Không dùng ánh sáng môi trường. Hữu ích cho các scene hoàn toàn trong nhà.</p></li>
+<li><p><strong>Color:</strong> Dùng một màu cố định cho ánh sáng môi trường, bỏ qua bầu trời nền. Cường độ ánh sáng môi trường sẽ như nhau ở mọi phía, có thể khiến chiếu sáng của scene trông phẳng hơn. Hữu ích cho các scene trong nhà nơi bóng đổ đen kịt có thể quá tối, hoặc để tối đa hóa hiệu năng trên thiết bị cấu hình thấp.</p></li>
+<li><p><strong>Sky:</strong> Lấy ánh sáng môi trường từ một bầu trời được chỉ định, ngay cả khi nền được đặt ở chế độ khác <strong>Sky</strong>. Nếu chế độ nền đã là <strong>Sky</strong>, chế độ này hoạt động giống hệt <strong>Background</strong>.</p></li>
+</ul>
+<p>Khi chế độ ánh sáng môi trường được đặt là Sky hoặc Background (và nền được đặt là Sky), có thể pha trộn giữa màu môi trường và bầu trời bằng thuộc tính <strong>Sky Contribution</strong>. Giá trị này mặc định là <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, nghĩa là chỉ dùng bầu trời môi trường. Màu môi trường bị bỏ qua trừ khi <strong>Sky Contribution</strong> được giảm xuống dưới <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+<p>Dưới đây là so sánh về cách các loại ánh sáng môi trường khác nhau ảnh hưởng tới một scene:</p>
+<img alt="../../_images/environment_ambient2.webp" src="../../_images/environment_ambient2.webp" />
+<p>Cuối cùng, có cài đặt <strong>Energy</strong> đóng vai trò hệ số nhân. Nó hữu ích khi làm việc với HDR.</p>
+<p>Nhìn chung, bạn chỉ nên dựa hoàn toàn vào ánh sáng môi trường cho các scene đơn giản hoặc không gian ngoài trời rộng lớn. Bạn cũng có thể làm vậy để tăng hiệu năng. Ánh sáng môi trường kết xuất nhanh, nhưng không mang lại chất lượng chiếu sáng tốt nhất. Tốt hơn là tạo ánh sáng môi trường từ <a class="reference internal" href="global_illumination/reflection_probes.html#doc-reflection-probes"><span class="std std-ref">ReflectionProbe</span></a>, <a class="reference internal" href="global_illumination/using_voxel_gi.html#doc-using-voxel-gi"><span class="std std-ref">VoxelGI</span></a> hoặc <a class="reference internal" href="global_illumination/using_sdfgi.html#doc-using-sdfgi"><span class="std std-ref">SDFGI</span></a>, vì chúng mô phỏng cách ánh sáng gián tiếp lan truyền chính xác hơn. Dưới đây là so sánh về chất lượng giữa việc dùng một màu môi trường phẳng và VoxelGI:</p>
+<img alt="../../_images/environment_ambient_comparison.webp" src="../../_images/environment_ambient_comparison.webp" />
+<p>Dùng một trong các phương pháp được mô tả ở trên sẽ thay thế ánh sáng môi trường cố định bằng ánh sáng môi trường từ các probe.</p>
+</section>
+<section id="reflected-light">
+<h3>Ánh sáng phản xạ<a class="headerlink" href="#reflected-light" title="Link to this heading"></a></h3>
+<p>Ánh sáng phản xạ (còn gọi là ánh sáng specular) là thành phần còn lại trong hai thành phần của chiếu sáng dựa trên hình ảnh.</p>
+<p>Ánh sáng phản xạ có thể được đặt ở một trong 3 chế độ:</p>
+<ul class="simple">
+<li><p><strong>Background:</strong> Phản xạ từ nền, chẳng hạn bầu trời, màu tùy chỉnh hoặc clear color (mặc định).</p></li>
+<li><p><strong>Disabled:</strong> Không phản xạ bất kỳ ánh sáng nào từ môi trường. Hữu ích cho các scene hoàn toàn trong nhà, hoặc để tối đa hóa hiệu năng trên thiết bị cấu hình thấp.</p></li>
+<li><p><strong>Sky:</strong> Phản xạ từ bầu trời nền, ngay cả khi nền được đặt ở chế độ khác <strong>Sky</strong>. Nếu chế độ nền đã là <strong>Sky</strong>, chế độ này hoạt động giống hệt <strong>Background</strong>.</p></li>
+</ul>
+</section>
+<section id="tonemap">
+<h3>Tonemap<a class="headerlink" href="#tonemap" title="Link to this heading"></a></h3>
+<p>Tonemap chọn thuật toán tonemapping sẽ được áp dụng cho scene, từ danh sách các thuật toán tiêu chuẩn được dùng trong ngành công nghiệp điện ảnh và game. Các chế độ tonemapping khác <strong>Linear</strong> được dùng để làm cho các vùng sáng và tối đồng đều hơn, đồng thời tránh hiện tượng cắt xén (clipping) ở các vùng sáng chói. Mỗi thuật toán có đặc tính hiệu năng khác nhau cần được cân nhắc khi chọn tonemapper.</p>
+<p>Các tùy chọn tone mapping gồm:</p>
+<ul class="simple">
+<li><p><strong>Mode:</strong> Chế độ tonemapping được sử dụng.</p>
+<ul>
+<li><p><strong>Linear:</strong> Không sửa đổi dữ liệu màu, tạo ra đường cong tonemapping tuyến tính cắt xén các giá trị sáng một cách thiếu tự nhiên, khiến ánh sáng mạnh trông bị cháy sáng. Đây là tonemapper đơn giản và nhanh nhất.</p></li>
+<li><p><strong>Reinhard:</strong> Một đường cong tonemapping đơn giản làm dịu các giá trị sáng để tránh cắt xén. Kết quả là hình ảnh có thể trông nhạt và độ tương phản thấp. Chậm hơn Linear. Khi <strong>White</strong> để ở giá trị mặc định <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, Reinhard cho ra hình ảnh giống hệt Linear.</p></li>
+<li><p><strong>Filmic:</strong> Dùng đường cong tonemapping kiểu phim để tránh cắt xén các giá trị sáng và cho độ tương phản tốt hơn Reinhard. Chậm hơn Reinhard một chút.</p></li>
+<li><p><strong>ACES:</strong> Dùng đường cong tonemapping kiểu phim có độ tương phản cao và giảm độ bão hòa của các giá trị sáng để có diện mạo chân thực hơn. Chậm hơn Filmic một chút.</p></li>
+<li><p><strong>AgX:</strong> Dùng đường cong tonemapping kiểu phim và giảm độ bão hòa của các giá trị sáng để có diện mạo chân thực hơn. Giữ sắc độ (hue) của màu khi chúng sáng lên tốt hơn các tonemapper khác. Đây là tùy chọn tonemapping chậm nhất.</p></li>
+</ul>
+</li>
+<li><p><strong>Exposure:</strong> Điều chỉnh độ sáng của các giá trị trước khi chúng được đưa vào tonemapper. Giá trị <strong>Exposure</strong> cao hơn cho hình ảnh sáng hơn. Các giá trị được đưa vào tonemapper cũng sẽ được nhân với <code class="docutils literal notranslate"><span class="pre">2.0</span></code> và <code class="docutils literal notranslate"><span class="pre">1.8</span></code> lần lượt cho <strong>Filmic</strong> và <strong>ACES</strong> để tạo độ sáng cảm nhận tương tự Linear.</p></li>
+<li><p><strong>White:</strong> Giá trị tham chiếu trắng cho tonemapping, cho biết vị trí của màu trắng sáng trong thang giá trị được đưa vào tonemapper. Với chiếu sáng chân thực, giá trị khuyến nghị nằm trong khoảng <code class="docutils literal notranslate"><span class="pre">6.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">8.0</span></code>. Giá trị cao hơn giúp vùng sáng ít bị cháy sáng hơn, nhưng có thể làm scene trông có độ tương phản thấp hơn. <strong>White</strong> không khả dụng khi dùng <strong>Linear</strong>. Nếu bạn đang dùng AgX, trình kết xuất mobile và HDR 2D bị tắt, thì giá trị đặt ở đây sẽ bị bỏ qua và giá trị <code class="docutils literal notranslate"><span class="pre">2.0</span></code> sẽ được dùng thay thế.</p></li>
+<li><p><strong>AGX Contrast:</strong> Chỉ khả dụng khi dùng AgX. Tăng giá trị này sẽ làm các giá trị tối tối hơn và các giá trị sáng sáng hơn. Nó cho kết quả tốt hơn tùy chọn contrast trong mục adjustment mà không tốn thêm chi phí hiệu năng.</p></li>
+</ul>
+</section>
+</section>
+<section id="mid-and-post-processing-effects">
+<h2>Hiệu ứng trung gian và hậu xử lý<a class="headerlink" href="#mid-and-post-processing-effects" title="Link to this heading"></a></h2>
+<p>Resource Environment hỗ trợ nhiều hiệu ứng trung gian (mid-processing) và hậu xử lý phổ biến.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các hiệu ứng không gian màn hình như <abbr title="Screen-Space Reflections">SSR</abbr>, <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr>, <abbr title="Screen-Space Indirect Lighting">SSIL</abbr> và glow không hoạt động trên hình học nằm ngoài tầm nhìn của camera hoặc bị hình học đục khác che khuất. Hãy cân nhắc điều này khi tinh chỉnh các cài đặt của chúng để tránh những thay đổi gây xao nhãng trong khi chơi.</p>
+</div>
+<section id="screen-space-reflections-ssr">
+<h3>Phản xạ không gian màn hình (SSR)<a class="headerlink" href="#screen-space-reflections-ssr" title="Link to this heading"></a></h3>
+<p><em>Tính năng này chỉ khả dụng khi dùng trình kết xuất Forward+, không có trên Mobile hoặc Compatibility.</em></p>
+<p>Dù Godot hỗ trợ nhiều nguồn dữ liệu phản xạ như <a class="reference internal" href="global_illumination/reflection_probes.html#doc-reflection-probes"><span class="std std-ref">Reflection probe</span></a>, chúng có thể không cung cấp đủ chi tiết cho mọi tình huống. Phản xạ không gian màn hình hợp lý nhất trong các tình huống các đối tượng tiếp xúc với nhau (đối tượng trên sàn, trên bàn, nổi trên mặt nước, v.v.).</p>
+<img alt="../../_images/environment_ssr.webp" src="../../_images/environment_ssr.webp" />
+<p>Không chỉ cho nhiều chi tiết hơn, phản chiếu không gian màn hình còn hoạt động theo thời gian thực (trong khi các loại phản chiếu khác thường được tính trước). Nhờ đó, nhân vật, xe cộ, v.v. có thể phản chiếu lên các bề mặt xung quanh khi di chuyển.</p>
+<p>Phản chiếu không gian màn hình có thể được dùng cùng lúc với các nguồn phản chiếu khác để tận dụng phản chiếu chi tiết khi có thể, đồng thời vẫn có phương án dự phòng khi không thể dùng phản chiếu không gian màn hình (ví dụ: để phản chiếu các đối tượng nằm ngoài màn hình).</p>
+<p>Có một vài tham số do người dùng điều khiển để tinh chỉnh kỹ thuật này tốt hơn:</p>
+<ul class="simple">
+<li><p><strong>Max Steps:</strong> Xác định độ dài tối đa của phản chiếu. Số này càng lớn thì chi phí tính toán càng cao.</p></li>
+<li><p><strong>Fade In:</strong> Cho phép điều chỉnh đường cong fade-in, hữu ích để làm vùng tiếp xúc mềm hơn.</p></li>
+<li><p><strong>Fade Out:</strong> Cho phép điều chỉnh đường cong fade-out, để giới hạn bước mờ dần một cách mượt mà.</p></li>
+<li><p><strong>Depth Tolerance:</strong> Có thể dùng để cho phép các tia không gian màn hình đi qua phía sau đối tượng. Khi xác định có thể đi qua phía sau một đối tượng hay không, các tia sẽ coi mỗi đối tượng như thể nó có độ sâu bằng giá trị này. Giá trị cao hơn sẽ khiến phản chiếu không gian màn hình ít bị &quot;đứt gãy&quot; hơn, nhưng đổi lại một số đối tượng sẽ tạo ra phản chiếu không chính xác về mặt vật lý.</p></li>
+</ul>
+<p>Ngoài ra, bạn có thể điều chỉnh chất lượng SSR trong cài đặt dự án bằng cách bật/tắt <strong>Rendering &gt; Environment &gt; Screen Space Reflection &gt; Half Size</strong>. Theo mặc định, phản chiếu không gian màn hình được kết xuất ở một nửa độ phân giải vì lý do hiệu năng. Tắt cài đặt này sẽ khiến hiệu ứng được kết xuất ở độ phân giải đầy đủ, giúp cải thiện chất lượng nhưng tăng mức sử dụng GPU.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Lưu ý rằng phản chiếu không gian màn hình chỉ phản chiếu được hình học đục (opaque). Các material trong suốt sẽ không được phản chiếu vì chúng không ghi vào depth buffer. Điều này cũng áp dụng cho các shader dùng uniform <code class="docutils literal notranslate"><span class="pre">hint_screen_texture</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">hint_depth_texture</span></code>.</p>
+</div>
+</section>
+<section id="screen-space-ambient-occlusion-ssao">
+<h3>Che khuất môi trường không gian màn hình (SSAO)<a class="headerlink" href="#screen-space-ambient-occlusion-ssao" title="Link to this heading"></a></h3>
+<p><em>Tính năng này chỉ có khi dùng renderer Forward+ và Compatibility, không có trên Mobile.</em></p>
+<p>Như đã đề cập trong phần <strong>Ambient</strong>, những vùng mà ánh sáng từ các node đèn không chiếu tới (do nằm ngoài bán kính hoặc bị che bóng) sẽ được chiếu bằng ánh sáng môi trường. Godot có thể mô phỏng điều này bằng VoxelGI, ReflectionProbe, Sky hoặc một màu môi trường cố định. Tuy nhiên, vấn đề là tất cả các phương pháp nêu trên đều tác động ở quy mô lớn (các vùng rộng) hơn là ở mức hình học nhỏ.</p>
+<p>Màu môi trường cố định và Sky đều giống nhau ở mọi nơi, trong khi GI và Reflection probe có nhiều chi tiết cục bộ hơn, nhưng chưa đủ để mô phỏng những tình huống ánh sáng không thể lấp đầy bên trong các chi tiết rỗng hoặc lõm.</p>
+<p>Điều này có thể được mô phỏng bằng Screen Space Ambient Occlusion. Như bạn thấy trong hình bên dưới, mục đích của nó là làm cho các vùng lõm tối hơn, mô phỏng lối đi hẹp hơn cho ánh sáng lọt vào:</p>
+<img alt="../../_images/environment_ssao.webp" src="../../_images/environment_ssao.webp" />
+<p>Một lỗi thường gặp là bật hiệu ứng này, bật một đèn rồi không thấy được tác dụng. Lý do là <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> chỉ tác động lên ánh sáng <em>môi trường</em>. Nó không ảnh hưởng đến ánh sáng trực tiếp.</p>
+<p>Đó là lý do trong hình trên, hiệu ứng ít rõ hơn dưới ánh sáng trực tiếp (bên trái). Nếu bạn muốn buộc <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> hoạt động cả với ánh sáng trực tiếp, hãy dùng tham số <strong>Light Affect</strong>. Dù điều này không chính xác về mặt vật lý, một số họa sĩ vẫn thích vẻ ngoài của nó.</p>
+<p><abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> trông đẹp nhất khi kết hợp với một nguồn ánh sáng gián tiếp thực sự, như VoxelGI:</p>
+<img alt="../../_images/environment_ssao2.webp" src="../../_images/environment_ssao2.webp" />
+<p>Có thể tinh chỉnh <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> bằng một số tham số:</p>
+<img alt="../../_images/environment_ssao_parameters.webp" src="../../_images/environment_ssao_parameters.webp" />
+<ul class="simple">
+<li><p><strong>Radius:</strong> Khoảng cách mà tại đó các đối tượng có thể che khuất lẫn nhau khi tính toán che khuất môi trường không gian màn hình. Giá trị cao hơn sẽ tạo ra che khuất trên khoảng cách lớn hơn nhưng đổi lại hiệu năng và chất lượng.</p></li>
+<li><p><strong>Intensity:</strong> Cường độ chính của che khuất môi trường không gian màn hình. Đóng vai trò hệ số nhân cho hiệu ứng che khuất môi trường không gian màn hình. Giá trị cao hơn tạo ra che khuất tối hơn. Vì <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> là hiệu ứng không gian màn hình, bạn nên giữ giá trị này ở mức vừa phải. <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> quá mạnh có thể gây mất tập trung khi chơi.</p></li>
+<li><p><strong>Power:</strong> Sự phân bố của che khuất. Giá trị cao hơn tạo ra che khuất tối hơn, tương tự <strong>Intensity</strong>, nhưng suy giảm sắc nét hơn.</p></li>
+<li><p><strong>Detail:</strong> Đặt cường độ của mức chi tiết bổ sung cho hiệu ứng che khuất môi trường không gian màn hình. Giá trị cao làm lượt chi tiết nổi bật hơn, nhưng có thể góp phần gây răng cưa (aliasing) trong hình ảnh cuối cùng.</p></li>
+<li><p><strong>Horizon:</strong> Ngưỡng để xét một điểm trên bề mặt có bị che khuất hay không, được biểu diễn dưới dạng góc so với đường chân trời và ánh xạ vào khoảng 0.0-1.0. Giá trị 1.0 nghĩa là không có che khuất.</p></li>
+<li><p><strong>Sharpness:</strong> Mức độ mà hiệu ứng che khuất môi trường không gian màn hình được phép làm mờ qua các cạnh của đối tượng. Đặt quá cao sẽ gây răng cưa quanh cạnh đối tượng. Đặt quá thấp sẽ khiến cạnh đối tượng trông bị mờ.</p></li>
+<li><p><strong>Light Affect:</strong> Cường độ che khuất môi trường không gian màn hình dưới ánh sáng trực tiếp. Trong thực tế, che khuất môi trường chỉ áp dụng cho ánh sáng gián tiếp, nghĩa là không thể thấy hiệu ứng của nó dưới ánh sáng trực tiếp. Giá trị lớn hơn 0 sẽ khiến hiệu ứng <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> hiển thị dưới ánh sáng trực tiếp. Giá trị trên <code class="docutils literal notranslate"><span class="pre">0.0</span></code> không chính xác về mặt vật lý, nhưng một số họa sĩ thích hiệu ứng này.</p></li>
+<li><p><strong>AO Channel Affect</strong> Cường độ che khuất môi trường không gian màn hình trên các material có định nghĩa texture AO. Giá trị lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code> sẽ khiến hiệu ứng SSAO hiển thị ở những vùng bị texture AO làm tối.</p></li>
+</ul>
+<p>Ngoài ra, bạn có thể điều chỉnh chất lượng SSAO trong mục <strong>Rendering &gt; Environment &gt; SSAO</strong> của cài đặt dự án:</p>
+<ul class="simple">
+<li><p><strong>Quality:</strong> Đặt chất lượng của hiệu ứng che khuất môi trường không gian màn hình. Giá trị cao hơn lấy nhiều mẫu hơn nên cho chất lượng tốt hơn, nhưng đổi lại hiệu năng. Đặt giá trị này thành Ultra sẽ dùng cài đặt <strong>Adaptive Target</strong> (xem bên dưới).</p></li>
+<li><p><strong>Half Size:</strong> Nếu <code class="docutils literal notranslate"><span class="pre">true</span></code>, che khuất môi trường không gian màn hình sẽ được kết xuất ở một nửa kích thước rồi phóng to trước khi được thêm vào scene. Cách này nhanh hơn đáng kể nhưng có thể bỏ sót các chi tiết nhỏ. Nếu <code class="docutils literal notranslate"><span class="pre">false</span></code>, che khuất môi trường không gian màn hình sẽ được kết xuất ở kích thước đầy đủ.</p></li>
+<li><p><strong>Adaptive Target:</strong> Mục tiêu chất lượng được dùng khi <strong>Quality</strong> được đặt thành <strong>Ultra</strong>. Giá trị <code class="docutils literal notranslate"><span class="pre">0.0</span></code> cho chất lượng và tốc độ tương tự Medium, còn giá trị <code class="docutils literal notranslate"><span class="pre">1.0</span></code> cho chất lượng cao hơn nhiều so với mọi cài đặt khác nhưng đổi lại hiệu năng.</p></li>
+<li><p><strong>Blur Passes:</strong> Số lượt làm mờ dùng khi tính toán che khuất môi trường không gian màn hình. Số cao hơn cho vẻ ngoài mượt hơn, nhưng tính toán chậm hơn và có ít chi tiết tần số cao hơn.</p></li>
+<li><p><strong>Fadeout From:</strong> Khoảng cách mà tại đó hiệu ứng che khuất môi trường không gian màn hình bắt đầu mờ dần. Dùng giá trị này để ẩn che khuất môi trường ở xa.</p></li>
+<li><p><strong>Fadeout To:</strong> Khoảng cách mà tại đó che khuất môi trường không gian màn hình mờ hẳn. Dùng giá trị này để ẩn che khuất môi trường ở xa.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kể từ Godot 4.6, renderer Compatibility có một phiên bản SSAO đơn giản hóa. Cách triển khai này có vẻ ngoài khác, nhưng sẽ chạy tốt hơn đáng kể trên thiết bị cấu hình thấp so với SSAO trong Forward+.</p>
+<p>Khi dùng renderer Compatibility, chỉ có thể điều chỉnh tham số <strong>Radius</strong> và <strong>Intensity</strong>.</p>
+</div>
+</section>
+<section id="screen-space-indirect-lighting-ssil">
+<span id="doc-environment-and-post-processing-ssil"></span><h3>Chiếu sáng gián tiếp không gian màn hình (SSIL)<a class="headerlink" href="#screen-space-indirect-lighting-ssil" title="Link to this heading"></a></h3>
+<p><em>Tính năng này chỉ khả dụng khi dùng trình kết xuất Forward+, không có trên Mobile hoặc Compatibility.</em></p>
+<p><abbr title="Screen-Space Indirect Lighting">SSIL</abbr> cung cấp chiếu sáng gián tiếp cho các chi tiết nhỏ hoặc hình học động mà các kỹ thuật chiếu sáng toàn cục khác không bao quát được. Điều này áp dụng cho ánh sáng khuếch tán phản xạ, và cả các material phát sáng. Khi chỉ bật riêng <abbr title="Screen-Space Indirect Lighting">SSIL</abbr>, hiệu ứng có thể không quá rõ, và điều này là có chủ đích.</p>
+<p>Thay vào đó, <abbr title="Screen-Space Indirect Lighting">SSIL</abbr> được dùng để <em>bổ trợ</em> cho các kỹ thuật chiếu sáng toàn cục khác như VoxelGI, SDFGI và LightmapGI. <abbr title="Screen-Space Indirect Lighting">SSIL</abbr> cũng cung cấp một hiệu ứng che khuất môi trường nhẹ, tương tự SSAO nhưng ít chi tiết hơn.</p>
+<p>Tính năng này chỉ cung cấp chiếu sáng gián tiếp. Nó không phải là giải pháp chiếu sáng toàn cục đầy đủ. Điều này khiến nó khác với chiếu sáng toàn cục không gian màn hình (SSGI) mà các engine 3D khác cung cấp. <abbr title="Screen-Space Indirect Lighting">SSIL</abbr> có thể kết hợp với <abbr title="Screen-Space Reflections">SSR</abbr> và/hoặc <abbr title="Screen-Space Ambient Occlusion">SSAO</abbr> để có chất lượng hình ảnh cao hơn (đổi lại hiệu năng).</p>
+<p>Có thể tinh chỉnh <abbr title="Screen-Space Indirect Lighting">SSIL</abbr> bằng một số tham số:</p>
+<ul class="simple">
+<li><p><strong>Radius:</strong> Khoảng cách mà ánh sáng phản xạ có thể đi được khi dùng hiệu ứng chiếu sáng gián tiếp không gian màn hình. Giá trị lớn hơn sẽ khiến ánh sáng phản xạ đi xa hơn trong scene, nhưng có thể gây lỗi hình ảnh do lấy mẫu thiếu, trông như những gai dài bao quanh nguồn sáng.</p></li>
+<li><p><strong>Intensity:</strong> Hệ số nhân độ sáng cho hiệu ứng chiếu sáng gián tiếp không gian màn hình. Giá trị cao hơn cho ánh sáng sáng hơn.</p></li>
+<li><p><strong>Sharpness:</strong> Mức độ mà hiệu ứng chiếu sáng gián tiếp không gian màn hình được phép làm mờ qua các cạnh của đối tượng. Đặt quá cao sẽ gây răng cưa quanh cạnh đối tượng. Đặt quá thấp sẽ khiến cạnh đối tượng trông bị mờ.</p></li>
+<li><p><strong>Normal Rejection:</strong> Mức loại bỏ theo pháp tuyến (normal rejection) dùng khi tính toán chiếu sáng gián tiếp không gian màn hình. Normal rejection dùng pháp tuyến của một điểm mẫu để loại bỏ các mẫu quay mặt ra khỏi pixel hiện tại. Normal rejection là cần thiết để tránh rò rỉ ánh sáng khi chỉ một mặt của đối tượng được chiếu sáng. Tuy nhiên, có thể tắt normal rejection nếu muốn có rò rỉ ánh sáng, chẳng hạn khi scene chủ yếu chứa các đối tượng phát sáng từ những mặt không nhìn thấy được từ camera.</p></li>
+</ul>
+<p>Ngoài ra, bạn có thể điều chỉnh chất lượng SSIL trong mục <strong>Rendering &gt; Environment &gt; SSIL</strong> của cài đặt dự án:</p>
+<ul class="simple">
+<li><p><strong>Quality:</strong> Đặt chất lượng của hiệu ứng chiếu sáng gián tiếp không gian màn hình. Giá trị cao hơn lấy nhiều mẫu hơn nên cho chất lượng tốt hơn, nhưng đổi lại hiệu năng. Đặt giá trị này thành Ultra sẽ dùng cài đặt <strong>Adaptive Target</strong> (xem bên dưới).</p></li>
+<li><p><strong>Half Size:</strong> Nếu <code class="docutils literal notranslate"><span class="pre">true</span></code>, chiếu sáng gián tiếp không gian màn hình sẽ được kết xuất ở một nửa kích thước rồi phóng to trước khi được thêm vào scene. Cách này nhanh hơn đáng kể nhưng có thể bỏ sót các chi tiết nhỏ. Nếu <code class="docutils literal notranslate"><span class="pre">false</span></code>, chiếu sáng gián tiếp không gian màn hình sẽ được kết xuất ở kích thước đầy đủ.</p></li>
+<li><p><strong>Adaptive Target:</strong> Mục tiêu chất lượng được dùng khi <strong>Quality</strong> được đặt thành <strong>Ultra</strong>. Giá trị <code class="docutils literal notranslate"><span class="pre">0.0</span></code> cho chất lượng và tốc độ tương tự Medium, còn giá trị <code class="docutils literal notranslate"><span class="pre">1.0</span></code> cho chất lượng cao hơn nhiều so với mọi cài đặt khác nhưng đổi lại hiệu năng. Khi dùng adaptive target, chi phí hiệu năng tăng theo độ phức tạp của scene.</p></li>
+<li><p><strong>Blur Passes:</strong> Số lượt làm mờ dùng khi tính toán chiếu sáng gián tiếp không gian màn hình. Số cao hơn cho vẻ ngoài mượt hơn, nhưng tính toán chậm hơn và có ít chi tiết tần số cao hơn.</p></li>
+<li><p><strong>Fadeout From:</strong> Khoảng cách mà tại đó hiệu ứng chiếu sáng gián tiếp không gian màn hình bắt đầu mờ dần. Dùng giá trị này để ẩn chiếu sáng gián tiếp không gian màn hình ở xa.</p></li>
+<li><p><strong>Fadeout To:</strong> Khoảng cách mà tại đó chiếu sáng gián tiếp không gian màn hình mờ hẳn. Dùng giá trị này để ẩn chiếu sáng gián tiếp không gian màn hình ở xa.</p></li>
+</ul>
+<img alt="../../_images/environment_ssil.webp" src="../../_images/environment_ssil.webp" />
+</section>
+<section id="signed-distance-field-global-illumination-sdfgi">
+<h3>Chiếu sáng toàn cục bằng trường khoảng cách có dấu (SDFGI)<a class="headerlink" href="#signed-distance-field-global-illumination-sdfgi" title="Link to this heading"></a></h3>
+<p><em>Tính năng này chỉ khả dụng khi dùng trình kết xuất Forward+, không có trên Mobile hoặc Compatibility.</em></p>
+<p>Chiếu sáng toàn cục bằng trường khoảng cách có dấu (SDFGI) là một dạng chiếu sáng toàn cục theo thời gian thực. Nó không phải là hiệu ứng không gian màn hình, nghĩa là nó có thể cung cấp chiếu sáng toàn cục cho các phần tử nằm ngoài màn hình (khác với <abbr title="Screen-Space Indirect Lighting">SSIL</abbr>).</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="global_illumination/using_sdfgi.html#doc-using-sdfgi"><span class="std std-ref">Chiếu sáng toàn cục bằng signed distance field (SDFGI)</span></a> để biết hướng dẫn thiết lập kỹ thuật chiếu sáng toàn cục này.</p>
+</div>
+<img alt="../../_images/environment_sdfgi.webp" src="../../_images/environment_sdfgi.webp" />
+</section>
+<section id="glow">
+<span id="doc-environment-and-post-processing-glow"></span><h3>Glow (phát quang)<a class="headerlink" href="#glow" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi dùng phương thức kết xuất Compatibility, glow dùng một cách triển khai khác, với một số thuộc tính không khả dụng và bị ẩn khỏi Inspector: <strong>Levels</strong>, <strong>Normalized</strong>, <strong>Strength</strong>, <strong>Blend Mode</strong>, <strong>Mix</strong>, <strong>Map</strong> và <strong>Map Strength</strong>.</p>
+<p>Cách triển khai này được tối ưu để chạy trên thiết bị cấu hình thấp nên kém linh hoạt hơn.</p>
+</div>
+<p>Trong nhiếp ảnh và điện ảnh, khi lượng ánh sáng vượt quá <em>độ chói</em> (độ sáng) tối đa mà phương tiện hỗ trợ, nó thường loang ra các vùng tối hơn của hình ảnh. Godot mô phỏng điều này bằng hiệu ứng <strong>Glow</strong>.</p>
+<img alt="../../_images/environment_glow1.webp" src="../../_images/environment_glow1.webp" />
+<p>Theo mặc định, ngay cả khi hiệu ứng được bật, nó sẽ yếu hoặc không nhìn thấy. Cần xảy ra một trong hai điều kiện để nó thực sự hiển thị:</p>
+<ul class="simple">
+<li><ol class="arabic simple">
+<li><p>Ánh sáng trong một pixel vượt quá <strong>HDR Threshold</strong> (trong đó 0 là mọi ánh sáng đều vượt ngưỡng, còn 1.0 là ánh sáng vượt quá giá trị <strong>White</strong> của tonemapper). Thông thường, giá trị này được kỳ vọng là 1.0, nhưng có thể hạ thấp để nhiều ánh sáng loang ra hơn. Ngoài ra còn có một tham số bổ sung, <strong>HDR Scale</strong>, cho phép co giãn (làm sáng hơn hoặc tối hơn) phần ánh sáng vượt ngưỡng.</p></li>
+</ol>
+</li>
+</ul>
+<img alt="../../_images/environment_glow_threshold.webp" src="../../_images/environment_glow_threshold.webp" />
+<ul class="simple">
+<li><ol class="arabic simple" start="2">
+<li><p>Thuộc tính <strong>Bloom</strong> có giá trị lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>. Khi tăng lên, nó gửi toàn bộ màn hình vào bộ xử lý glow với lượng lớn hơn.</p></li>
+</ol>
+</li>
+</ul>
+<img alt="../../_images/environment_glow_bloom.webp" src="../../_images/environment_glow_bloom.webp" />
+<p>Cả hai đều khiến ánh sáng bắt đầu loang ra từ các vùng sáng hơn.</p>
+<p>Khi glow đã hiển thị, có thể điều khiển nó bằng một vài tham số bổ sung:</p>
+<ul class="simple">
+<li><p><strong>Intensity</strong> là hệ số tổng thể cho hiệu ứng, có thể làm mạnh hơn hoặc yếu hơn (<code class="docutils literal notranslate"><span class="pre">0.0</span></code> sẽ loại bỏ nó).</p></li>
+<li><p><strong>Strength</strong> là mức độ mạnh khi xử lý kernel bộ lọc Gauss. Giá trị lớn hơn khiến bộ lọc bão hòa và lan rộng ra ngoài. Nhìn chung, không cần thay đổi giá trị này vì kích thước có thể được điều chỉnh hiệu quả hơn bằng <strong>Levels</strong>.</p></li>
+</ul>
+<p>Cũng có thể thay đổi <strong>Blend Mode</strong> của hiệu ứng:</p>
+<ul class="simple">
+<li><p><strong>Additive</strong> là chế độ mạnh nhất, vì nó chỉ cộng hiệu ứng glow lên hình ảnh mà không có pha trộn. Nhìn chung, chế độ này quá mạnh để dùng, nhưng có thể trông đẹp khi kết hợp với <strong>Bloom</strong> cường độ thấp (tạo hiệu ứng như trong mơ).</p></li>
+<li><p><strong>Screen</strong> đảm bảo glow không bao giờ sáng hơn chính nó và hoạt động rất tốt cho mọi trường hợp.</p></li>
+<li><p><strong>Softlight</strong> là chế độ mặc định và yếu nhất, chỉ tạo ra một chút nhiễu màu tinh tế quanh các đối tượng. Chế độ này hoạt động tốt nhất trong các scene tối.</p></li>
+<li><p><strong>Replace</strong> có thể dùng để <a class="reference internal" href="#doc-environment-and-post-processing-using-glow-to-blur-the-screen"><span class="std std-ref">làm mờ toàn bộ màn hình</span></a> hoặc để debug hiệu ứng. Nó chỉ hiển thị hiệu ứng glow mà không có hình ảnh bên dưới.</p></li>
+<li><p><strong>Mix</strong> pha trộn hiệu ứng glow với hình ảnh chính. Có thể dùng chế độ này để kiểm soát nghệ thuật tốt hơn. Hệ số pha trộn được điều khiển bởi thuộc tính <strong>Mix</strong> xuất hiện phía trên blend mode (chỉ khi blend mode được đặt thành Mix). Hệ số pha trộn cao sẽ khiến hình ảnh trông tối đi trừ khi tăng <strong>Bloom</strong>.</p></li>
+</ul>
+<p>Để thay đổi kích thước và hình dạng hiệu ứng glow, Godot cung cấp <strong>Levels</strong>. Các level nhỏ là glow mạnh xuất hiện quanh đối tượng, còn các level lớn là glow mờ ảo phủ toàn màn hình:</p>
+<img alt="../../_images/environment_glow_layers.webp" src="../../_images/environment_glow_layers.webp" />
+<p>Tuy nhiên, sức mạnh thực sự của hệ thống này là kết hợp các level để tạo ra những mẫu glow thú vị hơn:</p>
+<img alt="../../_images/environment_glow_layers2.webp" src="../../_images/environment_glow_layers2.webp" />
+<p>Cuối cùng, có thể điều khiển hiệu ứng glow bằng một <em>glow map</em>, tức là một texture xác định glow sáng đến mức nào trên từng phần của màn hình. Texture này có thể được tô màu (tùy chọn) để nhuộm hiệu ứng glow theo màu của glow map. Texture được kéo giãn để vừa với viewport, vì vậy bạn nên dùng tỉ lệ khung hình khớp với tỉ lệ phổ biến nhất của viewport (chẳng hạn 16:9) để tránh méo hình rõ rệt.</p>
+<p>Có 2 trường hợp sử dụng chính cho texture glow map:</p>
+<ul class="simple">
+<li><p>Tạo hiệu ứng &quot;bụi ống kính&quot; (lens dirt) bằng một texture có hoa văn vết bẩn.</p></li>
+<li><p>Làm glow yếu hơn ở những phần cụ thể của màn hình bằng một texture gradient.</p></li>
+</ul>
+<img alt="../../_images/environment_glow_map.webp" src="../../_images/environment_glow_map.webp" />
+<p>Theo mặc định, glow dùng bộ lọc co giãn bicubic trên nền tảng máy tính và bộ lọc co giãn bilinear trên nền tảng di động. Bộ lọc bicubic cho chất lượng cao hơn và ít bị vỡ khối hơn, nhưng tốn hiệu năng GPU, có thể đáng kể trên card đồ họa tích hợp. Chế độ co giãn có thể được điều khiển bằng cài đặt dự án <strong>Rendering &gt; Environment &gt; Glow &gt; Upscale Mode</strong>. Cài đặt này chỉ có hiệu lực khi dùng renderer Forward+ hoặc Mobile, vì Compatibility dùng một cách triển khai glow khác.</p>
+<img alt="../../_images/environment_and_post_processing_glow_scale_mode.webp" src="../../_images/environment_and_post_processing_glow_scale_mode.webp" />
+</section>
+<section id="using-glow-in-2d">
+<span id="doc-environment-and-post-processing-using-glow-in-2d"></span><h3>Dùng glow trong 2D<a class="headerlink" href="#using-glow-in-2d" title="Link to this heading"></a></h3>
+<p>Có 2 cách dùng glow trong 2D:</p>
+<ul class="simple">
+<li><p>Kể từ Godot 4.2, bạn có thể bật HDR cho kết xuất 2D khi dùng phương thức kết xuất Forward+ và Mobile. Việc này tốn hiệu năng, nhưng cho phép dải động lớn hơn. Nó cũng cho phép bạn kiểm soát đối tượng nào phát glow thông qua thuộc tính <strong>Modulate</strong> hoặc <strong>Self Modulate</strong> riêng của chúng (dùng thanh trượt Intensity trong bộ chọn màu). Bật HDR cũng có thể giảm hiện tượng banding trong đầu ra kết xuất 2D.</p>
+<ul>
+<li><p>Để bật HDR trong 2D, hãy mở Project Settings, bật <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-viewport-hdr-2d" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Viewport &gt; HDR 2D</span></a> rồi khởi động lại trình chỉnh sửa.</p></li>
+</ul>
+</li>
+<li><p>Nếu muốn tối đa hóa hiệu năng, bạn có thể để tắt HDR cho kết xuất 2D. Tuy nhiên, bạn sẽ ít kiểm soát hơn việc đối tượng nào phát glow.</p>
+<ul>
+<li><p>Bật glow, đặt chế độ nền của environment thành <strong>Canvas</strong> rồi giảm <strong>Glow HDR Threshold</strong> để các pixel không quá sáng vẫn phát glow. Để ngăn các phần tử UI phát glow, hãy đặt chúng làm con của một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvaslayer.html" title="Class reference (English)"><span class="xref std std-ref">class_CanvasLayer</span></a>. Bạn có thể kiểm soát những layer nào bị glow ảnh hưởng bằng thuộc tính <strong>Background &gt; Canvas Max Layer</strong> của resource Environment.</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-center" id="id1">
+<img alt="Ví dụ dùng glow trong một scene 2D" src="../../_images/environment_and_post_processing_glow_in_2d.webp" />
+<figcaption>
+<p><span class="caption-text">Ví dụ dùng glow trong một scene 2D. HDR 2D được bật, còn các đồng xu và viên đạn có thuộc tính <strong>Modulate</strong> được tăng lên giá trị quá sáng bằng thanh trượt Intensity trong bộ chọn màu.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Renderer 2D kết xuất trong không gian màu tuyến tính nếu cài đặt dự án <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-viewport-hdr-2d" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Viewport &gt; HDR 2D</span></a> được bật, vì vậy cũng phải dùng hint <code class="docutils literal notranslate"><span class="pre">source_color</span></code> cho các uniform sampler được dùng làm đầu vào màu trong shader <code class="docutils literal notranslate"><span class="pre">canvas_item</span></code>. Nếu không làm vậy, texture sẽ trông bị bạc màu.</p>
+<p>Nếu HDR 2D bị tắt, <code class="docutils literal notranslate"><span class="pre">source_color</span></code> vẫn sẽ hoạt động đúng trong shader <code class="docutils literal notranslate"><span class="pre">canvas_item</span></code>, vì vậy bạn nên dùng nó khi phù hợp trong cả hai trường hợp.</p>
+<p>Dùng không gian màu tuyến tính cũng có nghĩa là alpha blending sẽ thay đổi. Các sprite có độ mờ đục thấp thường trở nên rõ hơn, và font chữ sẽ trông đậm hơn do các pixel độ mờ đục thấp từ khử răng cưa font trở nên rõ hơn. Điều này cũng ảnh hưởng đến việc kết xuất của chính trình chỉnh sửa.</p>
+</div>
+</section>
+<section id="using-glow-to-blur-the-screen">
+<span id="doc-environment-and-post-processing-using-glow-to-blur-the-screen"></span><h3>Dùng glow để làm mờ màn hình<a class="headerlink" href="#using-glow-to-blur-the-screen" title="Link to this heading"></a></h3>
+<p>Có thể dùng glow để làm mờ toàn bộ viewport, hữu ích để làm mờ nền khi một menu đang mở. Chỉ phần kết xuất 3D bị ảnh hưởng, trừ khi chế độ nền của environment được đặt thành <strong>Canvas</strong>. Để ngăn các phần tử UI bị làm mờ khi dùng chế độ nền Canvas, hãy đặt chúng làm con của một node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_canvaslayer.html" title="Class reference (English)"><span class="xref std std-ref">class_CanvasLayer</span></a>. Bạn có thể kiểm soát những layer nào bị hiệu ứng làm mờ này ảnh hưởng bằng thuộc tính <strong>Background &gt; Canvas Max Layer</strong> của resource Environment.</p>
+<p>Để dùng glow làm giải pháp làm mờ:</p>
+<ul class="simple">
+<li><p>Bật <strong>Normalized</strong> và điều chỉnh các level tùy ý. Tăng các chỉ số level cao hơn sẽ cho hình ảnh mờ hơn. Bạn nên để một level glow duy nhất ở <code class="docutils literal notranslate"><span class="pre">1.0</span></code> và để tất cả các level glow khác ở <code class="docutils literal notranslate"><span class="pre">0.0</span></code>, nhưng điều này không bắt buộc. Lưu ý rằng vẻ ngoài cuối cùng sẽ khác nhau tùy theo độ phân giải viewport.</p></li>
+<li><p>Đặt <strong>Intensity</strong> thành <code class="docutils literal notranslate"><span class="pre">1.0</span></code> và <strong>Bloom</strong> thành <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p>Đặt blend mode thành <strong>Replace</strong> và <strong>HDR Luminance Cap</strong> thành <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+</ul>
+<figure class="align-center" id="id2">
+<img alt="Ví dụ dùng glow để làm mờ phần kết xuất 2D ở nền của menu" src="../../_images/environment_and_post_processing_glow_blur.webp" />
+<figcaption>
+<p><span class="caption-text">Ví dụ dùng glow để làm mờ phần kết xuất 2D ở nền của menu</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="fog">
+<h3>Sương mù<a class="headerlink" href="#fog" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Phần này chỉ đề cập đến sương mù không thể tích (non-volumetric). Có thể dùng đồng thời cả sương mù không thể tích và <a class="reference internal" href="volumetric_fog.html#doc-volumetric-fog"><span class="std std-ref">Sương mù thể tích và fog volume</span></a>.</p>
+</div>
+<p>Sương mù, giống như ngoài đời thực, khiến các đối tượng ở xa nhạt dần vào một màu đồng nhất. Godot có hai loại sương mù:</p>
+<ul class="simple">
+<li><p><strong>Depth Fog:</strong> Loại này được áp dụng dựa trên khoảng cách tính từ camera.</p></li>
+<li><p><strong>Height Fog:</strong> Loại này được áp dụng cho mọi đối tượng nằm dưới (hoặc trên) một độ cao nhất định, bất kể khoảng cách tính từ camera.</p></li>
+</ul>
+<img alt="../../_images/environment_fog_depth_height.webp" src="../../_images/environment_fog_depth_height.webp" />
+<p>Cả hai loại sương mù này đều có thể tinh chỉnh đường cong, giúp chuyển tiếp sắc nét hơn hoặc mềm hơn.</p>
+<p>Có thể tinh chỉnh hai thuộc tính để hiệu ứng sương mù thú vị hơn:</p>
+<p>Thứ nhất là <strong>Sun Scatter</strong>, sử dụng màu và năng lượng của DirectionalLight3D trong scene hiện tại. Khi nhìn về phía đèn định hướng (thường là mặt trời), sương mù sẽ được nhuộm theo màu của đèn để mô phỏng ánh nắng xuyên qua sương mù.</p>
+<p>Thứ hai là <strong>Aerial Perspective</strong>, nhuộm màu sương mù theo màu bầu trời để hòa trộn bầu trời với nền tốt hơn. Giá trị cao hơn sẽ nhuộm nhiều hơn, với <code class="docutils literal notranslate"><span class="pre">1.0</span></code> thay thế hoàn toàn màu sương mù thông thường bằng aerial perspective. Có thể dùng thuộc tính này trong các level thế giới mở rộng lớn để tạo cảm giác chiều sâu tốt hơn, hoặc để tránh sự gián đoạn màu giữa bầu trời và sương mù.</p>
+<p>Nếu cả <strong>Sun Scatter</strong> và <strong>Aerial Perspective</strong> đều lớn hơn <code class="docutils literal notranslate"><span class="pre">0.0</span></code>, tán xạ mặt trời sẽ được áp dụng chồng lên aerial perspective.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Sương mù có thể gây hiện tượng banding trên viewport, đặc biệt ở mật độ cao. Xem <a class="reference internal" href="3d_rendering_limitations.html#doc-3d-rendering-limitations-color-banding"><span class="std std-ref">Hiện tượng phân dải màu (color banding)</span></a> để biết cách giảm banding.</p>
+</div>
+</section>
+<section id="volumetric-fog">
+<h3>Sương mù thể tích<a class="headerlink" href="#volumetric-fog" title="Link to this heading"></a></h3>
+<p>Sương mù thể tích mang lại hiệu ứng sương mù chân thực cho scene, với màu sương mù chịu ảnh hưởng của các nguồn sáng đi xuyên qua nó.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="volumetric_fog.html#doc-volumetric-fog"><span class="std std-ref">Sương mù thể tích và fog volume</span></a> để biết tài liệu về cách thiết lập sương mù thể tích.</p>
+</div>
+</section>
+<section id="adjustments">
+<h3>Điều chỉnh<a class="headerlink" href="#adjustments" title="Link to this heading"></a></h3>
+<p>Ở cuối quá trình xử lý, Godot cho phép thực hiện một số điều chỉnh hình ảnh tiêu chuẩn.</p>
+<img alt="../../_images/environment_adjustments.webp" src="../../_images/environment_adjustments.webp" />
+<p><strong>Điều chỉnh BCS cơ bản</strong></p>
+<p>Điều chỉnh đầu tiên là khả năng thay đổi các thuộc tính quen thuộc <strong>Brightness</strong>, <strong>Contrast</strong> và <strong>Saturation</strong>:</p>
+<img alt="../../_images/environment_adjustments_bcs.webp" src="../../_images/environment_adjustments_bcs.webp" />
+<p><strong>Hiệu chỉnh màu bằng gradient 1D</strong></p>
+<p>Điều chỉnh thứ hai là cung cấp một gradient hiệu chỉnh màu. Có thể làm điều này bằng cách gán một resource GradientTexture1D cho thuộc tính <strong>Color Correction</strong>, hoặc bằng cách nạp một texture chứa gradient ngang. Phần ngoài cùng bên trái của gradient đại diện cho màu đen trong ảnh nguồn, còn phần ngoài cùng bên phải đại diện cho màu trắng trong ảnh nguồn.</p>
+<p>Một gradient tuyến tính từ đen sang trắng như dưới đây sẽ không tạo ra hiệu ứng nào:</p>
+<img alt="../../_images/environment_adjustments_default_gradient.webp" src="../../_images/environment_adjustments_default_gradient.webp" />
+<p>Nhưng tạo các gradient tùy chỉnh sẽ cho phép ánh xạ từng kênh sang một màu khác:</p>
+<img alt="../../_images/environment_adjustments_custom_gradient.webp" src="../../_images/environment_adjustments_custom_gradient.webp" />
+<p><strong>Hiệu chỉnh màu bằng LUT 3D</strong></p>
+<p>Cũng có thể dùng texture tra cứu (look-up texture, LUT) 3D để hiệu chỉnh màu. Đây là một texture đặc biệt dùng để chỉnh sửa từng kênh màu riêng biệt với nhau (đỏ, lục, lam). Ảnh này có thể có độ phân giải bất kỳ, nhưng vì hiệu chỉnh màu là dữ liệu tần số thấp, bạn nên dùng độ phân giải thấp vì lý do hiệu năng. Độ phân giải của texture LUT thường là 17×17×17, 33×33×33, 51×51×51 hoặc 65×65×65 (kích thước lẻ cho phép nội suy tốt hơn).</p>
+<p>Để cách này hoạt động, chế độ import của texture tra cứu phải được đặt thành Texture3D trong Import dock (thay vì được import như một Texture2D thông thường):</p>
+<img alt="../../_images/environment_adjustments_3d_lut_import.webp" src="../../_images/environment_adjustments_3d_lut_import.webp" />
+<p>Hãy chắc chắn rằng bạn cũng cấu hình số lát cắt ngang và dọc để import. Nếu không làm vậy, texture LUT sẽ không tác động đúng lên viewport khi được dùng. Bạn có thể xem trước texture 3D đã được import như thế nào bằng cách nhấp đúp vào nó trong FileSystem dock, rồi vào Inspector để lật qua các layer của texture.</p>
+<p>Bạn có thể dùng mẫu LUT trung tính 33×33×33 này làm cơ sở (nhấp chuột phải và chọn <strong>Save as…</strong>):</p>
+<img alt="../../_images/environment_adjustments_3d_lut_template.webp" src="../../_images/environment_adjustments_3d_lut_template.webp" />
+<p>Với mẫu LUT ở trên, sau khi đổi chế độ import của nó thành <strong>Texture3D</strong>, hãy đặt số lát cắt <strong>Horizontal</strong> thành <code class="docutils literal notranslate"><span class="pre">33</span></code> trong Import dock rồi nhấp <strong>Reimport</strong>. Nếu bạn nạp LUT này vào thuộc tính <strong>Color Correction</strong>, hiện tại bạn sẽ không thấy khác biệt nào vì texture này được thiết kế làm điểm khởi đầu trung tính.</p>
+<p>Mẫu LUT này có thể được chỉnh sửa trong một trình chỉnh sửa ảnh để mang lại tâm trạng khác cho hình ảnh. Một quy trình phổ biến là đặt ảnh LUT cạnh ảnh chụp màn hình viewport 3D của dự án, rồi dùng trình chỉnh sửa ảnh để chỉnh sửa đồng thời cả ảnh LUT lẫn ảnh chụp màn hình. Sau đó có thể lưu LUT và áp dụng vào game engine để thực hiện cùng phép hiệu chỉnh màu đó theo thời gian thực.</p>
+<p>Ví dụ, chỉnh sửa mẫu LUT trong một trình chỉnh sửa ảnh để tạo vẻ &quot;sepia&quot; sẽ cho ra hình ảnh bên phải:</p>
+<img alt="../../_images/environment_adjustments_3d_lut_comparison.webp" src="../../_images/environment_adjustments_3d_lut_comparison.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các điều chỉnh và hiệu chỉnh màu được áp dụng <em>sau</em> tonemapping. Điều này có nghĩa là các thuộc tính tonemapping đã định nghĩa ở trên vẫn có tác dụng khi bật điều chỉnh.</p>
+</div>
+</section>
+</section>
+<section id="camera-attribute-options">
+<h2>Tùy chọn thuộc tính camera<a class="headerlink" href="#camera-attribute-options" title="Link to this heading"></a></h2>
+<p>Godot có hai loại thuộc tính camera: physical (vật lý) và practical (thực dụng). Khi dùng CameraAttributesPhysical thay vì CameraAttributesPractical, độ sâu trường ảnh được tính tự động từ khoảng cách lấy nét, tiêu cự và khẩu độ của thuộc tính camera. Ngoài ra, các tùy chọn Frustum cũng khả dụng.</p>
+<section id="depth-of-field-far-blur">
+<h3>Độ sâu trường ảnh / Làm mờ xa<a class="headerlink" href="#depth-of-field-far-blur" title="Link to this heading"></a></h3>
+<p>Hiệu ứng này mô phỏng khoảng cách lấy nét trên camera. Nó làm mờ các đối tượng phía sau một phạm vi nhất định. Nó có một <strong>Distance</strong> ban đầu cùng với vùng <strong>Transition</strong> (tính bằng đơn vị thế giới):</p>
+<img alt="../../_images/environment_dof_far.webp" src="../../_images/environment_dof_far.webp" />
+<p>Tham số <strong>Amount</strong> điều khiển mức độ làm mờ. Với mức làm mờ lớn hơn, có thể cần tinh chỉnh chất lượng độ sâu trường ảnh trong cài đặt dự án nâng cao để tránh lỗi hình ảnh.</p>
+</section>
+<section id="depth-of-field-near-blur">
+<h3>Độ sâu trường ảnh / Làm mờ gần<a class="headerlink" href="#depth-of-field-near-blur" title="Link to this heading"></a></h3>
+<p>Hiệu ứng này mô phỏng khoảng cách lấy nét trên camera. Nó làm mờ các đối tượng ở gần camera (tác động theo hướng ngược lại với làm mờ xa). Nó có một <strong>Distance</strong> ban đầu cùng với vùng <strong>Transition</strong> (tính bằng đơn vị thế giới):</p>
+<img alt="../../_images/environment_dof_near.webp" src="../../_images/environment_dof_near.webp" />
+<p>Tham số <strong>Amount</strong> điều khiển mức độ làm mờ. Với mức làm mờ lớn hơn, có thể cần tinh chỉnh chất lượng độ sâu trường ảnh trong cài đặt dự án nâng cao để tránh lỗi hình ảnh.</p>
+<p>Người ta thường dùng cả hai loại làm mờ cùng nhau để hướng sự chú ý của người xem vào một đối tượng nhất định, hoặc tạo ra cái gọi là <a class="reference external" href="https://en.wikipedia.org/wiki/Miniature_faking">hiệu ứng &quot;tilt shift&quot;</a>.</p>
+<img alt="../../_images/environment_mixed_blur.webp" src="../../_images/environment_mixed_blur.webp" />
+</section>
+<section id="exposure">
+<h3>Độ phơi sáng<a class="headerlink" href="#exposure" title="Link to this heading"></a></h3>
+<p>Giá trị này nhân với độ sáng tổng thể của scene nhìn thấy từ camera. Giá trị cao hơn cho scene trông sáng hơn.</p>
+</section>
+<section id="auto-exposure">
+<h3>Phơi sáng tự động<a class="headerlink" href="#auto-exposure" title="Link to this heading"></a></h3>
+<p><em>Tính năng này chỉ khả dụng khi dùng trình kết xuất Forward+, không có trên Mobile hoặc Compatibility.</em></p>
+<p>Dù trong hầu hết trường hợp, chiếu sáng và texture phần lớn do họa sĩ kiểm soát, Godot vẫn hỗ trợ một cách triển khai dải động cao (HDR) cơ bản với cơ chế phơi sáng tự động. Cơ chế này thường được dùng để tăng tính chân thực khi kết hợp khu vực trong nhà thiếu sáng với khu vực ngoài trời sáng. Phơi sáng tự động mô phỏng camera (hoặc mắt) cố gắng thích nghi giữa những nơi sáng và tối cùng lượng ánh sáng khác nhau của chúng.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Phơi sáng tự động cần đánh giá độ sáng của scene mỗi frame, việc này có chi phí hiệu năng vừa phải. Vì vậy, bạn nên để tắt Auto Exposure nếu nó không tạo ra nhiều khác biệt trong scene của bạn.</p>
+</div>
+<img alt="../../_images/environment_hdr_autoexp.webp" src="../../_images/environment_hdr_autoexp.webp" />
+<p>Cách đơn giản nhất để dùng phơi sáng tự động là đảm bảo các đèn ngoài trời (hoặc các đèn mạnh khác) có năng lượng vượt quá 1.0. Việc này được thực hiện bằng cách tinh chỉnh hệ số nhân <strong>Energy</strong> của chúng (trên chính Light). Để nhất quán, <strong>Sky</strong> thường cũng cần dùng hệ số nhân năng lượng để khớp với đèn định hướng. Thông thường, các giá trị từ 3.0 đến 6.0 là đủ để mô phỏng điều kiện trong nhà-ngoài trời.</p>
+<p>Khi kết hợp Auto Exposure với hậu xử lý <a class="reference internal" href="#doc-environment-and-post-processing-glow"><span class="std std-ref">Glow (phát quang)</span></a>, các pixel vượt quá <strong>White</strong> của tonemap sẽ loang sang glow buffer, tạo ra hiệu ứng bloom điển hình trong nhiếp ảnh.</p>
+<img alt="../../_images/environment_hdr_bloom.webp" src="../../_images/environment_hdr_bloom.webp" />
+<p>Các giá trị người dùng có thể điều khiển trong mục Auto Exposure đi kèm các giá trị mặc định hợp lý, nhưng bạn vẫn có thể tinh chỉnh chúng:</p>
+<img alt="../../_images/environment_hdr.webp" src="../../_images/environment_hdr.webp" />
+<ul class="simple">
+<li><p><strong>Scale:</strong> Giá trị để co giãn chiếu sáng. Giá trị cao hơn cho hình ảnh sáng hơn, giá trị thấp hơn cho hình ảnh tối hơn.</p></li>
+<li><p><strong>Min Sensitivity / Min Exposure Value:</strong> Độ chói tối thiểu mà phơi sáng tự động sẽ nhắm tới để điều chỉnh (tính bằng ISO khi dùng CameraAttributesPractical, hoặc EV100 khi dùng CameraAttributesPhysical). Độ chói là trung bình ánh sáng của tất cả pixel trên màn hình.</p></li>
+<li><p><strong>Max Sensitivity / Max Exposure Value:</strong> Độ chói tối đa mà phơi sáng tự động sẽ nhắm tới để điều chỉnh (tính bằng ISO khi dùng CameraAttributesPractical, hoặc EV100 khi dùng CameraAttributesPhysical).</p></li>
+<li><p><strong>Speed:</strong> Tốc độ mà độ chói tự hiệu chỉnh. Giá trị càng cao thì hiệu chỉnh độ chói diễn ra càng nhanh. Giá trị cao có thể phù hợp hơn với game nhịp độ nhanh, nhưng có thể gây mất tập trung trong một số tình huống.</p></li>
+</ul>
+<p>Khi dùng CameraAttributesPractical, phơi sáng được đặt bằng <em>độ nhạy</em> tính theo ISO thay vì giá trị phơi sáng EV100. Các giá trị ISO điển hình nằm trong khoảng 50 đến 3200, giá trị cao hơn cho phơi sáng cuối cùng cao hơn. Ngoài đời thực, nhiếp ảnh ban ngày thường dùng ISO trong khoảng 100 đến 800.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="physical_light_and_camera_units.html#doc-physical-light-and-camera-units"><span class="std std-ref">Đơn vị vật lý cho ánh sáng và camera</span></a> nếu bạn muốn dùng đơn vị ngoài đời thực để cấu hình phơi sáng, trường nhìn và độ sâu trường ảnh của camera.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="global_illumination/faking_global_illumination.html" class="btn btn-neutral float-left" title="Giả lập chiếu sáng toàn cục" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="volumetric_fog.html" class="btn btn-neutral float-right" title="Sương mù thể tích và fog volume" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Autoload so với node thông thường" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/best_practices/autoloads_versus_regular_nodes.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Godot cung cấp một tính năng tự động nạp các node ở gốc dự án, cho phép bạn truy cập chúng ở phạm vi toàn cục, và có thể đảm nhận vai trò của một Singleton: Singleton (Autoload). Các node được auto..." />
+<meta name="description" content="Godot cung cấp một tính năng tự động nạp các node ở gốc dự án, cho phép bạn truy cập chúng ở phạm vi toàn cục, và có thể đảm nhận vai trò của một Singleton: Singleton (Autoload). Các node được auto..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Autoload so với node thông thường &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Khi nào và làm thế nào để tránh dùng node cho mọi thứ" href="node_alternatives.html" />
+    <link rel="prev" title="Khi nào dùng scene, khi nào dùng script" href="scenes_versus_scripts.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/best_practices/autoloads_versus_regular_nodes" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Thực hành tốt nhất</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_best_practices.html">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="what_are_godot_classes.html">Áp dụng nguyên tắc hướng đối tượng trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scene_organization.html">Tổ chức scene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scenes_versus_scripts.html">Khi nào dùng scene, khi nào dùng script</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Autoload so với node thông thường</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-cutting-audio-issue">Vấn đề âm thanh bị cắt ngang</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#managing-shared-functionality-or-data">Quản lý chức năng hoặc dữ liệu dùng chung</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-you-should-use-an-autoload">Khi nào nên dùng Autoload</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="node_alternatives.html">Khi nào và làm thế nào để tránh dùng node cho mọi thứ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_interfaces.html">Giao tiếp giữa các đối tượng trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="godot_notifications.html">Notification trong Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preferences.html">Lựa chọn cấu trúc dữ liệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic_preferences.html">Lựa chọn về logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_organization.html">Tổ chức dự án</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version_control_systems.html">Hệ thống quản lý phiên bản</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Thực hành tốt nhất</a></li>
+      <li class="breadcrumb-item active">Autoload so với node thông thường</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="autoloads-versus-regular-nodes">
+<span id="doc-autoloads-versus-regular-nodes"></span><h1>Autoload so với node thông thường<a class="headerlink" href="#autoloads-versus-regular-nodes" title="Link to this heading"></a></h1>
+<p>Godot cung cấp một tính năng tự động nạp các node ở gốc dự án, cho phép bạn truy cập chúng ở phạm vi toàn cục, và có thể đảm nhận vai trò của một Singleton: <a class="reference internal" href="../scripting/singletons_autoload.html#doc-singletons-autoload"><span class="std std-ref">Singleton (Autoload)</span></a>. Các node được autoload này không bị giải phóng khi bạn đổi scene từ code bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_scenetree.html#class-scenetree-method-change-scene-to-file" title="Class reference (English)"><span class="xref std std-ref">SceneTree.change_scene_to_file</span></a>.</p>
+<p>Trong hướng dẫn này, bạn sẽ học khi nào nên dùng tính năng Autoload, và các kỹ thuật bạn có thể dùng để tránh nó.</p>
+<section id="the-cutting-audio-issue">
+<h2>Vấn đề âm thanh bị cắt ngang<a class="headerlink" href="#the-cutting-audio-issue" title="Link to this heading"></a></h2>
+<p>Các engine khác có thể khuyến khích việc tạo các lớp quản lý (manager), tức các singleton gom rất nhiều chức năng vào một đối tượng có thể truy cập toàn cục. Godot cung cấp nhiều cách để tránh trạng thái toàn cục nhờ cây node và signal.</p>
+<p>Ví dụ, giả sử chúng ta đang làm một game platformer và muốn thu thập đồng xu kèm theo hiệu ứng âm thanh. Có sẵn một node cho việc đó: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audiostreamplayer.html" title="Class reference (English)"><span class="xref std std-ref">AudioStreamPlayer</span></a>. Nhưng nếu ta gọi <code class="docutils literal notranslate"><span class="pre">AudioStreamPlayer</span></code> khi nó đang phát một âm thanh, âm thanh mới sẽ cắt ngang âm thanh đầu tiên.</p>
+<p>Một giải pháp là viết một lớp quản lý âm thanh toàn cục, được autoload. Nó tạo ra một nhóm (pool) các node <code class="docutils literal notranslate"><span class="pre">AudioStreamPlayer</span></code> và luân phiên sử dụng chúng mỗi khi có yêu cầu phát hiệu ứng âm thanh mới. Giả sử ta gọi lớp đó là <code class="docutils literal notranslate"><span class="pre">Sound</span></code>, bạn có thể dùng nó từ bất kỳ đâu trong dự án bằng cách gọi <code class="docutils literal notranslate"><span class="pre">Sound.play(&quot;coin_pickup.ogg&quot;)</span></code>. Cách này giải quyết vấn đề trước mắt nhưng lại gây ra nhiều vấn đề hơn:</p>
+<ol class="arabic simple">
+<li><p><strong>Trạng thái toàn cục</strong>: giờ đây một đối tượng chịu trách nhiệm cho dữ liệu của tất cả các đối tượng. Nếu lớp <code class="docutils literal notranslate"><span class="pre">Sound</span></code> có lỗi hoặc không còn AudioStreamPlayer nào trống, tất cả các node gọi nó đều có thể hỏng.</p></li>
+<li><p><strong>Truy cập toàn cục</strong>: khi bất kỳ đối tượng nào cũng có thể gọi <code class="docutils literal notranslate"><span class="pre">Sound.play(sound_path)</span></code> từ bất kỳ đâu, sẽ không còn cách dễ dàng nào để tìm ra nguồn gốc của lỗi.</p></li>
+<li><p><strong>Cấp phát tài nguyên toàn cục</strong>: với một nhóm node <code class="docutils literal notranslate"><span class="pre">AudioStreamPlayer</span></code> được tạo sẵn từ đầu, bạn hoặc có quá ít và gặp lỗi, hoặc có quá nhiều và dùng nhiều bộ nhớ hơn mức cần thiết.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Về truy cập toàn cục, vấn đề là bất kỳ đoạn code nào ở bất kỳ đâu cũng có thể truyền dữ liệu sai cho autoload <code class="docutils literal notranslate"><span class="pre">Sound</span></code> trong ví dụ của chúng ta. Kết quả là phạm vi cần dò tìm để sửa lỗi trải rộng trên toàn bộ dự án.</p>
+<p>Khi bạn giữ code bên trong một scene, chỉ một hoặc hai script có thể liên quan đến âm thanh.</p>
+</div>
+<p>Hãy so sánh với việc mỗi scene tự giữ bên trong nó số lượng node <code class="docutils literal notranslate"><span class="pre">AudioStreamPlayer</span></code> mà nó cần, và tất cả các vấn đề này đều biến mất:</p>
+<ol class="arabic simple">
+<li><p>Mỗi scene tự quản lý thông tin trạng thái của riêng nó. Nếu dữ liệu có vấn đề, nó chỉ gây lỗi trong đúng scene đó.</p></li>
+<li><p>Mỗi scene chỉ truy cập các node của riêng nó. Giờ đây, nếu có lỗi, bạn dễ dàng tìm ra node nào gây ra.</p></li>
+<li><p>Mỗi scene cấp phát đúng lượng tài nguyên mà nó cần.</p></li>
+</ol>
+</section>
+<section id="managing-shared-functionality-or-data">
+<h2>Quản lý chức năng hoặc dữ liệu dùng chung<a class="headerlink" href="#managing-shared-functionality-or-data" title="Link to this heading"></a></h2>
+<p>Một lý do khác để dùng Autoload có thể là bạn muốn tái sử dụng cùng một phương thức hoặc dữ liệu trên nhiều scene.</p>
+<p>Với hàm, bạn có thể tạo một kiểu <code class="docutils literal notranslate"><span class="pre">Node</span></code> mới cung cấp tính năng đó cho từng scene riêng lẻ bằng từ khóa <a class="reference internal" href="../scripting/gdscript/gdscript_basics.html#doc-gdscript-basics-class-name"><span class="std std-ref">class_name</span></a> trong GDScript.</p>
+<p>Với dữ liệu, bạn có thể:</p>
+<ol class="arabic simple">
+<li><p>Tạo một kiểu <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_resource.html" title="Class reference (English)"><span class="xref std std-ref">Resource</span></a> mới để chia sẻ dữ liệu.</p></li>
+<li><p>Lưu dữ liệu trong một đối tượng mà mọi node đều truy cập được, ví dụ dùng thuộc tính <code class="docutils literal notranslate"><span class="pre">owner</span></code> để truy cập node gốc của scene.</p></li>
+</ol>
+</section>
+<section id="when-you-should-use-an-autoload">
+<h2>Khi nào nên dùng Autoload<a class="headerlink" href="#when-you-should-use-an-autoload" title="Link to this heading"></a></h2>
+<p>GDScript hỗ trợ tạo các hàm <code class="docutils literal notranslate"><span class="pre">static</span></code> bằng <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">func</span></code>. Khi kết hợp với <code class="docutils literal notranslate"><span class="pre">class_name</span></code>, điều này cho phép tạo các thư viện hàm trợ giúp mà không cần tạo instance để gọi chúng. Hạn chế của hàm static là chúng không thể tham chiếu tới biến thành viên, hàm không static hoặc <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>Từ Godot 4.1, GDScript cũng hỗ trợ biến <code class="docutils literal notranslate"><span class="pre">static</span></code> bằng <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">var</span></code>. Nghĩa là giờ đây bạn có thể chia sẻ biến giữa các instance của một lớp mà không cần tạo một autoload riêng.</p>
+<p>Dù vậy, các node được autoload có thể đơn giản hóa code của bạn đối với những hệ thống có phạm vi rộng. Nếu autoload tự quản lý thông tin của nó và không xâm phạm dữ liệu của các đối tượng khác, thì đó là một cách tuyệt vời để tạo các hệ thống xử lý những tác vụ có phạm vi rộng. Ví dụ: hệ thống nhiệm vụ (quest) hoặc hệ thống hội thoại.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Một autoload <em>không</em> nhất thiết là singleton. Không có gì ngăn bạn tạo instance các bản sao của một node được autoload. Autoload chỉ là một công cụ giúp một node được tự động nạp làm node con của gốc cây scene, bất kể cấu trúc node trong game của bạn hay scene nào đang chạy, ví dụ khi nhấn phím <kbd class="kbd docutils literal notranslate">F6</kbd>.</p>
+<p>Nhờ vậy, bạn có thể lấy node được autoload, ví dụ một autoload tên <code class="docutils literal notranslate"><span class="pre">Sound</span></code>, bằng cách gọi <code class="docutils literal notranslate"><span class="pre">get_node(&quot;/root/Sound&quot;)</span></code>.</p>
+</div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scenes_versus_scripts.html" class="btn btn-neutral float-left" title="Khi nào dùng scene, khi nào dùng script" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="node_alternatives.html" class="btn btn-neutral float-right" title="Khi nào và làm thế nào để tránh dùng node cho mọi thứ" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

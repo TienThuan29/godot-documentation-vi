@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Di chuyển người chơi bằng code" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="getting_started/first_3d_game/03.player_movement_code.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Đến lúc viết code rồi! Chúng ta sẽ dùng các input action đã tạo ở phần trước để di chuyển nhân vật. Nhấp chuột phải vào node Player và chọn Attach Script để thêm một script mới cho nó. Trong cửa sổ..." />
+<meta name="description" content="Đến lúc viết code rồi! Chúng ta sẽ dùng các input action đã tạo ở phần trước để di chuyển nhân vật. Nhấp chuột phải vào node Player và chọn Attach Script để thêm một script mới cho nó. Trong cửa sổ..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Di chuyển người chơi bằng code &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Thiết kế scene quái vật" href="04.mob_scene.html" />
+    <link rel="prev" title="Scene người chơi và các input action" href="02.player_input.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="getting_started/first_3d_game/03.player_movement_code" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Game 3D đầu tiên của bạn</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Nội dung</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01.game_setup.html">Thiết lập khu vực chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02.player_input.html">Scene người chơi và các input action</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Di chuyển người chơi bằng code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#testing-our-player-s-movement">Kiểm thử chuyển động của người chơi</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="04.mob_scene.html">Thiết kế scene quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05.spawning_mobs.html">Sinh quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06.jump_and_squash.html">Nhảy và dẫm bẹp quái vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07.killing_player.html">Tiêu diệt người chơi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08.score_and_replay.html">Điểm số và chơi lại</a></li>
+<li class="toctree-l3"><a class="reference internal" href="09.adding_animations.html">Hoạt ảnh nhân vật</a></li>
+<li class="toctree-l3"><a class="reference internal" href="going_further.html">Đi xa hơn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Game 3D đầu tiên của bạn</a></li>
+      <li class="breadcrumb-item active">Di chuyển người chơi bằng code</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="moving-the-player-with-code">
+<span id="doc-first-3d-game-player-movement"></span><h1>Di chuyển người chơi bằng code<a class="headerlink" href="#moving-the-player-with-code" title="Link to this heading"></a></h1>
+<p>Đến lúc viết code rồi! Chúng ta sẽ dùng các input action đã tạo ở phần trước để di chuyển nhân vật.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong dự án này, chúng ta sẽ tuân theo quy ước đặt tên của Godot.</p>
+<ul class="simple">
+<li><p><strong>GDScript</strong>: Lớp (node) dùng PascalCase, biến và hàm dùng snake_case, hằng số dùng ALL_CAPS (Xem <a class="reference internal" href="../../tutorials/scripting/gdscript/gdscript_styleguide.html#doc-gdscript-styleguide"><span class="std std-ref">Hướng dẫn phong cách GDScript</span></a>).</p></li>
+<li><p><strong>C#</strong>: Lớp, biến export và phương thức dùng PascalCase, trường private dùng _camelCase, biến cục bộ và tham số dùng camelCase (Xem <a class="reference internal" href="../../tutorials/scripting/c_sharp/c_sharp_style_guide.html#doc-c-sharp-styleguide"><span class="std std-ref">Hướng dẫn phong cách C#</span></a>). Hãy cẩn thận gõ chính xác tên phương thức khi kết nối signal.</p></li>
+</ul>
+</div>
+<p>Nhấp chuột phải vào node <code class="docutils literal notranslate"><span class="pre">Player</span></code> và chọn <em>Attach Script</em> để thêm một script mới cho nó. Trong cửa sổ bật lên, đặt <em>Template</em> thành <em>Empty</em> trước khi nhấn nút <em>Create</em>. Chúng ta đặt nó thành <em>Empty</em> vì muốn tự viết code cho chuyển động của người chơi.</p>
+<p><img alt="image0" src="../../_images/01.attach_script_to_player.webp" /></p>
+<p>Hãy bắt đầu với các thuộc tính của lớp. Chúng ta sẽ định nghĩa tốc độ di chuyển, gia tốc rơi đại diện cho trọng lực, và một vận tốc dùng để di chuyển nhân vật.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody3D</span>
+
+<span class="c1"># How fast the player moves in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span>
+<span class="c1"># The downward acceleration when in the air, in meters per second squared.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">fall_acceleration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">target_velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Player</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Don&#39;t forget to rebuild the project so the editor knows about the new export variable.</span>
+
+<span class="w">    </span><span class="c1">// How fast the player moves in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Speed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// The downward acceleration when in the air, in meters per second squared.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">FallAcceleration</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">_targetVelocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Đây là các thuộc tính phổ biến cho một vật thể chuyển động. <code class="docutils literal notranslate"><span class="pre">target_velocity</span></code> là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">vector 3D</span></a> kết hợp tốc độ với hướng. Ở đây, chúng ta định nghĩa nó là một thuộc tính vì muốn cập nhật và tái sử dụng giá trị của nó qua các frame.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các giá trị khá khác so với code 2D vì khoảng cách được tính bằng mét. Trong 2D, một nghìn đơn vị (pixel) có thể chỉ tương ứng với một nửa chiều rộng màn hình, còn trong 3D, đó là một kilômét.</p>
+</div>
+<p>Hãy viết code cho chuyển động. Chúng ta bắt đầu bằng việc tính vector hướng đầu vào bằng đối tượng toàn cục <code class="docutils literal notranslate"><span class="pre">Input</span></code>, trong <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># We create a local variable to store the input direction.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span>
+
+<span class="w">    </span><span class="c1"># We check for each move input and update the direction accordingly.</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_right&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_left&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_back&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="c1"># Notice how we are working with the vector&#39;s x and z axes.</span>
+<span class="w">        </span><span class="c1"># In 3D, the XZ plane is the ground plane.</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_forward&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// We create a local variable to store the input direction.</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// We check for each move input and update the direction accordingly.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_right&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_left&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_back&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Notice how we are working with the vector&#39;s X and Z axes.</span>
+<span class="w">        </span><span class="c1">// In 3D, the XZ plane is the ground plane.</span>
+<span class="w">        </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_forward&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ở đây, thay vì <code class="docutils literal notranslate"><span class="pre">_process()</span></code>, chúng ta sẽ thực hiện mọi phép tính bằng hàm ảo <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>. Hàm này được thiết kế riêng cho code liên quan đến vật lý, như di chuyển một kinematic body hoặc rigid body. Nó cập nhật node theo các khoảng thời gian cố định.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để tìm hiểu thêm về sự khác biệt giữa <code class="docutils literal notranslate"><span class="pre">_process()</span></code> và <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code>, xem <a class="reference internal" href="../../tutorials/scripting/idle_and_physics_processing.html#doc-idle-and-physics-processing"><span class="std std-ref">Xử lý idle và xử lý vật lý</span></a>.</p>
+</div>
+<p>Chúng ta bắt đầu bằng việc khởi tạo biến <code class="docutils literal notranslate"><span class="pre">direction</span></code> với giá trị <code class="docutils literal notranslate"><span class="pre">Vector3.ZERO</span></code>. Sau đó, chúng ta kiểm tra xem người chơi có đang nhấn một hoặc nhiều input <code class="docutils literal notranslate"><span class="pre">move_*</span></code> hay không và cập nhật các thành phần <code class="docutils literal notranslate"><span class="pre">x</span></code> và <code class="docutils literal notranslate"><span class="pre">z</span></code> của vector tương ứng. Chúng tương ứng với các trục của mặt phẳng mặt đất.</p>
+<p>Bốn điều kiện này cho chúng ta tám khả năng và tám hướng có thể.</p>
+<p>Trong trường hợp người chơi nhấn đồng thời, chẳng hạn, cả W và D, vector sẽ có độ dài khoảng <code class="docutils literal notranslate"><span class="pre">1.4</span></code>. Nhưng nếu họ chỉ nhấn một phím, nó sẽ có độ dài <code class="docutils literal notranslate"><span class="pre">1</span></code>. Chúng ta muốn độ dài của vector nhất quán, và nhân vật không di chuyển nhanh hơn theo đường chéo. Để làm vậy, chúng ta có thể gọi phương thức <code class="docutils literal notranslate"><span class="pre">normalized()</span></code> của nó.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1">#...</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span><span class="p">:</span>
+<span class="w">        </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span>
+<span class="w">        </span><span class="c1"># Setting the basis property will affect the rotation of the node.</span>
+<span class="w">        </span><span class="sx">$Pivot</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Basis</span><span class="o">.</span><span class="nf">looking_at</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">Normalized</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Setting the basis property will affect the rotation of the node.</span>
+<span class="w">        </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Node3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Pivot&quot;</span><span class="p">).</span><span class="n">Basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Basis</span><span class="p">.</span><span class="n">LookingAt</span><span class="p">(</span><span class="n">direction</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Ở đây, chúng ta chỉ chuẩn hóa vector nếu hướng có độ dài lớn hơn không, nghĩa là người chơi đang nhấn một phím hướng.</p>
+<p>Chúng ta tính hướng mà <code class="docutils literal notranslate"><span class="pre">$Pivot</span></code> đang nhìn bằng cách tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">Basis</span></a> nhìn theo hướng <code class="docutils literal notranslate"><span class="pre">direction</span></code>.</p>
+<p>Sau đó, chúng ta cập nhật vận tốc. Chúng ta phải tính riêng vận tốc trên mặt đất và tốc độ rơi. Hãy nhớ lùi lại một tab để các dòng nằm bên trong hàm <code class="docutils literal notranslate"><span class="pre">_physics_process()</span></code> nhưng bên ngoài điều kiện vừa viết ở trên.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1">#...</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span><span class="p">:</span>
+<span class="w">        </span><span class="c1">#...</span>
+
+<span class="w">    </span><span class="c1"># Ground Velocity</span>
+<span class="w">    </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+
+<span class="w">    </span><span class="c1"># Vertical Velocity</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nf">is_on_floor</span><span class="p">():</span><span class="w"> </span><span class="c1"># If in the air, fall towards the floor. Literally gravity</span>
+<span class="w">        </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">fall_acceleration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Moving the Character</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target_velocity</span>
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Ground velocity</span>
+<span class="w">    </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Vertical velocity</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">IsOnFloor</span><span class="p">())</span><span class="w"> </span><span class="c1">// If in the air, fall towards the floor. Literally gravity</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">FallAcceleration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Moving the character</span>
+<span class="w">    </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_targetVelocity</span><span class="p">;</span>
+<span class="w">    </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.is_on_floor()</span></code> trả về <code class="docutils literal notranslate"><span class="pre">true</span></code> nếu body đã va chạm với sàn trong frame này. Đó là lý do chúng ta chỉ áp dụng trọng lực cho <code class="docutils literal notranslate"><span class="pre">Player</span></code> khi nó đang ở trên không.</p>
+<p>Với vận tốc theo phương thẳng đứng, chúng ta trừ đi gia tốc rơi nhân với thời gian delta mỗi frame. Dòng code này sẽ khiến nhân vật rơi xuống ở mọi frame, miễn là nó không đứng trên hoặc va chạm với sàn.</p>
+<p>Engine vật lý chỉ có thể phát hiện tương tác với tường, sàn hoặc các body khác trong một frame nhất định nếu có chuyển động và va chạm xảy ra. Chúng ta sẽ dùng thuộc tính này sau để viết code cho cú nhảy.</p>
+<p>Ở dòng cuối, chúng ta gọi <code class="docutils literal notranslate"><span class="pre">CharacterBody3D.move_and_slide()</span></code>, một phương thức mạnh mẽ của lớp <code class="docutils literal notranslate"><span class="pre">CharacterBody3D</span></code> cho phép bạn di chuyển nhân vật một cách mượt mà. Nếu nhân vật va vào tường giữa chừng một chuyển động, engine sẽ cố gắng làm mượt nó cho bạn. Phương thức này dùng giá trị <em>velocity</em> có sẵn của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html" title="Class reference (English)"><span class="xref std std-ref">CharacterBody3D</span></a></p>
+<p>Và đó là tất cả code bạn cần để di chuyển nhân vật trên sàn.</p>
+<p>Đây là toàn bộ code <code class="docutils literal notranslate"><span class="pre">player.gd</span></code> để bạn tham khảo.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">CharacterBody3D</span>
+
+<span class="c1"># How fast the player moves in meters per second.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span>
+<span class="c1"># The downward acceleration when in the air, in meters per second squared.</span>
+<span class="nd">@export</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="n">fall_acceleration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span>
+
+<span class="k">var</span><span class="w"> </span><span class="n">target_velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_physics_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_right&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_left&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_back&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="nb">Input</span><span class="o">.</span><span class="nf">is_action_pressed</span><span class="p">(</span><span class="s2">&quot;move_forward&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">ZERO</span><span class="p">:</span>
+<span class="w">        </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="nf">normalized</span><span class="p">()</span>
+<span class="w">        </span><span class="c1"># Setting the basis property will affect the rotation of the node.</span>
+<span class="w">        </span><span class="sx">$Pivot</span><span class="o">.</span><span class="vi">basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Basis</span><span class="o">.</span><span class="nf">looking_at</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Ground Velocity</span>
+<span class="w">    </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+<span class="w">    </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="o">.</span><span class="vi">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">speed</span>
+
+<span class="w">    </span><span class="c1"># Vertical Velocity</span>
+<span class="w">    </span><span class="k k-ControlFlow">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nf">is_on_floor</span><span class="p">():</span><span class="w"> </span><span class="c1"># If in the air, fall towards the floor. Literally gravity</span>
+<span class="w">        </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target_velocity</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">fall_acceleration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Moving the Character</span>
+<span class="w">    </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target_velocity</span>
+<span class="w">    </span><span class="nf">move_and_slide</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Player</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CharacterBody3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// How fast the player moves in meters per second.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Speed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// The downward acceleration when in the air, in meters per second squared.</span>
+<span class="w">    </span><span class="na">[Export]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">FallAcceleration</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">_targetVelocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_PhysicsProcess</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_right&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_left&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_back&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Input</span><span class="p">.</span><span class="n">IsActionPressed</span><span class="p">(</span><span class="s">&quot;move_forward&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">direction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Zero</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">Normalized</span><span class="p">();</span>
+<span class="w">            </span><span class="c1">// Setting the basis property will affect the rotation of the node.</span>
+<span class="w">            </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">Node3D</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Pivot&quot;</span><span class="p">).</span><span class="n">Basis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Basis</span><span class="p">.</span><span class="n">LookingAt</span><span class="p">(</span><span class="n">direction</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Ground velocity</span>
+<span class="w">        </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Speed</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Vertical velocity</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">IsOnFloor</span><span class="p">())</span><span class="w"> </span><span class="c1">// If in the air, fall towards the floor. Literally gravity</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_targetVelocity</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">FallAcceleration</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">delta</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Moving the character</span>
+<span class="w">        </span><span class="n">Velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_targetVelocity</span><span class="p">;</span>
+<span class="w">        </span><span class="n">MoveAndSlide</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<section id="testing-our-player-s-movement">
+<h2>Kiểm thử chuyển động của người chơi<a class="headerlink" href="#testing-our-player-s-movement" title="Link to this heading"></a></h2>
+<p>Chúng ta sẽ đặt người chơi vào scene <code class="docutils literal notranslate"><span class="pre">Main</span></code> để kiểm thử. Để làm vậy, chúng ta cần tạo instance của người chơi rồi thêm một camera. Không giống như trong 2D, trong 3D bạn sẽ không thấy gì nếu viewport không có camera hướng vào thứ gì đó.</p>
+<p>Lưu scene <code class="docutils literal notranslate"><span class="pre">Player</span></code> và mở scene <code class="docutils literal notranslate"><span class="pre">Main</span></code>. Bạn có thể nhấp vào tab <em>Main</em> ở phía trên trình chỉnh sửa để làm điều này.</p>
+<p><img alt="image1" src="../../_images/02.clicking_main_tab.webp" /></p>
+<p>Nếu trước đó bạn đã đóng scene, hãy vào dock <em>FileSystem</em> và nhấp đúp vào <code class="docutils literal notranslate"><span class="pre">main.tscn</span></code> để mở lại.</p>
+<p>Để tạo instance của <code class="docutils literal notranslate"><span class="pre">Player</span></code>, nhấp chuột phải vào node <code class="docutils literal notranslate"><span class="pre">Main</span></code> và chọn <em>Instantiate Child Scene</em>.</p>
+<p><img alt="image2" src="../../_images/03.instance_child_scene.webp" /></p>
+<p>Trong cửa sổ bật lên, nhấp đúp vào <code class="docutils literal notranslate"><span class="pre">player.tscn</span></code>. Nhân vật sẽ xuất hiện ở giữa viewport.</p>
+<section id="adding-a-camera">
+<h3>Thêm camera<a class="headerlink" href="#adding-a-camera" title="Link to this heading"></a></h3>
+<p>Tiếp theo, hãy thêm camera. Giống như đã làm với <em>Pivot</em> của <em>Player</em>, chúng ta sẽ tạo một rig cơ bản. Nhấp chuột phải vào node <code class="docutils literal notranslate"><span class="pre">Main</span></code> một lần nữa và chọn <em>Add Child Node</em>. Tạo một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_marker3d.html" title="Class reference (English)"><span class="xref std std-ref">Marker3D</span></a> mới và đặt tên là <code class="docutils literal notranslate"><span class="pre">CameraPivot</span></code>. Chọn <code class="docutils literal notranslate"><span class="pre">CameraPivot</span></code> và thêm cho nó một node con <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a>. Cây scene của bạn sẽ trông tương tự như thế này.</p>
+<p><img alt="image3" src="../../_images/04.scene_tree_with_camera.webp" /></p>
+<p>Hãy để ý ô đánh dấu <em>Preview</em> xuất hiện ở góc trên bên trái của khung nhìn 3D khi bạn chọn <em>Camera</em>. Bạn có thể nhấp vào nó để xem trước phép chiếu của camera trong game.</p>
+<p><img alt="image4" src="../../_images/05.camera_preview_checkbox.webp" /></p>
+<p>Chúng ta sẽ dùng <em>Pivot</em> để xoay camera như thể nó được gắn trên một cần cẩu. Trước tiên, hãy chia khung nhìn 3D để có thể tự do di chuyển trong scene và xem những gì camera nhìn thấy.</p>
+<p>Trên thanh công cụ ngay phía trên viewport, nhấp vào <em>View</em>, rồi <em>2 Viewports</em>. Bạn cũng có thể nhấn <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Ctrl</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">2</kbd></kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">2</kbd></kbd> trên macOS).</p>
+<p><img alt="image11" src="../../_images/12.viewport_change.webp" /></p>
+<p><img alt="image5" src="../../_images/06.two_viewports.webp" /></p>
+<p>Ở khung nhìn phía dưới, chọn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a> và bật Preview của camera bằng cách nhấp vào ô đánh dấu.</p>
+<p><img alt="image6" src="../../_images/07.camera_preview_checkbox.webp" /></p>
+<p>Ở khung nhìn phía trên, hãy đảm bảo <em>Camera3D</em> đang được chọn và di chuyển camera khoảng <code class="docutils literal notranslate"><span class="pre">19</span></code> đơn vị trên trục Z (kéo mũi tên màu xanh dương).</p>
+<p><img alt="image7" src="../../_images/08.camera_moved.png" /></p>
+<p>Đây là lúc điều kỳ diệu xảy ra. Chọn <em>CameraPivot</em> và xoay nó <code class="docutils literal notranslate"><span class="pre">-45</span></code> độ quanh trục X (dùng vòng tròn màu đỏ). Bạn sẽ thấy camera di chuyển như thể nó được gắn vào một cần cẩu.</p>
+<p><img alt="image8" src="../../_images/09.camera_rotated.png" /></p>
+<p>Bạn có thể chạy scene bằng cách nhấn <kbd class="kbd docutils literal notranslate">F6</kbd> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Cmd</kbd> <kbd class="kbd docutils literal notranslate"></kbd>+<kbd class="kbd docutils literal notranslate"></kbd> <kbd class="kbd docutils literal notranslate">R</kbd></kbd> trên macOS) và nhấn các phím mũi tên để di chuyển nhân vật.</p>
+<p><img alt="image9" src="../../_images/10.camera_perspective.png" /></p>
+<p>Chúng ta có thể thấy một khoảng trống quanh nhân vật do phép chiếu phối cảnh. Trong trò chơi này, chúng ta sẽ dùng phép chiếu trực giao để đóng khung khu vực chơi tốt hơn và giúp người chơi dễ ước lượng khoảng cách hơn.</p>
+<p>Chọn lại <em>Camera</em> và trong <em>Inspector</em>, đặt <em>Projection</em> thành <em>Orthogonal</em> và <em>Size</em> thành <code class="docutils literal notranslate"><span class="pre">19</span></code>. Nhân vật giờ sẽ trông phẳng hơn và mặt đất sẽ lấp đầy nền.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi dùng camera trực giao trong Godot 4, chất lượng bóng đổ của directional light phụ thuộc vào giá trị <em>Far</em> của camera. Giá trị <em>Far</em> càng cao, camera càng nhìn được xa hơn. Tuy nhiên, giá trị <em>Far</em> cao hơn cũng làm giảm chất lượng bóng đổ, vì việc kết xuất bóng phải bao phủ một khoảng cách lớn hơn.</p>
+<p>Nếu bóng đổ của directional light trông quá mờ sau khi chuyển sang camera trực giao, hãy giảm thuộc tính <em>Far</em> của camera xuống một giá trị thấp hơn, chẳng hạn <code class="docutils literal notranslate"><span class="pre">100</span></code>. Đừng giảm thuộc tính <em>Far</em> này quá nhiều, nếu không các vật thể ở xa sẽ bắt đầu biến mất.</p>
+</div>
+<p><img alt="image10" src="../../_images/13.camera3d_values.webp" /></p>
+<p>Kiểm thử scene và bạn sẽ có thể di chuyển theo cả 8 hướng mà không bị lọt xuyên qua sàn!</p>
+<p>Cuối cùng, chúng ta đã có cả chuyển động của người chơi lẫn khung nhìn. Tiếp theo, chúng ta sẽ làm việc với quái vật.</p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="02.player_input.html" class="btn btn-neutral float-left" title="Scene người chơi và các input action" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="04.mob_scene.html" class="btn btn-neutral float-right" title="Thiết kế scene quái vật" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

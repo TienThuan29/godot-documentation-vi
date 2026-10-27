@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Đồng bộ gameplay với âm thanh và nhạc" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/audio/sync_with_audio.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Trong bất kỳ ứng dụng hay game nào, việc phát âm thanh và nhạc đều có một độ trễ nhỏ. Với game, độ trễ này thường nhỏ tới mức có thể bỏ qua. Hiệu ứng âm thanh sẽ phát ra vài mili giây s..." />
+<meta name="description" content="Giới thiệu: Trong bất kỳ ứng dụng hay game nào, việc phát âm thanh và nhạc đều có một độ trễ nhỏ. Với game, độ trễ này thường nhỏ tới mức có thể bỏ qua. Hiệu ứng âm thanh sẽ phát ra vài mili giây s..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Đồng bộ gameplay với âm thanh và nhạc &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Ghi âm bằng microphone" href="recording_with_microphone.html" />
+    <link rel="prev" title="Audio stream" href="audio_streams.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/audio/sync_with_audio" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Âm thanh</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="audio_buses.html">Audio bus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_effects.html">Hiệu ứng âm thanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_streams.html">Audio stream</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Đồng bộ gameplay với âm thanh và nhạc</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-system-clock-to-sync">Dùng đồng hồ hệ thống để đồng bộ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-sound-hardware-clock-to-sync">Dùng đồng hồ phần cứng âm thanh để đồng bộ</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="recording_with_microphone.html">Ghi âm bằng microphone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text_to_speech.html">Chuyển văn bản thành giọng nói</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Âm thanh</a></li>
+      <li class="breadcrumb-item active">Đồng bộ gameplay với âm thanh và nhạc</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="sync-the-gameplay-with-audio-and-music">
+<span id="doc-sync-with-audio"></span><h1>Đồng bộ gameplay với âm thanh và nhạc<a class="headerlink" href="#sync-the-gameplay-with-audio-and-music" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Trong bất kỳ ứng dụng hay game nào, việc phát âm thanh và nhạc đều có một độ trễ nhỏ. Với game, độ trễ này thường nhỏ tới mức có thể bỏ qua. Hiệu ứng âm thanh sẽ phát ra vài mili giây sau khi gọi bất kỳ hàm play() nào. Với nhạc thì điều này không quan trọng vì trong hầu hết các game, nhạc không tương tác với gameplay.</p>
+<p>Tuy vậy, với một số game (chủ yếu là game nhịp điệu), có thể cần đồng bộ hành động của người chơi với điều gì đó đang diễn ra trong bài hát (thường là đồng bộ theo BPM). Để làm điều này, có thông tin thời gian chính xác hơn về vị trí phát chính xác sẽ rất hữu ích.</p>
+<p>Đạt được độ chính xác thời gian phát rất cao là điều khó. Đó là vì có nhiều yếu tố tác động trong quá trình phát âm thanh:</p>
+<ul class="simple">
+<li><p>Âm thanh được mix theo từng khối (không liên tục), tùy thuộc vào kích thước của bộ đệm âm thanh được dùng (xem độ trễ trong cài đặt dự án).</p></li>
+<li><p>Các khối âm thanh đã mix không được phát ngay lập tức.</p></li>
+<li><p>Các API đồ họa hiển thị trễ hai hoặc ba frame.</p></li>
+<li><p>Khi phát trên TV, có thể có thêm độ trễ do xử lý hình ảnh.</p></li>
+</ul>
+<p>Cách phổ biến nhất để giảm độ trễ là thu nhỏ bộ đệm âm thanh (một lần nữa, bằng cách chỉnh cài đặt độ trễ trong cài đặt dự án). Vấn đề là khi độ trễ quá nhỏ, việc mix âm thanh sẽ cần nhiều CPU hơn đáng kể. Điều này làm tăng nguy cơ bị ngắt quãng (tiếng rè trong âm thanh do một callback mix bị bỏ lỡ).</p>
+<p>Đây là một sự đánh đổi phổ biến, vì vậy Godot đi kèm các giá trị mặc định hợp lý mà bạn không cần phải thay đổi.</p>
+<p>Rốt cuộc, vấn đề không nằm ở độ trễ nhỏ này mà ở việc đồng bộ hình ảnh và âm thanh cho những game cần điều đó. Có một số công cụ hỗ trợ để lấy thời gian phát chính xác hơn.</p>
+</section>
+<section id="using-the-system-clock-to-sync">
+<h2>Dùng đồng hồ hệ thống để đồng bộ<a class="headerlink" href="#using-the-system-clock-to-sync" title="Link to this heading"></a></h2>
+<p>Như đã đề cập trước đó, nếu bạn gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audiostreamplayer.html#class-audiostreamplayer-method-play" title="Class reference (English)"><span class="xref std std-ref">AudioStreamPlayer.play()</span></a>, âm thanh sẽ không bắt đầu ngay lập tức, mà bắt đầu khi luồng âm thanh xử lý khối tiếp theo.</p>
+<p>Độ trễ này không thể tránh khỏi nhưng có thể ước tính bằng cách gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audioserver.html#class-audioserver-method-get-time-to-next-mix" title="Class reference (English)"><span class="xref std std-ref">AudioServer.get_time_to_next_mix()</span></a>.</p>
+<p>Độ trễ đầu ra (những gì xảy ra sau khi mix) cũng có thể được ước tính bằng cách gọi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audioserver.html#class-audioserver-method-get-output-latency" title="Class reference (English)"><span class="xref std std-ref">AudioServer.get_output_latency()</span></a>.</p>
+<p>Cộng hai giá trị này lại, bạn có thể đoán gần như chính xác khi nào âm thanh hoặc nhạc sẽ bắt đầu phát ra loa trong <em>_process()</em>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">time_begin</span>
+<span class="k">var</span><span class="w"> </span><span class="n">time_delay</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="n">time_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span>
+<span class="w">    </span><span class="n">time_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_time_to_next_mix</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_output_latency</span><span class="p">()</span>
+<span class="w">    </span><span class="sx">$Player</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="c1"># Obtain from ticks.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nb">Time</span><span class="o">.</span><span class="nf">get_ticks_usec</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">time_begin</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1000000.0</span>
+<span class="w">    </span><span class="c1"># Compensate for latency.</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">time_delay</span>
+<span class="w">    </span><span class="c1"># May be below 0 (did not begin yet).</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">)</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Time is: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">private</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">_timeBegin</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">_timeDelay</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_timeBegin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="n">GetTicksUsec</span><span class="p">();</span>
+<span class="w">    </span><span class="n">_timeDelay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetTimeToNextMix</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetOutputLatency</span><span class="p">();</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AudioStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">Play</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Time</span><span class="p">.</span><span class="n">GetTicksUsec</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_timeBegin</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1000000.0d</span><span class="p">;</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="n">Max</span><span class="p">(</span><span class="mf">0.0d</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_timeDelay</span><span class="p">);</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;Time is: {0}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tuy nhiên, về lâu dài, vì đồng hồ của phần cứng âm thanh không bao giờ đồng bộ hoàn toàn với đồng hồ hệ thống, thông tin thời gian sẽ dần bị lệch.</p>
+<p>Với một game nhịp điệu mà bài hát bắt đầu và kết thúc sau vài phút, cách này vẫn ổn (và đây là cách được khuyến nghị). Với một game mà việc phát có thể kéo dài lâu hơn nhiều, game cuối cùng sẽ bị mất đồng bộ và cần một cách tiếp cận khác.</p>
+</section>
+<section id="using-the-sound-hardware-clock-to-sync">
+<h2>Dùng đồng hồ phần cứng âm thanh để đồng bộ<a class="headerlink" href="#using-the-sound-hardware-clock-to-sync" title="Link to this heading"></a></h2>
+<p>Dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audiostreamplayer.html#class-audiostreamplayer-method-get-playback-position" title="Class reference (English)"><span class="xref std std-ref">AudioStreamPlayer.get_playback_position()</span></a> để lấy vị trí hiện tại của bài hát nghe có vẻ lý tưởng, nhưng nếu dùng nguyên như vậy thì không hữu ích lắm. Giá trị này sẽ tăng theo từng khối (mỗi lần callback âm thanh mix một khối âm thanh), nên nhiều lần gọi có thể trả về cùng một giá trị. Thêm vào đó, giá trị này cũng sẽ lệch so với loa vì những lý do đã đề cập trước đó.</p>
+<p>Để bù cho đầu ra &quot;theo khối&quot;, có một hàm có thể giúp ích: <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_audioserver.html#class-audioserver-method-get-time-since-last-mix" title="Class reference (English)"><span class="xref std std-ref">AudioServer.get_time_since_last_mix()</span></a>.</p>
+<p>Cộng giá trị trả về từ hàm này vào <em>get_playback_position()</em> sẽ tăng độ chính xác:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="nf">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_time_since_last_mix</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AudioStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">GetPlaybackPosition</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetTimeSinceLastMix</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để tăng độ chính xác, hãy trừ đi thông tin độ trễ (thời gian để âm thanh được nghe thấy sau khi đã mix):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="nf">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_time_since_last_mix</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_output_latency</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AudioStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">GetPlaybackPosition</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetTimeSinceLastMix</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetOutputLatency</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div>
+<p>Kết quả có thể hơi dao động do cách hoạt động của nhiều luồng. Chỉ cần kiểm tra rằng giá trị không nhỏ hơn giá trị ở frame trước (nếu nhỏ hơn thì bỏ đi). Cách này cũng kém chính xác hơn cách trước, nhưng nó sẽ hoạt động với bài hát có độ dài bất kỳ, hoặc để đồng bộ bất cứ thứ gì (ví dụ như hiệu ứng âm thanh) với nhạc.</p>
+<p>Đây là đoạn mã giống như trước nhưng dùng cách tiếp cận này:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="sx">$Player</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_process</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sx">$Player</span><span class="o">.</span><span class="nf">get_playback_position</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_time_since_last_mix</span><span class="p">()</span>
+<span class="w">    </span><span class="c1"># Compensate for output latency.</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="nb">AudioServer</span><span class="o">.</span><span class="nf">get_output_latency</span><span class="p">()</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Time is: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AudioStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">Play</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Process</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNode</span><span class="o">&lt;</span><span class="n">AudioStreamPlayer</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Player&quot;</span><span class="p">).</span><span class="n">GetPlaybackPosition</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetTimeSinceLastMix</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Compensate for output latency.</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">AudioServer</span><span class="p">.</span><span class="n">GetOutputLatency</span><span class="p">();</span>
+<span class="w">    </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;Time is: {0}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="audio_streams.html" class="btn btn-neutral float-left" title="Audio stream" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="recording_with_microphone.html" class="btn btn-neutral float-right" title="Ghi âm bằng microphone" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

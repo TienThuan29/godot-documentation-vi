@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng chiếu sáng toàn cục Voxel" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/3d/global_illumination/using_voxel_gi.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="VoxelGI là một dạng chiếu sáng toàn cục hoàn toàn theo thời gian thực, dành cho các scene 3D quy mô nhỏ/vừa. VoxelGI khá nặng đối với GPU, vì vậy nó phù hợp nhất khi nhắm đến card đồ họa rời. So sá..." />
+<meta name="description" content="VoxelGI là một dạng chiếu sáng toàn cục hoàn toàn theo thời gian thực, dành cho các scene 3D quy mô nhỏ/vừa. VoxelGI khá nặng đối với GPU, vì vậy nó phù hợp nhất khi nhắm đến card đồ họa rời. So sá..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng chiếu sáng toàn cục Voxel &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../../search.html" />
+    <link rel="next" title="Chiếu sáng toàn cục bằng signed distance field (SDFGI)" href="using_sdfgi.html" />
+    <link rel="prev" title="Giới thiệu về chiếu sáng toàn cục" href="introduction_to_global_illumination.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/3d/global_illumination/using_voxel_gi" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d/index.html">2D</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">3D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction_to_3d.html">Giới thiệu về 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using_transforms.html">Sử dụng transform 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../procedural_geometry/index.html">Hình học thủ tục</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3d_text.html">Văn bản 3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../3d_rendering_limitations.html">Các giới hạn của kết xuất 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../standard_material_3d.html">Standard Material 3D và ORM Material 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lights_and_shadows.html">Đèn và bóng đổ 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../using_decals.html">Sử dụng decal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physical_light_and_camera_units.html">Đơn vị vật lý cho ánh sáng và camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../particles/index.html">Hệ thống hạt (3D)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../high_dynamic_range.html">Chiếu sáng dải tương phản động cao (HDR)</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Chiếu sáng toàn cục (Global illumination)</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="introduction_to_global_illumination.html">Giới thiệu về chiếu sáng toàn cục</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Sử dụng chiếu sáng toàn cục Voxel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="using_sdfgi.html">Chiếu sáng toàn cục bằng signed distance field (SDFGI)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="using_lightmap_gi.html">Dùng chiếu sáng toàn cục bằng lightmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection_probes.html">Reflection probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="faking_global_illumination.html">Giả lập chiếu sáng toàn cục</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../environment_and_post_processing.html">Môi trường và hậu xử lý</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_fog.html">Sương mù thể tích và fog volume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d_antialiasing.html">Khử răng cưa 3D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#optimization">Tối ưu hóa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">3D</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Chiếu sáng toàn cục (Global illumination)</a></li>
+      <li class="breadcrumb-item active">Sử dụng chiếu sáng toàn cục Voxel</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-voxel-global-illumination">
+<span id="doc-using-voxel-gi"></span><h1>Sử dụng chiếu sáng toàn cục Voxel<a class="headerlink" href="#using-voxel-global-illumination" title="Link to this heading"></a></h1>
+<p>VoxelGI là một dạng chiếu sáng toàn cục hoàn toàn theo thời gian thực, dành cho các scene 3D quy mô nhỏ/vừa. VoxelGI khá nặng đối với GPU, vì vậy nó phù hợp nhất khi nhắm đến card đồ họa rời.</p>
+<div class="admonition important">
+<p class="admonition-title">Quan trọng</p>
+<p>VoxelGI chỉ được hỗ trợ khi dùng renderer Forward+, không hỗ trợ renderer Mobile hay Compatibility.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Không chắc VoxelGI có phù hợp với nhu cầu của bạn không? Xem <a class="reference internal" href="introduction_to_global_illumination.html#doc-introduction-to-global-illumination-comparison"><span class="std std-ref">Nên dùng kỹ thuật chiếu sáng toàn cục nào?</span></a> để so sánh các kỹ thuật GI có trong Godot 4.</p>
+</div>
+<section id="visual-comparison">
+<h2>So sánh trực quan<a class="headerlink" href="#visual-comparison" title="Link to this heading"></a></h2>
+<figure class="align-default" id="id1">
+<img alt="VoxelGI tắt." src="../../../_images/gi_none.webp" />
+<figcaption>
+<p><span class="caption-text">VoxelGI tắt.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<img alt="VoxelGI bật." src="../../../_images/gi_voxel_gi.webp" />
+<figcaption>
+<p><span class="caption-text">VoxelGI bật.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="setting-up-voxelgi">
+<h2>Thiết lập VoxelGI<a class="headerlink" href="#setting-up-voxelgi" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Đảm bảo hình học tĩnh của màn chơi được import với tùy chọn Light Baking đặt thành <strong>Static</strong> hoặc <strong>Static Lightmaps</strong> trong dock Import. Với các node MeshInstance3D được thêm thủ công, hãy đảm bảo thuộc tính <strong>Global Illumination &gt; Mode</strong> được đặt thành <strong>Static</strong> trong inspector.</p></li>
+<li><p>Tạo một node VoxelGI trong dock cây Scene.</p></li>
+<li><p>Di chuyển node VoxelGI đến tâm của vùng bạn muốn nó bao phủ bằng cách kéo gizmo thao tác trong viewport 3D. Sau đó điều chỉnh extents của VoxelGI bằng cách kéo các điểm màu đỏ trong viewport 3D (hoặc nhập giá trị trong inspector). Đảm bảo extents của VoxelGI không lớn quá mức cần thiết, nếu không chất lượng sẽ giảm.</p></li>
+<li><p>Chọn node VoxelGI và nhấn <strong>Bake</strong> ở phía trên viewport của trình chỉnh sửa 3D. Quá trình này sẽ mất ít nhất vài giây để hoàn tất (tùy thuộc vào số lần chia nhỏ của VoxelGI và độ phức tạp của scene).</p></li>
+</ol>
+<p>Nếu có ít nhất một mesh nằm trong extents của VoxelGI có chế độ chiếu sáng toàn cục đặt thành <strong>Static</strong>, bạn sẽ thấy ánh sáng gián tiếp xuất hiện trong scene.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để tránh làm phình to các file scene dạng văn bản bằng lượng lớn dữ liệu nhị phân, hãy đảm bảo resource VoxelGIData <em>luôn</em> được lưu vào một file nhị phân bên ngoài. File này phải được lưu với phần mở rộng <code class="docutils literal notranslate"><span class="pre">.res</span></code> (resource nhị phân) thay vì <code class="docutils literal notranslate"><span class="pre">.tres</span></code> (resource dạng văn bản). Dùng resource nhị phân bên ngoài cho VoxelGIData sẽ giữ scene dạng văn bản của bạn nhỏ gọn đồng thời đảm bảo nó được tải và lưu nhanh chóng.</p>
+</div>
+</section>
+<section id="voxelgi-node-properties">
+<h2>Các thuộc tính của node VoxelGI<a class="headerlink" href="#voxelgi-node-properties" title="Link to this heading"></a></h2>
+<p>Các thuộc tính sau có thể được điều chỉnh trong inspector của node VoxelGI trước khi bake:</p>
+<ul class="simple">
+<li><p><strong>Subdiv:</strong> Giá trị cao hơn cho ánh sáng gián tiếp chính xác hơn, đổi lại hiệu năng thấp hơn, thời gian bake lâu hơn và yêu cầu lưu trữ tăng lên.</p></li>
+<li><p><strong>Extents:</strong> Biểu thị kích thước của hộp mà ánh sáng gián tiếp sẽ được bake bên trong. Extents được căn giữa quanh gốc tọa độ của node VoxelGI.</p></li>
+</ul>
+<p>Các thuộc tính sau có thể được điều chỉnh trong <em>resource</em> VoxelGIData chứa trong một node VoxelGI sau khi nó đã được bake:</p>
+<ul class="simple">
+<li><p><strong>Dynamic Range:</strong> Độ sáng tối đa có thể biểu diễn trong ánh sáng gián tiếp. Giá trị cao hơn cho phép biểu diễn ánh sáng gián tiếp sáng hơn, đổi lại độ chính xác thấp hơn (có thể gây hiện tượng dải màu dễ thấy). Nếu không chắc, hãy giữ nguyên giá trị này.</p></li>
+<li><p><strong>Energy:</strong> Năng lượng tổng thể của ánh sáng gián tiếp. Thuộc tính này cũng ảnh hưởng đến năng lượng của ánh sáng trực tiếp do các mesh có material phát sáng phát ra.</p></li>
+<li><p><strong>Bias:</strong> Độ lệch (bias) tùy chọn được thêm vào các lần tra cứu buffer voxel lúc chạy. Điều này giúp tránh các lỗi hiển thị do tự che khuất.</p></li>
+<li><p><strong>Normal Bias:</strong> Tương tự <strong>Bias</strong>, nhưng dịch lần tra cứu buffer voxel theo pháp tuyến bề mặt. Điều này cũng giúp tránh các lỗi hiển thị do tự che khuất. Giá trị cao hơn làm giảm hiện tượng tự phản chiếu trên các material không nhám, đổi lại rò rỉ ánh sáng dễ thấy hơn và ánh sáng gián tiếp trông phẳng hơn. Để ưu tiên che giấu tự phản chiếu hơn chất lượng chiếu sáng, hãy đặt <strong>Bias</strong> thành <code class="docutils literal notranslate"><span class="pre">0.0</span></code> và <strong>Normal Bias</strong> thành một giá trị trong khoảng <code class="docutils literal notranslate"><span class="pre">1.0</span></code> đến <code class="docutils literal notranslate"><span class="pre">2.0</span></code>.</p></li>
+<li><p><strong>Propagation:</strong> Hệ số năng lượng dùng cho ánh sáng gián tiếp nảy lại. Giá trị cao hơn sẽ cho ánh sáng sáng hơn, khuếch tán hơn (có thể khiến trông quá phẳng). Khi <strong>Use Two Bounces</strong> được bật, bạn có thể muốn giảm <strong>Propagation</strong> để bù cho ánh sáng gián tiếp tổng thể sáng hơn.</p></li>
+<li><p><strong>Use Two Bounces:</strong> Nếu bật, ánh sáng sẽ nảy hai lần thay vì chỉ một lần. Điều này giúp ánh sáng gián tiếp trông chân thực hơn, và cũng làm ánh sáng gián tiếp hiển thị trong các phản chiếu. Bật tùy chọn này thường không tốn hiệu năng đáng kể.</p></li>
+<li><p><strong>Interior:</strong> Nếu bật, ánh sáng bầu trời của môi trường sẽ không được VoxelGI tính đến. Nên bật tùy chọn này trong các scene trong nhà để tránh rò rỉ ánh sáng từ môi trường.</p></li>
+</ul>
+</section>
+<section id="voxelgi-interaction-with-lights-and-objects">
+<h2>Tương tác của VoxelGI với đèn và vật thể<a class="headerlink" href="#voxelgi-interaction-with-lights-and-objects" title="Link to this heading"></a></h2>
+<p>Để đảm bảo hình ảnh hiển thị đúng khi dùng VoxelGI, bạn phải cấu hình các thuộc tính chiếu sáng toàn cục của mesh và đèn theo <em>mục đích</em> của chúng trong scene (tĩnh hoặc động).</p>
+<p>Có 3 chế độ chiếu sáng toàn cục cho mesh:</p>
+<ul class="simple">
+<li><p><strong>Disabled:</strong> Mesh sẽ không được tính đến khi bake VoxelGI. Mesh sẽ <em>nhận</em> ánh sáng gián tiếp từ scene, nhưng sẽ không <em>đóng góp</em> ánh sáng gián tiếp cho scene.</p></li>
+<li><p><strong>Static (mặc định):</strong> Mesh sẽ được tính đến khi bake VoxelGI. Mesh sẽ vừa nhận <em>vừa</em> đóng góp ánh sáng gián tiếp cho scene. Nếu mesh bị thay đổi theo bất kỳ cách nào sau khi bake, node VoxelGI phải được bake lại. Nếu không, ánh sáng gián tiếp sẽ hiển thị sai.</p></li>
+<li><p><strong>Dynamic:</strong> Mesh sẽ không được tính đến khi bake VoxelGI, nhưng vẫn nhận <em>và</em> đóng góp ánh sáng gián tiếp cho scene theo thời gian thực. Tùy chọn này chậm hơn nhiều so với <strong>Static</strong>. Chỉ dùng chế độ chiếu sáng toàn cục <strong>Dynamic</strong> cho những mesh lớn sẽ thay đổi đáng kể trong lúc chơi.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Với các mesh có chế độ bake <strong>Static</strong>, hệ thống bake VoxelGI không thể tận dụng shader tùy chỉnh (<a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html" title="Class reference (English)"><span class="xref std std-ref">class_ShaderMaterial</span></a>). Các mesh này sẽ được coi là hoàn toàn đen, chỉ đóng vai trò chặn ánh sáng. Bạn có thể khiến VoxelGI tính đến shader tùy chỉnh bằng cách dùng chế độ bake <strong>Dynamic</strong> cho các vật thể này, nhưng điều này tốn hiệu năng.</p>
+<p>Với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basematerial3d.html" title="Class reference (English)"><span class="xref std std-ref">class_BaseMaterial3D</span></a>, một số thuộc tính hiện bị bỏ qua khi bake. Điều này có thể ảnh hưởng đến hình ảnh nếu texture albedo hoặc emission của material được thiết kế dựa trên một số kiểu ánh xạ UV nhất định:</p>
+<ul class="simple">
+<li><p><strong>UV1 &gt; Offset</strong></p></li>
+<li><p><strong>UV1 &gt; Scale</strong></p></li>
+<li><p><strong>UV1 &gt; Triplanar</strong></p></li>
+<li><p><strong>Emission &gt; On UV2</strong></p></li>
+</ul>
+</div>
+<p>Ngoài ra, có 3 chế độ bake dành cho đèn (DirectionalLight3D, OmniLight3D, SpotLight3D và AreaLight3D):</p>
+<ul class="simple">
+<li><p><strong>Disabled:</strong> Đèn sẽ không được tính đến khi bake VoxelGI. Đèn sẽ không đóng góp ánh sáng gián tiếp cho scene.</p></li>
+<li><p><strong>Static:</strong> Đèn sẽ được tính đến khi bake VoxelGI. Đèn sẽ đóng góp ánh sáng gián tiếp cho scene. Nếu đèn bị thay đổi theo bất kỳ cách nào sau khi bake, node VoxelGI phải được bake lại, nếu không ánh sáng gián tiếp sẽ hiển thị sai. Nếu không chắc, hãy dùng chế độ này cho chiếu sáng của màn chơi.</p></li>
+<li><p><strong>Dynamic (mặc định):</strong> Đèn sẽ không được tính đến khi bake VoxelGI, nhưng vẫn đóng góp ánh sáng gián tiếp cho scene theo thời gian thực. Tùy chọn này chậm hơn so với <strong>Static</strong>. Chỉ dùng chế độ chiếu sáng toàn cục <strong>Dynamic</strong> cho những đèn sẽ thay đổi đáng kể trong lúc chơi.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Lượng năng lượng gián tiếp mà một đèn phát ra phụ thuộc vào các thuộc tính màu, năng lượng <em>và</em> năng lượng gián tiếp của nó. Để một đèn cụ thể phát ra nhiều hoặc ít năng lượng gián tiếp hơn mà không ảnh hưởng đến lượng ánh sáng trực tiếp do đèn phát ra, hãy điều chỉnh thuộc tính <strong>Indirect Energy</strong> trong inspector của Light3D.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Xem <a class="reference internal" href="introduction_to_global_illumination.html#doc-introduction-to-global-illumination-gi-mode-recommendations"><span class="std std-ref">Nên dùng chế độ chiếu sáng toàn cục nào cho mesh và đèn?</span></a> để biết các khuyến nghị sử dụng chung.</p>
+</div>
+</section>
+<section id="adjusting-voxelgi-performance-and-quality">
+<h2>Điều chỉnh hiệu năng và chất lượng VoxelGI<a class="headerlink" href="#adjusting-voxelgi-performance-and-quality" title="Link to this heading"></a></h2>
+<p>Vì VoxelGI tương đối nặng, nó sẽ chạy tốt nhất trên các hệ thống có GPU rời đời mới. Trên GPU rời đời cũ và đồ họa tích hợp, cần tinh chỉnh các cài đặt để đạt hiệu năng chấp nhận được.</p>
+<p>Trong mục <strong>Rendering &gt; Global Illumination</strong> của Project Settings, chất lượng VoxelGI cũng có thể được điều chỉnh theo hai cách:</p>
+<ul class="simple">
+<li><p><strong>Voxel Gi &gt; Quality:</strong> Nếu đặt thành <strong>Low</strong> thay vì <strong>High</strong>, voxel cone tracing sẽ chỉ dùng 4 lần lấy mẫu thay vì 6. Điều này tăng tốc kết xuất, đổi lại ambient occlusion kém rõ nét hơn.</p></li>
+<li><p><strong>Gi &gt; Use Half Resolution:</strong> Nếu bật, cả VoxelGI và SDFGI sẽ kết xuất buffer GI ở một nửa độ phân giải. Ví dụ, khi kết xuất ở 3840×2160, buffer GI sẽ được tính ở độ phân giải 1920×1080. Bật tùy chọn này tiết kiệm rất nhiều thời gian GPU, nhưng có thể gây răng cưa dễ thấy quanh các chi tiết mảnh.</p></li>
+</ul>
+<p>Lưu ý rằng nút bật <strong>Advanced</strong> phải được bật trong hộp thoại cài đặt dự án để các cài đặt trên hiển thị.</p>
+<p>Ngoài ra, có thể tắt hoàn toàn VoxelGI bằng cách ẩn node VoxelGI. Điều này có thể dùng để so sánh hoặc để cải thiện hiệu năng trên các hệ thống cấu hình thấp.</p>
+</section>
+<section id="reducing-voxelgi-light-leaks-and-artifacts">
+<h2>Giảm rò rỉ ánh sáng và lỗi hiển thị của VoxelGI<a class="headerlink" href="#reducing-voxelgi-light-leaks-and-artifacts" title="Link to this heading"></a></h2>
+<p>Sau khi bake VoxelGI, bạn có thể nhận thấy ánh sáng gián tiếp bị rò rỉ ở một số chỗ trong hình học màn chơi. Có thể khắc phục điều này theo nhiều cách:</p>
+<ul class="simple">
+<li><p>Với cả rò rỉ ánh sáng lẫn lỗi hiển thị, hãy thử di chuyển hoặc xoay node VoxelGI rồi bake lại.</p></li>
+<li><p>Để chống rò rỉ ánh sáng nói chung, hãy đảm bảo hình học màn chơi được bịt kín hoàn toàn. Cách tốt nhất là làm việc này trong phần mềm dựng hình 3D dùng để thiết kế màn chơi, nhưng cũng có thể dùng các node MeshInstance3D nguyên thủy có chế độ chiếu sáng toàn cục đặt thành <strong>Static</strong>.</p></li>
+<li><p>Để chống rò rỉ ánh sáng với hình học mỏng, nên làm cho phần hình học đó dày hơn. Nếu không thể, hãy thêm một node MeshInstance3D nguyên thủy có chế độ chiếu sáng toàn cục đặt thành <strong>Static</strong>. Bake lại VoxelGI, rồi ẩn node MeshInstance3D nguyên thủy đó (VoxelGI vẫn sẽ tính đến nó). Để có kết quả tối ưu, MeshInstance3D nên có một material với màu khớp với phần hình học mỏng ban đầu.</p></li>
+<li><p>Để chống các lỗi hiển thị có thể xuất hiện trên bề mặt phản chiếu, hãy thử tăng <strong>Bias</strong> và/hoặc <strong>Normal Bias</strong> trong resource VoxelGIData như mô tả ở trên. Đừng tăng các giá trị này quá cao, nếu không rò rỉ ánh sáng sẽ trở nên rõ rệt hơn.</p></li>
+</ul>
+<p>Nếu bạn thấy các node VoxelGI lúc hiện lúc mất khi camera di chuyển, nhiều khả năng là do engine đang kết xuất quá nhiều instance VoxelGI cùng lúc. Godot bị giới hạn kết xuất 8 node VoxelGI cùng lúc, nghĩa là tối đa 8 instance có thể nằm trong tầm nhìn camera trước khi một số bắt đầu nhấp nháy.</p>
+<p>Ngoài ra, vì lý do hiệu năng, Godot chỉ có thể pha trộn giữa 2 node VoxelGI tại một pixel nhất định trên màn hình. Nếu bạn có nhiều hơn 2 node VoxelGI chồng lấn nhau, chiếu sáng toàn cục có thể bị nhấp nháy khi camera di chuyển hoặc xoay.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction_to_global_illumination.html" class="btn btn-neutral float-left" title="Giới thiệu về chiếu sáng toàn cục" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="using_sdfgi.html" class="btn btn-neutral float-right" title="Chiếu sáng toàn cục bằng signed distance field (SDFGI)" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

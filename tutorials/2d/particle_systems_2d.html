@@ -1,0 +1,466 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Hệ thống hạt 2D" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/2d/particle_systems_2d.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Hệ thống hạt được dùng để mô phỏng các hiệu ứng vật lý phức tạp như tia lửa, lửa, hạt phép thuật, khói, sương mù, v.v. Ý tưởng là một &quot;hạt&quot; được phát ra theo một khoảng thời g..." />
+<meta name="description" content="Giới thiệu: Hệ thống hạt được dùng để mô phỏng các hiệu ứng vật lý phức tạp như tia lửa, lửa, hạt phép thuật, khói, sương mù, v.v. Ý tưởng là một &quot;hạt&quot; được phát ra theo một khoảng thời g..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Hệ thống hạt 2D &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng ParticleProcessMaterial trong 2D" href="particle_process_material_2d.html" />
+    <link rel="prev" title="Hoạt ảnh sprite 2D" href="2d_sprite_animation.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/2d/particle_systems_2d" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2D</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_2d.html">Giới thiệu về 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_layers.html">Canvas layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2d_transforms.html">Transform của viewport và canvas</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#rendering">Kết xuất</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="2d_lights_and_shadows.html">Ánh sáng và bóng đổ 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_meshes.html">Mesh 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_sprite_animation.html">Hoạt ảnh sprite 2D</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Hệ thống hạt 2D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#intro">Giới thiệu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#time-parameters">Tham số thời gian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#drawing-parameters">Tham số vẽ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#particle-process-material-settings">Cài đặt Particle Process Material</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="particle_process_material_2d.html">Sử dụng ParticleProcessMaterial trong 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_antialiasing.html">Khử răng cưa 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_drawing_in_2d.html">Vẽ tùy chỉnh trong 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2d_parallax.html">Parallax 2D</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#physics-and-movement">Vật lý và chuyển động</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tools">Công cụ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">2D</a></li>
+      <li class="breadcrumb-item active">Hệ thống hạt 2D</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+    <div class="admonition attention article-status">
+      <p class="first admonition-title">Đang cập nhật</p>
+      <p>
+        Nội dung trang này chưa được cập nhật cho Godot
+        <code class="docutils literal notranslate">4.7</code>
+        và có thể đã <strong>lỗi thời</strong>. Nếu bạn biết cách cải thiện trang này hoặc xác nhận
+        được rằng nó vẫn đúng, hãy <a href="https://github.com/godotengine/godot-docs">gửi một pull request</a> (bản tiếng Anh).
+      </p>
+    </div>
+    
+  </div>
+  
+
+  
+  <section id="d-particle-systems">
+<span id="doc-particle-systems-2d"></span><h1>Hệ thống hạt 2D<a class="headerlink" href="#d-particle-systems" title="Link to this heading"></a></h1>
+<section id="intro">
+<h2>Giới thiệu<a class="headerlink" href="#intro" title="Link to this heading"></a></h2>
+<p>Hệ thống hạt được dùng để mô phỏng các hiệu ứng vật lý phức tạp như tia lửa, lửa, hạt phép thuật, khói, sương mù, v.v.</p>
+<p>Ý tưởng là một &quot;hạt&quot; được phát ra theo một khoảng thời gian cố định và có vòng đời cố định. Trong suốt vòng đời, mọi hạt đều có cùng một hành vi cơ bản. Điều khiến mỗi hạt khác biệt với phần còn lại và mang lại vẻ tự nhiên hơn là &quot;tính ngẫu nhiên&quot; gắn với từng tham số. Về bản chất, tạo một hệ thống hạt nghĩa là đặt các tham số vật lý cơ bản rồi thêm tính ngẫu nhiên vào chúng.</p>
+<section id="particle-nodes">
+<h3>Các node hạt<a class="headerlink" href="#particle-nodes" title="Link to this heading"></a></h3>
+<p>Godot cung cấp hai node khác nhau cho hạt 2D là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_gpuparticles2d.html" title="Class reference (English)"><span class="xref std std-ref">class_GPUParticles2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_cpuparticles2d.html" title="Class reference (English)"><span class="xref std std-ref">class_CPUParticles2D</span></a>. GPUParticles2D nâng cao hơn và dùng GPU để xử lý hiệu ứng hạt. CPUParticles2D là lựa chọn chạy bằng CPU với tính năng gần tương đương GPUParticles2D, nhưng hiệu năng thấp hơn khi dùng số lượng hạt lớn. Mặt khác, CPUParticles2D có thể chạy tốt hơn trên các hệ thống cấu hình thấp hoặc trong tình huống bị nghẽn ở GPU.</p>
+<p>Trong khi GPUParticles2D được cấu hình qua một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_particleprocessmaterial.html" title="Class reference (English)"><span class="xref std std-ref">class_ParticleProcessMaterial</span></a> (và tùy chọn kèm một shader tùy chỉnh), các tùy chọn tương ứng trong CPUParticles2D được cung cấp qua các thuộc tính của node (ngoại trừ các cài đặt trail).</p>
+<p>Về sau sẽ không có kế hoạch thêm tính năng mới cho CPUParticles2D, mặc dù các pull request bổ sung những tính năng đã có trong GPUParticles2D vẫn sẽ được chấp nhận. Vì lý do đó, chúng tôi khuyên dùng GPUParticles2D trừ khi bạn có lý do rõ ràng để không dùng.</p>
+<p>Bạn có thể chuyển node CPUParticles2D thành node GPUParticles2D bằng cách nhấp vào node trong cây scene, chọn không gian làm việc 2D và chọn <strong>CPUParticles2D &gt; Convert to GPUParticles2D</strong> trên thanh công cụ.</p>
+<img alt="../../_images/particles_convert.webp" src="../../_images/particles_convert.webp" />
+<p>Cũng có thể chuyển node GPUParticles2D thành node CPUParticles2D, tuy nhiên có thể phát sinh vấn đề nếu bạn dùng các tính năng chỉ có trên GPU.</p>
+<p>Phần còn lại của bài hướng dẫn này sẽ dùng node GPUParticles2D. Trước tiên, hãy thêm một node GPUParticles2D vào scene. Sau khi tạo node đó, bạn sẽ thấy chỉ có một chấm trắng được tạo ra, và có một biểu tượng cảnh báo bên cạnh node GPUParticles2D trong Scene dock. Đó là vì node cần một ParticleProcessMaterial để hoạt động.</p>
+</section>
+<section id="particleprocessmaterial">
+<h3>ParticleProcessMaterial<a class="headerlink" href="#particleprocessmaterial" title="Link to this heading"></a></h3>
+<p>Để thêm process material cho node hạt, hãy vào <code class="docutils literal notranslate"><span class="pre">Process</span> <span class="pre">Material</span></code> trong bảng Inspector. Nhấp vào ô bên cạnh <code class="docutils literal notranslate"><span class="pre">Material</span></code> và chọn <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">ParticleProcessMaterial</span></code> từ menu thả xuống.</p>
+<img alt="../../_images/particles_material.webp" src="../../_images/particles_material.webp" />
+<p>Giờ node GPUParticles2D của bạn sẽ phát ra các điểm trắng hướng xuống dưới.</p>
+<img alt="../../_images/particles1.png" src="../../_images/particles1.png" />
+</section>
+<section id="texture">
+<h3>Texture<a class="headerlink" href="#texture" title="Link to this heading"></a></h3>
+<p>Một hệ thống hạt có thể dùng một texture đơn hoặc một <em>flipbook</em> hoạt ảnh. Flipbook là một texture chứa nhiều frame hoạt ảnh có thể được phát lần lượt, hoặc được chọn ngẫu nhiên khi phát ra. Nó tương đương với spritesheet dành cho hạt.</p>
+<p>Texture được đặt qua thuộc tính <strong>Texture</strong>:</p>
+<img alt="../../_images/particles2.webp" src="../../_images/particles2.webp" />
+<section id="using-an-animation-flipbook">
+<span id="doc-particle-systems-2d-using-flipbook"></span><h4>Sử dụng flipbook hoạt ảnh<a class="headerlink" href="#using-an-animation-flipbook" title="Link to this heading"></a></h4>
+<p>Flipbook của hạt phù hợp để tái hiện các hiệu ứng phức tạp như khói, lửa, vụ nổ. Chúng cũng có thể được dùng để tạo biến thể texture ngẫu nhiên, bằng cách cho mỗi hạt dùng một texture khác nhau. Bạn có thể tìm các hình flipbook hạt có sẵn trên mạng, hoặc render trước chúng bằng các công cụ bên ngoài như <a class="reference external" href="https://www.blender.org/">Blender</a> hoặc <a class="reference external" href="https://jangafx.com/software/embergen/">EmberGen</a>.</p>
+<figure class="align-center" id="id1">
+<img alt="Ví dụ về một hệ thống hạt dùng texture flipbook" src="../../_images/particles_flipbook_result.webp" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về một hệ thống hạt dùng texture flipbook</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Dùng flipbook hoạt ảnh cần cấu hình nhiều hơn so với một texture đơn. Để minh họa, chúng ta sẽ dùng texture này với 5 cột và 7 hàng (nhấp chuột phải và chọn <strong>Save as…</strong>):</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../../_images/particles_flipbook_example.webp"><img alt="Ví dụ texture flipbook của hạt" src="../../_images/particles_flipbook_example.webp" style="width: 240px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Nguồn: <a class="reference external" href="https://opengameart.org/content/alot-of-particles-indispersal-special-effect-alotofparticles30">JoesAlotofthings</a> (CC BY 4.0)</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Để dùng flipbook hoạt ảnh, bạn phải tạo một CanvasItemMaterial mới trong mục Material của node GPUParticles2D (hoặc CPUParticles2D):</p>
+<figure class="align-center" id="id3">
+<img alt="Tạo CanvasItemMaterial ở cuối Inspector của node hạt" src="../../_images/particles_flipbook_create_canvasitemmaterial.webp" />
+<figcaption>
+<p><span class="caption-text">Tạo CanvasItemMaterial ở cuối Inspector của node hạt</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Trong CanvasItemMaterial này, hãy bật <strong>Particle Animation</strong> và đặt <strong>H Frames</strong> và <strong>V Frames</strong> bằng số cột và số hàng có trong texture flipbook của bạn:</p>
+<figure class="align-center" id="id4">
+<img alt="Cấu hình CanvasItemMaterial cho texture flipbook ví dụ" src="../../_images/particles_flipbook_configure_canvasitemmaterial.webp" />
+<figcaption>
+<p><span class="caption-text">Cấu hình CanvasItemMaterial cho texture flipbook ví dụ</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Khi đã làm xong, <a class="reference internal" href="particle_process_material_2d.html#doc-particle-systems-2d-animation"><span class="std std-ref">mục Animation</span></a> trong ParticleProcessMaterial (với GPUParticles2D) hoặc trong Inspector của CPUParticles2D sẽ có tác dụng.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu texture flipbook của bạn có nền đen thay vì nền trong suốt, bạn cũng cần đặt blend mode thành <strong>Add</strong> thay vì <strong>Mix</strong> để hiển thị đúng. Ngoài ra, bạn có thể sửa texture để có nền trong suốt bằng một trình chỉnh sửa ảnh. Trong <a class="reference external" href="https://gimp.org">GIMP</a>, có thể làm việc này bằng menu <strong>Color &gt; Color to Alpha</strong>.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="time-parameters">
+<h2>Tham số thời gian<a class="headerlink" href="#time-parameters" title="Link to this heading"></a></h2>
+<section id="lifetime">
+<h3>Lifetime<a class="headerlink" href="#lifetime" title="Link to this heading"></a></h3>
+<p>Thời gian tính bằng giây mà mỗi hạt tồn tại. Khi vòng đời kết thúc, một hạt mới sẽ được tạo ra để thay thế.</p>
+<p>Lifetime: 0.5</p>
+<img alt="../../_images/paranim14.gif" src="../../_images/paranim14.gif" />
+<p>Lifetime: 4.0</p>
+<img alt="../../_images/paranim15.gif" src="../../_images/paranim15.gif" />
+</section>
+<section id="one-shot">
+<h3>One Shot<a class="headerlink" href="#one-shot" title="Link to this heading"></a></h3>
+<p>Khi bật, node GPUParticles2D sẽ phát ra tất cả các hạt của nó một lần rồi không bao giờ phát lại nữa.</p>
+</section>
+<section id="preprocess">
+<h3>Preprocess<a class="headerlink" href="#preprocess" title="Link to this heading"></a></h3>
+<p>Hệ thống hạt bắt đầu với 0 hạt được phát ra, rồi mới bắt đầu phát. Điều này có thể gây bất tiện khi nạp một scene có các hệ thống như ngọn đuốc, sương mù, v.v. bắt đầu phát ngay khi bạn vào. Preprocess được dùng để hệ thống xử lý trước một số giây nhất định trước khi thực sự được vẽ lần đầu tiên.</p>
+</section>
+<section id="speed-scale">
+<h3>Speed Scale<a class="headerlink" href="#speed-scale" title="Link to this heading"></a></h3>
+<p>Speed scale có giá trị mặc định là <code class="docutils literal notranslate"><span class="pre">1</span></code> và được dùng để điều chỉnh tốc độ của hệ thống hạt. Giảm giá trị sẽ làm các hạt chậm hơn, còn tăng giá trị sẽ làm các hạt nhanh hơn nhiều.</p>
+</section>
+<section id="explosiveness">
+<h3>Explosiveness<a class="headerlink" href="#explosiveness" title="Link to this heading"></a></h3>
+<p>Nếu lifetime là <code class="docutils literal notranslate"><span class="pre">1</span></code> và có 10 hạt, nghĩa là cứ 0.1 giây một hạt sẽ được phát ra. Tham số explosiveness thay đổi điều này và buộc các hạt được phát ra cùng lúc. Các giá trị là:</p>
+<ul class="simple">
+<li><p>0: Phát hạt theo các khoảng đều đặn (giá trị mặc định).</p></li>
+<li><p>1: Phát tất cả các hạt đồng thời.</p></li>
+</ul>
+<p>Các giá trị ở giữa cũng được cho phép. Tính năng này hữu ích để tạo vụ nổ hoặc các đợt bùng phát hạt đột ngột:</p>
+<img alt="../../_images/paranim18.gif" src="../../_images/paranim18.gif" />
+</section>
+<section id="randomness">
+<h3>Randomness<a class="headerlink" href="#randomness" title="Link to this heading"></a></h3>
+<p>Tất cả các tham số vật lý đều có thể được ngẫu nhiên hóa. Giá trị ngẫu nhiên nằm trong khoảng từ <code class="docutils literal notranslate"><span class="pre">0</span></code> đến <code class="docutils literal notranslate"><span class="pre">1</span></code>. Công thức để ngẫu nhiên hóa một tham số là:</p>
+<div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">initial_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param_value</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">param_value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randomness</span>
+</pre></div>
+</div>
+</section>
+<section id="fixed-fps">
+<h3>Fixed FPS<a class="headerlink" href="#fixed-fps" title="Link to this heading"></a></h3>
+<p>Cài đặt này có thể được dùng để hệ thống hạt kết xuất ở một FPS cố định. Ví dụ, đổi giá trị thành <code class="docutils literal notranslate"><span class="pre">2</span></code> sẽ làm các hạt kết xuất ở 2 khung hình mỗi giây. Lưu ý rằng điều này không làm chậm bản thân hệ thống hạt.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot 4.3 hiện chưa hỗ trợ physics interpolation cho hạt 2D. Để khắc phục tạm thời, hãy tắt physics interpolation cho node hạt bằng cách đặt <strong>Node &gt; Physics Interpolation &gt; Mode</strong> ở cuối Inspector.</p>
+</div>
+</section>
+<section id="fract-delta">
+<h3>Fract Delta<a class="headerlink" href="#fract-delta" title="Link to this heading"></a></h3>
+<p>Đặt Fract Delta thành <code class="docutils literal notranslate"><span class="pre">true</span></code> sẽ dùng phép tính delta phân số, giúp hiệu ứng hiển thị hạt mượt hơn. Độ mượt tăng lên này đến từ độ chính xác cao hơn. Sự khác biệt dễ nhận thấy hơn trong các hệ thống có độ ngẫu nhiên cao hoặc hạt di chuyển nhanh. Nó giúp duy trì tính nhất quán hình ảnh của hệ thống hạt, đảm bảo chuyển động của mỗi hạt khớp với vòng đời thực tế của nó. Nếu không có nó, các hạt có thể trông như bị nhảy hoặc di chuyển nhiều hơn mức cần thiết trong một frame nếu chúng được phát ra tại một thời điểm giữa frame. Độ chính xác cao hơn đánh đổi bằng hiệu năng, đặc biệt trong các hệ thống có số lượng hạt lớn.</p>
+</section>
+</section>
+<section id="drawing-parameters">
+<h2>Tham số vẽ<a class="headerlink" href="#drawing-parameters" title="Link to this heading"></a></h2>
+<section id="visibility-rect">
+<h3>Visibility Rect<a class="headerlink" href="#visibility-rect" title="Link to this heading"></a></h3>
+<p>Hình chữ nhật hiển thị điều khiển khả năng hiển thị của các hạt trên màn hình. Nếu hình chữ nhật này nằm ngoài viewport, engine sẽ không kết xuất các hạt lên màn hình.</p>
+<p>Các thuộc tính <code class="docutils literal notranslate"><span class="pre">W</span></code> và <code class="docutils literal notranslate"><span class="pre">H</span></code> của hình chữ nhật lần lượt điều khiển chiều rộng và chiều cao. Các thuộc tính <code class="docutils literal notranslate"><span class="pre">X</span></code> và <code class="docutils literal notranslate"><span class="pre">Y</span></code> điều khiển vị trí góc trên bên trái của hình chữ nhật, tương đối so với bộ phát hạt.</p>
+<p>Bạn có thể để Godot tự động tạo Visibility Rect bằng thanh công cụ phía trên view 2D. Để làm vậy, chọn node GPUParticles2D và nhấp <code class="docutils literal notranslate"><span class="pre">Particles</span> <span class="pre">&gt;</span> <span class="pre">Generate</span> <span class="pre">Visibility</span> <span class="pre">Rect</span></code>. Godot sẽ mô phỏng node Particles2D phát hạt trong vài giây và đặt hình chữ nhật vừa với vùng mà các hạt chiếm.</p>
+<p>Bạn có thể điều khiển thời lượng phát bằng tùy chọn <code class="docutils literal notranslate"><span class="pre">Generation</span> <span class="pre">Time</span> <span class="pre">(sec)</span></code>. Giá trị tối đa là 25 giây. Nếu cần thêm thời gian để các hạt di chuyển, bạn có thể tạm thời thay đổi thời lượng <code class="docutils literal notranslate"><span class="pre">preprocess</span></code> trên node Particles2D.</p>
+</section>
+<section id="local-coords">
+<h3>Local Coords<a class="headerlink" href="#local-coords" title="Link to this heading"></a></h3>
+<p>Mặc định, tùy chọn này tắt. Nghĩa là không gian mà các hạt được phát vào là toàn cục, và <strong>không</strong> tương đối với node. Nếu node di chuyển, các hạt đã có sẽ không di chuyển theo:</p>
+<img alt="../../_images/paranim21.gif" src="../../_images/paranim21.gif" />
+<p>Nếu bật, các hạt sẽ được phát vào không gian cục bộ, nghĩa là nếu node di chuyển, các hạt đã phát ra cũng bị ảnh hưởng:</p>
+<img alt="../../_images/paranim20.gif" src="../../_images/paranim20.gif" />
+</section>
+<section id="draw-order">
+<h3>Draw Order<a class="headerlink" href="#draw-order" title="Link to this heading"></a></h3>
+<p>Tùy chọn này điều khiển thứ tự vẽ từng hạt. <code class="docutils literal notranslate"><span class="pre">Index</span></code> nghĩa là các hạt được vẽ theo thứ tự phát ra (mặc định). <code class="docutils literal notranslate"><span class="pre">Lifetime</span></code> nghĩa là chúng được vẽ theo thứ tự vòng đời còn lại.</p>
+</section>
+</section>
+<section id="particle-process-material-settings">
+<h2>Cài đặt Particle Process Material<a class="headerlink" href="#particle-process-material-settings" title="Link to this heading"></a></h2>
+<p>Để biết thông tin về các cài đặt trong ParticleProcessMaterial, hãy xem <a class="reference internal" href="particle_process_material_2d.html#doc-particle-process-material-2d"><span class="std std-ref">trang này</span></a>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2d_sprite_animation.html" class="btn btn-neutral float-left" title="Hoạt ảnh sprite 2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="particle_process_material_2d.html" class="btn btn-neutral float-right" title="Sử dụng ParticleProcessMaterial trong 2D" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

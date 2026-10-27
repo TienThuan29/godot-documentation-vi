@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Các API an toàn luồng (thread-safe)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/performance/thread_safe_apis.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Luồng: Luồng (thread) được dùng để cân bằng sức mạnh xử lý giữa các CPU và nhân. Godot hỗ trợ đa luồng, nhưng không phải trong toàn bộ engine. Dưới đây là danh sách các cách có thể dùng đa luồng tr..." />
+<meta name="description" content="Luồng: Luồng (thread) được dùng để cân bằng sức mạnh xử lý giữa các CPU và nhân. Godot hỗ trợ đa luồng, nhưng không phải trong toàn bộ engine. Dưới đây là danh sách các cách có thể dùng đa luồng tr..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Các API an toàn luồng (thread-safe) &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Vật lý" href="../physics/index.html" />
+    <link rel="prev" title="Sử dụng nhiều luồng" href="using_multiple_threads.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/performance/thread_safe_apis" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hiệu năng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Giới thiệu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Chung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cpu">CPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gpu">GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#d">3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#threads">Luồng</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="using_multiple_threads.html">Sử dụng nhiều luồng</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Các API an toàn luồng (thread-safe)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#threads">Luồng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global-scope">Phạm vi toàn cục</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scene-tree">Scene tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rendering">Kết xuất</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physics">Vật lý</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navigation">Điều hướng</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gdscript-arrays-and-dictionaries">Mảng và dictionary trong GDScript</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resources">Tài nguyên</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Hiệu năng</a></li>
+      <li class="breadcrumb-item active">Các API an toàn luồng (thread-safe)</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="thread-safe-apis">
+<span id="doc-thread-safe-apis"></span><h1>Các API an toàn luồng (thread-safe)<a class="headerlink" href="#thread-safe-apis" title="Link to this heading"></a></h1>
+<section id="threads">
+<h2>Luồng<a class="headerlink" href="#threads" title="Link to this heading"></a></h2>
+<p>Luồng (thread) được dùng để cân bằng sức mạnh xử lý giữa các CPU và nhân. Godot hỗ trợ đa luồng, nhưng không phải trong toàn bộ engine.</p>
+<p>Dưới đây là danh sách các cách có thể dùng đa luồng trong những khu vực khác nhau của Godot.</p>
+</section>
+<section id="global-scope">
+<h2>Phạm vi toàn cục<a class="headerlink" href="#global-scope" title="Link to this heading"></a></h2>
+<p>Hầu hết singleton trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_&#64;globalscope.html" title="Class reference (English)"><span class="xref std std-ref">Global Scope</span></a> đều an toàn luồng theo mặc định. Việc truy cập server từ các luồng được hỗ trợ. Tuy nhiên, với server <a class="reference internal" href="#doc-thread-safe-apis-rendering"><span class="std std-ref">kết xuất</span></a> và <a class="reference internal" href="#doc-thread-safe-apis-physics"><span class="std std-ref">vật lý</span></a>, cần bật chế độ hoạt động an toàn luồng trong cài đặt dự án trước.</p>
+<p>Điều này khiến singleton trở nên lý tưởng cho code tạo hàng chục nghìn instance trong server và điều khiển chúng từ các luồng. Tất nhiên, cách này cần thêm một chút code, vì nó được dùng trực tiếp chứ không nằm trong scene tree.</p>
+</section>
+<section id="scene-tree">
+<h2>Scene tree<a class="headerlink" href="#scene-tree" title="Link to this heading"></a></h2>
+<p>Tương tác với scene tree đang hoạt động <strong>không</strong> an toàn luồng. Hãy đảm bảo dùng mutex khi gửi dữ liệu giữa các luồng. Nếu bạn muốn gọi hàm hoặc đặt thuộc tính từ một luồng, bạn có thể dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-method-call-deferred" title="Class reference (English)"><span class="xref std std-ref">call_deferred</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_object.html#class-object-method-set-deferred" title="Class reference (English)"><span class="xref std std-ref">set_deferred</span></a>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unsafe:</span>
+<span class="n">node</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+<span class="c1"># Safe:</span>
+<span class="n">node</span><span class="o">.</span><span class="vi">add_child</span><span class="o">.</span><span class="nf">call_deferred</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Unsafe:</span>
+<span class="n">node</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">childNode</span><span class="p">);</span>
+<span class="c1">// Safe:</span>
+<span class="n">node</span><span class="p">.</span><span class="n">CallDeferred</span><span class="p">(</span><span class="n">Node</span><span class="p">.</span><span class="n">MethodName</span><span class="p">.</span><span class="n">AddChild</span><span class="p">,</span><span class="w"> </span><span class="n">childNode</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Tuy nhiên, việc tạo các khối scene (các node được sắp xếp dạng cây) bên ngoài cây đang hoạt động thì không sao. Bằng cách này, các phần của một scene có thể được xây dựng hoặc tạo instance trong một luồng, rồi được thêm vào trong luồng chính:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">enemy_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">load</span><span class="p">(</span><span class="s2">&quot;res://enemy_scene.scn&quot;</span><span class="p">)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">enemy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">enemy_scene</span><span class="o">.</span><span class="nf">instantiate</span><span class="p">()</span>
+<span class="n">enemy</span><span class="o">.</span><span class="nf">add_child</span><span class="p">(</span><span class="n">weapon</span><span class="p">)</span><span class="w"> </span><span class="c1"># Set a weapon.</span>
+<span class="n">world</span><span class="o">.</span><span class="vi">add_child</span><span class="o">.</span><span class="nf">call_deferred</span><span class="p">(</span><span class="n">enemy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">PackedScene</span><span class="w"> </span><span class="n">enemyScene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GD</span><span class="p">.</span><span class="n">Load</span><span class="o">&lt;</span><span class="n">PackedScene</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;res://EnemyScene.scn&quot;</span><span class="p">);</span>
+<span class="n">Node</span><span class="w"> </span><span class="n">enemy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">enemyScene</span><span class="p">.</span><span class="n">Instantiate</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">enemy</span><span class="p">.</span><span class="n">AddChild</span><span class="p">(</span><span class="n">weapon</span><span class="p">);</span>
+<span class="n">world</span><span class="p">.</span><span class="n">CallDeferred</span><span class="p">(</span><span class="n">Node</span><span class="p">.</span><span class="n">MethodName</span><span class="p">.</span><span class="n">AddChild</span><span class="p">,</span><span class="w"> </span><span class="n">enemy</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Dù vậy, điều này chỉ thực sự hữu ích nếu bạn có <strong>một</strong> luồng tải dữ liệu. Cố tải hoặc tạo các khối scene từ nhiều luồng có thể hoạt động, nhưng bạn có nguy cơ khiến resource (vốn chỉ được tải một lần trong Godot) bị nhiều luồng chỉnh sửa, dẫn đến hành vi không mong muốn hoặc crash.</p>
+<p>Chỉ dùng nhiều hơn một luồng để tạo dữ liệu scene nếu bạn <em>thực sự</em> biết mình đang làm gì và chắc chắn rằng một resource không bị dùng hoặc đặt trong nhiều luồng. Nếu không, sẽ an toàn hơn nếu bạn chỉ dùng trực tiếp API server (vốn hoàn toàn an toàn luồng) và không động đến scene hay resource.</p>
+</section>
+<section id="rendering">
+<span id="doc-thread-safe-apis-rendering"></span><h2>Kết xuất<a class="headerlink" href="#rendering" title="Link to this heading"></a></h2>
+<p>Tạo instance các node kết xuất bất cứ thứ gì trong 2D hoặc 3D (chẳng hạn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_sprite2d.html" title="Class reference (English)"><span class="xref std std-ref">class_Sprite2D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">class_MeshInstance3D</span></a>) <em>không</em> an toàn luồng theo mặc định. Để chạy driver kết xuất trên một luồng riêng, hãy đặt cài đặt dự án <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-rendering-driver-threads-thread-model" title="Class reference (English)"><span class="xref std std-ref">Rendering &gt; Driver &gt; Thread Model</span></a> thành <strong>Separate</strong>.</p>
+<p>Lưu ý rằng mô hình luồng <strong>Separate</strong> có một số lỗi đã biết, nên nó có thể không dùng được trong mọi tình huống.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Bạn nên tránh gọi các hàm liên quan đến tương tác trực tiếp với GPU trên các luồng khác, chẳng hạn tạo texture mới hoặc sửa đổi và truy xuất dữ liệu hình ảnh. Các thao tác này có thể gây đình trệ hiệu năng vì chúng cần đồng bộ hóa với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html" title="Class reference (English)"><span class="xref std std-ref">RenderingServer</span></a>, do dữ liệu cần được truyền tới hoặc cập nhật trên GPU.</p>
+</div>
+</section>
+<section id="physics">
+<span id="doc-thread-safe-apis-physics"></span><h2>Vật lý<a class="headerlink" href="#physics" title="Link to this heading"></a></h2>
+<p>Mô phỏng vật lý <em>không</em> an toàn luồng theo mặc định. Để chạy các server vật lý trên các luồng riêng (giúp chúng an toàn luồng), hãy bật các cài đặt dự án sau:</p>
+<ul class="simple">
+<li><p><strong>PhysicsServer2D:</strong> <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-physics-2d-run-on-separate-thread" title="Class reference (English)"><span class="xref std std-ref">Physics &gt; 2D &gt; Run on Separate Thread</span></a>.</p></li>
+<li><p><strong>PhysicsServer3D:</strong> <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-physics-3d-run-on-separate-thread" title="Class reference (English)"><span class="xref std std-ref">Physics &gt; 3D &gt; Run on Separate Thread</span></a>.</p></li>
+</ul>
+</section>
+<section id="navigation">
+<h2>Điều hướng<a class="headerlink" href="#navigation" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer3D</span></a> đều an toàn luồng và thân thiện với luồng.</p>
+<p>Các hàm truy vấn liên quan đến điều hướng có thể được gọi từ các luồng và chạy song song thực sự.</p>
+<p>Theo mặc định, một số lượng luồng thận trọng được hỗ trợ chạy song song thực sự trên các navigation map trước khi các luồng bổ sung phải chờ truy cập dữ liệu map tại một semaphore. Để tăng số luồng có thể chạy đồng thời trên dữ liệu map, hãy đặt <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html#class-projectsettings-property-navigation-pathfinding-max-threads" title="Class reference (English)"><span class="xref std std-ref">Navigation &gt; Pathfinding &gt; Max Threads</span></a>.</p>
+<p>Các resource liên quan đến navigation server như NavigationSourceGeometryData, NavigationMesh và NavigationPolygon đều an toàn luồng nhưng không nhất thiết thân thiện với luồng. Chúng dùng khóa đọc-ghi nội bộ để đảm bảo an toàn luồng, nên việc chỉnh sửa cùng một resource (ví dụ một navmesh lớn duy nhất) trên nhiều luồng cùng lúc có thể gây tắc nghẽn luồng.</p>
+<p>Các lớp hỗ trợ liên quan đến điều hướng như <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_astar2d.html" title="Class reference (English)"><span class="xref std std-ref">AStar2D</span></a>, <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_astar3d.html" title="Class reference (English)"><span class="xref std std-ref">AStar3D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_astargrid2d.html" title="Class reference (English)"><span class="xref std std-ref">AStarGrid2D</span></a> <strong>không</strong> an toàn luồng. Chúng có thể được dùng với luồng ở mức độ hạn chế, nhưng dùng hai luồng trở lên trên cùng một đối tượng AStar sẽ gây hỏng dữ liệu. Ví dụ, dùng một luồng nền riêng cho mỗi đối tượng AStar để thêm điểm hoặc thực hiện truy vấn thì hoạt động được, nhưng hai luồng dùng cùng một đối tượng AStar sẽ làm hỏng dữ liệu của nhau.</p>
+</section>
+<section id="gdscript-arrays-and-dictionaries">
+<h2>Mảng và dictionary trong GDScript<a class="headerlink" href="#gdscript-arrays-and-dictionaries" title="Link to this heading"></a></h2>
+<p>Trong GDScript, việc đọc và ghi phần tử từ nhiều luồng là ổn, nhưng bất cứ thao tác nào thay đổi kích thước container (thay đổi kích thước, thêm hoặc xóa phần tử) đều cần khóa một <a class="reference internal" href="using_multiple_threads.html#doc-using-multiple-threads-mutexes"><span class="std std-ref">mutex</span></a>.</p>
+</section>
+<section id="resources">
+<h2>Tài nguyên<a class="headerlink" href="#resources" title="Link to this heading"></a></h2>
+<p>Việc sửa đổi một resource duy nhất từ nhiều luồng không được hỗ trợ. Tuy nhiên, việc xử lý tham chiếu trên nhiều luồng <em>được</em> hỗ trợ. Do đó, việc tải resource trên một luồng cũng vậy. Scene, texture, mesh, v.v. có thể được tải và thao tác trên một luồng rồi thêm vào scene đang hoạt động trên luồng chính. Giới hạn ở đây như đã mô tả ở trên: cần cẩn thận không tải cùng một resource từ nhiều luồng cùng lúc. Vì vậy, đơn giản nhất là dùng <strong>một</strong> luồng để tải và sửa đổi resource, rồi dùng luồng chính để thêm chúng vào.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_multiple_threads.html" class="btn btn-neutral float-left" title="Sử dụng nhiều luồng" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="../physics/index.html" class="btn btn-neutral float-right" title="Vật lý" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

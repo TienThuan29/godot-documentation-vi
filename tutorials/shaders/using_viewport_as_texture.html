@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Dùng SubViewport làm texture" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/shaders/using_viewport_as_texture.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Bài hướng dẫn này sẽ giới thiệu cách dùng SubViewport làm một texture có thể áp dụng lên các đối tượng 3D. Để làm vậy, bài sẽ hướng dẫn bạn qua quá trình tạo một hành tinh procedural nh..." />
+<meta name="description" content="Giới thiệu: Bài hướng dẫn này sẽ giới thiệu cách dùng SubViewport làm một texture có thể áp dụng lên các đối tượng 3D. Để làm vậy, bài sẽ hướng dẫn bạn qua quá trình tạo một hành tinh procedural nh..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Dùng SubViewport làm texture &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Hậu xử lý tùy chỉnh" href="custom_postprocessing.html" />
+    <link rel="prev" title="Hướng dẫn phong cách viết shader" href="shaders_style_guide.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/shaders/using_viewport_as_texture" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Shader</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_shaders.html">Giới thiệu về shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shader_reference/index.html">Tham chiếu shading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="your_first_shader/index.html">Shader đầu tiên của bạn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visual_shaders.html">Sử dụng VisualShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute_shaders.html">Sử dụng compute shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="screen-reading_shaders.html">Shader đọc màn hình</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converting_glsl_to_godot_shaders.html">Chuyển đổi GLSL sang shader Godot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shaders_style_guide.html">Hướng dẫn phong cách viết shader</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Dùng SubViewport làm texture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-scene">Thiết lập scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-subviewport">Thiết lập SubViewport</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#applying-the-texture">Áp dụng texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-the-planet-texture">Tạo texture hành tinh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coloring-the-planet">Tô màu hành tinh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-an-ocean">Tạo đại dương</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom_postprocessing.html">Hậu xử lý tùy chỉnh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_postprocessing.html">Hậu xử lý nâng cao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="making_trees.html">Tạo cây</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Shader</a></li>
+      <li class="breadcrumb-item active">Dùng SubViewport làm texture</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-a-subviewport-as-a-texture">
+<span id="doc-viewport-as-texture"></span><h1>Dùng SubViewport làm texture<a class="headerlink" href="#using-a-subviewport-as-a-texture" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Bài hướng dẫn này sẽ giới thiệu cách dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> làm một texture có thể áp dụng lên các đối tượng 3D. Để làm vậy, bài sẽ hướng dẫn bạn qua quá trình tạo một hành tinh procedural như hình dưới đây:</p>
+<img alt="../../_images/planet_example.png" src="../../_images/planet_example.png" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bài hướng dẫn này không đề cập đến cách viết code cho một bầu khí quyển động như hành tinh này có.</p>
+</div>
+<p>Bài hướng dẫn này giả định bạn đã quen với cách thiết lập một scene cơ bản gồm: một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_camera3d.html" title="Class reference (English)"><span class="xref std std-ref">Camera3D</span></a>, một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_omnilight3d.html" title="Class reference (English)"><span class="xref std std-ref">nguồn sáng</span></a>, một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a> với một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_primitivemesh.html" title="Class reference (English)"><span class="xref std std-ref">Primitive Mesh</span></a>, và áp dụng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a> lên mesh. Trọng tâm sẽ là việc dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> để tạo động các texture có thể áp dụng lên mesh.</p>
+<p>Trong bài hướng dẫn này, chúng ta sẽ đề cập các chủ đề sau:</p>
+<ul class="simple">
+<li><p>Cách dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> làm render texture</p></li>
+<li><p>Ánh xạ texture lên hình cầu bằng phép chiếu equirectangular</p></li>
+<li><p>Các kỹ thuật fragment shader cho hành tinh procedural</p></li>
+<li><p>Thiết lập Roughness map từ một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewporttexture.html" title="Class reference (English)"><span class="xref std std-ref">Viewport Texture</span></a></p></li>
+</ul>
+</section>
+<section id="setting-up-the-scene">
+<h2>Thiết lập scene<a class="headerlink" href="#setting-up-the-scene" title="Link to this heading"></a></h2>
+<p>Tạo một scene mới và thêm các node sau đúng như hình dưới đây.</p>
+<img alt="../../_images/viewport_texture_node_tree.webp" src="../../_images/viewport_texture_node_tree.webp" />
+<p>Vào MeshInstance3D và đặt mesh là một SphereMesh</p>
+</section>
+<section id="setting-up-the-subviewport">
+<h2>Thiết lập SubViewport<a class="headerlink" href="#setting-up-the-subviewport" title="Link to this heading"></a></h2>
+<p>Nhấp vào node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> và đặt kích thước của nó là <code class="docutils literal notranslate"><span class="pre">(1024,</span> <span class="pre">512)</span></code>. Thực ra <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> có thể có kích thước bất kỳ miễn là chiều rộng gấp đôi chiều cao. Chiều rộng cần gấp đôi chiều cao để hình ảnh được ánh xạ chính xác lên hình cầu, vì chúng ta sẽ dùng phép chiếu equirectangular, nhưng phần này sẽ nói sau.</p>
+<p>Tiếp theo, tắt 3D. Chúng ta sẽ dùng một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">ColorRect</span></a> để kết xuất bề mặt, nên cũng không cần đến 3D.</p>
+<img alt="../../_images/planet_new_viewport.webp" src="../../_images/planet_new_viewport.webp" />
+<p>Chọn <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">ColorRect</span></a> và trong Inspector, đặt anchors preset là <code class="docutils literal notranslate"><span class="pre">Full</span> <span class="pre">Rect</span></code>. Điều này đảm bảo <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">ColorRect</span></a> chiếm toàn bộ <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a>.</p>
+<img alt="../../_images/planet_new_colorrect.webp" src="../../_images/planet_new_colorrect.webp" />
+<p>Tiếp theo, chúng ta thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html" title="Class reference (English)"><span class="xref std std-ref">Shader Material</span></a> vào <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_colorrect.html" title="Class reference (English)"><span class="xref std std-ref">ColorRect</span></a> (ColorRect &gt; CanvasItem &gt; Material &gt; Material &gt; <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">ShaderMaterial</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn nên có hiểu biết cơ bản về shading cho bài hướng dẫn này. Tuy nhiên, ngay cả khi bạn mới làm quen với shader, toàn bộ code đều được cung cấp, nên bạn sẽ không gặp khó khăn khi làm theo.</p>
+</div>
+<p>Nhấp vào nút menu thả xuống của shader material và nhấp / Edit. Từ đây, vào Shader &gt; <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Shader</span></code>. Đặt tên cho nó và nhấp &quot;Create&quot;. Nhấp vào shader trong Inspector để mở trình chỉnh sửa shader. Xóa code mặc định và thêm đoạn sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">shader_type</span><span class="w"> </span><span class="n">canvas_item</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fragment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">COLOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">UV</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">UV</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Lưu code shader, bạn sẽ thấy trong Inspector rằng đoạn code trên kết xuất một dải màu chuyển tiếp như hình dưới đây.</p>
+<img alt="../../_images/planet_gradient.png" src="../../_images/planet_gradient.png" />
+<p>Giờ chúng ta đã có phần cơ bản của một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> để kết xuất vào và có một hình ảnh riêng có thể áp dụng lên hình cầu.</p>
+</section>
+<section id="applying-the-texture">
+<h2>Áp dụng texture<a class="headerlink" href="#applying-the-texture" title="Link to this heading"></a></h2>
+<p>Giờ hãy vào <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html" title="Class reference (English)"><span class="xref std std-ref">MeshInstance3D</span></a> và thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a> vào nó. Không cần một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html" title="Class reference (English)"><span class="xref std std-ref">Shader Material</span></a> đặc biệt (dù đó sẽ là ý hay cho các hiệu ứng nâng cao hơn, như bầu khí quyển trong ví dụ ở trên).</p>
+<p>MeshInstance3D &gt; GeometryInstance &gt; Geometry &gt; Material Override &gt; <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">StandardMaterial3D</span></code></p>
+<p>Sau đó nhấp vào menu thả xuống của StandardMaterial3D và nhấp &quot;Edit&quot;</p>
+<p>Vào mục &quot;Resource&quot; và đánh dấu ô <code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">to</span> <span class="pre">scene</span></code>. Sau đó, vào mục &quot;Albedo&quot; và nhấp bên cạnh thuộc tính &quot;Texture&quot; để thêm một Albedo Texture. Tại đây chúng ta sẽ áp dụng texture đã tạo. Chọn &quot;New ViewportTexture&quot;</p>
+<img alt="../../_images/planet_new_viewport_texture.webp" src="../../_images/planet_new_viewport_texture.webp" />
+<p>Nhấp vào ViewportTexture bạn vừa tạo trong Inspector, sau đó nhấp &quot;Assign&quot;. Tiếp theo, từ menu bật lên, chọn Viewport mà chúng ta đã kết xuất vào trước đó.</p>
+<img alt="../../_images/planet_pick_viewport_texture.webp" src="../../_images/planet_pick_viewport_texture.webp" />
+<p>Hình cầu của bạn giờ sẽ được tô bằng các màu mà chúng ta đã kết xuất vào Viewport.</p>
+<img alt="../../_images/planet_seam.webp" src="../../_images/planet_seam.webp" />
+<p>Bạn có để ý đường nối xấu xí xuất hiện ở chỗ texture quấn quanh không? Đó là vì chúng ta chọn màu dựa trên tọa độ UV, mà tọa độ UV không quấn quanh texture. Đây là một vấn đề kinh điển trong phép chiếu bản đồ 2D. Các nhà phát triển game thường có một bản đồ 2 chiều muốn chiếu lên hình cầu, nhưng khi quấn quanh, nó xuất hiện những đường nối lớn. Có một cách giải quyết tinh tế cho vấn đề này mà chúng ta sẽ minh họa ở phần tiếp theo.</p>
+</section>
+<section id="making-the-planet-texture">
+<h2>Tạo texture hành tinh<a class="headerlink" href="#making-the-planet-texture" title="Link to this heading"></a></h2>
+<p>Giờ đây, khi chúng ta kết xuất vào <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a>, nó xuất hiện một cách kỳ diệu trên hình cầu. Nhưng có một đường nối xấu xí do tọa độ texture gây ra. Vậy làm sao để có một dải tọa độ quấn quanh hình cầu một cách đẹp mắt? Một giải pháp là dùng một hàm lặp lại trên miền của texture. <code class="docutils literal notranslate"><span class="pre">sin</span></code> và <code class="docutils literal notranslate"><span class="pre">cos</span></code> là hai hàm như vậy. Hãy áp dụng chúng lên texture và xem điều gì xảy ra. Thay đoạn code màu hiện có trong shader bằng đoạn sau:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">COLOR</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">UV</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">3.14159</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">4.0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">UV</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">3.14159</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">4.0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../../_images/planet_sincos.webp" src="../../_images/planet_sincos.webp" />
+<p>Không tệ lắm. Nếu nhìn quanh, bạn sẽ thấy đường nối đã biến mất, nhưng thay vào đó, chúng ta bị co thắt ở hai cực. Hiện tượng co thắt này là do cách Godot ánh xạ texture lên hình cầu trong <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html" title="Class reference (English)"><span class="xref std std-ref">StandardMaterial3D</span></a>. Nó dùng một kỹ thuật chiếu gọi là phép chiếu equirectangular, chuyển một bản đồ hình cầu sang mặt phẳng 2D.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn muốn biết thêm chút thông tin về kỹ thuật này, chúng ta sẽ chuyển đổi từ tọa độ cầu sang tọa độ Descartes. Tọa độ cầu ánh xạ kinh độ và vĩ độ của hình cầu, còn tọa độ Descartes, về cơ bản, là một vector từ tâm hình cầu đến điểm đó.</p>
+</div>
+<p>Với mỗi pixel, chúng ta sẽ tính vị trí 3D của nó trên hình cầu. Từ đó, chúng ta sẽ dùng noise 3D để xác định giá trị màu. Bằng cách tính noise trong 3D, chúng ta giải quyết được vấn đề co thắt ở hai cực. Để hiểu tại sao, hãy hình dung noise được tính trên bề mặt hình cầu thay vì trên mặt phẳng 2D. Khi tính trên bề mặt hình cầu, bạn không bao giờ chạm tới cạnh, do đó không bao giờ tạo ra đường nối hay điểm co thắt ở cực. Đoạn code sau chuyển <code class="docutils literal notranslate"><span class="pre">UVs</span></code> sang tọa độ Descartes.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">theta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UV</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">3.14159</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">phi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UV</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">3.14159</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="kt">vec3</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+
+<span class="n">unit</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">);</span>
+<span class="n">unit</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">;</span>
+<span class="n">unit</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">);</span>
+<span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize</span><span class="p">(</span><span class="n">unit</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Và nếu dùng <code class="docutils literal notranslate"><span class="pre">unit</span></code> làm giá trị <code class="docutils literal notranslate"><span class="pre">COLOR</span></code> đầu ra, chúng ta được:</p>
+<img alt="../../_images/planet_normals.webp" src="../../_images/planet_normals.webp" />
+<p>Giờ chúng ta đã tính được vị trí 3D của bề mặt hình cầu, chúng ta có thể dùng noise 3D để tạo hành tinh. Chúng ta sẽ dùng trực tiếp hàm noise này từ một <a class="reference external" href="https://www.shadertoy.com/view/Xsl3Dl">Shadertoy</a>:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">vec3</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="kt">vec3</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">127.1</span><span class="p">,</span><span class="w"> </span><span class="mf">311.7</span><span class="p">,</span><span class="w"> </span><span class="mf">74.7</span><span class="p">)),</span>
+<span class="w">             </span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">269.5</span><span class="p">,</span><span class="w"> </span><span class="mf">183.3</span><span class="p">,</span><span class="w"> </span><span class="mf">246.1</span><span class="p">)),</span>
+<span class="w">             </span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">113.5</span><span class="p">,</span><span class="w"> </span><span class="mf">271.9</span><span class="p">,</span><span class="w"> </span><span class="mf">124.6</span><span class="p">)));</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">fract</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">43758.5453123</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">noise</span><span class="p">(</span><span class="kt">vec3</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">floor</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fract</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">vec3</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">3.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span>
+<span class="w">                     </span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">x</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">mix</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span>
+<span class="w">                     </span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">y</span><span class="p">),</span>
+<span class="w">             </span><span class="n">mix</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span>
+<span class="w">                     </span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">x</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">mix</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span>
+<span class="w">                     </span><span class="n">dot</span><span class="p">(</span><span class="n">hash</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Toàn bộ công lao thuộc về tác giả, Inigo Quilez. Nó được phát hành theo giấy phép <code class="docutils literal notranslate"><span class="pre">MIT</span></code>.</p>
+</div>
+<p>Giờ để dùng <code class="docutils literal notranslate"><span class="pre">noise</span></code>, hãy thêm đoạn sau vào hàm <code class="docutils literal notranslate"><span class="pre">fragment</span></code>:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">noise</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">5.0</span><span class="p">);</span>
+<span class="n">COLOR</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../../_images/planet_noise.webp" src="../../_images/planet_noise.webp" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để làm nổi bật texture, chúng ta đặt material thành unshaded.</p>
+</div>
+<p>Giờ bạn có thể thấy noise thực sự quấn liền mạch quanh hình cầu. Dù vậy, trông nó chẳng giống chút nào với hành tinh bạn được hứa hẹn. Vậy hãy chuyển sang thứ gì đó nhiều màu sắc hơn.</p>
+</section>
+<section id="coloring-the-planet">
+<h2>Tô màu hành tinh<a class="headerlink" href="#coloring-the-planet" title="Link to this heading"></a></h2>
+<p>Giờ hãy tạo màu cho hành tinh. Dù có nhiều cách để làm điều này, hiện tại chúng ta sẽ dùng một dải màu chuyển tiếp giữa nước và đất liền.</p>
+<p>Để tạo dải màu chuyển tiếp trong GLSL, chúng ta dùng hàm <code class="docutils literal notranslate"><span class="pre">mix</span></code>. <code class="docutils literal notranslate"><span class="pre">mix</span></code> nhận hai giá trị để nội suy giữa chúng và một tham số thứ ba để chọn mức nội suy giữa hai giá trị; về bản chất, nó <em>trộn</em> hai giá trị với nhau. Trong các API khác, hàm này thường được gọi là <code class="docutils literal notranslate"><span class="pre">lerp</span></code>. Tuy nhiên, <code class="docutils literal notranslate"><span class="pre">lerp</span></code> thường chỉ dùng để trộn hai số float; <code class="docutils literal notranslate"><span class="pre">mix</span></code> có thể nhận bất kỳ giá trị nào, dù là float hay kiểu vector.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">COLOR</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">),</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Màu thứ nhất là màu xanh dương cho đại dương. Màu thứ hai là một kiểu màu đỏ nhạt (vì hành tinh ngoài hành tinh nào cũng cần địa hình màu đỏ). Cuối cùng, chúng được trộn với nhau bằng <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">*</span> <span class="pre">0.5</span> <span class="pre">+</span> <span class="pre">0.5</span></code>. <code class="docutils literal notranslate"><span class="pre">n</span></code> biến thiên mượt mà giữa <code class="docutils literal notranslate"><span class="pre">-1</span></code> và <code class="docutils literal notranslate"><span class="pre">1</span></code>. Vì vậy chúng ta ánh xạ nó vào khoảng <code class="docutils literal notranslate"><span class="pre">0-1</span></code> mà <code class="docutils literal notranslate"><span class="pre">mix</span></code> cần. Giờ bạn có thể thấy màu thay đổi giữa xanh dương và đỏ.</p>
+<img alt="../../_images/planet_noise_color.webp" src="../../_images/planet_noise_color.webp" />
+<p>Kết quả hơi mờ hơn mong muốn. Các hành tinh thường có ranh giới khá rõ giữa đất liền và biển. Để làm vậy, chúng ta sẽ đổi số hạng cuối thành <code class="docutils literal notranslate"><span class="pre">smoothstep(-0.1,</span> <span class="pre">0.0,</span> <span class="pre">n)</span></code>. Và như vậy cả dòng trở thành:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">COLOR</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">),</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">),</span><span class="w"> </span><span class="n">smoothstep</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">));</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">smoothstep</span></code> trả về <code class="docutils literal notranslate"><span class="pre">0</span></code> nếu tham số thứ ba nhỏ hơn tham số thứ nhất, trả về <code class="docutils literal notranslate"><span class="pre">1</span></code> nếu tham số thứ ba lớn hơn tham số thứ hai, và chuyển tiếp mượt mà giữa <code class="docutils literal notranslate"><span class="pre">0</span></code> và <code class="docutils literal notranslate"><span class="pre">1</span></code> nếu số thứ ba nằm giữa số thứ nhất và số thứ hai. Vì vậy trong dòng này, <code class="docutils literal notranslate"><span class="pre">smoothstep</span></code> trả về <code class="docutils literal notranslate"><span class="pre">0</span></code> bất cứ khi nào <code class="docutils literal notranslate"><span class="pre">n</span></code> nhỏ hơn <code class="docutils literal notranslate"><span class="pre">-0.1</span></code> và trả về <code class="docutils literal notranslate"><span class="pre">1</span></code> bất cứ khi nào <code class="docutils literal notranslate"><span class="pre">n</span></code> lớn hơn <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<img alt="../../_images/planet_noise_smooth.webp" src="../../_images/planet_noise_smooth.webp" />
+<p>Còn một việc nữa để nó trông giống hành tinh hơn. Đất liền không nên trông như những đốm tròn; hãy làm cho các cạnh gồ ghề hơn một chút. Một mẹo thường dùng trong shader để tạo địa hình trông gồ ghề bằng noise là xếp chồng các lớp noise lên nhau ở các tần số khác nhau. Chúng ta dùng một lớp để tạo cấu trúc tổng thể dạng đốm của các lục địa. Sau đó một lớp khác phá vỡ các cạnh một chút, rồi một lớp nữa, và cứ thế. Việc chúng ta sẽ làm là tính <code class="docutils literal notranslate"><span class="pre">n</span></code> bằng bốn dòng code shader thay vì chỉ một. <code class="docutils literal notranslate"><span class="pre">n</span></code> trở thành:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">noise</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<span class="n">n</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">noise</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">10.0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.25</span><span class="p">;</span>
+<span class="n">n</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">noise</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">20.0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.125</span><span class="p">;</span>
+<span class="n">n</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">noise</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">40.0</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.0625</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Và giờ hành tinh trông như thế này:</p>
+<img alt="../../_images/planet_noise_fbm.webp" src="../../_images/planet_noise_fbm.webp" />
+</section>
+<section id="making-an-ocean">
+<h2>Tạo đại dương<a class="headerlink" href="#making-an-ocean" title="Link to this heading"></a></h2>
+<p>Một việc cuối cùng để nó trông giống hành tinh hơn. Đại dương và đất liền phản xạ ánh sáng khác nhau. Vì vậy chúng ta muốn đại dương bóng hơn đất liền một chút. Chúng ta có thể làm điều này bằng cách truyền một giá trị thứ tư vào kênh <code class="docutils literal notranslate"><span class="pre">alpha</span></code> của <code class="docutils literal notranslate"><span class="pre">COLOR</span></code> đầu ra và dùng nó làm Roughness map.</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">COLOR</span><span class="p">.</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.7</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">smoothstep</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Dòng này trả về <code class="docutils literal notranslate"><span class="pre">0.3</span></code> cho nước và <code class="docutils literal notranslate"><span class="pre">1.0</span></code> cho đất liền. Điều này có nghĩa là đất liền sẽ khá nhám, còn nước sẽ khá nhẵn.</p>
+<p>Sau đó, trong material, ở mục &quot;Metallic&quot;, đảm bảo <code class="docutils literal notranslate"><span class="pre">Metallic</span></code> được đặt là <code class="docutils literal notranslate"><span class="pre">0</span></code> và <code class="docutils literal notranslate"><span class="pre">Specular</span></code> được đặt là <code class="docutils literal notranslate"><span class="pre">1</span></code>. Lý do là nước phản xạ ánh sáng rất tốt, nhưng không phải kim loại. Các giá trị này không chính xác về mặt vật lý, nhưng đủ tốt cho bản demo này.</p>
+<p>Tiếp theo, ở mục &quot;Roughness&quot;, đặt roughness texture là một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewporttexture.html" title="Class reference (English)"><span class="xref std std-ref">Viewport Texture</span></a> trỏ tới <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> chứa texture hành tinh. Cuối cùng, đặt <code class="docutils literal notranslate"><span class="pre">Texture</span> <span class="pre">Channel</span></code> là <code class="docutils literal notranslate"><span class="pre">Alpha</span></code>. Điều này chỉ thị cho renderer dùng kênh <code class="docutils literal notranslate"><span class="pre">alpha</span></code> của <code class="docutils literal notranslate"><span class="pre">COLOR</span></code> đầu ra làm giá trị <code class="docutils literal notranslate"><span class="pre">Roughness</span></code>.</p>
+<img alt="../../_images/planet_ocean.webp" src="../../_images/planet_ocean.webp" />
+<p>Bạn sẽ thấy rất ít thay đổi, ngoại trừ việc hành tinh không còn phản chiếu bầu trời. Điều này xảy ra vì, theo mặc định, khi thứ gì đó được kết xuất với giá trị alpha, nó được vẽ như một đối tượng trong suốt phía trên nền. Và vì nền mặc định của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> là đục, kênh <code class="docutils literal notranslate"><span class="pre">alpha</span></code> của <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_viewporttexture.html" title="Class reference (English)"><span class="xref std std-ref">Viewport Texture</span></a> là <code class="docutils literal notranslate"><span class="pre">1</span></code>, dẫn đến texture hành tinh được vẽ với màu hơi nhạt hơn và giá trị <code class="docutils literal notranslate"><span class="pre">Roughness</span></code> là <code class="docutils literal notranslate"><span class="pre">1</span></code> ở mọi nơi. Để khắc phục, chúng ta vào <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a> và bật thuộc tính &quot;Transparent Bg&quot;. Vì giờ chúng ta đang kết xuất một đối tượng trong suốt chồng lên một đối tượng khác, chúng ta muốn bật <code class="docutils literal notranslate"><span class="pre">blend_premul_alpha</span></code>:</p>
+<div class="highlight-glsl notranslate"><div class="highlight"><pre><span></span><span class="n">render_mode</span><span class="w"> </span><span class="n">blend_premul_alpha</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Thao tác này nhân trước các màu với giá trị <code class="docutils literal notranslate"><span class="pre">alpha</span></code> rồi hòa trộn chúng với nhau một cách chính xác. Thông thường, khi hòa trộn một màu trong suốt chồng lên một màu khác, ngay cả khi nền có <code class="docutils literal notranslate"><span class="pre">alpha</span></code> bằng <code class="docutils literal notranslate"><span class="pre">0</span></code> (như trong trường hợp này), bạn sẽ gặp vấn đề loang màu kỳ lạ. Thiết lập <code class="docutils literal notranslate"><span class="pre">blend_premul_alpha</span></code> sẽ khắc phục điều đó.</p>
+<p>Giờ hành tinh sẽ trông như đang phản xạ ánh sáng trên đại dương nhưng không phản xạ trên đất liền. Di chuyển <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_omnilight3d.html" title="Class reference (English)"><span class="xref std std-ref">OmniLight3D</span></a> trong scene để bạn thấy hiệu ứng phản xạ trên đại dương.</p>
+<img alt="../../_images/planet_ocean_reflect.webp" src="../../_images/planet_ocean_reflect.webp" />
+<p>Vậy là xong. Một hành tinh procedural được tạo bằng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_subviewport.html" title="Class reference (English)"><span class="xref std std-ref">SubViewport</span></a>.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="shaders_style_guide.html" class="btn btn-neutral float-left" title="Hướng dẫn phong cách viết shader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="custom_postprocessing.html" class="btn btn-neutral float-right" title="Hậu xử lý tùy chỉnh" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

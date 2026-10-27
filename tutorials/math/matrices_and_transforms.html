@@ -1,0 +1,700 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Ma trận và transform" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/math/matrices_and_transforms.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Giới thiệu: Trước khi đọc bài hướng dẫn này, chúng tôi khuyên bạn đọc kỹ và hiểu bài hướng dẫn Toán vector, vì bài này yêu cầu kiến thức về vector. Bài hướng dẫn này nói về các phép biến đổi(transf..." />
+<meta name="description" content="Giới thiệu: Trước khi đọc bài hướng dẫn này, chúng tôi khuyên bạn đọc kỹ và hiểu bài hướng dẫn Toán vector, vì bài này yêu cầu kiến thức về vector. Bài hướng dẫn này nói về các phép biến đổi(transf..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Ma trận và transform &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Nội suy" href="interpolation.html" />
+    <link rel="prev" title="Toán vector nâng cao" href="vectors_advanced.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/math/matrices_and_transforms" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Toán học</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="vector_math.html">Toán vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vectors_advanced.html">Toán vector nâng cao</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ma trận và transform</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Giới thiệu</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#matrix-components-and-the-identity-matrix">Các thành phần ma trận và ma trận đơn vị</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scaling-the-transformation-matrix">Co giãn ma trận biến đổi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rotating-the-transformation-matrix">Xoay ma trận biến đổi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basis-of-the-transformation-matrix">Basis của ma trận biến đổi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#translating-the-transformation-matrix">Tịnh tiến ma trận biến đổi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#putting-it-all-together">Kết hợp tất cả lại</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shearing-the-transformation-matrix-advanced">Trượt ma trận biến đổi (nâng cao)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#practical-applications-of-transforms">Ứng dụng thực tế của transform</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#converting-positions-between-transforms">Chuyển đổi vị trí giữa các transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moving-an-object-relative-to-itself">Di chuyển đối tượng tương đối với chính nó</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#applying-transforms-onto-transforms">Áp dụng transform lên transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#inverting-a-transformation-matrix">Nghịch đảo ma trận biến đổi</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#how-does-it-all-work-in-3d">Tất cả hoạt động thế nào trong 3D?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#representing-rotation-in-3d-advanced">Biểu diễn phép xoay trong 3D (nâng cao)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation.html">Nội suy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beziers_and_curves.html">Bezier, đường cong và đường đi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random_number_generation.html">Tạo số ngẫu nhiên</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../navigation/index.html">Điều hướng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Toán học</a></li>
+      <li class="breadcrumb-item active">Ma trận và transform</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="matrices-and-transforms">
+<span id="doc-matrices-and-transforms"></span><h1>Ma trận và transform<a class="headerlink" href="#matrices-and-transforms" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Trước khi đọc bài hướng dẫn này, chúng tôi khuyên bạn đọc kỹ và hiểu bài hướng dẫn <a class="reference internal" href="vector_math.html#doc-vector-math"><span class="std std-ref">Toán vector</span></a>, vì bài này yêu cầu kiến thức về vector.</p>
+<p>Bài hướng dẫn này nói về các <em>phép biến đổi</em> (transformation) và cách chúng ta biểu diễn chúng trong Godot bằng ma trận. Đây không phải là một hướng dẫn đầy đủ, chuyên sâu về ma trận. Phần lớn thời gian, các phép biến đổi được áp dụng dưới dạng tịnh tiến, xoay và co giãn, vì vậy chúng ta sẽ tập trung vào cách biểu diễn những phép đó bằng ma trận.</p>
+<p>Phần lớn hướng dẫn này tập trung vào 2D, sử dụng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">class_Transform2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector2</span></a>, nhưng cách mọi thứ hoạt động trong 3D cũng rất tương tự.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Như đã đề cập trong bài hướng dẫn trước, điều quan trọng cần nhớ là trong Godot, trục Y hướng <em>xuống</em> trong 2D. Điều này ngược với cách hầu hết các trường dạy đại số tuyến tính, với trục Y hướng lên.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Theo quy ước, trục X màu đỏ, trục Y màu xanh lá và trục Z màu xanh dương. Bài hướng dẫn này được tô màu theo đúng các quy ước đó, nhưng chúng ta cũng sẽ biểu diễn vector gốc tọa độ bằng màu xanh dương.</p>
+</div>
+<section id="matrix-components-and-the-identity-matrix">
+<h3>Các thành phần ma trận và ma trận đơn vị<a class="headerlink" href="#matrix-components-and-the-identity-matrix" title="Link to this heading"></a></h3>
+<p>Ma trận đơn vị biểu diễn một transform không có tịnh tiến, không xoay và không co giãn. Hãy bắt đầu bằng cách xem xét ma trận đơn vị và mối liên hệ giữa các thành phần của nó với cách nó hiển thị trực quan.</p>
+<img alt="../../_images/identity.png" src="../../_images/identity.png" />
+<p>Ma trận có các hàng và cột, và ma trận biến đổi có những quy ước cụ thể về vai trò của mỗi hàng và cột.</p>
+<p>Trong hình trên, ta có thể thấy vector X màu đỏ được biểu diễn bởi cột thứ nhất của ma trận, và tương tự vector Y màu xanh lá được biểu diễn bởi cột thứ hai. Thay đổi các cột sẽ làm thay đổi các vector này. Ta sẽ xem cách thao tác với chúng trong vài ví dụ tiếp theo.</p>
+<p>Bạn không cần bận tâm đến việc thao tác trực tiếp với các hàng, vì chúng ta thường làm việc với các cột. Tuy nhiên, bạn có thể coi các hàng của ma trận là thể hiện những vector nào góp phần vào việc di chuyển theo một hướng nhất định.</p>
+<p>Khi chúng ta nói đến một giá trị như <code class="docutils literal notranslate"><span class="pre">t.x.y</span></code>, đó là thành phần Y của vector cột X. Nói cách khác, là ô dưới-trái của ma trận. Tương tự, <code class="docutils literal notranslate"><span class="pre">t.x.x</span></code> là trên-trái, <code class="docutils literal notranslate"><span class="pre">t.y.x</span></code> là trên-phải và <code class="docutils literal notranslate"><span class="pre">t.y.y</span></code> là dưới-phải, với <code class="docutils literal notranslate"><span class="pre">t</span></code> là Transform2D.</p>
+</section>
+<section id="scaling-the-transformation-matrix">
+<h3>Co giãn ma trận biến đổi<a class="headerlink" href="#scaling-the-transformation-matrix" title="Link to this heading"></a></h3>
+<p>Áp dụng co giãn là một trong những phép toán dễ hiểu nhất. Hãy bắt đầu bằng cách đặt logo Godot bên dưới các vector để có thể thấy trực quan tác động lên một đối tượng:</p>
+<img alt="../../_images/identity-godot.png" src="../../_images/identity-godot.png" />
+<p>Bây giờ, để co giãn ma trận, tất cả những gì ta cần làm là nhân mỗi thành phần với tỉ lệ mong muốn. Hãy phóng to nó lên 2 lần. 1 nhân 2 thành 2, và 0 nhân 2 thành 0, nên ta có kết quả như sau:</p>
+<img alt="../../_images/scale.png" src="../../_images/scale.png" />
+<p>Để làm việc này trong code, ta nhân từng vector:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">()</span>
+<span class="c1"># Scale</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="c1"># Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Transform2D</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">.</span><span class="n">Identity</span><span class="p">;</span>
+<span class="c1">// Scale</span>
+<span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="c1">// Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div></div>
+<p>Nếu muốn đưa nó về tỉ lệ ban đầu, ta có thể nhân mỗi thành phần với 0.5. Đó gần như là tất cả những gì cần biết về việc co giãn một ma trận biến đổi.</p>
+<p>Để tính tỉ lệ của đối tượng từ một ma trận biến đổi có sẵn, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">length()</span></code> trên mỗi vector cột.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong các dự án thực tế, bạn có thể dùng phương thức <code class="docutils literal notranslate"><span class="pre">scaled()</span></code> để thực hiện co giãn.</p>
+</div>
+</section>
+<section id="rotating-the-transformation-matrix">
+<h3>Xoay ma trận biến đổi<a class="headerlink" href="#rotating-the-transformation-matrix" title="Link to this heading"></a></h3>
+<p>Ta sẽ bắt đầu giống như trước, với logo Godot bên dưới ma trận đơn vị:</p>
+<img alt="../../_images/identity-godot.png" src="../../_images/identity-godot.png" />
+<p>Ví dụ, giả sử ta muốn xoay logo Godot 90 độ theo chiều kim đồng hồ. Hiện tại trục X hướng sang phải và trục Y hướng xuống. Nếu xoay chúng trong đầu, ta sẽ thấy một cách logic rằng trục X mới phải hướng xuống và trục Y mới phải hướng sang trái.</p>
+<p>Bạn có thể tưởng tượng mình nắm lấy cả logo Godot lẫn các vector của nó, rồi xoay nó quanh tâm. Khi bạn xoay xong ở vị trí nào, hướng của các vector sẽ quyết định ma trận là gì.</p>
+<p>Ta cần biểu diễn &quot;xuống&quot; và &quot;trái&quot; bằng tọa độ thông thường, nghĩa là ta sẽ đặt X thành (0, 1) và Y thành (-1, 0). Đây cũng là giá trị của <code class="docutils literal notranslate"><span class="pre">Vector2.DOWN</span></code> và <code class="docutils literal notranslate"><span class="pre">Vector2.LEFT</span></code>. Khi làm vậy, ta có được kết quả mong muốn là đối tượng được xoay:</p>
+<img alt="../../_images/rotate1.png" src="../../_images/rotate1.png" />
+<p>Nếu bạn gặp khó khăn khi hiểu phần trên, hãy thử bài tập này: Cắt một hình vuông bằng giấy, vẽ các vector X và Y lên đó, đặt nó lên giấy kẻ ô, rồi xoay nó và ghi lại các điểm đầu mút.</p>
+<p>Để thực hiện phép xoay trong code, ta cần tính được các giá trị bằng lập trình. Hình này cho thấy các công thức cần thiết để tính ma trận biến đổi từ một góc xoay. Đừng lo nếu phần này có vẻ phức tạp, tôi hứa đây là điều khó nhất bạn cần biết.</p>
+<img alt="../../_images/rotate2.png" src="../../_images/rotate2.png" />
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Godot biểu diễn mọi phép xoay bằng radian, không phải độ. Một vòng đầy đủ là <cite>TAU</cite> hoặc <cite>PI*2</cite> radian, và một phần tư vòng 90 độ là <cite>TAU/4</cite> hoặc <cite>PI/2</cite> radian. Làm việc với <cite>TAU</cite> thường giúp code dễ đọc hơn.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Một sự thật thú vị: Ngoài việc trục Y hướng <em>xuống</em> trong Godot, phép xoay còn được biểu diễn theo chiều kim đồng hồ. Điều này có nghĩa là mọi hàm toán học và lượng giác đều hoạt động giống như một hệ có Y hướng lên và xoay ngược chiều kim đồng hồ, vì những khác biệt này &quot;triệt tiêu lẫn nhau&quot;. Bạn có thể coi phép xoay trong cả hai hệ đều là &quot;từ X sang Y&quot;.</p>
+</div>
+<p>Để thực hiện phép xoay 0.5 radian (khoảng 28.65 độ), ta thay giá trị 0.5 vào công thức trên và tính toán để tìm ra các giá trị thực tế:</p>
+<img alt="../../_images/rotate3.png" src="../../_images/rotate3.png" />
+<p>Đây là cách làm việc đó trong code (gắn script vào một Node2D):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-1-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-1-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-1-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">rot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="c1"># The rotation to apply.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">()</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">x</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">cos</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">cos</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">x</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">sin</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="nb nb-Function">sin</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="c1"># Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">rot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">;</span><span class="w"> </span><span class="c1">// The rotation to apply.</span>
+<span class="n">Transform2D</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">.</span><span class="n">Identity</span><span class="p">;</span>
+<span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Cos</span><span class="p">(</span><span class="n">rot</span><span class="p">);</span>
+<span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Sin</span><span class="p">(</span><span class="n">rot</span><span class="p">);</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="c1">// Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để tính góc xoay của đối tượng từ một ma trận biến đổi có sẵn, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">atan2(t.x.y,</span> <span class="pre">t.x.x)</span></code>, với t là Transform2D.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong các dự án thực tế, bạn có thể dùng phương thức <code class="docutils literal notranslate"><span class="pre">rotated()</span></code> để thực hiện phép xoay.</p>
+</div>
+</section>
+<section id="basis-of-the-transformation-matrix">
+<h3>Basis của ma trận biến đổi<a class="headerlink" href="#basis-of-the-transformation-matrix" title="Link to this heading"></a></h3>
+<p>Cho đến giờ ta chỉ làm việc với các vector <code class="docutils literal notranslate"><span class="pre">x</span></code> và <code class="docutils literal notranslate"><span class="pre">y</span></code>, chịu trách nhiệm biểu diễn phép xoay, co giãn và/hoặc trượt (nâng cao, được đề cập ở cuối bài). Hai vector X và Y được gọi chung là <em>basis</em> (cơ sở) của ma trận biến đổi. Các thuật ngữ &quot;basis&quot; và &quot;basis vector&quot; rất quan trọng cần biết.</p>
+<p>Có thể bạn đã nhận thấy <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">class_Transform2D</span></a> thực ra có ba giá trị <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector2</span></a>: <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> và <code class="docutils literal notranslate"><span class="pre">origin</span></code>. Giá trị <code class="docutils literal notranslate"><span class="pre">origin</span></code> không thuộc basis, nhưng nó là một phần của transform, và ta cần nó để biểu diễn vị trí. Từ giờ ta sẽ theo dõi vector origin trong tất cả các ví dụ. Bạn có thể coi <code class="docutils literal notranslate"><span class="pre">origin</span></code> là một cột nữa, nhưng thường tốt hơn là coi nó hoàn toàn tách biệt.</p>
+<p>Lưu ý rằng trong 3D, Godot có một cấu trúc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">class_Basis</span></a> riêng để chứa ba giá trị <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector3</span></a> của basis, vì code có thể trở nên phức tạp và việc tách nó ra khỏi <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Transform3D</span></a> là hợp lý (Transform3D gồm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">class_Basis</span></a> và thêm một <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector3</span></a> cho origin).</p>
+</section>
+<section id="translating-the-transformation-matrix">
+<h3>Tịnh tiến ma trận biến đổi<a class="headerlink" href="#translating-the-transformation-matrix" title="Link to this heading"></a></h3>
+<p>Thay đổi vector origin được gọi là <em>tịnh tiến</em> (translate) ma trận biến đổi. Tịnh tiến về cơ bản là một thuật ngữ kỹ thuật cho việc &quot;di chuyển&quot; đối tượng, nhưng nó hoàn toàn không bao gồm phép xoay nào.</p>
+<p>Hãy cùng làm một ví dụ để hiểu rõ hơn. Ta sẽ bắt đầu với transform đơn vị như lần trước, chỉ khác là lần này ta sẽ theo dõi cả vector origin.</p>
+<img alt="../../_images/identity-origin.png" src="../../_images/identity-origin.png" />
+<p>Nếu muốn di chuyển đối tượng đến vị trí (1, 2), ta cần đặt vector origin của nó thành (1, 2):</p>
+<img alt="../../_images/translate.png" src="../../_images/translate.png" />
+<p>Ngoài ra còn có phương thức <code class="docutils literal notranslate"><span class="pre">translated_local()</span></code>, thực hiện một phép toán khác với việc cộng hoặc thay đổi trực tiếp <code class="docutils literal notranslate"><span class="pre">origin</span></code>. Phương thức <code class="docutils literal notranslate"><span class="pre">translated_local()</span></code> sẽ tịnh tiến đối tượng <em>tương đối với góc xoay của chính nó</em>. Ví dụ, một đối tượng đã xoay 90 độ theo chiều kim đồng hồ sẽ di chuyển sang phải khi gọi <code class="docutils literal notranslate"><span class="pre">translated_local()</span></code> với <code class="docutils literal notranslate"><span class="pre">Vector2.UP</span></code>. Để tịnh tiến <em>tương đối với hệ quy chiếu toàn cục/của node cha</em>, hãy dùng <code class="docutils literal notranslate"><span class="pre">translated()</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>2D của Godot dùng tọa độ dựa trên pixel, nên trong các dự án thực tế bạn sẽ muốn tịnh tiến hàng trăm đơn vị.</p>
+</div>
+</section>
+<section id="putting-it-all-together">
+<h3>Kết hợp tất cả lại<a class="headerlink" href="#putting-it-all-together" title="Link to this heading"></a></h3>
+<p>Ta sẽ áp dụng mọi thứ đã đề cập cho đến giờ lên một transform. Để làm theo, hãy tạo một dự án với một node Sprite2D và dùng logo Godot làm resource texture.</p>
+<p>Hãy đặt phép tịnh tiến là (350, 150), xoay -0.5 rad và co giãn 3 lần. Tôi đã đăng một ảnh chụp màn hình cùng với code để tái tạo nó, nhưng tôi khuyến khích bạn thử tái tạo ảnh chụp màn hình mà không xem code!</p>
+<img alt="../../_images/putting-all-together.png" src="../../_images/putting-all-together.png" />
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-2-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-2-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-2-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">()</span>
+<span class="c1"># Translation</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span><span class="w"> </span><span class="mi">150</span><span class="p">)</span>
+<span class="c1"># Rotation</span>
+<span class="k">var</span><span class="w"> </span><span class="n">rot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">0.5</span><span class="w"> </span><span class="c1"># The rotation to apply.</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">x</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">cos</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">cos</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">x</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Function">sin</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="nb nb-Function">sin</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+<span class="c1"># Scale</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="c1"># Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Transform2D</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">.</span><span class="n">Identity</span><span class="p">;</span>
+<span class="c1">// Translation</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span><span class="w"> </span><span class="mi">150</span><span class="p">);</span>
+<span class="c1">// Rotation</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">rot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">0.5f</span><span class="p">;</span><span class="w"> </span><span class="c1">// The rotation to apply.</span>
+<span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Cos</span><span class="p">(</span><span class="n">rot</span><span class="p">);</span>
+<span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mathf</span><span class="p">.</span><span class="n">Sin</span><span class="p">(</span><span class="n">rot</span><span class="p">);</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">// Scale</span>
+<span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="c1">// Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="shearing-the-transformation-matrix-advanced">
+<h3>Trượt ma trận biến đổi (nâng cao)<a class="headerlink" href="#shearing-the-transformation-matrix-advanced" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn chỉ muốn biết cách <em>sử dụng</em> ma trận biến đổi, cứ thoải mái bỏ qua phần này của bài hướng dẫn. Phần này khám phá một khía cạnh ít được dùng của ma trận biến đổi nhằm giúp bạn hiểu rõ hơn về chúng.</p>
+<p>Node2D cung cấp sẵn một thuộc tính trượt (shearing).</p>
+</div>
+<p>Có thể bạn đã nhận thấy một transform có nhiều bậc tự do hơn so với tổ hợp các phép toán ở trên. Basis của một ma trận biến đổi 2D có tổng cộng bốn số trong hai giá trị <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector2.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector2</span></a>, trong khi một giá trị góc xoay và một Vector2 cho tỉ lệ chỉ có 3 số. Khái niệm cấp cao cho bậc tự do còn thiếu này được gọi là <em>trượt</em> (shearing).</p>
+<p>Thông thường, các basis vector luôn vuông góc với nhau. Tuy nhiên, phép trượt có thể hữu ích trong một số tình huống, và hiểu về phép trượt giúp bạn hiểu cách transform hoạt động.</p>
+<p>Để cho bạn thấy trực quan nó trông thế nào, hãy phủ một lưới lên logo Godot:</p>
+<img alt="../../_images/identity-grid.png" src="../../_images/identity-grid.png" />
+<p>Mỗi điểm trên lưới này có được bằng cách cộng các basis vector với nhau. Góc dưới-phải là X + Y, còn góc trên-phải là X - Y. Nếu ta thay đổi các basis vector, toàn bộ lưới sẽ di chuyển theo, vì lưới được tạo thành từ các basis vector. Mọi đường thẳng trên lưới hiện đang song song sẽ vẫn song song bất kể ta thay đổi các basis vector như thế nào.</p>
+<p>Ví dụ, hãy đặt Y thành (1, 1):</p>
+<img alt="../../_images/shear.png" src="../../_images/shear.png" />
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-3-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-3-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-3-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">()</span>
+<span class="c1"># Shear by setting Y to (1, 1)</span>
+<span class="n">t</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="o">.</span><span class="vi">ONE</span>
+<span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="c1"># Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Transform2D</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">.</span><span class="n">Identity</span><span class="p">;</span>
+<span class="c1">// Shear by setting Y to (1, 1)</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector2</span><span class="p">.</span><span class="n">One</span><span class="p">;</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="c1">// Change the node&#39;s transform to what we calculated.</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn không thể đặt các giá trị thô của một Transform2D trong trình chỉnh sửa, vì vậy bạn <em>bắt buộc</em> phải dùng code nếu muốn trượt đối tượng.</p>
+</div>
+<p>Do các vector không còn vuông góc, đối tượng đã bị trượt. Điểm giữa-dưới của lưới, tức (0, 1) tương đối với chính nó, giờ nằm ở vị trí thế giới (1, 1).</p>
+<p>Tọa độ bên trong đối tượng được gọi là tọa độ UV trong texture, nên hãy mượn thuật ngữ đó ở đây. Để tìm vị trí thế giới từ một vị trí tương đối, công thức là U * X + V * Y, trong đó U và V là các số còn X và Y là các basis vector.</p>
+<p>Góc dưới-phải của lưới, luôn ở vị trí UV (1, 1), nằm ở vị trí thế giới (2, 1), được tính từ X*1 + Y*1, tức (1, 0) + (1, 1), hay (1 + 1, 0 + 1), hay (2, 1). Điều này khớp với quan sát của ta về vị trí góc dưới-phải của hình ảnh.</p>
+<p>Tương tự, góc trên-phải của lưới, luôn ở vị trí UV (1, -1), nằm ở vị trí thế giới (0, -1), được tính từ X*1 + Y*-1, tức (1, 0) - (1, 1), hay (1 - 1, 0 - 1), hay (0, -1). Điều này khớp với quan sát của ta về vị trí góc trên-phải của hình ảnh.</p>
+<p>Hy vọng giờ bạn đã hiểu rõ cách một ma trận biến đổi tác động lên đối tượng, cũng như mối liên hệ giữa các basis vector và cách vị trí thế giới của &quot;UV&quot; hay &quot;tọa độ nội tại&quot; của đối tượng bị thay đổi.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong Godot, mọi phép toán transform đều được thực hiện tương đối với node cha. Khi chúng ta nói &quot;vị trí thế giới&quot;, thì nếu node có cha, vị trí đó thực ra là tương đối với node cha.</p>
+</div>
+<p>Nếu muốn được giải thích thêm, bạn nên xem video tuyệt vời của 3Blue1Brown về phép biến đổi tuyến tính: <a class="reference external" href="https://www.youtube.com/watch?v=kYB8IZa5AuE">https://www.youtube.com/watch?v=kYB8IZa5AuE</a></p>
+</section>
+</section>
+<section id="practical-applications-of-transforms">
+<h2>Ứng dụng thực tế của transform<a class="headerlink" href="#practical-applications-of-transforms" title="Link to this heading"></a></h2>
+<p>Trong các dự án thực tế, bạn thường sẽ làm việc với transform lồng trong transform bằng cách có nhiều node <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node2d.html" title="Class reference (English)"><span class="xref std std-ref">class_Node2D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_node3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Node3D</span></a> là cha con của nhau.</p>
+<p>Tuy nhiên, việc hiểu cách tính thủ công các giá trị cần thiết vẫn rất hữu ích. Chúng ta sẽ xem cách dùng <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform2d.html" title="Class reference (English)"><span class="xref std std-ref">class_Transform2D</span></a> hoặc <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Transform3D</span></a> để tính thủ công transform của các node.</p>
+<section id="converting-positions-between-transforms">
+<h3>Chuyển đổi vị trí giữa các transform<a class="headerlink" href="#converting-positions-between-transforms" title="Link to this heading"></a></h3>
+<p>Có nhiều trường hợp bạn muốn chuyển đổi một vị trí vào và ra khỏi một transform. Ví dụ, khi bạn có một vị trí tương đối với người chơi và muốn tìm vị trí thế giới (tương đối với node cha), hoặc khi bạn có một vị trí thế giới và muốn biết nó ở đâu so với người chơi.</p>
+<p>Ta có thể tìm xem một vector tương đối với người chơi sẽ được định nghĩa như thế nào trong không gian thế giới bằng toán tử <code class="docutils literal notranslate"><span class="pre">*</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-4-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-4-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-4-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># World space vector 100 units below the player.</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="n">transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// World space vector 100 units below the player.</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="n">Transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></div>
+<p>Và ta có thể dùng toán tử <code class="docutils literal notranslate"><span class="pre">*</span></code> theo thứ tự ngược lại để tìm xem một vị trí trong không gian thế giới sẽ là gì nếu nó được định nghĩa tương đối với người chơi:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-5-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-5-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-5-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Where is (0, 100) relative to the player?</span>
+<span class="nb nb-Function">print</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">transform</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Where is (0, 100) relative to the player?</span>
+<span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Transform</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn biết trước transform được đặt ở (0, 0), bạn có thể dùng các phương thức &quot;basis_xform&quot; hoặc &quot;basis_xform_inv&quot; thay thế, chúng bỏ qua việc xử lý phép tịnh tiến.</p>
+</div>
+</section>
+<section id="moving-an-object-relative-to-itself">
+<h3>Di chuyển đối tượng tương đối với chính nó<a class="headerlink" href="#moving-an-object-relative-to-itself" title="Link to this heading"></a></h3>
+<p>Một thao tác phổ biến, đặc biệt trong game 3D, là di chuyển một đối tượng tương đối với chính nó. Ví dụ, trong game bắn súng góc nhìn thứ nhất, bạn sẽ muốn nhân vật di chuyển về phía trước (trục -Z) khi nhấn <kbd class="kbd docutils literal notranslate">W</kbd>.</p>
+<p>Vì các basis vector là hướng tương đối với node cha, và vector origin là vị trí tương đối với node cha, ta có thể cộng thêm bội số của các basis vector để di chuyển một đối tượng tương đối với chính nó.</p>
+<p>Đoạn code này di chuyển một đối tượng 100 đơn vị sang bên phải của chính nó:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-6-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-6-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-6-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="n">transform</span><span class="o">.</span><span class="vi">origin</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">transform</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Transform2D</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform</span><span class="p">;</span>
+<span class="n">t</span><span class="p">.</span><span class="n">Origin</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<p>Để di chuyển trong 3D, bạn cần thay &quot;x&quot; bằng &quot;basis.x&quot;.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong các dự án thực tế, bạn có thể dùng <code class="docutils literal notranslate"><span class="pre">translate_object_local</span></code> trong 3D hoặc <code class="docutils literal notranslate"><span class="pre">move_local_x</span></code> và <code class="docutils literal notranslate"><span class="pre">move_local_y</span></code> trong 2D để làm việc này.</p>
+</div>
+</section>
+<section id="applying-transforms-onto-transforms">
+<h3>Áp dụng transform lên transform<a class="headerlink" href="#applying-transforms-onto-transforms" title="Link to this heading"></a></h3>
+<p>Một trong những điều quan trọng nhất cần biết về transform là cách bạn có thể dùng nhiều transform cùng nhau. Transform của node cha ảnh hưởng đến tất cả các node con của nó. Hãy cùng phân tích một ví dụ.</p>
+<p>Trong hình này, node con có thêm số &quot;2&quot; sau tên các thành phần để phân biệt với node cha. Có thể trông hơi rối mắt với quá nhiều con số, nhưng hãy nhớ rằng mỗi số được hiển thị hai lần (cạnh các mũi tên và cả trong ma trận), và gần một nửa số đó là số không.</p>
+<img alt="../../_images/apply.png" src="../../_images/apply.png" />
+<p>Các phép biến đổi duy nhất ở đây là node cha được đặt tỉ lệ (2, 1), node con được đặt tỉ lệ (0.5, 0.5), và cả hai node đều được đặt vị trí.</p>
+<p>Tất cả các phép biến đổi của node con đều chịu ảnh hưởng bởi các phép biến đổi của node cha. Node con có tỉ lệ (0.5, 0.5), nên bạn sẽ nghĩ nó là một hình vuông tỉ lệ 1:1, và đúng là vậy, nhưng chỉ khi xét tương đối với node cha. Vector X của node con trở thành (1, 0) trong không gian thế giới, vì nó bị co giãn bởi các basis vector của node cha. Tương tự, vector <code class="docutils literal notranslate"><span class="pre">origin</span></code> của node con được đặt thành (1, 1), nhưng thực tế điều này di chuyển nó (2, 1) trong không gian thế giới, do các basis vector của node cha.</p>
+<p>Để tính thủ công transform trong không gian thế giới của một transform con, đây là code ta sẽ dùng:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-7-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-7-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-7-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up transforms like in the image, except make positions be 100 times bigger.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">))</span>
+<span class="k">var</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">))</span>
+
+<span class="c1"># Calculate the child&#39;s world space transform</span>
+<span class="c1"># origin = (2, 0) * 100 + (0, 1) * 100 + (100, 200)</span>
+<span class="k">var</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="o">.</span><span class="vi">origin</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="o">.</span><span class="vi">origin</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">origin</span>
+<span class="c1"># basis_x = (2, 0) * 0.5 + (0, 1) * 0</span>
+<span class="k">var</span><span class="w"> </span><span class="n">basis_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="o">.</span><span class="vi">x</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="o">.</span><span class="vi">x</span><span class="o">.</span><span class="vi">y</span>
+<span class="c1"># basis_y = (2, 0) * 0 + (0, 1) * 0.5</span>
+<span class="k">var</span><span class="w"> </span><span class="n">basis_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="o">.</span><span class="vi">y</span><span class="o">.</span><span class="vi">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="o">.</span><span class="vi">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="o">.</span><span class="vi">y</span><span class="o">.</span><span class="vi">y</span>
+
+<span class="c1"># Change the node&#39;s transform to what we calculated.</span>
+<span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">(</span><span class="n">basis_x</span><span class="p">,</span><span class="w"> </span><span class="n">basis_y</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Set up transforms like in the image, except make positions be 100 times bigger.</span>
+<span class="n">Transform2D</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span>
+<span class="n">Transform2D</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">(</span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+
+<span class="c1">// Calculate the child&#39;s world space transform</span>
+<span class="c1">// origin = (2, 0) * 100 + (0, 1) * 100 + (100, 200)</span>
+<span class="n">Vector2</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">.</span><span class="n">Origin</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">.</span><span class="n">Origin</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">Origin</span><span class="p">;</span>
+<span class="c1">// basisX = (2, 0) * 0.5 + (0, 1) * 0 = (0.5, 0)</span>
+<span class="n">Vector2</span><span class="w"> </span><span class="n">basisX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">Y</span><span class="p">;</span>
+<span class="c1">// basisY = (2, 0) * 0 + (0, 1) * 0.5 = (0.5, 0)</span>
+<span class="n">Vector2</span><span class="w"> </span><span class="n">basisY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">parent</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">Y</span><span class="p">;</span>
+
+<span class="c1">// Change the node&#39;s transform to what we calculated.</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">(</span><span class="n">basisX</span><span class="p">,</span><span class="w"> </span><span class="n">basisY</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></div>
+<p>Trong các dự án thực tế, ta có thể tìm transform thế giới của node con bằng cách áp dụng một transform lên transform khác bằng toán tử <code class="docutils literal notranslate"><span class="pre">*</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-8-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-8-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-8-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up transforms like in the image, except make positions be 100 times bigger.</span>
+<span class="k">var</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">))</span>
+<span class="k">var</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Transform2D</span><span class="p">(</span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">),</span><span class="w"> </span><span class="nb nb-Type">Vector2</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">))</span>
+
+<span class="c1"># Change the node&#39;s transform to what would be the child&#39;s world transform.</span>
+<span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Set up transforms like in the image, except make positions be 100 times bigger.</span>
+<span class="n">Transform2D</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span>
+<span class="n">Transform2D</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transform2D</span><span class="p">(</span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+
+<span class="c1">// Change the node&#39;s transform to what would be the child&#39;s world transform.</span>
+<span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">child</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi nhân ma trận, thứ tự rất quan trọng! Đừng nhầm lẫn chúng.</p>
+</div>
+<p>Cuối cùng, áp dụng transform đơn vị sẽ luôn không làm gì cả.</p>
+<p>Nếu muốn được giải thích thêm, bạn nên xem video tuyệt vời của 3Blue1Brown về phép hợp ma trận: <a class="reference external" href="https://www.youtube.com/watch?v=XkY2DOUCWMU">https://www.youtube.com/watch?v=XkY2DOUCWMU</a></p>
+</section>
+<section id="inverting-a-transformation-matrix">
+<h3>Nghịch đảo ma trận biến đổi<a class="headerlink" href="#inverting-a-transformation-matrix" title="Link to this heading"></a></h3>
+<p>Hàm <code class="docutils literal notranslate"><span class="pre">affine_inverse</span></code> trả về một transform &quot;hoàn tác&quot; transform trước đó. Điều này có thể hữu ích trong một số tình huống. Hãy cùng xem vài ví dụ.</p>
+<p>Nhân một transform nghịch đảo với transform thông thường sẽ hoàn tác mọi phép biến đổi:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-9-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-9-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-9-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="o">.</span><span class="nf">affine_inverse</span><span class="p">()</span>
+<span class="k">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">transform</span>
+<span class="c1"># The transform is the identity transform.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Transform2D</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform</span><span class="p">.</span><span class="n">AffineInverse</span><span class="p">();</span>
+<span class="n">Transform2D</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Transform</span><span class="p">;</span>
+<span class="c1">// The transform is the identity transform.</span>
+</pre></div>
+</div>
+</div></div>
+<p>Biến đổi một vị trí bằng một transform rồi bằng nghịch đảo của nó sẽ cho ra đúng vị trí ban đầu:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-10-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-10-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-10-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">var</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="o">.</span><span class="nf">affine_inverse</span><span class="p">()</span>
+<span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">position</span>
+<span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">position</span>
+<span class="c1"># The position is the same as before.</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="n">Transform2D</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform</span><span class="p">.</span><span class="n">AffineInverse</span><span class="p">();</span>
+<span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Transform</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Position</span><span class="p">;</span>
+<span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ti</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Position</span><span class="p">;</span>
+<span class="c1">// The position is the same as before.</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="how-does-it-all-work-in-3d">
+<h2>Tất cả hoạt động thế nào trong 3D?<a class="headerlink" href="#how-does-it-all-work-in-3d" title="Link to this heading"></a></h2>
+<p>Một trong những điều tuyệt vời về ma trận biến đổi là chúng hoạt động rất giống nhau giữa phép biến đổi 2D và 3D. Mọi code và công thức dùng cho 2D ở trên đều hoạt động tương tự trong 3D, với 3 ngoại lệ: có thêm trục thứ ba, mỗi trục có kiểu <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_vector3.html" title="Class reference (English)"><span class="xref std std-ref">class_Vector3</span></a>, và Godot lưu <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">class_Basis</span></a> tách biệt với <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_transform3d.html" title="Class reference (English)"><span class="xref std std-ref">class_Transform3D</span></a>, vì phần toán có thể trở nên phức tạp và việc tách riêng là hợp lý.</p>
+<p>Mọi khái niệm về cách tịnh tiến, xoay, co giãn và trượt hoạt động trong 3D đều giống hệt so với 2D. Để co giãn, ta lấy từng thành phần và nhân nó; để xoay, ta thay đổi hướng của từng basis vector; để tịnh tiến, ta thao tác với origin; và để trượt, ta thay đổi các basis vector để chúng không vuông góc.</p>
+<img alt="../../_images/3d-identity.png" src="../../_images/3d-identity.png" />
+<p>Nếu muốn, bạn nên thử nghiệm với transform để hiểu cách chúng hoạt động. Godot cho phép bạn chỉnh sửa ma trận transform 3D trực tiếp từ Inspector. Bạn có thể tải dự án này, có các đường kẻ và khối lập phương màu giúp trực quan hóa các vector <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_basis.html" title="Class reference (English)"><span class="xref std std-ref">class_Basis</span></a> và origin trong cả 2D lẫn 3D: <a class="reference external" href="https://github.com/godotengine/godot-demo-projects/tree/master/misc/matrix_transform">https://github.com/godotengine/godot-demo-projects/tree/master/misc/matrix_transform</a></p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn không thể chỉnh sửa trực tiếp ma trận transform của Node2D trong Inspector của Godot 4.0. Điều này có thể thay đổi trong một phiên bản Godot tương lai.</p>
+</div>
+<p>Nếu muốn được giải thích thêm, bạn nên xem video tuyệt vời của 3Blue1Brown về phép biến đổi tuyến tính 3D: <a class="reference external" href="https://www.youtube.com/watch?v=rHLEWRxRGiM">https://www.youtube.com/watch?v=rHLEWRxRGiM</a></p>
+<section id="representing-rotation-in-3d-advanced">
+<h3>Biểu diễn phép xoay trong 3D (nâng cao)<a class="headerlink" href="#representing-rotation-in-3d-advanced" title="Link to this heading"></a></h3>
+<p>Khác biệt lớn nhất giữa ma trận biến đổi 2D và 3D là cách bạn biểu diễn riêng phép xoay mà không cần các basis vector.</p>
+<p>Với 2D, ta có một cách dễ dàng (atan2) để chuyển đổi giữa ma trận biến đổi và một góc. Trong 3D, phép xoay quá phức tạp để biểu diễn bằng một con số. Có một thứ gọi là góc Euler, có thể biểu diễn phép xoay dưới dạng một bộ 3 số, tuy nhiên chúng bị hạn chế và không mấy hữu ích, trừ những trường hợp đơn giản.</p>
+<p>Trong 3D, ta thường không dùng góc mà dùng một basis biến đổi (được dùng gần như ở mọi nơi trong Godot), hoặc dùng quaternion. Godot có thể biểu diễn quaternion bằng struct <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_quaternion.html" title="Class reference (English)"><span class="xref std std-ref">class_Quaternion</span></a>. Lời khuyên của tôi là hoàn toàn bỏ qua cách chúng hoạt động bên trong, vì chúng rất phức tạp và không trực quan.</p>
+<p>Tuy nhiên, nếu bạn thực sự cần biết cách nó hoạt động, đây là một số tài liệu tuyệt vời mà bạn có thể đọc theo thứ tự:</p>
+<p><a class="reference external" href="https://www.youtube.com/watch?v=mvmuCPvRoWQ">https://www.youtube.com/watch?v=mvmuCPvRoWQ</a></p>
+<p><a class="reference external" href="https://www.youtube.com/watch?v=d4EgbgTm0Bg">https://www.youtube.com/watch?v=d4EgbgTm0Bg</a></p>
+<p><a class="reference external" href="https://eater.net/quaternions">https://eater.net/quaternions</a></p>
+</section>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vectors_advanced.html" class="btn btn-neutral float-left" title="Toán vector nâng cao" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="interpolation.html" class="btn btn-neutral float-right" title="Nội suy" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

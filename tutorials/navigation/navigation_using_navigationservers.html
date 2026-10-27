@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="vi" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sử dụng NavigationServer" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorials/navigation/navigation_using_navigationservers.html" />
+<meta property="og:site_name" content="Godot Engine documentation" />
+<meta property="og:description" content="Phiên bản 2D và 3D của NavigationServer lần lượt là NavigationServer2D và NavigationServer3D. Giao tiếp với NavigationServer: Làm việc với NavigationServer nghĩa là chuẩn bị các tham số cho một tru..." />
+<meta name="description" content="Phiên bản 2D và 3D của NavigationServer lần lượt là NavigationServer2D và NavigationServer3D. Giao tiếp với NavigationServer: Làm việc với NavigationServer nghĩa là chuẩn bị các tham số cho một tru..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>(DEV) Sử dụng NavigationServer &mdash; Tài liệu Godot Engine (4.7) bằng tiếng Việt</title>
+
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8c39be60" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/dev.css?v=b28a5b3c" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc7a800b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=4c1d55b0"></script>
+      <script src="../../_static/tabs.js?v=3030b3cb"></script>
+      <script src="../../_static/js/custom.js?v=156b5a5e"></script>
+      <script data-domain="godotengine.org" defer="defer" src="https://plausible.godot.foundation/js/script.file-downloads.outbound-links.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc" />
+  
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Tìm Kiếm" href="../../search.html" />
+    <link rel="next" title="Sử dụng NavigationMap" href="navigation_using_navigationmaps.html" />
+    <link rel="prev" title="Tổng quan về navigation 3D" href="navigation_introduction_3d.html" />
+<meta name="doc_version" content="4.7" />
+<meta name="doc_is_latest" content="False" />
+<meta name="doc_pagename" content="tutorials/navigation/navigation_using_navigationservers" />
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/docs_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Giới thiệu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/introduction.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/list_of_features.html">Danh sách tính năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/system_requirements.html">Yêu cầu hệ thống</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">Câu hỏi thường gặp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/complying_with_licenses.html">Tuân thủ giấy phép</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/release_policy.html">Chính sách phát hành của Godot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/docs_changelog.html">Nhật ký thay đổi tài liệu</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bắt đầu</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/introduction/index.html">Giới thiệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/step_by_step/index.html">Từng bước một</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_2d_game/index.html">Game 2D đầu tiên của bạn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/first_3d_game/index.html">Game 3D đầu tiên của bạn</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hướng dẫn sử dụng</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../best_practices/index.html">Thực hành tốt nhất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Khắc phục sự cố</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../editor/index.html">Giới thiệu trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating/index.html">Chuyển sang phiên bản mới</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2d/index.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d/index.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../animation/index.html">Hoạt ảnh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assets_pipeline/index.html">Quy trình asset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../audio/index.html">Âm thanh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../export/index.html">Xuất (export)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Nhập/xuất file và dữ liệu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i18n/index.html">Quốc tế hóa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inputs/index.html">Xử lý đầu vào</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math/index.html">Toán học</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Điều hướng</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigation_introduction_2d.html">Tổng quan về navigation 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_introduction_3d.html">Tổng quan về navigation 3D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sử dụng NavigationServer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#communicating-with-the-navigationserver">Giao tiếp với NavigationServer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#threading-and-synchronization">Đa luồng và đồng bộ hóa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d-and-3d-navigationserver-differences">Khác biệt giữa NavigationServer 2D và 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waiting-for-synchronization">Chờ đồng bộ hóa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-avoidance-callbacks">Callback avoidance của server</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationmaps.html">Sử dụng NavigationMap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationregions.html">Sử dụng NavigationRegion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationmeshes.html">Sử dụng navigation mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationpaths.html">Sử dụng NavigationPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationpathqueryobjects.html">Sử dụng NavigationPathQueryObjects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationagents.html">Sử dụng NavigationAgent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationobstacles.html">Sử dụng NavigationObstacle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationlinks.html">Sử dụng NavigationLink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_using_navigationlayers.html">Sử dụng NavigationLayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_debug_tools.html">Công cụ gỡ lỗi navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_connecting_navmesh.html">Kết nối các navigation mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_types.html">Hỗ trợ các loại actor khác nhau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_locomotion.html">Hỗ trợ các kiểu di chuyển khác nhau cho actor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_different_actor_area_access.html">Hỗ trợ quyền truy cập khu vực khác nhau cho các actor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navigation_optimizing_performance.html">Tối ưu hiệu năng navigation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Mạng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance/index.html">Hiệu năng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../physics/index.html">Vật lý</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../platform/index.html">Theo nền tảng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rendering/index.html">Kết xuất</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/index.html">Lập trình script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shaders/index.html">Shader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui/index.html">Giao diện người dùng (UI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xr/index.html">XR</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Chi tiết về engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/architecture/index.html">Kiến trúc engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/engine_api/index.html">Các API mở rộng engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/development/index.html">Phát triển engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/editor/index.html">Phát triển trình chỉnh sửa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/class_reference/index.html">Nhập môn tài liệu tham chiếu lớp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../engine_details/file_formats/index.html">Các định dạng file của Godot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Cộng đồng</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_library/index.html">Asset Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/asset_store/index.html">Asset Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/channels.html">Các kênh cộng đồng</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/tutorials.html">Bài hướng dẫn và tài nguyên</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tài liệu tham khảo lớp</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/index.html">Tài liệu tham khảo lớp (trực tuyến, tiếng Anh)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Godot Engine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+<li>
+	<div style="font-size: 105%;font-weight: 600;">
+		Tài liệu Godot Engine 4.7 bằng tiếng Việt
+	</div>
+	<ul class="wy-breadcrumbs">
+		
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Điều hướng</a></li>
+      <li class="breadcrumb-item active">Sử dụng NavigationServer</li>
+	</ul>
+</li>
+
+
+<li style="float: right; text-align: right;">
+	<ul>
+		
+      <li class="wy-breadcrumbs-aside">
+      </li>
+	</ul>
+
+	<style>
+		.godot-edit-guidelines {
+			font-size: 14px;
+			float: right;
+			clear: both;
+			padding-top: 4px;
+		}
+
+		@media screen and (max-width: 480px) {
+			.godot-edit-guidelines {
+				display: none;
+			}
+		}
+	</style>
+	<a class="godot-edit-guidelines" href="https://contributing.godotengine.org/en/latest/organization/how_to_contribute.html">
+		Tìm hiểu cách đóng góp!
+	</a>
+</li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+<div itemprop="articleBody">
+  
+  <div class="admonition-grid">
+    
+
+    
+  </div>
+  
+
+  
+  <section id="using-navigationserver">
+<span id="doc-navigation-using-navigationservers"></span><h1>Sử dụng NavigationServer<a class="headerlink" href="#using-navigationserver" title="Link to this heading"></a></h1>
+<p>Phiên bản 2D và 3D của NavigationServer lần lượt là <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver2d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer2D</span></a> và <a class="reference external" href="https://docs.godotengine.org/en/4.7/classes/class_navigationserver3d.html" title="Class reference (English)"><span class="xref std std-ref">NavigationServer3D</span></a>.</p>
+<section id="communicating-with-the-navigationserver">
+<h2>Giao tiếp với NavigationServer<a class="headerlink" href="#communicating-with-the-navigationserver" title="Link to this heading"></a></h2>
+<p>Làm việc với NavigationServer nghĩa là chuẩn bị các tham số cho một <strong>truy vấn</strong> có thể được gửi tới NavigationServer để cập nhật hoặc yêu cầu dữ liệu.</p>
+<p>Để tham chiếu đến các đối tượng nội bộ của NavigationServer như map, region và agent, RID được dùng làm số định danh. Mỗi node liên quan đến navigation trong scene tree đều có một hàm trả về RID cho node đó.</p>
+</section>
+<section id="threading-and-synchronization">
+<h2>Đa luồng và đồng bộ hóa<a class="headerlink" href="#threading-and-synchronization" title="Link to this heading"></a></h2>
+<p>NavigationServer không cập nhật từng thay đổi ngay lập tức mà đợi đến cuối <strong>physics frame</strong> để đồng bộ tất cả thay đổi cùng lúc.</p>
+<p>Việc chờ đồng bộ là bắt buộc để áp dụng thay đổi cho mọi map, region và agent. Đồng bộ được thực hiện vì một số cập nhật như tính toán lại toàn bộ navigation map rất tốn kém và cần dữ liệu đã cập nhật từ mọi đối tượng khác. Ngoài ra, NavigationServer mặc định dùng một <strong>threadpool</strong> cho một số chức năng như tính toán avoidance giữa các agent.</p>
+<p>Không cần chờ đối với hầu hết các hàm <code class="docutils literal notranslate"><span class="pre">get()</span></code> chỉ yêu cầu dữ liệu từ NavigationServer mà không tạo thay đổi. Lưu ý rằng không phải mọi dữ liệu đều phản ánh các thay đổi được thực hiện trong cùng frame. Ví dụ, nếu một avoidance agent đổi navigation map trong frame này, hàm <code class="docutils literal notranslate"><span class="pre">agent_get_map()</span></code> vẫn sẽ trả về map cũ trước khi đồng bộ. Ngoại lệ là các node lưu giá trị nội bộ trước khi gửi cập nhật tới NavigationServer. Khi dùng getter trên một node cho một giá trị đã được cập nhật trong cùng frame, nó sẽ trả về giá trị đã cập nhật được lưu trên node.</p>
+<p>NavigationServer là <strong>thread-safe</strong> vì nó đặt mọi lệnh gọi API muốn tạo thay đổi vào một hàng đợi để thực thi trong giai đoạn đồng bộ. Việc đồng bộ của NavigationServer diễn ra ở giữa physics frame, sau khi input của scene từ script và node đều đã xong.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Điểm quan trọng cần nhớ là hầu hết các thay đổi trên NavigationServer có hiệu lực sau physics frame tiếp theo chứ không phải ngay lập tức. Điều này bao gồm mọi thay đổi do các node liên quan đến navigation trong scene tree hoặc qua script thực hiện.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Mọi hàm setter và hàm xóa đều cần đồng bộ.</p>
+</div>
+</section>
+<section id="d-and-3d-navigationserver-differences">
+<h2>Khác biệt giữa NavigationServer 2D và 3D<a class="headerlink" href="#d-and-3d-navigationserver-differences" title="Link to this heading"></a></h2>
+<p>NavigationServer2D và NavigationServer3D tương đương về chức năng trong chiều không gian của chúng.</p>
+<p>Về mặt kỹ thuật, bạn có thể dùng các công cụ tạo navigation mesh của một chiều cho chiều còn lại, ví dụ bake navigation mesh 2D bằng NavigationMesh 3D khi dùng hình học nguồn 3D phẳng, hoặc tạo navigation mesh 3D phẳng bằng các công cụ vẽ đường viền đa giác của NavigationRegion2D và NavigationPolygon.</p>
+</section>
+<section id="waiting-for-synchronization">
+<h2>Chờ đồng bộ hóa<a class="headerlink" href="#waiting-for-synchronization" title="Link to this heading"></a></h2>
+<p>Khi bắt đầu game, một scene mới hoặc các thay đổi navigation theo thủ tục, mọi path query tới NavigationServer sẽ trả về rỗng hoặc sai.</p>
+<p>Tại thời điểm này, navigation map vẫn còn trống hoặc chưa được cập nhật. Mọi node trong scene tree trước hết cần tải dữ liệu liên quan đến navigation của chúng lên NavigationServer. Mỗi map, region hoặc agent được thêm hoặc thay đổi đều cần được đăng ký với NavigationServer. Sau đó, NavigationServer cần một <strong>physics frame</strong> để đồng bộ nhằm cập nhật các map, region và agent.</p>
+<p>Một cách khắc phục là gọi trì hoãn (deferred call) tới một hàm thiết lập tùy chỉnh (để mọi node đều đã sẵn sàng). Hàm thiết lập thực hiện mọi thay đổi navigation, ví dụ thêm các thành phần theo thủ tục. Sau đó, hàm đợi physics frame tiếp theo trước khi tiếp tục với các path query.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-R0RTY3JpcHQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tab" tabindex="0">GDScript</button><button aria-controls="panel-0-QyM=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-QyM=" name="QyM=" role="tab" tabindex="-1">C#</button></div><div aria-labelledby="tab-0-R0RTY3JpcHQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-R0RTY3JpcHQ=" name="R0RTY3JpcHQ=" role="tabpanel" tabindex="0"><div class="highlight-gdscript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="nb">Node3D</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">_ready</span><span class="p">():</span>
+<span class="w">    </span><span class="c1"># Use call deferred to make sure the entire scene tree nodes are setup</span>
+<span class="w">    </span><span class="c1"># else await on &#39;physics_frame&#39; in a _ready() might get stuck.</span>
+<span class="w">    </span><span class="n">custom_setup</span><span class="o">.</span><span class="nf">call_deferred</span><span class="p">()</span>
+
+<span class="k">func</span><span class="w"> </span><span class="nf nf-Declaration">custom_setup</span><span class="p">():</span>
+
+<span class="w">    </span><span class="c1"># Create a new navigation map.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">map_create</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">map_set_up</span><span class="p">(</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="o">.</span><span class="vi">UP</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">map_set_active</span><span class="p">(</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="l">true</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Create a new navigation region and add it to the map.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">region</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">RID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_create</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_transform</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">Transform3D</span><span class="p">())</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_map</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">map</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Create a procedural navigation mesh for the region.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">new_navigation_mesh</span><span class="p">:</span><span class="w"> </span><span class="nb">NavigationMesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationMesh</span><span class="o">.</span><span class="nf">new</span><span class="p">()</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">vertices</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="p">([</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">        </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">9.0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">])</span>
+<span class="w">    </span><span class="n">new_navigation_mesh</span><span class="o">.</span><span class="nf">set_vertices</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">polygon</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedInt32Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">PackedInt32Array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">])</span>
+<span class="w">    </span><span class="n">new_navigation_mesh</span><span class="o">.</span><span class="nf">add_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">region_set_navigation_mesh</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">new_navigation_mesh</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1"># Wait for NavigationServer sync to adapt to made changes.</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nf">get_tree</span><span class="p">()</span><span class="o">.</span><span class="vi">physics_frame</span>
+
+<span class="w">    </span><span class="c1"># Query the path from the navigation server.</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">start_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">target_position</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb nb-Type">Vector3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">optimize_path</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="l">true</span>
+
+<span class="w">    </span><span class="k">var</span><span class="w"> </span><span class="n">path</span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">PackedVector3Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NavigationServer3D</span><span class="o">.</span><span class="nf">map_get_path</span><span class="p">(</span>
+<span class="w">        </span><span class="n">map</span><span class="p">,</span>
+<span class="w">        </span><span class="n">start_position</span><span class="p">,</span>
+<span class="w">        </span><span class="n">target_position</span><span class="p">,</span>
+<span class="w">        </span><span class="n">optimize_path</span>
+<span class="w">    </span><span class="p">)</span>
+
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="s2">&quot;Found a path!&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb nb-Function">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-QyM=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-QyM=" name="QyM=" role="tabpanel" tabindex="0"><div class="highlight-csharp notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">Godot</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyNode3D</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Node3D</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">_Ready</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Use call deferred to make sure the entire scene tree nodes are setup</span>
+<span class="w">        </span><span class="c1">// else await on &#39;physics_frame&#39; in a _Ready() might get stuck.</span>
+<span class="w">        </span><span class="n">CallDeferred</span><span class="p">(</span><span class="n">MethodName</span><span class="p">.</span><span class="n">CustomSetup</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">CustomSetup</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Create a new navigation map.</span>
+<span class="w">        </span><span class="n">Rid</span><span class="w"> </span><span class="n">map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">MapCreate</span><span class="p">();</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">MapSetUp</span><span class="p">(</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Up</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">MapSetActive</span><span class="p">(</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Create a new navigation region and add it to the map.</span>
+<span class="w">        </span><span class="n">Rid</span><span class="w"> </span><span class="n">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionCreate</span><span class="p">();</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetTransform</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">Transform3D</span><span class="p">.</span><span class="n">Identity</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetMap</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">map</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Create a procedural navigation mesh for the region.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">newNavigationMesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NavigationMesh</span><span class="p">()</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Vertices</span><span class="w"> </span><span class="o">=</span>
+<span class="w">            </span><span class="na">[</span>
+<span class="na">                new Vector3(0.0f, 0.0f, 0.0f),</span>
+<span class="na">                new Vector3(9.0f, 0.0f, 0.0f),</span>
+<span class="na">                new Vector3(0.0f, 0.0f, 9.0f),</span>
+<span class="na">            ]</span><span class="p">,</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="w">        </span><span class="kt">int</span><span class="p">[]</span><span class="w"> </span><span class="n">polygon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">];</span>
+<span class="w">        </span><span class="n">newNavigationMesh</span><span class="p">.</span><span class="n">AddPolygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">);</span>
+<span class="w">        </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">RegionSetNavigationMesh</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">newNavigationMesh</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Wait for NavigationServer sync to adapt to made changes.</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="nf">ToSignal</span><span class="p">(</span><span class="n">GetTree</span><span class="p">(),</span><span class="w"> </span><span class="n">SceneTree</span><span class="p">.</span><span class="n">SignalName</span><span class="p">.</span><span class="n">PhysicsFrame</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Query the path from the navigation server.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">startPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector3</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">targetPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Vector3</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">Vector3</span><span class="p">[]</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationServer3D</span><span class="p">.</span><span class="n">MapGetPath</span><span class="p">(</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="n">startPosition</span><span class="p">,</span><span class="w"> </span><span class="n">targetPosition</span><span class="p">,</span><span class="w"> </span><span class="n">optimize</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Found a path!&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">GD</span><span class="p">.</span><span class="n">Print</span><span class="p">((</span><span class="n">Variant</span><span class="p">)</span><span class="n">path</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="server-avoidance-callbacks">
+<h2>Callback avoidance của server<a class="headerlink" href="#server-avoidance-callbacks" title="Link to this heading"></a></h2>
+<p>Nếu các avoidance agent RVO được đăng ký nhận callback avoidance, NavigationServer sẽ phát signal <code class="docutils literal notranslate"><span class="pre">velocity_computed</span></code> của chúng ngay trước khi PhysicsServer đồng bộ.</p>
+<p>Để tìm hiểu thêm về NavigationAgent, xem <a class="reference internal" href="navigation_using_navigationagents.html#doc-navigation-using-navigationagents"><span class="std std-ref">Sử dụng NavigationAgent</span></a>.</p>
+<p>Thứ tự thực thi đơn giản hóa cho các NavigationAgent có dùng avoidance:</p>
+<ul class="simple">
+<li><p>physics frame bắt đầu.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_physics_process(delta)</span></code>.</p></li>
+<li><p>Thuộc tính <code class="docutils literal notranslate"><span class="pre">velocity</span></code> được đặt trên Node NavigationAgent.</p></li>
+<li><p>Agent gửi vận tốc và vị trí tới NavigationServer.</p></li>
+<li><p>NavigationServer chờ đồng bộ.</p></li>
+<li><p>NavigationServer đồng bộ và tính toán vận tốc avoidance cho mọi avoidance agent đã đăng ký.</p></li>
+<li><p>NavigationServer gửi vector vận tốc an toàn qua signal cho từng avoidance agent đã đăng ký.</p></li>
+<li><p>Agent nhận signal và di chuyển node cha của chúng, ví dụ bằng <code class="docutils literal notranslate"><span class="pre">move_and_slide</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">linear_velocity</span></code>.</p></li>
+<li><p>PhysicsServer đồng bộ.</p></li>
+<li><p>physics frame kết thúc.</p></li>
+</ul>
+<p>Vì vậy, di chuyển một actor physics body trong hàm callback bằng vận tốc an toàn là hoàn toàn an toàn về luồng lẫn vật lý, vì mọi thứ diễn ra trong cùng một physics frame trước khi PhysicsServer chốt các thay đổi và thực hiện tính toán của riêng nó.</p>
+</section>
+</section>
+
+
+
+
+</div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="navigation_introduction_3d.html" class="btn btn-neutral float-left" title="Tổng quan về navigation 3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Trước</a>
+        <a href="navigation_using_navigationmaps.html" class="btn btn-neutral float-right" title="Sử dụng NavigationMap" accesskey="n" rel="next">Tiếp <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-present Juan Linietsky, Ariel Manzur and the Godot community (CC BY 3.0).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+
+
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Read the Docs</span>
+    v: 4.7
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    
+
+    <dl>
+      <dt>Ngôn ngữ</dt>
+      
+        <dd><a href="#">en</a></dd>
+      
+        <dd><a href="#">de</a></dd>
+      
+        <dd><a href="#">es</a></dd>
+      
+        <dd><a href="#">fr</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Phiên bản</dt>
+      
+        <dd><a href="#">stable</a></dd>
+      
+        <dd><a href="#">latest</a></dd>
+      
+    </dl>
+    <dl>
+      
+      <dt>Trên Read the Docs</dt>
+        <dd>
+          <a href="///projects/">Trang chủ dự án</a>
+        </dd>
+        <dd>
+          <a href="///projects//builds/">Các bản build</a>
+        </dd>
+        <dd>
+          <a href="///projects//downloads/">Tải về</a>
+        </dd>
+    </dl>
+
+    <hr>
+    <small>
+      <span>Hosted by <a href="https://readthedocs.org">Read the Docs</a></span>
+      <span> · </span>
+      <a href="https://docs.readthedocs.io/page/privacy-policy.html">Privacy Policy</a>
+    </small>
+
+    
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
